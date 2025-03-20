@@ -1,0 +1,143 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+	darkMode: ['class'],
+	content: ['./index.html', './src/**/*.{ts,js,vue}', './src/**/**/*.{ts,js,vue}'],
+	theme: {
+		extend: {
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
+			},
+			borderRadius: {
+				lg: 'var(--radius)',
+				md: 'calc(var(--radius) - 2px)',
+				sm: 'calc(var(--radius) - 4px)',
+			},
+			colors: {
+				background: 'hsl(var(--background))',
+				foreground: 'hsl(var(--foreground))',
+				card: {
+					DEFAULT: 'hsl(var(--card))',
+					foreground: 'hsl(var(--card-foreground))',
+				},
+				popover: {
+					DEFAULT: 'hsl(var(--popover))',
+					foreground: 'hsl(var(--popover-foreground))',
+				},
+				primary: {
+					DEFAULT: 'hsl(var(--primary))',
+					foreground: 'hsl(var(--primary-foreground))',
+				},
+				secondary: {
+					DEFAULT: 'hsl(var(--secondary))',
+					foreground: 'hsl(var(--secondary-foreground))',
+				},
+				muted: {
+					DEFAULT: 'hsl(var(--muted))',
+					foreground: 'hsl(var(--muted-foreground))',
+				},
+				accent: {
+					DEFAULT: 'hsl(var(--accent))',
+					foreground: 'hsl(var(--accent-foreground))',
+				},
+				destructive: {
+					DEFAULT: 'hsl(var(--destructive))',
+					foreground: 'hsl(var(--destructive-foreground))',
+				},
+				border: 'hsl(var(--border))',
+				input: 'hsl(var(--input))',
+				ring: 'hsl(var(--ring))',
+				chart: {
+					1: 'hsl(var(--chart-1))',
+					2: 'hsl(var(--chart-2))',
+					3: 'hsl(var(--chart-3))',
+					4: 'hsl(var(--chart-4))',
+					5: 'hsl(var(--chart-5))',
+				},
+				blue: {
+					50: '#e6f2ff',
+					100: '#b0d8ff',
+					200: '#8ac5ff',
+					300: '#54abfe',
+					400: '#339afe',
+					500: '#0e6eed',
+					600: '#006fdb',
+					700: '#005cb4',
+					800: '#00478c',
+					900: '#00366b',
+				},
+				red: {
+					50: '#feecec',
+					100: '#fbc3c3',
+					200: '#f9a6a6',
+					300: '#f67e7e',
+					400: '#f46565',
+					500: '#f13e3e',
+					600: '#db3838',
+					700: '#ab2c2c',
+					800: '#852222',
+					900: '#651a1a',
+				},
+				yellow: {
+					50: '#fef7eb',
+					100: '#fde6c0',
+					200: '#fcd9a2',
+					300: '#fac877',
+					400: '#f9bd5d',
+					500: '#f8ad34',
+					600: '#e29d2f',
+					700: '#b07b25',
+					800: '#885f1d',
+					900: '#684916',
+				},
+				green: {
+					50: '#edfaea',
+					100: '#c8f0bd',
+					200: '#ade89d',
+					300: '#87de70',
+					400: '#70d854',
+					500: '#4cce29',
+					600: '#45bb25',
+					700: '#36921d',
+					800: '#2a7117',
+					900: '#205711',
+				},
+				slate: {
+					50: '#f8fafc',
+					100: '#f1f5f9',
+					200: '#e2e8f0',
+					300: '#cbd5e1',
+					400: '#94a3b8',
+					500: '#64748b',
+					600: '#475569',
+					700: '#334155',
+					800: '#1e293b',
+					900: '#0f172a',
+					950: '#0b1120',
+				},
+			},
+			keyframes: {
+				'accordion-down': {
+					from: {
+						height: '0',
+					},
+					to: {
+						height: 'var(--reka-accordion-content-height)',
+					},
+				},
+				'accordion-up': {
+					from: {
+						height: 'var(--reka-accordion-content-height)',
+					},
+					to: {
+						height: '0',
+					},
+				},
+			},
+			animation: {
+				'accordion-down': 'accordion-down 0.2s ease-out',
+				'accordion-up': 'accordion-up 0.2s ease-out',
+			},
+		},
+	},
+	plugins: [require('tailwindcss-animate')],
+};

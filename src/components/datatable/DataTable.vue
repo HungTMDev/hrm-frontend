@@ -10,7 +10,6 @@ interface Prop {
 	table: Table<any>;
 	isLoading?: boolean;
 	static_header?: boolean;
-	small_padding?: boolean;
 }
 defineProps<Prop>();
 
@@ -27,12 +26,15 @@ const handleClickRow = (data: any) => {
 	<div class="space-y-4">
 		<div class="">
 			<CustomTable :class="static_header ? 'max-h-[800px]' : ''">
-				<TableHeader :class="static_header ? 'sticky top-0 bg-muted shadow z-[35]' : ''">
-					<TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+				<TableHeader :class="static_header ? 'sticky top-0 z-[35] ' : ''">
+					<TableRow
+						v-for="headerGroup in table.getHeaderGroups()"
+						:key="headerGroup.id"
+						class="hover:bg-[#0E6EED0D]">
 						<TableHead
 							v-for="header in headerGroup.headers"
 							:key="header.id"
-							:class="small_padding ? 'px-1.5' : ''">
+							:class="'p-2 border-b text-sm font-normal'">
 							<FlexRender
 								v-if="
 									!header.isPlaceholder && !header.column.columnDef.enableHiding
@@ -47,7 +49,8 @@ const handleClickRow = (data: any) => {
 						<TableRow v-for="item in 5" :key="item">
 							<TableCell
 								v-for="i in table.getHeaderGroups()[0].headers.length"
-								:key="i">
+								:key="i"
+								class="p-2">
 								<Skeleton class="h-5 w-3/4" />
 							</TableCell>
 						</TableRow>
@@ -58,12 +61,17 @@ const handleClickRow = (data: any) => {
 							<!-- Hàng cha -->
 							<TableRow
 								:data-state="row.getIsSelected() && 'selected'"
-								class="border-none"
+								class="border-none hover:bg-[#0E6EED0D] data-[state=selected]:bg-[#0E6EED0D]"
 								@click="handleClickRow(row.original)">
 								<TableCell
-									v-for="cell in row.getVisibleCells()"
+									v-for="(cell, index) in row.getVisibleCells()"
 									:key="cell.id"
-									:class="small_padding ? 'py-1.5 px-2' : ''">
+									class="p-2"
+									:class="[
+										index === 0 && 'rounded-l-xl',
+										index === row.getVisibleCells().length - 1 &&
+											'rounded-r-xl',
+									]">
 									<FlexRender
 										v-if="!cell.column.columnDef.enableHiding"
 										:render="cell.column.columnDef.cell"

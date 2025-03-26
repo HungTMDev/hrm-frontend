@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import Tuning from '@/assets/icons/Outline/Tuning.svg';
 import UserPlus from '@/assets/icons/Outline/User Plus.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
@@ -9,7 +10,6 @@ import DataTable from '@/components/datatable/DataTable.vue';
 import Button from '@/components/ui/button/Button.vue';
 import type { Employee } from '@/types';
 import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
-import { Search } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { employeeColumn } from './employee.column';
 import EmployeeDialog from './EmployeeDialog.vue';
@@ -96,7 +96,10 @@ const table = useVueTable({
 			<Title>Employees</Title>
 		</div>
 		<div class="flex gap-4 items-center my-4">
-			<InputWithIcon class="py-2 flex-1" :icon="Search" placeholder="Search emloyee..." />
+			<InputWithIcon
+				class="py-2 flex-1 rounded-full"
+				:icon="Magnifer"
+				placeholder="Search emloyee..." />
 			<Button variant="outline" class="w-fit rounded-full">
 				<IconFromSvg :icon="Tuning" /> Filter
 			</Button>

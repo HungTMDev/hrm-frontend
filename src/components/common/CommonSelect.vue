@@ -36,7 +36,7 @@ const handleSelect = (value: any) => {
 		:model-value="modelValue"
 		@update:model-value="handleSelect"
 		:multiple="multiple">
-		<SelectTrigger :class="cn('w-[180px] focus:ring-0 focus:ring-offset-0', props.class)">
+		<SelectTrigger :class="cn('w-[180px] focus:ring-0 focus:ring-offset-0 ', props.class)">
 			<SelectValue :placeholder="'Select...'" />
 		</SelectTrigger>
 		<SelectContent>

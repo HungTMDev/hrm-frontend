@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
 import Description from '@/components/common/Description.vue';
 import Title from '@/components/common/Title.vue';
 import Button from '@/components/ui/button/Button.vue';
 import router from '@/routers';
-import { ChevronLeft } from 'lucide-vue-next';
-import PinInput from './PinInput.vue';
 import { onUnmounted, ref } from 'vue';
+import PinInput from './PinInput.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 
 const otp = ref('');
 const countdown = ref(0);
@@ -52,9 +53,8 @@ const navigateResetPasword = () => {
 </script>
 <template>
 	<div>
-		<Button @click="navigateBack" variant="link" class="text-blue-500 items-center p-0">
-			<ChevronLeft />
-			Back
+		<Button @click="navigateBack" variant="ghost" class="text-slate-600 items-center p-2">
+			<IconFromSvg :icon="Left" />
 		</Button>
 	</div>
 	<div class="flex flex-col items-center gap-4 mt-4">

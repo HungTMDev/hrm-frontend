@@ -7,11 +7,12 @@ import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import Label from '@/components/ui/label/Label.vue';
 import router from '@/routers';
 import { toTypedSchema } from '@vee-validate/zod';
-import { Lock, Mail } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { loginSchema } from './LoginSchema';
 import { ref } from 'vue';
 import CallApiButton from '@/components/common/CallApiButton.vue';
+import Letter from '@/assets/icons/Outline/Letter.svg';
+import Lock from '@/assets/icons/Outline/Lock.svg';
 
 const navigateForgotPassword = () => {
 	router.push('/auth/forgot-password');
@@ -36,15 +37,16 @@ const onSubmit = handleSubmit((values) => {
 </script>
 <template>
 	<div class="flex flex-col items-center gap-4">
-		<Title>Welcome to Lutech!</Title>
-		<Description class="self-start">Login with your email and password.</Description>
+		<Title class="text-2xl">Welcome to Lutech!</Title>
+		<Description class="self-start text-sm">Login with your email and password.</Description>
 
 		<form @submit="onSubmit" class="w-full">
 			<FormInput
 				name="email"
 				label="Email"
 				class="w-full"
-				:icon="Mail"
+				:icon="Letter"
+				:required="true"
 				placeholder="Enter your email address" />
 			<FormInput
 				type="password"
@@ -52,6 +54,7 @@ const onSubmit = handleSubmit((values) => {
 				label="Password"
 				class="w-full"
 				:icon="Lock"
+				:required="true"
 				placeholder="Enter your password" />
 
 			<div class="self-start w-full flex justify-between px-2">

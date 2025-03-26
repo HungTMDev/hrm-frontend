@@ -4,13 +4,18 @@ import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
 import { recruitmentRequestColumn } from '@/components/recruitments/recruitment-request.column';
-import RecruitmentFilter from '@/components/recruitments/RecruitmentFilter.vue';
 import RecruitmentSheet from '@/components/recruitments/RecruitmentSheet.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
 import type { RecruitmentRequest } from '@/types';
 import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
+import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building from '@/assets/icons/Outline/Buildings.svg';
+import Case from '@/assets/icons/Outline/Case.svg';
+import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
 import { ref } from 'vue';
+import FilterPopover from '@/components/common/FilterPopover.vue';
 
 const data: RecruitmentRequest[] = [
 	{
@@ -112,6 +117,7 @@ const data: RecruitmentRequest[] = [
 ];
 
 const isOpenSheet = ref(false);
+const dataSended = ref<RecruitmentRequest>();
 
 const table = useVueTable({
 	data,
@@ -126,22 +132,133 @@ const table = useVueTable({
 });
 
 const handleOpenSheet = (data: any) => {
+	dataSended.value = data;
 	isOpenSheet.value = true;
 };
 
 const handleCloseSheet = (open: boolean) => {
 	isOpenSheet.value = open;
 };
+
+const accordionItems = [
+	{
+		value: 'status',
+		title: 'Status',
+		items: [
+			{
+				label: 'To-do',
+				value: 'to-do',
+			},
+			{
+				label: 'Rejected',
+				value: 'rejected',
+			},
+			{
+				label: 'Approved',
+				value: 'approved',
+			},
+		],
+		icon: ChartSqare,
+	},
+	{
+		value: 'branch',
+		title: 'Branch',
+		items: [
+			{
+				label: 'Đà Nẵng',
+				value: 'dn',
+			},
+			{
+				label: 'Hà Nội',
+				value: 'hn',
+			},
+		],
+		icon: Building3,
+	},
+	{
+		value: 'department',
+		title: 'Department',
+		items: [
+			{
+				label: 'Design',
+				value: 'design',
+			},
+			{
+				label: 'Marketing',
+				value: 'marketing',
+			},
+			{
+				label: 'Product',
+				value: 'product',
+			},
+			{
+				label: 'Development',
+				value: 'development',
+			},
+			{
+				label: 'Back Office',
+				value: 'BO',
+			},
+			{
+				label: 'E-commerce',
+				value: 'ecommerce',
+			},
+		],
+		icon: Building,
+	},
+	{
+		value: 'employment_type',
+		title: 'Employment type',
+		items: [
+			{
+				label: 'Part-time',
+				value: 'part_time',
+			},
+			{
+				label: 'Full-time',
+				value: 'full_time',
+			},
+		],
+		icon: Case,
+	},
+	{
+		value: 'level',
+		title: 'Level',
+		items: [
+			{
+				label: 'Intern',
+				value: 'Intern',
+			},
+			{
+				label: 'Fresher',
+				value: 'Fresher',
+			},
+			{
+				label: 'Junior',
+				value: 'Junior',
+			},
+			{
+				label: 'Mid-Level',
+				value: 'Mid_Level',
+			},
+			{
+				label: 'Senior',
+				value: 'Senior',
+			},
+		],
+		icon: Chart2,
+	},
+];
 </script>
 <template>
 	<ContentWrapper class="flex gap-2 flex-col">
 		<Title>Recruitment requests</Title>
 		<div class="text-end">
-			<RecruitmentFilter />
+			<FilterPopover :list="accordionItems" />
 		</div>
 		<DataTable :table="table" @row:click="handleOpenSheet" />
 		<Separator class="mb-4" />
 		<DataTablePagination :table="table" />
 	</ContentWrapper>
-	<RecruitmentSheet :open="isOpenSheet" @update:open="handleCloseSheet" />
+	<RecruitmentSheet :data="dataSended" :open="isOpenSheet" @update:open="handleCloseSheet" />
 </template>

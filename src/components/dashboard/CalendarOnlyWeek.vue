@@ -27,7 +27,7 @@ const nextWeek = () => {
 </script>
 
 <template>
-	<Card class="p-4 w-full text-center border-none">
+	<Card class="p-4 w-full text-center shadow-none border-none">
 		<CardContent class="p-2">
 			<div class="flex justify-between items-center">
 				<h2 class="font-semibold">{{ format(selectedDate, 'MMMM d, yyyy') }}</h2>
@@ -47,7 +47,7 @@ const nextWeek = () => {
 				</div>
 			</div>
 
-			<div class="grid grid-cols-7 mt-2 gap-1 text-sm">
+			<div class="grid grid-cols-7 mt-2 gap-2 text-sm">
 				<span
 					v-for="day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']"
 					:key="day"
@@ -56,7 +56,7 @@ const nextWeek = () => {
 				</span>
 			</div>
 
-			<div class="grid grid-cols-7 mt-1 gap-1 place-items-center">
+			<div class="grid grid-cols-7 mt-1 gap-2 place-items-center">
 				<Button
 					v-for="day in weekDays"
 					:key="day.toDateString()"

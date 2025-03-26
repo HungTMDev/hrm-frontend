@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import Tuning from '@/assets/icons/Outline/Tuning.svg';
 import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
@@ -8,7 +9,6 @@ import DataTable from '@/components/datatable/DataTable.vue';
 import Button from '@/components/ui/button/Button.vue';
 import type { EmployeePayroll } from '@/types';
 import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
-import { Search } from 'lucide-vue-next';
 import { employeePayrollColumn } from './employee-payroll.column';
 
 const data: EmployeePayroll[] = [
@@ -48,7 +48,10 @@ const table = useVueTable({
 			<Button class="text-blue-500" variant="link"> View all</Button>
 		</div>
 		<div class="flex gap-4 items-center my-4">
-			<InputWithIcon class="py-2 flex-1" placeholder="Search employee" :icon="Search" />
+			<InputWithIcon
+				class="py-2 flex-1 rounded-full"
+				placeholder="Search employee"
+				:icon="Magnifer" />
 			<Button variant="outline" class="w-fit rounded-full">
 				<IconFromSvg :icon="Tuning" /> Filter
 			</Button>

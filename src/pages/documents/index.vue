@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
@@ -7,11 +8,13 @@ import DataTablePagination from '@/components/datatable/DataTablePagination.vue'
 import { documentsColumn } from '@/components/documents/documents.column';
 import Button from '@/components/ui/button/Button.vue';
 import { ROWS_PER_PAGE } from '@/constants';
+import { useCustomToast } from '@/lib/customToast';
 import type { Document } from '@/types';
 import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
-import { Search, SlidersHorizontal, Upload } from 'lucide-vue-next';
+import { SlidersHorizontal, Upload } from 'lucide-vue-next';
 import { onBeforeMount } from 'vue';
-import { toast } from 'vue-sonner';
+
+const { showToast } = useCustomToast();
 
 const data: Document[] = [
 	{
@@ -59,10 +62,10 @@ const data: Document[] = [
 ];
 
 const handleDownload = () => {
-	const loadingToast = toast.loading('Loading...');
+	const loadingToast = showToast({ message: 'Downloading...', type: 'loading' });
 	setTimeout(() => {
-		toast.dismiss(loadingToast);
-		toast.success('Success');
+		showToast({ message: 'Dismiss', type: 'dismiss' }, loadingToast);
+		showToast({ message: 'Download success!', type: 'success' });
 	}, 1000);
 };
 
@@ -83,7 +86,10 @@ onBeforeMount(() => {
 	<ContentWrapper>
 		<Title>Documents </Title>
 		<div class="flex gap-4 items-center my-4">
-			<InputWithIcon class="py-2 flex-1" :icon="Search" placeholder="Search document..." />
+			<InputWithIcon
+				class="py-2 flex-1 rounded-full"
+				:icon="Magnifer"
+				placeholder="Search document..." />
 			<Button variant="outline" class="w-fit rounded-full">
 				<SlidersHorizontal /> Filter
 			</Button>

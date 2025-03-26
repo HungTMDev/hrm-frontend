@@ -114,6 +114,13 @@ export default {
 					900: '#0f172a',
 					950: '#0b1120',
 				},
+				gray: {
+					50: '#f5f5f5',
+					100: '#f0f0f0',
+					200: '#bfbfbf',
+					300: '#8c8c8c',
+					400: '#595959',
+				},
 			},
 			keyframes: {
 				'accordion-down': {

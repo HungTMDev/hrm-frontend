@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
+import Lock from '@/assets/icons/Outline/Lock.svg';
 import Description from '@/components/common/Description.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Label from '@/components/ui/label/Label.vue';
 import router from '@/routers';
-import { ChevronLeft, Lock } from 'lucide-vue-next';
 
 const navigateBack = () => {
 	router.back();
@@ -17,9 +19,8 @@ const navigateEnterOTP = () => {
 </script>
 <template>
 	<div>
-		<Button @click="navigateBack" variant="link" class="text-blue-500 items-center p-0">
-			<ChevronLeft />
-			Back
+		<Button @click="navigateBack" variant="ghost" class="text-slate-600 items-center p-2">
+			<IconFromSvg :icon="Left" />
 		</Button>
 	</div>
 	<div class="flex flex-col items-center gap-4 mt-4">

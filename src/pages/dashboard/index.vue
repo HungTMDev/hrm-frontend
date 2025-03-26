@@ -20,7 +20,7 @@ onMounted(() => {
 });
 </script>
 <template>
-	<div class="grid gap-4 grid-cols-3 grid-rows-5">
+	<div class="grid gap-4 grid-cols-3 grid-rows-6">
 		<ContentWrapper>
 			<Overview
 				title="Total Employee"
@@ -57,8 +57,8 @@ onMounted(() => {
 				:icon="CalendarSearch" />
 		</ContentWrapper>
 
-		<ContentWrapper class="row-span-2"><AttendanceOverview /> </ContentWrapper>
-		<ContentWrapper class="col-span-2 row-span-3">
+		<ContentWrapper class="row-span-3"><AttendanceOverview /> </ContentWrapper>
+		<ContentWrapper class="col-span-2 row-span-4">
 			<ApprovalOverview :is-loading="isLoading" />
 		</ContentWrapper>
 		<ContentWrapper class="row-span-2">

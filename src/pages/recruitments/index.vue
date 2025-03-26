@@ -9,6 +9,11 @@ import RecruitmentRequestSmall from '@/components/recruitments/recruitment-reque
 import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { JOB_STATUS_STYLE } from '@/constants';
+import router from '@/routers';
+
+const handleNavigateToJobs = () => {
+	router.push('/recruitments/jobs');
+};
 </script>
 <template>
 	<div class="grid grid-cols-3 grid-rows-2 gap-4">
@@ -16,7 +21,9 @@ import { JOB_STATUS_STYLE } from '@/constants';
 		<ContentWrapper>
 			<div class="flex justify-between items-center">
 				<Title>Jobs</Title>
-				<Button variant="link" class="text-blue-500">View all</Button>
+				<Button variant="link" class="text-blue-500" @click="handleNavigateToJobs">
+					View all
+				</Button>
 			</div>
 			<Separator class="my-2" />
 			<div class="flex flex-col gap-4">

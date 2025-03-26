@@ -16,4 +16,24 @@ export interface FormFieldCommon {
 	label: string;
 	placeholder?: string;
 	class?: HTMLAttributes['class'];
+	icon?: any;
+	required?: boolean;
+}
+
+export interface FilterAccordion {
+	value: string;
+	title: string;
+	items: ComboboxType[];
+	icon: any;
+}
+
+export interface FilterData {
+	field: string;
+	filters: ComboboxType[];
+}
+
+export interface ActionGroupType {
+	label: string;
+	icon: any;
+	style: string;
 }

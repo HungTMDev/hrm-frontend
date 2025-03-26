@@ -2,7 +2,9 @@
 import { ref, type HTMLAttributes } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { cn } from '@/lib/utils';
-import { Eye, EyeClosed } from 'lucide-vue-next';
+import IconFromSvg from './IconFromSvg.vue';
+import Eye from '@/assets/icons/Outline/Eye.svg';
+import EyeClosed from '@/assets/icons/Outline/Eye Closed.svg';
 
 const props = defineProps<{
 	defaultValue?: string | number;
@@ -30,20 +32,20 @@ const handleShowPassword = () => {
 </script>
 
 <template>
-	<div :class="cn('flex gap-2 border p-3 rounded-full w-[450px] items-center', props.class)">
-		<span v-if="icon" class="text-gray-400"><component :is="icon" :size="18" /></span>
+	<div :class="cn('flex gap-2 border p-3 rounded-2xl w-[450px] items-center ', props.class)">
+		<span v-if="icon" class="text-gray-200"><IconFromSvg :icon="icon" /></span>
 		<input
 			:type="showPassword ? 'text' : type"
 			v-model="modelValue"
 			:placeholder="placeholder"
-			class="focus:outline-none placeholder:text-sm w-full text-sm"
+			class="focus:outline-none placeholder:text-sm placeholder:text-gray-200 w-full text-sm bg-[--backgorund]"
 			autocomplete="off" />
 		<button
 			type="button"
 			@click="handleShowPassword"
 			v-if="type === 'password'"
 			class="text-gray-300">
-			<EyeClosed v-if="!showPassword" :size="18" /><Eye v-else :size="18" />
+			<IconFromSvg :icon="EyeClosed" v-if="!showPassword" /><IconFromSvg v-else :icon="Eye" />
 		</button>
 	</div>
 </template>

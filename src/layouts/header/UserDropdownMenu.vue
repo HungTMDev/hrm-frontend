@@ -28,7 +28,7 @@ const handleLogout = () => {
 				<UserAvatar class="w-12 h-12" />
 				<div>
 					<p class="text-start text-base font-medium">Le Thi Linh Ly</p>
-					<p class="text-start text-sm font-normal">HR Manager</p>
+					<p class="text-start text-sm font-normal text-slate-600">HR Manager</p>
 				</div>
 				<IconFromSvg :icon="Down" />
 			</Button>

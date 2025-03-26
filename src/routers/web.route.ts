@@ -69,6 +69,16 @@ export const webRoutes: RouteType[] = [
 						component: () =>
 							import('@/pages/recruitments/recruitment-requests/index.vue'),
 					},
+					{
+						path: 'jobs',
+						name: 'Jobs',
+						component: () => import('@/pages/recruitments/jobs/index.vue'),
+					},
+					{
+						path: 'candidates',
+						name: 'Candidates',
+						component: () => import('@/pages/recruitments/candidates/index.vue'),
+					},
 				],
 			},
 			{

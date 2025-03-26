@@ -13,4 +13,7 @@ export class ZUtils {
 			.min(6, 'Password must be at least 6 characters.')
 			.max(50, 'Password must not exceed 50 characters.');
 	};
+	static email = () => {
+		return z.string().email({ message: 'The value is not a valid email address.' });
+	};
 }

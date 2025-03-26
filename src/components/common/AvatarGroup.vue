@@ -3,9 +3,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { computed } from 'vue';
 import UserAvatar from './UserAvatar.vue';
 
-const props = defineProps({
-	users: Array,
-	maxVisible: { type: Number, default: 3 },
+interface Prop {
+	users: any;
+	maxVisible: number;
+}
+
+const props = withDefaults(defineProps<Prop>(), {
+	maxVisible: 5,
 });
 
 const visibleUsers = computed(() => props.users?.slice(0, props.maxVisible));
@@ -28,7 +32,7 @@ const remainingCount = computed(() => props.users?.length! - props.maxVisible);
 		</div>
 		<div
 			v-if="remainingCount > 0"
-			class="w-10 h-10 grid place-items-center relative z-10 bg-gray-200 rounded-full text-sm">
+			class="w-10 h-10 grid place-items-center relative z-10 bg-slate-50 rounded-full text-sm">
 			+{{ remainingCount }}
 		</div>
 	</div>

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
-import { PanelRightClose, PanelRightOpen, Search } from 'lucide-vue-next';
+import { useAppStore } from '@/stores/app.store';
+import { PanelRightClose, PanelRightOpen } from 'lucide-vue-next';
 import NotificationPopover from './NotificationPopover.vue';
 import UserDropdownMenu from './UserDropdownMenu.vue';
-import { useAppStore } from '@/stores/app.store';
 
 const appStore = useAppStore();
 
@@ -19,7 +20,7 @@ const handleSidebar = () => {
 				<PanelRightOpen v-if="!appStore.isSmallSidebar" :size="18" />
 				<PanelRightClose v-else :size="18" />
 			</button>
-			<InputWithIcon :icon="Search" placeholder="Search..." />
+			<InputWithIcon :icon="Magnifer" placeholder="Search..." class="rounded-full" />
 		</div>
 
 		<div class="flex gap-4 items-center">

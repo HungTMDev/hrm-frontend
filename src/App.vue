@@ -3,7 +3,15 @@ import { Toaster } from 'vue-sonner';
 </script>
 
 <template>
-	<Toaster :rich-colors="true" position="top-right" />
+	<Toaster
+		position="bottom-right"
+		:toast-options="{
+			actionButtonStyle: {
+				backgroundColor: 'inherit',
+				color: '#0e6eed',
+				fontWeight: 500,
+			},
+		}" />
 	<router-view v-slot="{ Component }">
 		<transition name="slide">
 			<component :is="Component" />

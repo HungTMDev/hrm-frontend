@@ -9,7 +9,7 @@ const appStore = useAppStore();
 <template>
 	<aside
 		:class="[
-			'w-60 bg-white h-screen sticky top-0 left-0 transition-all duration-300 ease-linear',
+			'w-60 bg-white h-screen  sticky top-0 left-0 transition-all duration-200 ease-linear',
 			appStore.isSmallSidebar ? '!w-20' : '',
 		]">
 		<div class="h-20 grid place-items-center">

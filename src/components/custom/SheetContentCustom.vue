@@ -11,7 +11,7 @@ import {
 } from 'reka-ui';
 import { computed, type HTMLAttributes } from 'vue';
 import { sheetVariants, type SheetVariants } from '../ui/sheet';
-import IconFromSvg from './IconFromSvg.vue';
+import IconFromSvg from '../common/IconFromSvg.vue';
 import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
 
 interface SheetContentProps extends DialogContentProps {

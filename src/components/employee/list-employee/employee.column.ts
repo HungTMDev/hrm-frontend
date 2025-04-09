@@ -1,12 +1,41 @@
-import type { Employee } from '@/types';
+import type { ActionGroupType, Employee } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
-import EmployeeActionGroup from './EmployeeActionGroup.vue';
 import { h } from 'vue';
+import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
+import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
+import { Check, Minus } from 'lucide-vue-next';
 
 export const employeeColumn = (
-	handleEdit: () => void,
-	handleDelete: () => void,
+	handleOpenSheet: (payload?: Employee, view?: boolean) => void,
+	handleOpenAlert: (payload: Employee) => void,
 ): ColumnDef<Employee>[] => [
+	{
+		id: 'select',
+		header: ({ table }) =>
+			h(
+				Checkbox,
+				{
+					modelValue:
+						table.getIsAllPageRowsSelected() ||
+						(table.getIsSomePageRowsSelected() && 'indeterminate'),
+					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
+					ariaLabel: 'Select all',
+					class: 'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white border-gray-300',
+				},
+				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
+			),
+		cell: ({ row }) =>
+			h(Checkbox, {
+				modelValue: row.getIsSelected(),
+				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+				ariaLabel: 'Select row',
+				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+			}),
+		enableSorting: false,
+		enableHiding: false,
+	},
 	{
 		accessorKey: 'id',
 		header: 'ID',
@@ -28,8 +57,53 @@ export const employeeColumn = (
 		cell: ({ row }) => row.original.position,
 	},
 	{
+		accessorKey: 'department',
+		header: 'Department',
+		cell: ({ row }) => row.original.department,
+	},
+	{
+		accessorKey: 'status',
+		header: 'Status',
+		cell: ({ row }) => row.original.status,
+	},
+	{
 		accessorKey: 'action',
 		header: 'Action',
-		cell: () => h(EmployeeActionGroup, { onEdit: handleEdit, onDelete: handleDelete }),
+		cell: ({ row }) => {
+			const actions: ActionGroupType[] = [
+				{
+					label: 'View',
+					icon: Pen2,
+					style: '',
+				},
+				{
+					label: 'Edit',
+					icon: Pen2,
+					style: '',
+				},
+				{
+					label: 'Delete',
+					icon: Trash,
+					style: 'text-red-500 ',
+				},
+			];
+
+			const onView = () => {
+				handleOpenSheet(row.original, true);
+			};
+			const onEdit = () => {
+				handleOpenSheet(row.original);
+			};
+			const onDelete = () => {
+				handleOpenAlert(row.original);
+			};
+
+			return h(ActionGroupCommon, {
+				actions: actions,
+				onView,
+				onEdit,
+				onDelete,
+			});
+		},
 	},
 ];

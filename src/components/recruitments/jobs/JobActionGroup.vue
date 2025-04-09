@@ -14,12 +14,17 @@ import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 
 const emit = defineEmits<{
-	(e: 'edit', payload: any): void;
+	(e: 'view'): void;
+	(e: 'edit'): void;
 	(e: 'delete', payload: any): void;
 }>();
 
+const handleView = () => {
+	emit('view');
+};
+
 const handleEdit = () => {
-	emit('edit', undefined);
+	emit('edit');
 };
 
 const handleDelete = () => {
@@ -35,6 +40,10 @@ const handleDelete = () => {
 			</Button>
 		</DropdownMenuTrigger>
 		<DropdownMenuContent class="w-32 rounded-2xl" align="end">
+			<DropdownMenuItem class="rounded-2xl py-3" @click="handleView">
+				<IconFromSvg :icon="Pen2" />
+				<span>View</span>
+			</DropdownMenuItem>
 			<DropdownMenuItem class="rounded-2xl py-3" @click="handleEdit">
 				<IconFromSvg :icon="Pen2" />
 				<span>Edit</span>

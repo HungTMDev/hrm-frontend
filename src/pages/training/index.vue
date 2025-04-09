@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
-import RadarChart from '@/components/common/RadarChart.vue';
+import RadarChart from '@/components/common/chart/RadarChart.vue';
 import { CORE_CAPACITY_LABEL } from '@/constants';
 import type { ChartData, ChartOptions } from 'chart.js';
 import { ref } from 'vue';

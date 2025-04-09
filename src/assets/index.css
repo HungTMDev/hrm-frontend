@@ -3,6 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
+#nprogress .bar {
+	background: #0e6eed !important; /* Màu cam */
+}
+
 @layer base {
 	:root {
 		--background: 0 0% 100%;

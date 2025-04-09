@@ -7,6 +7,7 @@ import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
 import { documentsColumn } from '@/components/documents/documents.column';
 import Button from '@/components/ui/button/Button.vue';
+import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
 import { useCustomToast } from '@/lib/customToast';
 import type { Document } from '@/types';
@@ -99,6 +100,7 @@ onBeforeMount(() => {
 		</div>
 		<div class="flex flex-col gap-4">
 			<DataTable :table="table" />
+			<Separator />
 			<DataTablePagination :table="table" />
 		</div>
 	</ContentWrapper>

@@ -1,12 +1,5 @@
 <script lang="ts" setup>
 import { Button } from '@/components/ui/button';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
 
 import {
 	Pagination,
@@ -18,7 +11,6 @@ import {
 	PaginationNext,
 	PaginationPrev,
 } from '@/components/ui/pagination';
-import { ROWS_PER_PAGE } from '@/constants';
 import type { Table } from '@tanstack/vue-table';
 
 interface DataTablePaginationProps {

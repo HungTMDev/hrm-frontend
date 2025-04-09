@@ -1,17 +1,19 @@
+import File from '@/assets/icons/Outline/File.svg';
 import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import CommonCombobox from '@/components/common/CommonCombobox.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { candidateStages } from '@/constants';
 import type { ActionGroupType, Candidate } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { Check, Copy, Minus } from 'lucide-vue-next';
+import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 
 export const candidateColumn = (
-	handleOpenSheet: ((payload: any) => void) | undefined,
-	handleOpenAlert: ((payload: any) => void) | undefined,
+	handleOpenSheet: (payload?: Candidate, view?: boolean) => void,
+	handleOpenAlert: (payload: any) => void,
 ): ColumnDef<Candidate>[] => [
 	{
 		id: 'select',
@@ -70,9 +72,9 @@ export const candidateColumn = (
 				{
 					href: row.original.cv,
 					target: '_blank',
-					class: 'text-blue-500 px-2 py-1 bg-blue-50 rounded-xl flex items-center justify-around',
+					class: 'text-blue-500 p-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center',
 				},
-				[h(Copy, { size: 16 }), 'CV'],
+				[h(IconFromSvg, { icon: File }), 'CV'],
 			);
 		},
 		enableHiding: false,
@@ -96,6 +98,11 @@ export const candidateColumn = (
 		cell: ({ row }) => {
 			const actions: ActionGroupType[] = [
 				{
+					label: 'View',
+					icon: Pen2,
+					style: '',
+				},
+				{
 					label: 'Edit',
 					icon: Pen2,
 					style: '',
@@ -107,11 +114,23 @@ export const candidateColumn = (
 				},
 			];
 
+			const onView = () => {
+				handleOpenSheet(row.original, true);
+			};
+
+			const onEdit = () => {
+				handleOpenSheet(row.original);
+			};
+
+			const onDelete = () => {
+				handleOpenAlert(row.original);
+			};
+
 			return h(ActionGroupCommon, {
 				actions: actions,
-				data: row.original,
-				onEdit: handleOpenSheet,
-				onDelete: handleOpenAlert,
+				onView,
+				onEdit,
+				onDelete,
 			});
 		},
 	},

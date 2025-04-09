@@ -17,11 +17,17 @@ interface Prop extends FormFieldCommon {
 
 const props = defineProps<Prop>();
 
+const emit = defineEmits<{
+	(e: 'update:value', payload: { fieldName: string; data: string | undefined }): void;
+}>();
+
 const placeholder = ref();
 const value = ref<DateValue>();
 const isOpen = ref(false);
 
-const handlePick = () => {};
+const handlePick = (fieldName: string) => {
+	emit('update:value', { fieldName, data: value.value?.toString() });
+};
 
 const handleOpen = (open: boolean) => {
 	isOpen.value = open;
@@ -29,7 +35,7 @@ const handleOpen = (open: boolean) => {
 </script>
 
 <template>
-	<FormField name="dob">
+	<FormField v-slot="{ errors, field }" :name="name">
 		<FormItem class="flex flex-col">
 			<FormLabel>{{ label }}</FormLabel>
 			<Popover :open="isOpen" @update:open="handleOpen">
@@ -41,6 +47,7 @@ const handleOpen = (open: boolean) => {
 								cn(
 									'w-[240px] gap-3 ps-3 px-2 py-1.5 h-auto text-start font-normal rounded-2xl border justify-start focus:border-blue-200',
 									!value && 'text-muted-foreground',
+									errors.length > 0 && 'border-destructive',
 									props.class,
 								)
 							">
@@ -69,7 +76,7 @@ const handleOpen = (open: boolean) => {
 						v-model="value"
 						calendar-label="Date of birth"
 						initial-focus
-						@update:model-value="handlePick" />
+						@update:model-value="handlePick(field.name)" />
 				</PopoverContent>
 			</Popover>
 			<FormMessage />

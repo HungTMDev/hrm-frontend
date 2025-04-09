@@ -3,6 +3,8 @@ export interface Employee {
 	name: string;
 	email: string;
 	position: string;
+	department: string;
+	status: string;
 }
 
 export interface EmployeePayroll {

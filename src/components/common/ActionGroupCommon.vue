@@ -13,21 +13,20 @@ import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import type { ActionGroupType } from '@/types';
 
 const props = defineProps<{
-	data?: any;
 	actions: ActionGroupType[];
 }>();
 
 const emit = defineEmits();
 
 const handleAction = (action: ActionGroupType) => {
-	emit(action.label.toLowerCase(), props.data);
+	emit(action.label.toLowerCase());
 };
 </script>
 
 <template>
 	<DropdownMenu>
 		<DropdownMenuTrigger as-child>
-			<Button variant="ghost" class="p-2">
+			<Button variant="ghost" class="p-0 h-fit">
 				<IconFromSvg :icon="MenuDots" class="rotate-90" />
 			</Button>
 		</DropdownMenuTrigger>

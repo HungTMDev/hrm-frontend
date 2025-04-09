@@ -64,3 +64,79 @@ export const MANAGEMENT_CAPACITY_LABEL = [
 	['Nhạy bén'],
 	['Tinh thần khởi nghiệp'],
 ];
+
+export enum Gender {
+	male,
+	female,
+}
+
+export const genderCombobox = Object.keys(Gender)
+	.filter((key) => isNaN(Number(key)))
+	.map((key) => ({
+		label: key.charAt(0).toUpperCase() + key.slice(1),
+		value: Gender[key as keyof typeof Gender].toString(),
+	}));
+
+export const JOB_LEVEL = [
+	{
+		label: 'Intern',
+		value: 'Intern',
+	},
+	{
+		label: 'Junior',
+		value: 'Junior',
+	},
+	{
+		label: 'Mid',
+		value: 'Mid',
+	},
+	{
+		label: 'Senior',
+		value: 'Senior',
+	},
+];
+
+export const DEPARTMENTS = [
+	{
+		label: 'Design',
+		value: 'Design',
+	},
+	{
+		label: 'Development',
+		value: 'Development',
+	},
+	{
+		label: 'Marketing',
+		value: 'Marketing',
+	},
+	{
+		label: 'Product',
+		value: 'Product',
+	},
+];
+
+export const EMPLOYMENT_TYPE = [
+	{
+		label: 'Full-time',
+		value: 'Full-time',
+	},
+	{
+		label: 'Part-time',
+		value: 'Part-time',
+	},
+	{
+		label: 'Freelance',
+		value: 'Freelance',
+	},
+];
+
+export const EDUCATION_LEVEL = [
+	{
+		label: 'University',
+		value: 'University',
+	},
+	{
+		label: 'College',
+		value: 'College',
+	},
+];

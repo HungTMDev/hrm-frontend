@@ -54,6 +54,7 @@ const handleReset = () => {
 
 <template>
 	<Combobox
+		:model-value="disableColumns"
 		:open="isOpen"
 		:multiple="true"
 		@update:model-value="handleSelect"
@@ -66,7 +67,7 @@ const handleReset = () => {
 			</ComboboxTrigger>
 		</ComboboxAnchor>
 
-		<ComboboxList align="end" :side-offset="-42" class="rounded-2xl w-80 p-4">
+		<ComboboxList align="end" :side-offset="-42" class="rounded-2xl border-none w-80 p-4">
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-2"><IconFromSvg :icon="Sort" /> Display</div>
 				<Button class="h-auto p-0" variant="ghost" @click="handleClose"

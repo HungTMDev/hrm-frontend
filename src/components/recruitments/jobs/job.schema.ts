@@ -4,7 +4,7 @@ export const jobSchema = z.object({
 	jobName: z.string(),
 	jobStatus: z.string().min(1, 'Job status is required'),
 	department: z.string().min(1, 'Department is required'),
-	level: z.string().min(1, 'Level is required'),
+	level: z.array(z.string()).min(1, 'Level is required'),
 	quantity: z.coerce
 		.number()
 		.min(1, 'Quantity must be at least 1')
@@ -14,13 +14,9 @@ export const jobSchema = z.object({
 	branch: z.string().min(1, 'Branch is required'),
 	role: z.string().min(1, 'Role is required'),
 	employmentType: z.string().min(1, 'Employment type is required'),
-	expectedClosingDate: z
-		.string()
-		.optional()
-		.refine(
-			(date) => !date || !isNaN(Date.parse(date)),
-			'Invalid date format (expected: YYYY-MM-DD)',
-		),
+	expectedClosingDate: z.string(),
 	workExperience: z.string().min(1, 'Work experience is required'),
 	appearance: z.string().optional(),
+	jobDesc: z.string(),
+	requiredSkill: z.array(z.string()),
 });

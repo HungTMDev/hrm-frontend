@@ -70,14 +70,17 @@ const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 const openSheet = ref(false);
 const openAlert = ref(false);
-const dataSended = ref();
+const isView = ref(false);
+const dataSended = ref<Candidate>();
 
-const handleOpenSheet = (payload?: any) => {
+const handleOpenSheet = (payload?: any, view?: boolean) => {
+	isView.value = view || false;
 	dataSended.value = payload;
 	openSheet.value = true;
 };
 
 const handleCloseSheet = (open: boolean) => {
+	isView.value = false;
 	dataSended.value = undefined;
 	openSheet.value = open;
 };
@@ -148,7 +151,12 @@ const handleDelete = () => {
 			<DataTablePagination :table="table" />
 		</div>
 	</ContentWrapper>
-	<CandidateSheet :data="dataSended" :open="openSheet" @update:open="handleCloseSheet" />
+	<CandidateSheet
+		:data="dataSended"
+		:open="openSheet"
+		@update:open="handleCloseSheet"
+		:is-view="isView"
+		@edit="isView = false" />
 	<AlertPopup
 		:open="openAlert"
 		@update:open="handleCloseAlert"

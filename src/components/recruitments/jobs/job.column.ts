@@ -7,7 +7,10 @@ import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 import JobActionGroup from './JobActionGroup.vue';
 
-export const jobColumn = (handleOpenAlert: (payload: any) => void): ColumnDef<Job>[] => [
+export const jobColumn = (
+	handleOpenSheet: (payload?: Job, view?: boolean) => void,
+	handleOpenAlert: (payload: Job) => void,
+): ColumnDef<Job>[] => [
 	{
 		id: 'select',
 		header: ({ table }) =>
@@ -72,9 +75,24 @@ export const jobColumn = (handleOpenAlert: (payload: any) => void): ColumnDef<Jo
 	{
 		accessorKey: 'action',
 		header: 'Action',
-		cell: () =>
-			h(JobActionGroup, {
-				onDelete: handleOpenAlert,
-			}),
+		cell: ({ row }) => {
+			const onView = () => {
+				handleOpenSheet(row.original, true);
+			};
+
+			const onEdit = () => {
+				handleOpenSheet(row.original);
+			};
+
+			const onDelete = () => {
+				handleOpenAlert(row.original);
+			};
+
+			return h(JobActionGroup, {
+				onDelete,
+				onView,
+				onEdit,
+			});
+		},
 	},
 ];

@@ -20,26 +20,23 @@ import CupStar from '@/assets/icons/Outline/Cup Star.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import Button from '@/components/ui/button/Button.vue';
-
-const props = defineProps<{
-	step: number;
-}>();
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 
 const emit = defineEmits<{
-	(e: 'update:step', payload: number): void;
 	(e: 'openAlert', payload: any): void;
+	(e: 'edit'): void;
 }>();
-
-const handleNext = () => {
-	emit('update:step', props.step + 1);
-};
 
 const openAlert = () => {
 	emit('openAlert', undefined);
 };
+
+const onEdit = () => {
+	emit('edit');
+};
 </script>
 <template>
-	<div class="text-sm">
+	<ScrollArea class="text-sm flex-1 pr-3">
 		<SheetTitle class="text-[28px] font-semibold">UI/UX Designer</SheetTitle>
 		<SheetDescription> </SheetDescription>
 
@@ -151,20 +148,19 @@ const openAlert = () => {
 				<li>Proficiency in design software like Adobe XD and Figma</li>
 			</ul>
 		</div>
-
-		<div class="flex justify-end gap-2">
-			<Button
-				class="rounded-2xl h-auto px-7 py-3.5 text-blue-500 bg-blue-50 hover:bg-blue-100"
-				@click="handleNext">
-				<IconFromSvg :icon="Pen2" />
-				Edit
-			</Button>
-			<Button
-				class="rounded-2xl h-auto px-5 py-3.5 text-red-500 bg-red-50 hover:bg-red-100"
-				@click="openAlert">
-				<IconFromSvg :icon="Trash" />
-				Delete
-			</Button>
-		</div>
+	</ScrollArea>
+	<div class="flex justify-end gap-2">
+		<Button
+			class="rounded-2xl h-auto px-7 py-3.5 text-blue-500 bg-blue-50 hover:bg-blue-100"
+			@click="onEdit">
+			<IconFromSvg :icon="Pen2" />
+			Edit
+		</Button>
+		<Button
+			class="rounded-2xl h-auto px-5 py-3.5 text-red-500 bg-red-50 hover:bg-red-100"
+			@click="openAlert">
+			<IconFromSvg :icon="Trash" />
+			Delete
+		</Button>
 	</div>
 </template>

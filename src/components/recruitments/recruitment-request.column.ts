@@ -1,8 +1,7 @@
+import { APPROVAL_STATUS_STYLE } from '@/constants';
 import type { RecruitmentRequest } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
-import Badge from '../ui/badge/Badge.vue';
-import { APPROVAL_STATUS_STYLE } from '@/constants';
 import StatusTag from '../common/StatusTag.vue';
 
 export const recruitmentRequestColumn = (): ColumnDef<RecruitmentRequest>[] => [

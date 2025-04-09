@@ -20,7 +20,10 @@ const handleSidebar = () => {
 				<PanelRightOpen v-if="!appStore.isSmallSidebar" :size="18" />
 				<PanelRightClose v-else :size="18" />
 			</button>
-			<InputWithIcon :icon="Magnifer" placeholder="Search..." class="rounded-full" />
+			<InputWithIcon
+				:icon="Magnifer"
+				placeholder="Search..."
+				class="rounded-full w-[450px]" />
 		</div>
 
 		<div class="flex gap-4 items-center">

@@ -41,8 +41,8 @@ const handleConfirm = () => {
 				<AlertDialogTitle class="text-base text-center">{{
 					title ? title : 'Are you sure you want to delete?'
 				}}</AlertDialogTitle>
-				<AlertDialogDescription v-if="description" class="text-sm text-slate-600">
-					{{ description }}</AlertDialogDescription
+				<AlertDialogDescription class="text-sm text-slate-600">
+					{{ description || '' }}</AlertDialogDescription
 				>
 			</AlertDialogHeader>
 			<AlertDialogFooter class="w-full flex mt-4">

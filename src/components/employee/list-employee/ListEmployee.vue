@@ -13,6 +13,7 @@ import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { ref } from 'vue';
 import { employeeColumn } from './employee.column';
 import EmployeeDialog from './EmployeeDialog.vue';
+import router from '@/routers';
 
 const data: Employee[] = [
 	{
@@ -20,48 +21,64 @@ const data: Employee[] = [
 		name: 'Trần Song Quynh',
 		email: 'songquynh@lutech.ltd',
 		position: 'UI/UX Designer',
+		department: 'Design',
+		status: 'Full-time',
 	},
 	{
 		id: 351614,
 		name: 'Nguyễn Đức Phát',
 		email: 'ducphat@lutech.ltd',
 		position: 'UI/UX Designer',
+		department: 'Design',
+		status: 'Full-time',
 	},
 	{
 		id: 351615,
 		name: 'Trịnh Minh Hưng',
 		email: 'minhhung@lutech.ltd',
 		position: 'Back-end Developer',
+		department: 'Design',
+		status: 'Full-time',
 	},
 	{
 		id: 351616,
 		name: 'Ngô Công Linh',
 		email: 'conglinh@lutech.ltd',
 		position: 'Android Developer',
+		department: 'Design',
+		status: 'Full-time',
 	},
 	{
 		id: 351617,
 		name: 'Huỳnh Minh Huy',
 		email: 'minhhuy@lutech.ltd',
 		position: 'Graphic Designer',
+		department: 'Design',
+		status: 'Full-time',
 	},
 	{
 		id: 351618,
 		name: 'Lê Tất Tuấn',
 		email: 'tattuan@lutech.ltd',
 		position: 'Back-end Developer',
+		department: 'Design',
+		status: 'Full-time',
 	},
 	{
 		id: 351619,
 		name: 'Nguyễn Thanh Long',
 		email: 'thanhlong@lutech.ltd',
 		position: 'Product Owner',
+		department: 'Design',
+		status: 'Full-time',
 	},
 	{
 		id: 351620,
 		name: 'Lê Quang Phúc',
 		email: 'quangphuc@lutech.ltd',
 		position: 'Graphic Designer',
+		department: 'Design',
+		status: 'Full-time',
 	},
 ];
 
@@ -89,11 +106,16 @@ const table = useVueTable({
 	columns: employeeColumn(handleEdit, handleDelete),
 	getCoreRowModel: getCoreRowModel(),
 });
+
+const handleNavigate = () => {
+	router.push('/employees/all-employee');
+};
 </script>
 <template>
 	<div>
-		<div>
+		<div class="flex justify-between items-center">
 			<Title>Employees</Title>
+			<Button variant="link" class="text-blue-500" @click="handleNavigate">View all</Button>
 		</div>
 		<div class="flex gap-4 items-center my-4">
 			<InputWithIcon

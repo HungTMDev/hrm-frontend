@@ -42,7 +42,7 @@ const handleOpen = (isOpen: boolean) => {
 
 <template>
 	<Sheet :open="open" @update:open="handleOpen">
-		<SheetContentCustom class="rounded-l-3xl sm:max-w-[660px] p-8 flex flex-col text-[#475569]">
+		<SheetContentCustom class="rounded-l-3xl sm:max-w-[660px] p-8 flex flex-col text-slate-600">
 			<SheetHeader>
 				<SheetTitle class="text-[28px] font-semibold">{{
 					data?.position || ''

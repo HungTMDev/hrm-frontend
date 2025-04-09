@@ -120,31 +120,36 @@ const { showToast } = useCustomToast();
 
 const isOpenSheet = ref(false);
 const isOpenAlert = ref(false);
+const isView = ref(false);
 const rowSelection = ref({});
 const columnVisibility = ref<VisibilityState>({});
-const dataSend = ref<any>();
-
-const handleOpenSheet = () => {
-	isOpenSheet.value = true;
-};
+const dataSended = ref<Job>();
 
 const handleCloseSheet = (open: boolean) => {
+	dataSended.value = undefined;
+	isView.value = false;
 	isOpenSheet.value = open;
 };
 
 const handleOpenAlert = (payload: any) => {
-	dataSend.value = payload;
+	dataSended.value = payload;
 	isOpenAlert.value = true;
 };
 
 const handleCloseAlert = (open: boolean) => {
 	isOpenAlert.value = open;
-	dataSend.value = undefined;
+	dataSended.value = undefined;
+};
+
+const handleOpenSheet = (payload?: Job, view?: boolean) => {
+	isView.value = view || false;
+	dataSended.value = payload;
+	isOpenSheet.value = true;
 };
 
 const table = useVueTable({
 	data,
-	columns: jobColumn(handleOpenAlert),
+	columns: jobColumn(handleOpenSheet, handleOpenAlert),
 	getCoreRowModel: getCoreRowModel(),
 	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
@@ -318,6 +323,11 @@ const handleDelete = () => {
 			<DataTablePagination :table="table" />
 		</div>
 	</ContentWrapper>
-	<JobSheet :open="isOpenSheet" @update:open="handleCloseSheet" @open-alert="handleOpenAlert" />
+	<JobSheet
+		:open="isOpenSheet"
+		@update:open="handleCloseSheet"
+		@open-alert="handleOpenAlert"
+		:is-view="isView"
+		@edit="isView = false" />
 	<AlertPopup :open="isOpenAlert" @update:open="handleCloseAlert" @confirm="handleDelete" />
 </template>

@@ -34,7 +34,7 @@ const appStore = useAppStore();
 								v-slot="{ isActive }"
 								:to="item.path"
 								class="flex gap-2 p-3 items-center rounded-r-xl text-sm font-medium"
-								active-class="bg-blue-50 text-blue-500 border-l-2 border-blue-500">
+								active-class="bg-blue-50 text-blue-500 relative before:content-[''] before:absolute before:left-0 before:top-0 before:w-[3px] before:h-full before:bg-blue-500">
 								<component v-if="!isActive" :is="item.icon" fill="currentColor" />
 								<component v-else :is="item.activeIcon" fill="currentColor" />
 								<span v-if="!appStore.isSmallSidebar">{{ item.name }}</span>

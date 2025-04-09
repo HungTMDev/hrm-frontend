@@ -15,7 +15,8 @@ import {
 import { cn } from '@/lib/utils';
 import type { ComboboxType } from '@/types';
 import { Check, Search } from 'lucide-vue-next';
-import { ref, type HTMLAttributes } from 'vue';
+import { ref, watch, type HTMLAttributes } from 'vue';
+import ScrollArea from '../ui/scroll-area/ScrollArea.vue';
 import IconFromSvg from './IconFromSvg.vue';
 
 interface Prop {
@@ -26,6 +27,8 @@ interface Prop {
 	list: ComboboxType[];
 	isSearch?: boolean;
 	label: string;
+	icon?: any;
+	dropdownWidth?: number;
 }
 
 const props = defineProps<Prop>();
@@ -46,6 +49,13 @@ const handleSelect = (value: any) => {
 const handleOpen = (isOpen: boolean) => {
 	open.value = isOpen;
 };
+
+watch(
+	() => props.list,
+	() => {
+		selectedValue.value = undefined;
+	},
+);
 </script>
 
 <template>
@@ -61,19 +71,24 @@ const handleOpen = (isOpen: boolean) => {
 				<Button
 					v-if="multiple"
 					variant="outline"
-					class="justify-start text-sm text-slate-600">
-					{{
+					:class="cn('justify-start text-sm text-slate-600', props.class)">
+					<IconFromSvg v-if="icon" :icon="icon" />
+					<span class="flex-1 text-start">{{
 						selectedValue && (selectedValue as ComboboxType[]).length > 0
 							? `${(selectedValue as ComboboxType[]).length} selected`
-							: `Select ${label}`
-					}}
+							: label
+					}}</span>
+					<IconFromSvg
+						:icon="Down"
+						class="duration-200"
+						:class="open ? 'rotate-180' : 'rotate-0'" />
 				</Button>
 				<Button
 					v-else
 					variant="outline"
 					:class="cn('justify-between text-sm text-slate-600', props.class)">
-					{{ (selectedValue as ComboboxType)?.label ?? `Select ${label}` }}
-
+					<IconFromSvg v-if="icon" :icon="icon" />
+					{{ (selectedValue as ComboboxType)?.label ?? label }}
 					<IconFromSvg
 						:icon="Down"
 						class="duration-200"
@@ -82,7 +97,7 @@ const handleOpen = (isOpen: boolean) => {
 			</ComboboxTrigger>
 		</ComboboxAnchor>
 
-		<ComboboxList>
+		<ComboboxList class="rounded-xl">
 			<div v-if="isSearch" class="relative w-full max-w-sm items-center">
 				<ComboboxInput
 					class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
@@ -92,17 +107,28 @@ const handleOpen = (isOpen: boolean) => {
 				</span>
 			</div>
 
-			<ComboboxEmpty v-if="isSearch"> No framework found. </ComboboxEmpty>
-
-			<ComboboxGroup>
-				<ComboboxItem v-for="item in list" :key="item.value" :value="item">
-					{{ item.label }}
-
-					<ComboboxItemIndicator>
-						<Check :class="cn('ml-auto h-4 w-4 text-blue-500')" />
-					</ComboboxItemIndicator>
-				</ComboboxItem>
+			<ComboboxGroup
+				v-if="list.length <= 0"
+				class="min-h-10 grid place-items-center text-sm text-gray-300">
+				No data
 			</ComboboxGroup>
+			<ComboboxEmpty v-else-if="isSearch"> No framework found. </ComboboxEmpty>
+
+			<ScrollArea class="max-h-[300px] p-1 overflow-y-auto">
+				<ComboboxGroup v-if="list.length > 0">
+					<ComboboxItem
+						v-for="item in list"
+						:key="item.value"
+						:value="item"
+						class="rounded-xl">
+						{{ item.label }}
+
+						<ComboboxItemIndicator>
+							<Check :class="cn('ml-auto h-4 w-4 text-blue-500')" />
+						</ComboboxItemIndicator>
+					</ComboboxItem>
+				</ComboboxGroup>
+			</ScrollArea>
 		</ComboboxList>
 	</Combobox>
 </template>

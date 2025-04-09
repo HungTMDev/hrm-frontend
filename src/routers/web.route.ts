@@ -60,7 +60,7 @@ export const webRoutes: RouteType[] = [
 				children: [
 					{
 						path: '',
-						name: 'Overview',
+						name: 'Recruitments Overview',
 						component: () => import('@/pages/recruitments/index.vue'),
 					},
 					{
@@ -84,12 +84,39 @@ export const webRoutes: RouteType[] = [
 			{
 				path: '/employees',
 				name: 'Employees',
-				component: () => import('@/pages/employees/index.vue'),
+				children: [
+					{
+						path: '',
+						name: 'Overview',
+						component: () => import('@/pages/employees/index.vue'),
+					},
+					{
+						path: 'employee-overview',
+						name: 'Employee Overview',
+						component: () => import('@/pages/employees/employee-overview/index.vue'),
+					},
+					{
+						path: 'all-employee',
+						name: 'All Employee',
+						component: () => import('@/pages/employees/all-employee/index.vue'),
+					},
+				],
 			},
 			{
 				path: '/payroll',
 				name: 'Payroll',
-				component: () => import('@/pages/payroll/index.vue'),
+				children: [
+					{
+						path: '',
+						name: 'Payroll overview',
+						component: () => import('@/pages/payroll/index.vue'),
+					},
+					{
+						path: 'employee-payroll',
+						name: 'Employee payroll',
+						component: () => import('@/pages/payroll/employee-payroll/index.vue'),
+					},
+				],
 			},
 			{
 				path: '/training',

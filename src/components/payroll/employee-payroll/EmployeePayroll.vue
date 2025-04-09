@@ -10,6 +10,7 @@ import Button from '@/components/ui/button/Button.vue';
 import type { EmployeePayroll } from '@/types';
 import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { employeePayrollColumn } from './employee-payroll.column';
+import router from '@/routers';
 
 const data: EmployeePayroll[] = [
 	{
@@ -40,12 +41,16 @@ const table = useVueTable({
 	columns: employeePayrollColumn,
 	getCoreRowModel: getCoreRowModel(),
 });
+
+const handleNavigate = () => {
+	router.push('/payroll/employee-payroll');
+};
 </script>
 <template>
 	<div>
 		<div class="flex justify-between items-center">
 			<Title>Employee Payroll</Title>
-			<Button class="text-blue-500" variant="link"> View all</Button>
+			<Button class="text-blue-500" variant="link" @click="handleNavigate"> View all</Button>
 		</div>
 		<div class="flex gap-4 items-center my-4">
 			<InputWithIcon

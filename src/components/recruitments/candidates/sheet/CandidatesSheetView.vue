@@ -20,6 +20,20 @@ import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
 import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 import Button from '@/components/ui/button/Button.vue';
+import StatusTag from '@/components/common/StatusTag.vue';
+import type { Candidate } from '@/types';
+
+defineProps<{
+	data?: Candidate;
+}>();
+
+const emit = defineEmits<{
+	(e: 'edit'): void;
+}>();
+
+const handleEdit = () => {
+	emit('edit');
+};
 </script>
 <template>
 	<div class="flex-1 overflow-y-auto flex flex-col gap-4">
@@ -27,7 +41,12 @@ import Button from '@/components/ui/button/Button.vue';
 			<div class="flex gap-8 items-center">
 				<UserAvatar class="w-36 h-36" />
 				<div class="flex flex-col gap-2">
-					<SheetTitle class="text-[28px] font-semibold">Le Minh Tam</SheetTitle>
+					<SheetTitle class="text-[28px] font-semibold flex items-center gap-2"
+						>Le Minh Tam
+						<StatusTag
+							class="bg-blue-50 text-blue-500 hover:bg-blue-100"
+							status="Applied"
+					/></SheetTitle>
 					<SheetDescription class="text-base font-medium text-black">
 						Data Analyst
 					</SheetDescription>
@@ -134,7 +153,8 @@ import Button from '@/components/ui/button/Button.vue';
 		<Button
 			variant="outline"
 			class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-blue-500 bg-blue-50 text-blue-500 hover:bg-blue-100 border-none"
-			><IconFromSvg :icon="Pen2" />Edit
+			@click="handleEdit">
+			<IconFromSvg :icon="Pen2" />Edit
 		</Button>
 		<Button
 			class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100">

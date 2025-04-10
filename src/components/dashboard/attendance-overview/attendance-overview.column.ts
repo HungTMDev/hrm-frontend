@@ -1,5 +1,5 @@
 import StatusTag from '@/components/common/StatusTag.vue';
-import { ATTENDANCE_STATUS_STYLE } from '@/constants';
+import { STATUS_STYLE } from '@/constants';
 import type { AttendanceOverview } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
@@ -20,7 +20,7 @@ export const attendanceOverviewColumn: ColumnDef<AttendanceOverview>[] = [
 		header: 'Status',
 		cell: ({ row }) =>
 			h(StatusTag, {
-				class: [ATTENDANCE_STATUS_STYLE[row.original.status.toUpperCase()]],
+				class: [STATUS_STYLE[row.original.status.toUpperCase()]],
 				status: row.original.status,
 			}),
 	},

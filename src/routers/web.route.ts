@@ -100,6 +100,42 @@ export const webRoutes: RouteType[] = [
 						name: 'All Employee',
 						component: () => import('@/pages/employees/all-employee/index.vue'),
 					},
+					{
+						path: 'work-hours-management',
+						name: 'Work hours management',
+						children: [
+							{
+								path: '',
+								name: 'Work hours overview',
+								component: () =>
+									import('@/pages/employees/work-hours-management/index.vue'),
+							},
+							{
+								path: 'attendance-management',
+								name: 'Attendance management',
+								component: () =>
+									import(
+										'@/pages/employees/work-hours-management/attendance-management/index.vue'
+									),
+							},
+							{
+								path: 'leave-management',
+								name: 'Leave management',
+								component: () =>
+									import(
+										'@/pages/employees/work-hours-management/leave-management/index.vue'
+									),
+							},
+							{
+								path: 'overtime-management',
+								name: 'Overtime management',
+								component: () =>
+									import(
+										'@/pages/employees/work-hours-management/overtime-management/index.vue'
+									),
+							},
+						],
+					},
 				],
 			},
 			{

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Button } from '@/components/ui/button';
-
 import {
 	Pagination,
 	PaginationEllipsis,
@@ -12,15 +11,16 @@ import {
 	PaginationPrev,
 } from '@/components/ui/pagination';
 import type { Table } from '@tanstack/vue-table';
+import DoubleLeft from '@/assets/icons/Outline/Double Alt Arrow Left.svg';
+import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
+import DoubleRight from '@/assets/icons/Outline/Double Alt Arrow Right.svg';
+import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
+import IconFromSvg from '../common/IconFromSvg.vue';
 
 interface DataTablePaginationProps {
 	table: Table<any>;
 }
 const props = defineProps<DataTablePaginationProps>();
-
-const handleSelect = (value: any) => {
-	props.table.setPageSize(Number(value));
-};
 
 const handleUpdatePage = (page: number) => {
 	props.table.setPageIndex(page - 1);
@@ -33,30 +33,6 @@ const handleUpdatePage = (page: number) => {
 			Showing <span class="font-medium text-black">1 to 12 of 200</span> requests
 		</div>
 		<div class="flex items-center gap-2 flex-wrap space-x-6 lg:space-x-8">
-			<!-- <div class="flex items-center space-x-2">
-				<p class="text-sm font-medium">Rows per page</p>
-				<Select
-					:model-value="`${table.getState().pagination.pageSize}`"
-					@update:model-value="handleSelect">
-					<SelectTrigger class="h-8 w-[70px]">
-						<SelectValue :placeholder="`${table.getState().pagination.pageSize}`" />
-					</SelectTrigger>
-					<SelectContent side="top">
-						<SelectItem
-							v-for="pageSize in ROWS_PER_PAGE"
-							:key="pageSize"
-							:value="`${pageSize}`">
-							{{ pageSize }}
-						</SelectItem>
-					</SelectContent>
-				</Select>
-			</div>
-			<div
-				class="flex w-[100px] flex-wrap items-center justify-center text-sm font-medium !ml-0">
-				Page {{ table.getState().pagination.pageIndex + 1 }} of
-				{{ table.getPageCount() }}
-			</div> -->
-
 			<Pagination
 				v-slot="{ page }"
 				:items-per-page="table.getState().pagination.pageSize"
@@ -66,8 +42,12 @@ const handleUpdatePage = (page: number) => {
 				:default-page="table.getState().pagination.pageIndex + 1"
 				@update:page="handleUpdatePage">
 				<PaginationList v-slot="{ items }" class="flex items-center gap-1">
-					<PaginationFirst class="w-8 h-8 rounded-xl" />
-					<PaginationPrev class="w-8 h-8 rounded-xl" />
+					<PaginationFirst class="w-8 h-8 rounded-xl">
+						<IconFromSvg :icon="DoubleLeft" />
+					</PaginationFirst>
+					<PaginationPrev class="w-8 h-8 rounded-xl">
+						<IconFromSvg :icon="Left" />
+					</PaginationPrev>
 
 					<template v-for="(item, index) in items">
 						<PaginationListItem
@@ -87,8 +67,12 @@ const handleUpdatePage = (page: number) => {
 						<PaginationEllipsis v-else :key="item.type" :index="index" />
 					</template>
 
-					<PaginationNext class="w-8 h-8 rounded-xl" />
-					<PaginationLast class="w-8 h-8 rounded-xl" />
+					<PaginationNext class="w-8 h-8 rounded-xl">
+						<IconFromSvg :icon="Right" />
+					</PaginationNext>
+					<PaginationLast class="w-8 h-8 rounded-xl">
+						<IconFromSvg :icon="DoubleRight" />
+					</PaginationLast>
 				</PaginationList>
 			</Pagination>
 		</div>

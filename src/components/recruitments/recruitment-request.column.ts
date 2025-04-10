@@ -1,4 +1,4 @@
-import { APPROVAL_STATUS_STYLE } from '@/constants';
+import { STATUS_STYLE } from '@/constants';
 import type { RecruitmentRequest } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
@@ -35,7 +35,7 @@ export const recruitmentRequestColumn = (): ColumnDef<RecruitmentRequest>[] => [
 		header: 'Status',
 		cell: ({ row }) =>
 			h(StatusTag, {
-				class: [APPROVAL_STATUS_STYLE[row.original.status.toLocaleUpperCase()]],
+				class: [STATUS_STYLE[row.original.status]],
 				status: row.original.status,
 			}),
 	},

@@ -4,8 +4,8 @@ import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import Title from '@/components/common/Title.vue';
-import Candidates from '@/components/recruitments/candidates/candidates.vue';
-import RecruitmentRequestSmall from '@/components/recruitments/recruitment-request-small/RecruitmentRequestSmall.vue';
+import CandidatesOverview from '@/components/recruitments/candidates/CandidatesOverview.vue';
+import RecruitmentRequestOverview from '@/components/recruitments/RecruitmentRequestOverview.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { JOB_STATUS_STYLE } from '@/constants';
@@ -17,7 +17,7 @@ const handleNavigateToJobs = () => {
 </script>
 <template>
 	<div class="grid grid-cols-3 grid-rows-2 gap-4">
-		<ContentWrapper class="col-span-2"> <RecruitmentRequestSmall /></ContentWrapper>
+		<ContentWrapper class="col-span-2"> <RecruitmentRequestOverview /></ContentWrapper>
 		<ContentWrapper>
 			<div class="flex justify-between items-center">
 				<Title>Jobs</Title>
@@ -40,7 +40,7 @@ const handleNavigateToJobs = () => {
 				</div>
 			</div>
 		</ContentWrapper>
-		<ContentWrapper class="col-span-2"><Candidates /></ContentWrapper>
+		<ContentWrapper class="col-span-2"><CandidatesOverview /></ContentWrapper>
 		<ContentWrapper></ContentWrapper>
 	</div>
 </template>

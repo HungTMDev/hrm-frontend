@@ -38,19 +38,18 @@ import Title from '@/components/common/Title.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { genderCombobox } from '@/constants';
 import { useDefaultStore } from '@/stores/default.store';
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import type { ComboboxType } from '@/types';
 
 const defaultStore = useDefaultStore();
 
-const districtBornedList = ref<ComboboxType[]>([]);
-const currentDistrictList = ref<ComboboxType[]>([]);
-const wardBornedList = ref<ComboboxType[]>([]);
-const currentWardList = ref<ComboboxType[]>([]);
+const provinceList = ref<ComboboxType[]>([]);
+const districtList = ref<Record<string, ComboboxType[]>>({});
+const wardList = ref<Record<string, ComboboxType[]>>({});
 
 const formSchema = toTypedSchema(employeeSchema);
 
-const { handleSubmit, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue, values } = useForm({
 	validationSchema: formSchema,
 });
 
@@ -66,12 +65,9 @@ const handleSelectCity = async (payload: {
 	fieldName: any;
 	data: string | string[] | undefined;
 }) => {
-	if (payload.fieldName === 'cityBorned') {
-		districtBornedList.value = (await defaultStore.getDistrictByProvince(
-			payload.data as string,
-		)) as ComboboxType[];
-	} else {
-		currentDistrictList.value = (await defaultStore.getDistrictByProvince(
+	const keys = Object.keys(districtList.value);
+	if (!keys.includes(payload.data as string)) {
+		districtList.value[payload.data as string] = (await defaultStore.getDistrictByProvince(
 			payload.data as string,
 		)) as ComboboxType[];
 	}
@@ -83,12 +79,9 @@ const handleSelectDistrict = async (payload: {
 	fieldName: any;
 	data: string | string[] | undefined;
 }) => {
-	if (payload.fieldName === 'districtBorned') {
-		wardBornedList.value = (await defaultStore.getWardByDistrict(
-			payload.data as string,
-		)) as ComboboxType[];
-	} else {
-		currentWardList.value = (await defaultStore.getWardByDistrict(
+	const keys = Object.keys(wardList.value);
+	if (!keys.includes(payload.data as string)) {
+		wardList.value[payload.data as string] = (await defaultStore.getWardByDistrict(
 			payload.data as string,
 		)) as ComboboxType[];
 	}
@@ -99,6 +92,10 @@ const handleSelectDistrict = async (payload: {
 const handleSelectWard = (payload: { fieldName: any; data: string | string[] | undefined }) => {
 	setFieldValue(payload.fieldName, Number(payload.data));
 };
+
+onBeforeMount(async () => {
+	provinceList.value = (await defaultStore.getAllProvinces()) as ComboboxType[];
+});
 </script>
 <template>
 	<ScrollArea class="flex-1 pr-3">
@@ -258,7 +255,7 @@ const handleSelectWard = (payload: { fieldName: any; data: string | string[] | u
 					<FormSelect
 						name="cityBorned"
 						label="City or province"
-						:list="defaultStore.provinces"
+						:list="provinceList"
 						:icon="City"
 						:required="true"
 						placeholder="Select your city or province"
@@ -268,7 +265,7 @@ const handleSelectWard = (payload: { fieldName: any; data: string | string[] | u
 					<FormSelect
 						name="districtBorned"
 						label="Distrist"
-						:list="districtBornedList"
+						:list="districtList[String(values.cityBorned)]"
 						:icon="StreetMap"
 						:required="true"
 						placeholder="Select your district"
@@ -277,7 +274,7 @@ const handleSelectWard = (payload: { fieldName: any; data: string | string[] | u
 					<FormSelect
 						name="wardBorned"
 						label="Ward"
-						:list="wardBornedList"
+						:list="wardList[String(values.districtBorned)]"
 						:icon="MapPoint"
 						:required="true"
 						placeholder="Select your ward"
@@ -304,7 +301,7 @@ const handleSelectWard = (payload: { fieldName: any; data: string | string[] | u
 					<FormSelect
 						name="currentCity"
 						label="City or province"
-						:list="defaultStore.provinces"
+						:list="provinceList"
 						:icon="City"
 						:required="true"
 						placeholder="Select your city or province"
@@ -313,7 +310,7 @@ const handleSelectWard = (payload: { fieldName: any; data: string | string[] | u
 					<FormSelect
 						name="currentDistrict"
 						label="Distrist"
-						:list="currentDistrictList"
+						:list="districtList[String(values.currentCity)]"
 						:icon="StreetMap"
 						:required="true"
 						placeholder="Select your district"
@@ -322,7 +319,7 @@ const handleSelectWard = (payload: { fieldName: any; data: string | string[] | u
 					<FormSelect
 						name="currentWard"
 						label="Ward"
-						:list="currentWardList"
+						:list="wardList[String(values.currentDistrict)]"
 						:icon="MapPoint"
 						:required="true"
 						placeholder="Select your ward"

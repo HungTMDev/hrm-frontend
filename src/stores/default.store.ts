@@ -1,18 +1,14 @@
 import { PROVINCE_API } from '@/constants/api/provinces.api';
 import { useCustomToast } from '@/lib/customToast';
-import type { ComboboxType } from '@/types';
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
 export const useDefaultStore = defineStore('default-store', () => {
-	const provinces = ref<ComboboxType[]>([]);
-
 	const getAllProvinces = async () => {
 		try {
 			const response = await axios.get(PROVINCE_API.GET_PROVINCES);
 			const list = response.data.data.data;
-			provinces.value = list.map((item: any) => {
+			return list.map((item: any) => {
 				return {
 					label: item.name,
 					value: String(item.code),
@@ -76,7 +72,6 @@ export const useDefaultStore = defineStore('default-store', () => {
 	};
 
 	return {
-		provinces,
 		getAllProvinces,
 		getDistrictByProvince,
 		getWardByDistrict,

@@ -18,7 +18,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from '@/components/ui/sheet';
-import { APPROVAL_STATUS_STYLE } from '@/constants';
+import { STATUS_STYLE } from '@/constants';
 import type { RecruitmentRequest } from '@/types';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import StatusTag from '../common/StatusTag.vue';
@@ -58,9 +58,7 @@ const handleOpen = (isOpen: boolean) => {
 						</div>
 						<div class="col-span-2">
 							<StatusTag
-								:class="
-									APPROVAL_STATUS_STYLE[data?.status?.toLocaleUpperCase() || '']
-								"
+								:class="STATUS_STYLE[data?.status || '']"
 								:status="data?.status || ''" />
 						</div>
 					</div>

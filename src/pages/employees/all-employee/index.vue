@@ -1,30 +1,29 @@
 <script lang="ts" setup>
+import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Buildings from '@/assets/icons/Outline/Buildings.svg';
+import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
+import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import UserHands from '@/assets/icons/Outline/User Hands.svg';
+import UserPlus from '@/assets/icons/Outline/User Plus.svg';
+import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
+import FilterPopover from '@/components/common/FilterPopover.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
+import AllEmployeeSheet from '@/components/employee/all-employee/AllEmployeeSheet.vue';
 import { employeeColumn } from '@/components/employee/list-employee/employee.column';
 import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
 import { valueUpdater } from '@/lib/utils';
 import type { Employee, FilterAccordion } from '@/types';
-import UserPlus from '@/assets/icons/Outline/User Plus.svg';
 import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
-import { onBeforeMount, ref } from 'vue';
-import AllEmployeeSheet from '@/components/employee/all-employee/AllEmployeeSheet.vue';
-import AlertPopup from '@/components/common/AlertPopup.vue';
-import FilterPopover from '@/components/common/FilterPopover.vue';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
-import Buildings from '@/assets/icons/Outline/Buildings.svg';
-import UserHands from '@/assets/icons/Outline/User Hands.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
-import { useDefaultStore } from '@/stores/default.store';
+import { ref } from 'vue';
 
 const data: Employee[] = [
 	{
@@ -137,8 +136,6 @@ const filter: FilterAccordion[] = [
 	},
 ];
 
-const defaultStore = useDefaultStore();
-
 const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 
@@ -190,10 +187,6 @@ const handleCloseAlert = (open: boolean) => {
 	dataSended.value = undefined;
 	isOpenAlert.value = open;
 };
-
-onBeforeMount(async () => {
-	if (defaultStore.provinces.length === 0) await defaultStore.getAllProvinces();
-});
 </script>
 <template>
 	<ContentWrapper>

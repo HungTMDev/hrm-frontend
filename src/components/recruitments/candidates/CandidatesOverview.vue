@@ -59,9 +59,12 @@ const data: Candidate[] = [
 
 const columnVisibility = ref<VisibilityState>({});
 
+const handleOpenSheet = () => {};
+const handleOpenAlert = () => {};
+
 const table = useVueTable({
 	data,
-	columns: candidateColumn(undefined, undefined),
+	columns: candidateColumn(handleOpenSheet, handleOpenAlert),
 	getCoreRowModel: getCoreRowModel(),
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	state: {

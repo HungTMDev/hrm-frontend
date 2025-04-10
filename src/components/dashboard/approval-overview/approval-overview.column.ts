@@ -1,5 +1,5 @@
 import StatusTag from '@/components/common/StatusTag.vue';
-import { APPROVAL_STATUS_STYLE } from '@/constants';
+import { STATUS_STYLE } from '@/constants';
 import type { ApprovalOverview } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
@@ -30,7 +30,7 @@ export const approvalOverviewColumn: ColumnDef<ApprovalOverview>[] = [
 		header: 'Status',
 		cell: ({ row }) =>
 			h(StatusTag, {
-				class: [APPROVAL_STATUS_STYLE[row.original.status.toUpperCase()]],
+				class: [STATUS_STYLE[row.original.status]],
 				status: row.original.status,
 			}),
 	},

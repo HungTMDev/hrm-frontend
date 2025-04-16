@@ -1,0 +1,170 @@
+<script lang="ts" setup>
+import type { FormFieldCommon } from '@/types';
+import { FormField } from '../ui/form';
+import FormControl from '../ui/form/FormControl.vue';
+import FormItem from '../ui/form/FormItem.vue';
+import FormLabel from '../ui/form/FormLabel.vue';
+import FormErrorCustom from './FormErrorCustom.vue';
+import IconFromSvg from '../common/IconFromSvg.vue';
+import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
+import DangerCircle from '@/assets/icons/Outline/Danger Circle.svg';
+import Restart from '@/assets/icons/Outline/Restart.svg';
+import Close from '@/assets/icons/Outline/Close.svg';
+import CheckCircle from '@/assets/icons/Bold/Check Circle.svg';
+import { ref } from 'vue';
+import { useCustomToast } from '@/lib/customToast';
+import ProgressCircle from '../common/ProgressCircle.vue';
+import Button from '../ui/button/Button.vue';
+import UserAvatar from '../common/UserAvatar.vue';
+
+interface Prop extends FormFieldCommon {
+	type?: 'file' | 'photo';
+}
+defineProps<Prop>();
+
+const { showToast } = useCustomToast();
+
+const selectedFile = ref<any>(null);
+const uploadProgress = ref(0);
+const error = ref<any>();
+
+const handleFileUpload = (event: any) => {
+	error.value = undefined;
+	uploadProgress.value = 10;
+	const file = event.target.files[0];
+	processFile(file);
+};
+
+const processFile = (file: any) => {
+	if (!file) {
+		uploadProgress.value = 0;
+		return;
+	}
+	selectedFile.value = file;
+
+	const allowedTypes = [
+		'application/pdf',
+		'image/png',
+		'application/msword',
+		'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+	];
+	if (!allowedTypes.includes(file.type)) {
+		error.value = 1;
+		uploadProgress.value = 0;
+		showToast({
+			message: 'Invalid file type!',
+			type: 'error',
+		});
+		return;
+	}
+
+	if (file.size > 10 * 1024 * 1024) {
+		error.value = 1;
+		uploadProgress.value = 0;
+		showToast({
+			message: 'File size exceeds 10MB.',
+			type: 'error',
+		});
+		return;
+	}
+
+	const interval = setInterval(() => {
+		uploadProgress.value += 20;
+		if (uploadProgress.value >= 100) {
+			uploadProgress.value = 0;
+			clearInterval(interval);
+		}
+	}, 300);
+};
+
+const handleRemoveFile = () => {
+	selectedFile.value = null;
+	uploadProgress.value = 0;
+};
+
+const handleDrop = (event: DragEvent) => {
+	event.preventDefault();
+	error.value = undefined;
+	uploadProgress.value = 10;
+
+	const file = event.dataTransfer?.files[0];
+	processFile(file);
+};
+
+const handleDragOver = (event: DragEvent) => {
+	event.preventDefault();
+};
+
+const handleDragLeave = (event: DragEvent) => {
+	event.preventDefault();
+};
+</script>
+<template>
+	<FormField :name="name">
+		<FormItem class="flex flex-col gap-2">
+			<h6 class="text-sm font-medium">{{ label }}</h6>
+			<div v-if="error" class="flex gap-2 items-center px-4 py-2 bg-red-50 rounded-2xl">
+				<IconFromSvg :icon="DangerCircle" class="text-red-500" />
+				<div class="flex-1 flex flex-col gap-1">
+					<p class="text-sm text-black">{{ selectedFile?.name }}</p>
+					<p class="text-sm text-red-500">Failed</p>
+				</div>
+				<Button type="button" variant="ghost" class="p-0 hover:bg-red-50">
+					<IconFromSvg :icon="Restart" class="text-red-500" />
+				</Button>
+			</div>
+			<div
+				v-else-if="selectedFile && uploadProgress === 0"
+				class="flex gap-2 items-center px-4 py-2 rounded-2xl border">
+				<IconFromSvg :icon="CheckCircle" class="text-green-500" />
+				<UserAvatar v-if="type === 'photo'" class="w-10 h-10 rounded-xl" />
+				<p class="text-sm text-black flex-1">{{ selectedFile?.name }}</p>
+				<Button
+					type="button"
+					variant="ghost"
+					class="p-0 hover:bg-white"
+					@click="handleRemoveFile"
+					><IconFromSvg :icon="Close"
+				/></Button>
+			</div>
+			<div v-if="selectedFile && uploadProgress === 0" class="text-center !mt-0">or</div>
+			<div v-if="selectedFile && uploadProgress === 0" class="flex justify-center !mt-0">
+				<FormLabel class="w-fit hover:cursor-pointer !text-slate-600">
+					<div class="border rounded-2xl p-3">Choose new file</div>
+				</FormLabel>
+			</div>
+			<FormLabel
+				v-else
+				class="!mt-0 hover:cursor-pointer !text-slate-600"
+				@dragover="handleDragOver"
+				@dragleave="handleDragLeave"
+				@drop="handleDrop">
+				<div
+					class="border border-dashed h-36 rounded-2xl grid place-items-center hover:bg-slate-50 hover:border-blue-100">
+					<div v-if="selectedFile" class="flex flex-col items-center gap-2">
+						<ProgressCircle :progress="uploadProgress" />
+						<p class="text-center">Uploading {{ selectedFile?.name }}</p>
+						<p class="text-gray-200 text-xs font-normal">
+							<span>{{ Math.floor(selectedFile?.size / 1024) }}</span> KB -
+							<span>{{ uploadProgress }}</span
+							>% completed
+						</p>
+					</div>
+					<div v-else class="flex flex-col items-center gap-2">
+						<div class="w-10 h-10 bg-gray-50 rounded-xl grid place-items-center">
+							<IconFromSvg :icon="Upload" class="!w-6 !h-6" />
+						</div>
+						<p><span class="text-blue-500">Choose file</span>, or drag and drop</p>
+						<p class="text-gray-200 font-normal">
+							Max file size 10MB. Only .png, .pdf, .doc or .docx
+						</p>
+					</div>
+				</div>
+			</FormLabel>
+			<FormControl>
+				<input type="file" class="hidden" @change="handleFileUpload" />
+			</FormControl>
+			<FormErrorCustom />
+		</FormItem>
+	</FormField>
+</template>

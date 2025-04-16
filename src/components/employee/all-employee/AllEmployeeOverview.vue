@@ -8,12 +8,11 @@ import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import Button from '@/components/ui/button/Button.vue';
+import router from '@/routers';
 import type { Employee } from '@/types';
 import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { ref } from 'vue';
 import { employeeColumn } from './employee.column';
-import EmployeeDialog from './EmployeeDialog.vue';
-import router from '@/routers';
 
 const data: Employee[] = [
 	{
@@ -93,10 +92,6 @@ const handleDelete = () => {
 	openAlert.value = true;
 };
 
-const handleCloseDialog = (open: boolean) => {
-	openDialog.value = open;
-};
-
 const handleCloseAlert = (open: boolean) => {
 	openAlert.value = open;
 };
@@ -132,7 +127,6 @@ const handleNavigate = () => {
 		<div>
 			<DataTable :table="table" />
 		</div>
-		<EmployeeDialog :open="openDialog" @update:open="handleCloseDialog" />
 		<AlertPopup :open="openAlert" @update:open="handleCloseAlert" />
 	</div>
 </template>

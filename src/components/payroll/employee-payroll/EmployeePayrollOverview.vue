@@ -7,11 +7,10 @@ import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import Button from '@/components/ui/button/Button.vue';
-import type { EmployeePayroll } from '@/types';
-import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
-import { employeePayrollColumn } from './employee-payroll.column';
+import { formatCurrency } from '@/lib/utils';
 import router from '@/routers';
-
+import type { EmployeePayroll } from '@/types';
+import { getCoreRowModel, useVueTable, type ColumnDef } from '@tanstack/vue-table';
 const data: EmployeePayroll[] = [
 	{
 		name: 'Tran Song Quynh',
@@ -19,6 +18,8 @@ const data: EmployeePayroll[] = [
 		deduction: 0,
 		status: 'Pending',
 		salary: 80000000,
+		department: 'Design',
+		level: 'Junior',
 	},
 	{
 		name: 'Tran Song Quynh',
@@ -26,6 +27,8 @@ const data: EmployeePayroll[] = [
 		deduction: 1000000,
 		status: 'Pending',
 		salary: 8000000,
+		department: 'Design',
+		level: 'Junior',
 	},
 	{
 		name: 'Tran Song Quynh',
@@ -33,12 +36,47 @@ const data: EmployeePayroll[] = [
 		deduction: 2000000,
 		status: 'Pending',
 		salary: 80000000,
+		department: 'Design',
+		level: 'Junior',
+	},
+];
+
+const columns: ColumnDef<any>[] = [
+	{
+		accessorKey: 'name',
+		header: 'Name',
+		cell: ({ row }) => row.original.name,
+	},
+	{
+		accessorKey: 'role',
+		header: 'Role',
+		cell: ({ row }) => row.original.role,
+	},
+	{
+		accessorKey: 'salary',
+		header: 'Salary',
+		cell: ({ row }) => formatCurrency(row.original.salary),
+	},
+	{
+		accessorKey: 'deduction',
+		header: 'Deduction',
+		cell: ({ row }) => {
+			if (row.original.deduction === 0) {
+				return '-';
+			}
+			return formatCurrency(row.original.deduction);
+		},
+	},
+	{
+		accessorKey: 'status',
+		header: 'Status',
+		cell: ({ row }) => row.original.status,
 	},
 ];
 
 const table = useVueTable({
 	data,
-	columns: employeePayrollColumn,
+	columns,
 	getCoreRowModel: getCoreRowModel(),
 });
 

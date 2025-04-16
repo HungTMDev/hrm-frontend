@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import Title from '@/components/common/Title.vue';
-import Button from '@/components/ui/button/Button.vue';
-import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
-import { salaryDefinitionColumn } from './salary-definition.column';
-import type { SalaryDefinition } from '@/types';
 import DataTable from '@/components/datatable/DataTable.vue';
+import Button from '@/components/ui/button/Button.vue';
+import { formatCurrency } from '@/lib/utils';
+import { getCoreRowModel, useVueTable, type ColumnDef } from '@tanstack/vue-table';
 
-const data: SalaryDefinition[] = [
+const data = [
 	{
 		title: 'Android',
 		level: 'Jur',
@@ -29,9 +28,27 @@ const data: SalaryDefinition[] = [
 	},
 ];
 
+const columns: ColumnDef<any>[] = [
+	{
+		accessorKey: 'title',
+		header: 'Title',
+		cell: ({ row }) => row.original.title,
+	},
+	{
+		accessorKey: 'level',
+		header: 'Level',
+		cell: ({ row }) => row.original.level,
+	},
+	{
+		accessorKey: 'salary',
+		header: 'Salary',
+		cell: ({ row }) => formatCurrency(row.original.salary),
+	},
+];
+
 const table = useVueTable({
 	data,
-	columns: salaryDefinitionColumn,
+	columns,
 	getCoreRowModel: getCoreRowModel(),
 });
 </script>

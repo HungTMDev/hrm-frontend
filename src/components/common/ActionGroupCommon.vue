@@ -26,7 +26,7 @@ const handleAction = (action: ActionGroupType) => {
 <template>
 	<DropdownMenu>
 		<DropdownMenuTrigger as-child>
-			<Button variant="ghost" class="p-0 h-fit">
+			<Button variant="ghost" class="p-1 h-fit" @click.stop>
 				<IconFromSvg :icon="MenuDots" class="rotate-90" />
 			</Button>
 		</DropdownMenuTrigger>

@@ -123,27 +123,27 @@ const isOpenAlert = ref(false);
 const isView = ref(false);
 const rowSelection = ref({});
 const columnVisibility = ref<VisibilityState>({});
-const dataSended = ref<Job>();
+const dataSent = ref<Job>();
 
 const handleCloseSheet = (open: boolean) => {
-	dataSended.value = undefined;
+	dataSent.value = undefined;
 	isView.value = false;
 	isOpenSheet.value = open;
 };
 
 const handleOpenAlert = (payload: any) => {
-	dataSended.value = payload;
+	dataSent.value = payload;
 	isOpenAlert.value = true;
 };
 
 const handleCloseAlert = (open: boolean) => {
 	isOpenAlert.value = open;
-	dataSended.value = undefined;
+	dataSent.value = undefined;
 };
 
 const handleOpenSheet = (payload?: Job, view?: boolean) => {
 	isView.value = view || false;
-	dataSended.value = payload;
+	dataSent.value = payload;
 	isOpenSheet.value = true;
 };
 
@@ -309,7 +309,7 @@ const handleDelete = () => {
 		</div>
 		<div v-else class="my-4 flex gap-2 justify-end">
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
-			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
+			<FilterPopover :list="[]" @update:value="handleFilter" />
 			<Button
 				class="bg-blue-500 hover:bg-blue-600 text-white rounded-2xl"
 				@click="handleOpenSheet">
@@ -318,7 +318,7 @@ const handleDelete = () => {
 			</Button>
 		</div>
 		<div class="flex flex-col gap-2">
-			<DataTable :table="table" />
+			<DataTable :table="table" @row:click="(payload) => handleOpenSheet(payload, true)" />
 			<Separator class="mb-4" />
 			<DataTablePagination :table="table" />
 		</div>

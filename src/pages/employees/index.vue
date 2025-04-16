@@ -7,7 +7,7 @@ import DoughnutChart from '@/components/common/chart/DoughnutChart.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Title from '@/components/common/Title.vue';
 import Overview from '@/components/dashboard/Overview.vue';
-import ListEmployee from '@/components/employee/list-employee/ListEmployee.vue';
+import ListEmployee from '@/components/employee/all-employee/AllEmployeeOverview.vue';
 import UpcomingEvents from '@/components/employee/upcoming-event/UpcomingEvents.vue';
 import Badge from '@/components/ui/badge/Badge.vue';
 import Button from '@/components/ui/button/Button.vue';

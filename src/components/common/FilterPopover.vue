@@ -15,13 +15,15 @@ import {
 } from '@/components/ui/accordion';
 import Badge from '@/components/ui/badge/Badge.vue';
 import type { ComboboxType, FilterAccordion, FilterData } from '@/types';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import SliderCustom from '../custom/SliderCustom.vue';
+import QuarterRange from './QuarterRange.vue';
 
 interface Prop {
 	list: FilterAccordion[];
 }
 
-defineProps<Prop>();
+const props = defineProps<Prop>();
 
 const emit = defineEmits<{
 	(e: 'update:value', payload: FilterData[]): void;
@@ -29,6 +31,7 @@ const emit = defineEmits<{
 
 const isOpen = ref(false);
 const selectedFilter = ref<Record<string, ComboboxType[]>>({});
+const sliderList = ref<Record<string, number[]>>({});
 
 const handleRemoveFilter = (field: string, value: ComboboxType) => {
 	if (!selectedFilter.value[field]) return;
@@ -93,6 +96,38 @@ const handleOpen = (open: boolean) => {
 const handleClose = () => {
 	isOpen.value = false;
 };
+
+const handleChangeNumberRange = (field: string, values: number[] | undefined) => {
+	selectedFilter.value[field] = [
+		{
+			label: `${values?.[0] || 0} - ${values?.[1] || 0}`,
+			value: `${values?.[0] || 0} - ${values?.[1] || 0}`,
+		},
+	];
+};
+
+const handleQuarterRange = (payload: { from: string; to: string }) => {
+	selectedFilter.value['timeRange'] = [
+		{
+			label: `${payload.from} - ${payload.to}`,
+			value: `${payload.from} - ${payload.to}`,
+		},
+	];
+};
+
+onMounted(() => {
+	props.list.forEach((item) => {
+		if (item.type === 'numberSlider') {
+			sliderList.value[item.value] = [item?.min || 0, item?.max || 0];
+			selectedFilter.value[item.value] = [
+				{
+					label: `${item?.min || 0} - ${item?.max || 0}`,
+					value: `${item?.min || 0} - ${item?.max || 0}`,
+				},
+			];
+		}
+	});
+});
 </script>
 
 <template>
@@ -154,7 +189,9 @@ const handleClose = () => {
 							</div>
 						</AccordionTrigger>
 						<AccordionContent>
-							<div class="flex flex-wrap gap-2">
+							<div
+								v-if="item.type === 'list' && item.items"
+								class="flex flex-wrap gap-2">
 								<Badge
 									v-for="(i, index) in item.items"
 									:key="index"
@@ -170,6 +207,24 @@ const handleClose = () => {
 									@click="() => handleAddFilter(item.value, i)"
 									>{{ i.label }}</Badge
 								>
+							</div>
+							<div v-if="item.type === 'numberSlider'" class="pt-2">
+								<SliderCustom
+									v-model="sliderList[item.value]"
+									:min="item.min"
+									:max="item.max"
+									:step="item.step"
+									class=""
+									@update:model-value="
+										(values) => handleChangeNumberRange(item.value, values)
+									" />
+								<div class="flex gap-1 items-center justify-center mt-2">
+									<span>{{ sliderList[item.value][0] }}</span> -
+									<span>{{ sliderList[item.value][1] }}</span>
+								</div>
+							</div>
+							<div v-if="item.type === 'timeRange'">
+								<QuarterRange @update:value="handleQuarterRange" />
 							</div>
 						</AccordionContent>
 					</AccordionItem>

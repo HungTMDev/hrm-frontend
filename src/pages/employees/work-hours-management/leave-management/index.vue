@@ -13,7 +13,7 @@ import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
 import { valueUpdater } from '@/lib/utils';
 import { useEmployeeStore } from '@/stores/employee.store';
-import type { LeaveManagement } from '@/types';
+import type { FilterAccordion, LeaveManagement } from '@/types';
 import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
 import { onBeforeMount, ref } from 'vue';
 import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
@@ -22,8 +22,9 @@ import Case from '@/assets/icons/Outline/Case.svg';
 import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
 import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
 import Hiking from '@/assets/icons/Outline/Hiking.svg';
+import AlertPopup from '@/components/common/AlertPopup.vue';
 
-const accordionItems = [
+const accordionItems: FilterAccordion[] = [
 	{
 		value: 'status',
 		title: 'Status',
@@ -42,6 +43,7 @@ const accordionItems = [
 			},
 		],
 		icon: ChartSqare,
+		type: 'list',
 	},
 	{
 		value: 'leave_type',
@@ -77,6 +79,7 @@ const accordionItems = [
 			},
 		],
 		icon: Hiking,
+		type: 'list',
 	},
 	{
 		value: 'branch',
@@ -92,6 +95,7 @@ const accordionItems = [
 			},
 		],
 		icon: Building3,
+		type: 'list',
 	},
 	{
 		value: 'department',
@@ -123,6 +127,7 @@ const accordionItems = [
 			},
 		],
 		icon: Building,
+		type: 'list',
 	},
 	{
 		value: 'employment_type',
@@ -138,6 +143,7 @@ const accordionItems = [
 			},
 		],
 		icon: Case,
+		type: 'list',
 	},
 	{
 		value: 'level',
@@ -165,6 +171,7 @@ const accordionItems = [
 			},
 		],
 		icon: Chart2,
+		type: 'list',
 	},
 ];
 
@@ -174,18 +181,23 @@ const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 const isOpenSheet = ref(false);
 const isOpenAlert = ref(false);
-const dataSended = ref<LeaveManagement>();
+const dataSent = ref<LeaveManagement>();
 
 const handleOpenSheet = (payload?: LeaveManagement) => {
-	dataSended.value = payload;
+	dataSent.value = payload;
 	isOpenSheet.value = true;
+};
+
+const handleOpenAlert = (payload?: LeaveManagement) => {
+	dataSent.value = payload;
+	isOpenAlert.value = true;
 };
 
 const table = useVueTable({
 	get data() {
 		return employeeStore.leaves;
 	},
-	columns: leaveColumns(handleOpenSheet),
+	columns: leaveColumns(handleOpenSheet, handleOpenAlert),
 	getCoreRowModel: getCoreRowModel(),
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
@@ -206,8 +218,13 @@ const table = useVueTable({
 });
 
 const handleCloseSheet = (open: boolean) => {
-	dataSended.value = undefined;
+	dataSent.value = undefined;
 	isOpenSheet.value = open;
+};
+
+const handleCloseAlert = (open: boolean) => {
+	dataSent.value = undefined;
+	isOpenAlert.value = open;
 };
 
 onBeforeMount(() => {
@@ -228,10 +245,11 @@ onBeforeMount(() => {
 			<FilterPopover :list="accordionItems" />
 		</div>
 		<div class="flex flex-col gap-2">
-			<DataTable :table="table" />
+			<DataTable :table="table" @row:click="handleOpenSheet" />
 			<Separator class="mt-3" />
 			<DataTablePagination :table="table" />
 		</div>
 	</ContentWrapper>
-	<LeaveSheet :open="isOpenSheet" @update:open="handleCloseSheet" :data="dataSended" />
+	<LeaveSheet :open="isOpenSheet" @update:open="handleCloseSheet" :data="dataSent" />
+	<AlertPopup :open="isOpenAlert" @update:open="handleCloseAlert" />
 </template>

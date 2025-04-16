@@ -91,15 +91,16 @@ const chartOptions = ref<ChartOptions<'bar' | 'line'>>({
 			},
 		},
 		y1: {
-			position: 'right',
-			title: {
-				display: true,
-				text: 'Total salary (₫)',
-			},
-			beginAtZero: true,
-			grid: {
-				drawOnChartArea: false,
-			},
+			display: false,
+			// position: 'right',
+			// title: {
+			// 	display: true,
+			// 	text: 'Total salary (₫)',
+			// },
+			// beginAtZero: true,
+			// grid: {
+			// 	drawOnChartArea: false,
+			// },
 		},
 	},
 });

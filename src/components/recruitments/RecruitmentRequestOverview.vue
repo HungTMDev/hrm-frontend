@@ -203,7 +203,7 @@ const accordionItems = [
 			<Button variant="link" class="text-blue-500" @click="handleNavigate">View all</Button>
 		</div>
 		<div class="text-end">
-			<FilterPopover :list="accordionItems" />
+			<FilterPopover :list="[]" />
 		</div>
 		<DataTable :table="table" @row:click="handleOpenSheet" />
 	</ContentWrapper>

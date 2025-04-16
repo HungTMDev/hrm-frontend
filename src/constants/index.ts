@@ -17,6 +17,13 @@ export const JOB_STATUS_STYLE: Record<string, string> = {
 	OPENING: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
 };
 
+export const PAYROLL_FILE_STATUS_STYLE: Record<string, string> = {
+	Confirmed: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	Sent: 'bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500',
+	'Needs Editing': 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+	'Waiting to Send': 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
+};
+
 export enum CandidateStage {
 	APPLIED = 'APPLIED',
 	'1ST_INTERVIEW' = '1ST_INTERVIEW',

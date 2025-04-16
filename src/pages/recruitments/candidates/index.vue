@@ -71,27 +71,27 @@ const rowSelection = ref({});
 const openSheet = ref(false);
 const openAlert = ref(false);
 const isView = ref(false);
-const dataSended = ref<Candidate>();
+const dataSent = ref<Candidate>();
 
 const handleOpenSheet = (payload?: any, view?: boolean) => {
 	isView.value = view || false;
-	dataSended.value = payload;
+	dataSent.value = payload;
 	openSheet.value = true;
 };
 
 const handleCloseSheet = (open: boolean) => {
 	isView.value = false;
-	dataSended.value = undefined;
+	dataSent.value = undefined;
 	openSheet.value = open;
 };
 
 const handleOpenAlert = (payload?: any) => {
-	dataSended.value = payload;
+	dataSent.value = payload;
 	openAlert.value = true;
 };
 
 const handleCloseAlert = (open: boolean) => {
-	dataSended.value = undefined;
+	dataSent.value = undefined;
 	openAlert.value = open;
 };
 
@@ -146,13 +146,13 @@ const handleDelete = () => {
 			</Button>
 		</div>
 		<div class="flex flex-col gap-4">
-			<DataTable :table="table" />
+			<DataTable :table="table" @row:click="(payload) => handleOpenSheet(payload, true)" />
 			<Separator class="mb-2" />
 			<DataTablePagination :table="table" />
 		</div>
 	</ContentWrapper>
 	<CandidateSheet
-		:data="dataSended"
+		:data="dataSent"
 		:open="openSheet"
 		@update:open="handleCloseSheet"
 		:is-view="isView"
@@ -161,6 +161,6 @@ const handleDelete = () => {
 		:open="openAlert"
 		@update:open="handleCloseAlert"
 		title="Are you sure you want to delete this candidates?"
-		:description="dataSended?.name"
+		:description="dataSent?.name"
 		@confirm="handleDelete" />
 </template>

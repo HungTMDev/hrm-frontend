@@ -13,6 +13,8 @@ export interface EmployeePayroll {
 	salary: number;
 	deduction: number;
 	status: string;
+	department: string;
+	level: string;
 }
 
 export interface AttendanceManagement {

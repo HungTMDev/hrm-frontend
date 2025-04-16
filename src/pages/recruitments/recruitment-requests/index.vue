@@ -117,7 +117,7 @@ const data: RecruitmentRequest[] = [
 ];
 
 const isOpenSheet = ref(false);
-const dataSended = ref<RecruitmentRequest>();
+const dataSent = ref<RecruitmentRequest>();
 
 const table = useVueTable({
 	data,
@@ -132,7 +132,7 @@ const table = useVueTable({
 });
 
 const handleOpenSheet = (data: any) => {
-	dataSended.value = data;
+	dataSent.value = data;
 	isOpenSheet.value = true;
 };
 
@@ -260,5 +260,5 @@ const accordionItems = [
 		<Separator class="mb-4" />
 		<DataTablePagination :table="table" />
 	</ContentWrapper>
-	<RecruitmentSheet :data="dataSended" :open="isOpenSheet" @update:open="handleCloseSheet" />
+	<RecruitmentSheet :data="dataSent" :open="isOpenSheet" @update:open="handleCloseSheet" />
 </template>

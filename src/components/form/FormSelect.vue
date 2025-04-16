@@ -103,7 +103,7 @@ const handleOpen = (value: boolean) => {
 								variant="outline"
 								:class="[
 									cn(
-										'rounded-2xl w-full font-normal border justify-start h-auto focus:border-blue-100 text-gray-200 hover:text-gray-200',
+										'rounded-2xl p-3 w-full font-normal border justify-start h-auto focus:border-blue-100 text-gray-200 hover:text-gray-200',
 										props.class,
 									),
 									icon ? 'pl-10' : '',

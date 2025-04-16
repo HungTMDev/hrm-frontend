@@ -6,6 +6,15 @@ export * from './employee.type';
 export * from './payroll.type';
 export * from './documents.type';
 
+export interface RouteType {
+	id: string;
+	path: string;
+	name: string;
+	icon?: any;
+	activeIcon?: any;
+	children?: RouteType[];
+}
+
 export interface ComboboxType {
 	label: string;
 	value: string;
@@ -23,8 +32,12 @@ export interface FormFieldCommon {
 export interface FilterAccordion {
 	value: string;
 	title: string;
-	items: ComboboxType[];
+	items?: ComboboxType[];
 	icon: any;
+	type: 'list' | 'numberSlider' | 'timeRange';
+	min?: number;
+	max?: number;
+	step?: number;
 }
 
 export interface FilterData {
@@ -35,5 +48,5 @@ export interface FilterData {
 export interface ActionGroupType {
 	label: string;
 	icon: any;
-	style: string;
+	style?: string;
 }

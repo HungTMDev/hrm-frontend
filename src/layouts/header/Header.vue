@@ -9,7 +9,7 @@ import UserDropdownMenu from './UserDropdownMenu.vue';
 const appStore = useAppStore();
 
 const handleSidebar = () => {
-	appStore.handleSmallSidebar();
+	appStore.toggleSidebar();
 };
 </script>
 <template>

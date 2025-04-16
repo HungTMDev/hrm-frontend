@@ -84,7 +84,7 @@ onMounted(() => {
 });
 
 const handleNavigate = () => {
-	router.push('recruitments/candidates');
+	router.push('candidates');
 };
 </script>
 <template>

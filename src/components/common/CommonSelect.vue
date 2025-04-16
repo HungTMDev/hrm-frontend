@@ -39,7 +39,7 @@ const handleSelect = (value: any) => {
 		<SelectTrigger :class="cn('w-[180px] focus:ring-0 focus:ring-offset-0 ', props.class)">
 			<SelectValue :placeholder="'Select...'" />
 		</SelectTrigger>
-		<SelectContent>
+		<SelectContent class="max-h-60">
 			<SelectGroup>
 				<SelectItem v-for="(item, index) in list" :key="index" :value="item.value">
 					{{ item.label }}

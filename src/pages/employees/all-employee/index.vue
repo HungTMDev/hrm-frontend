@@ -16,7 +16,7 @@ import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
 import AllEmployeeSheet from '@/components/employee/all-employee/AllEmployeeSheet.vue';
-import { employeeColumn } from '@/components/employee/list-employee/employee.column';
+import { employeeColumn } from '@/components/employee/all-employee/employee.column';
 import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
@@ -102,6 +102,7 @@ const filter: FilterAccordion[] = [
 			{ label: 'Part-time', value: 'part_time' },
 			{ label: 'Freelance', value: 'freelance' },
 		],
+		type: 'list',
 	},
 	{
 		title: 'Branch',
@@ -111,6 +112,7 @@ const filter: FilterAccordion[] = [
 			{ label: 'Đà nẵng', value: 'dn' },
 			{ label: 'Hà nội', value: 'hn' },
 		],
+		type: 'list',
 	},
 	{
 		title: 'Department',
@@ -124,6 +126,7 @@ const filter: FilterAccordion[] = [
 			{ label: 'Back Office', value: 'BO' },
 			{ label: 'E-commerce', value: 'ecommerce' },
 		],
+		type: 'list',
 	},
 	{
 		title: 'Gender',
@@ -133,6 +136,22 @@ const filter: FilterAccordion[] = [
 			{ label: 'Male', value: '0' },
 			{ label: 'Female', value: '1' },
 		],
+		type: 'list',
+	},
+	{
+		title: 'Salary',
+		value: 'salary',
+		icon: UserHands,
+		type: 'numberSlider',
+		min: 0,
+		max: 100000000,
+		step: 1000000,
+	},
+	{
+		title: 'Quarter',
+		value: 'quarter',
+		icon: UserHands,
+		type: 'timeRange',
 	},
 ];
 
@@ -142,16 +161,18 @@ const rowSelection = ref({});
 const isOpenSheet = ref(false);
 const isOpenAlert = ref(false);
 const isView = ref(false);
-const dataSended = ref<Employee>();
+const dataSent = ref<Employee>();
 
 const handleOpenSheet = (payload?: Employee, view?: boolean) => {
-	dataSended.value = payload;
+	if (payload instanceof PointerEvent) {
+		dataSent.value = undefined;
+	} else dataSent.value = payload;
 	isView.value = view || false;
 	isOpenSheet.value = true;
 };
 
 const handleOpenAlert = (payload: Employee) => {
-	dataSended.value = payload;
+	dataSent.value = payload;
 	isOpenAlert.value = true;
 };
 
@@ -179,12 +200,12 @@ const table = useVueTable({
 
 const handleCloseSheet = (open: boolean) => {
 	isView.value = false;
-	dataSended.value = undefined;
+	dataSent.value = undefined;
 	isOpenSheet.value = open;
 };
 
 const handleCloseAlert = (open: boolean) => {
-	dataSended.value = undefined;
+	dataSent.value = undefined;
 	isOpenAlert.value = open;
 };
 </script>
@@ -219,13 +240,13 @@ const handleCloseAlert = (open: boolean) => {
 			</Button>
 		</div>
 		<div class="flex flex-col gap-2">
-			<DataTable :table="table" />
+			<DataTable :table="table" @row:click="(payload) => handleOpenSheet(payload, true)" />
 			<Separator class="mb-2" />
 			<DataTablePagination :table="table" />
 		</div>
 	</ContentWrapper>
 	<AllEmployeeSheet
-		:data="dataSended"
+		:data="dataSent"
 		:open="isOpenSheet"
 		@update:open="handleCloseSheet"
 		:is-view="isView"

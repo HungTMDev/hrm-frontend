@@ -45,7 +45,7 @@ const handleOpen = (open: boolean) => {
 							variant="outline"
 							:class="
 								cn(
-									'w-[240px] gap-3 ps-3 px-2 py-1.5 h-auto text-start font-normal rounded-2xl border justify-start focus:border-blue-200',
+									'w-[240px] gap-3 ps-3 p-3 h-auto text-start font-normal rounded-2xl border justify-start focus:border-blue-200',
 									!value && 'text-muted-foreground',
 									errors.length > 0 && 'border-destructive',
 									props.class,

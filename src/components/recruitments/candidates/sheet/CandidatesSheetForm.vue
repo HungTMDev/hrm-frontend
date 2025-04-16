@@ -45,7 +45,7 @@ const onSubmit = handleSubmit(() => {});
 					<FormControl>
 						<Input
 							v-bind="componentField"
-							class="focus-visible:ring-0 focus-visible:ring-offset-0 border-none text-[28px] px-0 placeholder:text-gray-200 font-semibold p-2"
+							class="focus-visible:ring-0 text-black focus-visible:ring-offset-0 border-none text-[28px] px-0 placeholder:text-gray-200 font-semibold p-2"
 							placeholder="Full name" />
 					</FormControl>
 					<FormErrorCustom />
@@ -76,7 +76,6 @@ const onSubmit = handleSubmit(() => {});
 					label="Branch"
 					:list="[]"
 					:required="true"
-					class="w-full p-3"
 					:icon="Building3"
 					placeholder="Select company branch" />
 				<FormSelect
@@ -84,7 +83,6 @@ const onSubmit = handleSubmit(() => {});
 					label="Job"
 					:list="[]"
 					:required="true"
-					class="w-full p-3"
 					:icon="CaseRound"
 					placeholder="Select job" />
 				<FormSelect
@@ -92,7 +90,6 @@ const onSubmit = handleSubmit(() => {});
 					label="Stage"
 					:list="[]"
 					:required="true"
-					class="w-full p-3"
 					:icon="Routing3"
 					placeholder="Select hiring stage" />
 				<FormCalendar
@@ -100,15 +97,14 @@ const onSubmit = handleSubmit(() => {});
 					label="Date of birth"
 					:list="[]"
 					:required="true"
-					class="w-full p-3"
 					:icon="Calendar"
+					class="w-full"
 					placeholder="Enter phone number" />
 				<FormSelect
 					name="gender"
 					label="Gender"
 					:list="[]"
 					:required="true"
-					class="w-full p-3"
 					:icon="UserHand"
 					placeholder="Select gender" />
 				<FormSelect
@@ -116,7 +112,6 @@ const onSubmit = handleSubmit(() => {});
 					label="Work experience"
 					:list="[]"
 					:required="true"
-					class="w-full p-3"
 					:icon="Ranking"
 					placeholder="Select work experience" />
 				<FormSelect
@@ -124,14 +119,13 @@ const onSubmit = handleSubmit(() => {});
 					label="Education level"
 					:list="[]"
 					:required="true"
-					class="w-full p-3"
 					:icon="SquareAcademic"
 					placeholder="Select education level" />
 				<FormInput
 					name="expectedSalary"
 					label="Expected salary"
 					:required="true"
-					class="w-full p-3"
+					class="w-full"
 					:icon="Dollar"
 					placeholder="Enter expected salary" />
 				<FormUpload name="cv" label="CV" :required="true" />

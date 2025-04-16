@@ -58,7 +58,7 @@ const setValue = (fieldName: any, value: any) => {
 					<FormControl>
 						<Input
 							v-bind="componentField"
-							class="focus-visible:ring-0 focus-visible:ring-offset-0 border-none text-[28px] px-0 placeholder:text-gray-200 font-semibold p-2"
+							class="focus-visible:ring-0 focus-visible:ring-offset-0 border-none text-[28px] text-black px-0 placeholder:text-gray-200 font-semibold p-2"
 							placeholder="Add new job" />
 					</FormControl>
 					<FormDescription />
@@ -92,7 +92,6 @@ const setValue = (fieldName: any, value: any) => {
 					:icon="ChartSqare"
 					:required="true"
 					placeholder="Select job status"
-					class="w-full py-2.5"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormSelect
 					name="branch"
@@ -110,7 +109,6 @@ const setValue = (fieldName: any, value: any) => {
 					:icon="Building3"
 					:required="true"
 					placeholder="Select company branch"
-					class="w-full py-2.5"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormSelect
 					name="department"
@@ -119,15 +117,14 @@ const setValue = (fieldName: any, value: any) => {
 					:required="true"
 					:icon="Building"
 					placeholder="Select department"
-					class="w-full py-2.5"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormInput
 					name="role"
 					:required="true"
 					label="Job status"
 					:icon="UserCircle"
-					placeholder="Enter job title"
-					class="w-full py-2.5" />
+					class="w-full"
+					placeholder="Enter job title" />
 				<FormSelect
 					name="level"
 					label="Level"
@@ -136,7 +133,6 @@ const setValue = (fieldName: any, value: any) => {
 					:icon="Chart2"
 					:multiple="true"
 					placeholder="Select level"
-					class="w-full py-2.5"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormSelect
 					name="employmentType"
@@ -145,22 +141,21 @@ const setValue = (fieldName: any, value: any) => {
 					:list="EMPLOYMENT_TYPE"
 					:icon="Case"
 					placeholder="Select employment type"
-					class="w-full py-2.5"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormInput
 					name="quantity"
 					:required="true"
 					label="Quantity"
+					class="w-full"
 					:icon="CheckList"
-					placeholder="Enter quantity"
-					class="w-full py-2.5" />
+					placeholder="Enter quantity" />
 				<FormCalendar
 					name="expectedClosingDate"
 					label="Expected closing date"
 					:required="true"
 					:icon="Calendar"
+					class="w-full"
 					placeholder="dd/MM/yyyy"
-					class="w-full py-2.5"
 					@update:value="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormSelect
 					name="educationLevel"
@@ -169,7 +164,6 @@ const setValue = (fieldName: any, value: any) => {
 					:list="EDUCATION_LEVEL"
 					:icon="SqureAcademic"
 					placeholder="Select education level"
-					class="w-full py-2.5"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormSelect
 					name="workExperience"
@@ -199,7 +193,6 @@ const setValue = (fieldName: any, value: any) => {
 					:required="true"
 					:icon="Ranking"
 					placeholder="Select work experience"
-					class="w-full py-2.5"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormSelect
 					name="gender"
@@ -207,7 +200,6 @@ const setValue = (fieldName: any, value: any) => {
 					:list="[]"
 					:icon="UserHand"
 					placeholder="Select gender"
-					class="w-full py-2.5"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormSelect
 					name="appearance"
@@ -215,7 +207,6 @@ const setValue = (fieldName: any, value: any) => {
 					:list="[]"
 					:icon="MagicStick3"
 					placeholder="Select appearance"
-					class="w-full py-2.5"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 			</div>
 			<div class="mt-6">

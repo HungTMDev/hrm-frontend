@@ -25,6 +25,7 @@ import StatusTag from '../common/StatusTag.vue';
 import UserAvatar from '../common/UserAvatar.vue';
 import SheetContentCustom from '../custom/SheetContentCustom.vue';
 import Badge from '../ui/badge/Badge.vue';
+import ScrollArea from '../ui/scroll-area/ScrollArea.vue';
 
 defineProps<{
 	open: boolean;
@@ -49,7 +50,7 @@ const handleOpen = (isOpen: boolean) => {
 				}}</SheetTitle>
 				<SheetDescription> </SheetDescription>
 			</SheetHeader>
-			<div class="flex-1 text-sm overflow-y-auto">
+			<ScrollArea class="flex-1 text-sm pr-3">
 				<div class="flex flex-col gap-4">
 					<div class="grid grid-cols-3 gap-6 py-[3px]">
 						<div class="flex gap-2 items-center">
@@ -171,7 +172,7 @@ const handleOpen = (isOpen: boolean) => {
 						</Badge>
 					</div>
 				</div>
-			</div>
+			</ScrollArea>
 
 			<SheetFooter v-if="data?.status === 'To-do'">
 				<Button variant="outline" class="font-medium px-8 py-[13px] h-auto rounded-2xl"

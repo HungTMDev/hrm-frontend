@@ -1,11 +1,13 @@
 import StatusTag from '@/components/common/StatusTag.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { JOB_STATUS_STYLE } from '@/constants';
-import type { Job } from '@/types';
+import type { ActionGroupType, Job } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import JobActionGroup from './JobActionGroup.vue';
+import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
+import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
 
 export const jobColumn = (
 	handleOpenSheet: (payload?: Job, view?: boolean) => void,
@@ -28,6 +30,7 @@ export const jobColumn = (
 			),
 		cell: ({ row }) =>
 			h(Checkbox, {
+				onClick: (event: any) => event.stopPropagation(),
 				modelValue: row.getIsSelected(),
 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 				ariaLabel: 'Select row',
@@ -76,22 +79,30 @@ export const jobColumn = (
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const onView = () => {
-				handleOpenSheet(row.original, true);
-			};
+			const actions: ActionGroupType[] = [
+				{
+					label: 'Edit',
+					icon: Pen2,
+					style: '',
+				},
+				{
+					label: 'Delete',
+					icon: Trash,
+					style: 'text-red-500 ',
+				},
+			];
 
 			const onEdit = () => {
 				handleOpenSheet(row.original);
 			};
-
 			const onDelete = () => {
 				handleOpenAlert(row.original);
 			};
 
-			return h(JobActionGroup, {
-				onDelete,
-				onView,
+			return h(ActionGroupCommon, {
+				actions,
 				onEdit,
+				onDelete,
 			});
 		},
 	},

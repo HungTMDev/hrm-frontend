@@ -14,10 +14,11 @@ import Document from '@/assets/icons/Outline/File Text.svg';
 import DocumentBold from '@/assets/icons/Bold/File Text.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import CalendarBold from '@/assets/icons/Bold/Calendar.svg';
+import type { RouteType } from '@/types';
 
 export const useAppStore = defineStore('app-store', () => {
 	//defineState
-	const routeList = ref([
+	const routeList = ref<RouteType[]>([
 		{
 			id: '10000',
 			path: '/dashboard',
@@ -31,6 +32,28 @@ export const useAppStore = defineStore('app-store', () => {
 			name: 'Recruitments',
 			icon: shallowRef(Case),
 			activeIcon: shallowRef(CaseBold),
+			children: [
+				{
+					id: '20001',
+					path: '/recruitments/overview',
+					name: 'Overview',
+				},
+				{
+					id: '20002',
+					path: '/recruitments/requests',
+					name: 'Recruitment requests',
+				},
+				{
+					id: '20003',
+					path: '/recruitments/jobs',
+					name: 'Jobs',
+				},
+				{
+					id: '20003',
+					path: '/recruitments/candidates',
+					name: 'Candidates',
+				},
+			],
 		},
 		{
 			id: '30000',
@@ -38,6 +61,23 @@ export const useAppStore = defineStore('app-store', () => {
 			name: 'Employees',
 			icon: shallowRef(UserGroup),
 			activeIcon: shallowRef(UserGroupBold),
+			children: [
+				{
+					id: '30001',
+					path: '/employees/overview',
+					name: 'Overview',
+				},
+				{
+					id: '30002',
+					path: '/employees/all-employee',
+					name: 'All employee',
+				},
+				{
+					id: '30003',
+					path: '/employees/work-hours-management',
+					name: 'Work hours',
+				},
+			],
 		},
 		{
 			id: '40000',
@@ -68,17 +108,21 @@ export const useAppStore = defineStore('app-store', () => {
 			activeIcon: shallowRef(CalendarBold),
 		},
 	]);
-
-	const isSmallSidebar = ref(false);
+	const isSmallSidebar = ref(
+		localStorage.getItem('smallSidebar')
+			? localStorage.getItem('smallSidebar') === 'true'
+			: false,
+	);
 
 	//defineActions
-	const handleSmallSidebar = () => {
+	const toggleSidebar = () => {
 		isSmallSidebar.value = !isSmallSidebar.value;
+		localStorage.setItem('smallSidebar', String(isSmallSidebar.value));
 	};
 
 	return {
 		routeList,
 		isSmallSidebar,
-		handleSmallSidebar,
+		toggleSidebar,
 	};
 });

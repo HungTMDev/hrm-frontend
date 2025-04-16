@@ -1,16 +1,18 @@
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import Badge from '@/components/ui/badge/Badge.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
-import { ATTENDANCE_STYLE } from '@/constants';
+import { ATTENDANCE_STYLE, STATUS_STYLE } from '@/constants';
 import type { ActionGroupType, AttendanceManagement } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import StatusTag from '@/components/common/StatusTag.vue';
 
 export const attendanceColumns = (
 	handleOpenSheet: (payload: AttendanceManagement) => void,
+	handleOpenAlert: (payload: AttendanceManagement) => void,
 ): ColumnDef<AttendanceManagement>[] => [
 	{
 		id: 'select',
@@ -29,6 +31,7 @@ export const attendanceColumns = (
 			),
 		cell: ({ row }) =>
 			h(Checkbox, {
+				onClick: (event: any) => event.stopPropagation(),
 				modelValue: row.getIsSelected(),
 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 				ariaLabel: 'Select row',
@@ -75,18 +78,17 @@ export const attendanceColumns = (
 	{
 		accessorKey: 'status',
 		header: 'Status',
-		cell: ({ row }) => row.original.status,
+		cell: ({ row }) =>
+			h(StatusTag, {
+				status: row.original.status,
+				class: [STATUS_STYLE[row.original.status]],
+			}),
 	},
 	{
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
 			const actions: ActionGroupType[] = [
-				{
-					label: 'View',
-					icon: Pen2,
-					style: '',
-				},
 				{
 					label: 'Approve',
 					icon: Pen2,
@@ -98,23 +100,18 @@ export const attendanceColumns = (
 					style: 'text-red-500 ',
 				},
 			];
-
-			const onView = () => {
+			const onApprove = () => {
 				handleOpenSheet(row.original);
 			};
-			const onApprove = () => {
-				// handleOpenSheet(row.original);
-			};
 			const onReject = () => {
-				// handleOpenAlert(row.original);
+				handleOpenAlert(row.original);
 			};
 
 			return h(
 				'div',
 				{ class: 'flex justify-end pr-2' },
 				h(ActionGroupCommon, {
-					actions: actions,
-					onView,
+					actions,
 					onApprove,
 					onReject,
 				}),

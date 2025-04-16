@@ -11,6 +11,7 @@ import { h } from 'vue';
 
 export const overtimeColumns = (
 	handleOpenSheet: (payload: OvertimeManagement) => void,
+	handleOpenAlert: (payload: OvertimeManagement) => void,
 ): ColumnDef<OvertimeManagement>[] => [
 	{
 		id: 'select',
@@ -29,6 +30,7 @@ export const overtimeColumns = (
 			),
 		cell: ({ row }) =>
 			h(Checkbox, {
+				onClick: (event: any) => event.stopPropagation(),
 				modelValue: row.getIsSelected(),
 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 				ariaLabel: 'Select row',
@@ -77,11 +79,6 @@ export const overtimeColumns = (
 		cell: ({ row }) => {
 			const actions: ActionGroupType[] = [
 				{
-					label: 'View',
-					icon: Pen2,
-					style: '',
-				},
-				{
 					label: 'Approve',
 					icon: Pen2,
 					style: '',
@@ -93,22 +90,18 @@ export const overtimeColumns = (
 				},
 			];
 
-			const onView = () => {
+			const onApprove = () => {
 				handleOpenSheet(row.original);
 			};
-			const onApprove = () => {
-				// handleOpenSheet(row.original);
-			};
 			const onReject = () => {
-				// handleOpenAlert(row.original);
+				handleOpenAlert(row.original);
 			};
 
 			return h(
 				'div',
 				{ class: 'flex justify-end pr-2' },
 				h(ActionGroupCommon, {
-					actions: actions,
-					onView,
+					actions,
 					onApprove,
 					onReject,
 				}),

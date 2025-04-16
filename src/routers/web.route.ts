@@ -57,15 +57,16 @@ export const webRoutes: RouteType[] = [
 			{
 				path: '/recruitments',
 				name: 'Recruitments',
+				redirect: '/recruitments/overview',
 				children: [
 					{
-						path: '',
+						path: 'overview',
 						name: 'Recruitments Overview',
 						component: () => import('@/pages/recruitments/index.vue'),
 					},
 					{
 						path: 'requests',
-						name: 'Recruitment requests',
+						name: 'Recruitment Requests',
 						component: () =>
 							import('@/pages/recruitments/recruitment-requests/index.vue'),
 					},
@@ -84,9 +85,10 @@ export const webRoutes: RouteType[] = [
 			{
 				path: '/employees',
 				name: 'Employees',
+				redirect: '/employees/overview',
 				children: [
 					{
-						path: '',
+						path: 'overview',
 						name: 'Overview',
 						component: () => import('@/pages/employees/index.vue'),
 					},
@@ -102,7 +104,7 @@ export const webRoutes: RouteType[] = [
 					},
 					{
 						path: 'work-hours-management',
-						name: 'Work hours management',
+						name: 'Work Hours Management',
 						children: [
 							{
 								path: '',
@@ -112,7 +114,7 @@ export const webRoutes: RouteType[] = [
 							},
 							{
 								path: 'attendance-management',
-								name: 'Attendance management',
+								name: 'Attendance Management',
 								component: () =>
 									import(
 										'@/pages/employees/work-hours-management/attendance-management/index.vue'
@@ -120,7 +122,7 @@ export const webRoutes: RouteType[] = [
 							},
 							{
 								path: 'leave-management',
-								name: 'Leave management',
+								name: 'Leave Management',
 								component: () =>
 									import(
 										'@/pages/employees/work-hours-management/leave-management/index.vue'
@@ -128,7 +130,7 @@ export const webRoutes: RouteType[] = [
 							},
 							{
 								path: 'overtime-management',
-								name: 'Overtime management',
+								name: 'Overtime Management',
 								component: () =>
 									import(
 										'@/pages/employees/work-hours-management/overtime-management/index.vue'
@@ -144,13 +146,48 @@ export const webRoutes: RouteType[] = [
 				children: [
 					{
 						path: '',
-						name: 'Payroll overview',
+						name: 'Payroll Overview',
 						component: () => import('@/pages/payroll/index.vue'),
 					},
 					{
 						path: 'employee-payroll',
 						name: 'Employee payroll',
-						component: () => import('@/pages/payroll/employee-payroll/index.vue'),
+						children: [
+							{
+								path: '',
+								name: 'List Employee Payroll',
+								component: () =>
+									import('@/pages/payroll/employee-payroll/index.vue'),
+							},
+							{
+								path: 'payroll-file-management',
+								name: 'Payroll File Management',
+								component: () =>
+									import(
+										'@/pages/payroll/employee-payroll/payroll-file-management/index.vue'
+									),
+							},
+						],
+					},
+					{
+						path: 'payroll-management',
+						name: 'Payroll Management',
+						children: [
+							{
+								path: '',
+								name: 'Payroll Management Overview',
+								component: () =>
+									import('@/pages/payroll/payroll-management/index.vue'),
+							},
+							{
+								path: 'salary-definition',
+								name: 'Salary Definition',
+								component: () =>
+									import(
+										'@/pages/payroll/payroll-management/salary-definition/index.vue'
+									),
+							},
+						],
 					},
 				],
 			},

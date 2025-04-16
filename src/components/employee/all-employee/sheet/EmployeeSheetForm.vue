@@ -39,7 +39,11 @@ import Separator from '@/components/ui/separator/Separator.vue';
 import { genderCombobox } from '@/constants';
 import { useDefaultStore } from '@/stores/default.store';
 import { onBeforeMount, ref } from 'vue';
-import type { ComboboxType } from '@/types';
+import type { ComboboxType, Employee } from '@/types';
+
+defineProps<{
+	data?: Employee;
+}>();
 
 const defaultStore = useDefaultStore();
 
@@ -105,7 +109,7 @@ onBeforeMount(async () => {
 					<FormControl>
 						<Input
 							v-bind="componentField"
-							class="focus-visible:ring-0 focus-visible:ring-offset-0 border-none text-[28px] px-0 placeholder:text-gray-200 font-semibold p-2"
+							class="focus-visible:ring-0 text-black focus-visible:ring-offset-0 border-none text-[28px] px-0 placeholder:text-gray-200 font-semibold p-2"
 							placeholder="Employee name" />
 					</FormControl>
 					<FormErrorCustom />
@@ -133,7 +137,7 @@ onBeforeMount(async () => {
 						:required="true"
 						class="w-full"
 						:icon="Letter" />
-					<FormCalendar name="dob" label="Date of birth" class="w-full p-3" />
+					<FormCalendar name="dob" label="Date of birth" class="w-full" />
 					<FormSelect
 						name="gender"
 						label="Gender"
@@ -141,7 +145,6 @@ onBeforeMount(async () => {
 						:icon="UserHands"
 						:required="true"
 						placeholder="Select gender"
-						class="p-3"
 						:is-search="true"
 						@update:model-value="setData" />
 					<FormInput
@@ -173,7 +176,6 @@ onBeforeMount(async () => {
 						:icon="Building3"
 						:required="true"
 						placeholder="Select company branch"
-						class="p-3"
 						@update:model-value="setData" />
 					<FormSelect
 						name="department"
@@ -182,7 +184,6 @@ onBeforeMount(async () => {
 						:icon="Buildings"
 						:required="true"
 						placeholder="Select department"
-						class="p-3"
 						@update:model-value="setData" />
 					<FormInput
 						name="role"
@@ -212,7 +213,6 @@ onBeforeMount(async () => {
 						:icon="ChartSquare"
 						:required="true"
 						placeholder="Select employment status"
-						class="p-3"
 						@update:model-value="setData" />
 					<FormInput
 						name="salary"
@@ -221,7 +221,7 @@ onBeforeMount(async () => {
 						:required="true"
 						class="w-full"
 						:icon="Dollar" />
-					<FormCalendar name="joiningDate" label="Joining date" class="w-full p-3" />
+					<FormCalendar name="joiningDate" label="Joining date" class="w-full" />
 					<FormInput
 						name="lineManager"
 						label="Line manager"
@@ -236,7 +236,6 @@ onBeforeMount(async () => {
 						:icon="DocumentAdd"
 						:required="true"
 						placeholder="Select contract type"
-						class="p-3"
 						@update:model-value="setData" />
 
 					<UploadField name="contractFile" label="Contract file" />
@@ -259,26 +258,23 @@ onBeforeMount(async () => {
 						:icon="City"
 						:required="true"
 						placeholder="Select your city or province"
-						class="p-3"
 						:is-search="true"
 						@update:model-value="handleSelectCity" />
 					<FormSelect
 						name="districtBorned"
 						label="Distrist"
-						:list="districtList[String(values.cityBorned)]"
+						:list="districtList[String(values.cityBorned)] || []"
 						:icon="StreetMap"
 						:required="true"
 						placeholder="Select your district"
-						class="p-3"
 						@update:model-value="handleSelectDistrict" />
 					<FormSelect
 						name="wardBorned"
 						label="Ward"
-						:list="wardList[String(values.districtBorned)]"
+						:list="wardList[String(values.districtBorned)] || []"
 						:icon="MapPoint"
 						:required="true"
 						placeholder="Select your ward"
-						class="p-3"
 						@update:model-value="handleSelectWard" />
 					<FormInput
 						name="streetBorned"
@@ -305,25 +301,22 @@ onBeforeMount(async () => {
 						:icon="City"
 						:required="true"
 						placeholder="Select your city or province"
-						class="p-3"
 						@update:model-value="handleSelectCity" />
 					<FormSelect
 						name="currentDistrict"
 						label="Distrist"
-						:list="districtList[String(values.currentCity)]"
+						:list="districtList[String(values.currentCity)] || []"
 						:icon="StreetMap"
 						:required="true"
 						placeholder="Select your district"
-						class="p-3"
 						@update:model-value="handleSelectDistrict" />
 					<FormSelect
 						name="currentWard"
 						label="Ward"
-						:list="wardList[String(values.currentDistrict)]"
+						:list="wardList[String(values.currentDistrict)] || []"
 						:icon="MapPoint"
 						:required="true"
 						placeholder="Select your ward"
-						class="p-3"
 						@update:model-value="handleSelectWard" />
 					<FormInput
 						name="currentStreet"

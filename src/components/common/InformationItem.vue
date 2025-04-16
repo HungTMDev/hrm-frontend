@@ -13,6 +13,6 @@ defineProps<{
 			<IconFromSvg :icon="icon" />
 			{{ label }}
 		</div>
-		<span class="text-black">{{ value }}</span>
+		<span class="text-black truncate">{{ value }}</span>
 	</div>
 </template>

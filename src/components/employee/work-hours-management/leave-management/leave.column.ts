@@ -11,6 +11,7 @@ import { h } from 'vue';
 
 export const leaveColumns = (
 	handleOpenSheet: (payload: LeaveManagement) => void,
+	handleOpenAlert: (payload: LeaveManagement) => void,
 ): ColumnDef<LeaveManagement>[] => [
 	{
 		id: 'select',
@@ -29,6 +30,7 @@ export const leaveColumns = (
 			),
 		cell: ({ row }) =>
 			h(Checkbox, {
+				onClick: (event: any) => event.stopPropagation(),
 				modelValue: row.getIsSelected(),
 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 				ariaLabel: 'Select row',
@@ -78,11 +80,6 @@ export const leaveColumns = (
 		cell: ({ row }) => {
 			const actions: ActionGroupType[] = [
 				{
-					label: 'View',
-					icon: Pen2,
-					style: '',
-				},
-				{
 					label: 'Approve',
 					icon: Pen2,
 					style: '',
@@ -94,22 +91,18 @@ export const leaveColumns = (
 				},
 			];
 
-			const onView = () => {
+			const onApprove = () => {
 				handleOpenSheet(row.original);
 			};
-			const onApprove = () => {
-				// handleOpenSheet(row.original);
-			};
 			const onReject = () => {
-				// handleOpenAlert(row.original);
+				handleOpenAlert(row.original);
 			};
 
 			return h(
 				'div',
 				{ class: 'flex justify-end pr-2' },
 				h(ActionGroupCommon, {
-					actions: actions,
-					onView,
+					actions,
 					onApprove,
 					onReject,
 				}),

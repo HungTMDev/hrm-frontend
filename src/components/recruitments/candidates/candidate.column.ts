@@ -32,6 +32,7 @@ export const candidateColumn = (
 			),
 		cell: ({ row }) =>
 			h(Checkbox, {
+				onClick: (event: any) => event.stopPropagation(),
 				modelValue: row.getIsSelected(),
 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 				ariaLabel: 'Select row',
@@ -98,11 +99,6 @@ export const candidateColumn = (
 		cell: ({ row }) => {
 			const actions: ActionGroupType[] = [
 				{
-					label: 'View',
-					icon: Pen2,
-					style: '',
-				},
-				{
 					label: 'Edit',
 					icon: Pen2,
 					style: '',
@@ -114,10 +110,6 @@ export const candidateColumn = (
 				},
 			];
 
-			const onView = () => {
-				handleOpenSheet(row.original, true);
-			};
-
 			const onEdit = () => {
 				handleOpenSheet(row.original);
 			};
@@ -127,8 +119,7 @@ export const candidateColumn = (
 			};
 
 			return h(ActionGroupCommon, {
-				actions: actions,
-				onView,
+				actions,
 				onEdit,
 				onDelete,
 			});

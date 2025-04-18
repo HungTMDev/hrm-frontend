@@ -24,7 +24,7 @@ export const employeePayrollColumn = (
 						(table.getIsSomePageRowsSelected() && 'indeterminate'),
 					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
 					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white border-gray-300',
+					class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
 				},
 				() =>
 					table.getIsSomePageRowsSelected()

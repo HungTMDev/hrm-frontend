@@ -71,6 +71,7 @@ watch(
 				<Button
 					v-if="multiple"
 					variant="outline"
+					@click.stop
 					:class="cn('justify-start text-sm text-slate-600', props.class)">
 					<IconFromSvg v-if="icon" :icon="icon" />
 					<span class="flex-1 text-start">{{
@@ -86,6 +87,7 @@ watch(
 				<Button
 					v-else
 					variant="outline"
+					@click.stop
 					:class="cn('justify-between text-sm text-slate-600', props.class)">
 					<IconFromSvg v-if="icon" :icon="icon" />
 					{{ (selectedValue as ComboboxType)?.label ?? label }}

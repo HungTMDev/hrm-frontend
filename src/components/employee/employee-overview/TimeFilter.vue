@@ -173,7 +173,7 @@ const handleReset = () => {
 					<RadioGroupItem
 						:id="item.value"
 						:value="item.value"
-						class="text-blue-500 border-gray-200"
+						class="text-blue-500"
 						:class="item.value === radioValue ? 'border-blue-500' : ''" />
 					<Label :for="item.value" class="text-slate-600 font-normal">{{
 						item.label

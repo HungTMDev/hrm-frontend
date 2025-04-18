@@ -26,7 +26,7 @@ export const candidateColumn = (
 						(table.getIsSomePageRowsSelected() && 'indeterminate'),
 					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
 					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white border-gray-300',
+					class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
 				},
 				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
 			),
@@ -71,6 +71,7 @@ export const candidateColumn = (
 			return h(
 				'a',
 				{
+					onClick: (event: any) => event.stopPropagation(),
 					href: row.original.cv,
 					target: '_blank',
 					class: 'text-blue-500 p-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center',

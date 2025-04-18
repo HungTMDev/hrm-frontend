@@ -9,16 +9,19 @@ import router from '@/routers';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { loginSchema } from './LoginSchema';
-import { ref } from 'vue';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import Letter from '@/assets/icons/Outline/Letter.svg';
 import Lock from '@/assets/icons/Outline/Lock.svg';
+import { useAuthStore } from '@/stores/auth.store';
+import { ref } from 'vue';
+
+const authStore = useAuthStore();
+
+const remember = ref(true);
 
 const navigateForgotPassword = () => {
 	router.push('/auth/forgot-password');
 };
-
-const isLoading = ref(false);
 
 const formSchema = toTypedSchema(loginSchema);
 
@@ -26,13 +29,11 @@ const { handleSubmit } = useForm({
 	validationSchema: formSchema,
 });
 
-const onSubmit = handleSubmit((values) => {
-	isLoading.value = true;
-	console.log(values);
-	setTimeout(() => {
-		isLoading.value = false;
+const onSubmit = handleSubmit(async (values) => {
+	const status = await authStore.login(values, remember.value);
+	if (status === 200) {
 		router.push('/');
-	}, 500);
+	}
 });
 </script>
 <template>
@@ -40,7 +41,7 @@ const onSubmit = handleSubmit((values) => {
 		<Title class="text-2xl">Welcome to Lutech!</Title>
 		<Description class="self-start text-sm">Login with your email and password.</Description>
 
-		<form @submit="onSubmit" class="w-full">
+		<form @submit="onSubmit" class="w-full" autocomplete="off">
 			<FormInput
 				name="email"
 				label="Email"
@@ -61,7 +62,8 @@ const onSubmit = handleSubmit((values) => {
 				<div class="flex items-center space-x-2 text-gray-400">
 					<Checkbox
 						id="remember"
-						class="data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500 border-gray-400" />
+						v-model="remember"
+						class="data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500" />
 					<Label
 						for="remember"
 						class="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -79,7 +81,7 @@ const onSubmit = handleSubmit((values) => {
 
 			<CallApiButton
 				class="w-full rounded-xl bg-blue-500 hover:bg-blue-600 h-auto p-3"
-				:is-loading="isLoading">
+				:is-loading="authStore.isLoading">
 				Login
 			</CallApiButton>
 		</form>

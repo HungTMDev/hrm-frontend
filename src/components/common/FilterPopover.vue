@@ -199,7 +199,7 @@ onMounted(() => {
 									class="text-xs font-normal hover:cursor-pointer py-1"
 									:class="[
 										selectedFilter[item.value]?.some(
-											(filter) => filter.value === i.value,
+											(filter: ComboboxType) => filter.value === i.value,
 										)
 											? 'bg-blue-500 hover:bg-blue-500 text-white'
 											: '',
@@ -216,7 +216,7 @@ onMounted(() => {
 									:step="item.step"
 									class=""
 									@update:model-value="
-										(values) => handleChangeNumberRange(item.value, values)
+										(values: any) => handleChangeNumberRange(item.value, values)
 									" />
 								<div class="flex gap-1 items-center justify-center mt-2">
 									<span>{{ sliderList[item.value][0] }}</span> -

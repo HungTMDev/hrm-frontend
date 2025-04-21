@@ -37,7 +37,7 @@ const onSubmit = (values: any) => {
 			:validation-schema="toTypedSchema(schema[step - 1])">
 			<form
 				@submit="
-					async (e) => {
+					async (e: any) => {
 						e.preventDefault();
 						await validate();
 

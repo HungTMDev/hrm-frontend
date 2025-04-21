@@ -308,7 +308,8 @@ const handleDelete = () => {
 			</Button>
 		</div>
 		<div v-else class="my-4 flex gap-2 justify-end">
-			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
+			<DisplayColumn
+				:list="table.getAllColumns().filter((column: any) => column.getCanHide())" />
 			<FilterPopover :list="[]" @update:value="handleFilter" />
 			<Button
 				class="bg-blue-500 hover:bg-blue-600 text-white rounded-2xl"
@@ -318,7 +319,9 @@ const handleDelete = () => {
 			</Button>
 		</div>
 		<div class="flex flex-col gap-2">
-			<DataTable :table="table" @row:click="(payload) => handleOpenSheet(payload, true)" />
+			<DataTable
+				:table="table"
+				@row:click="(payload: any) => handleOpenSheet(payload, true)" />
 			<Separator class="mb-4" />
 			<DataTablePagination :table="table" />
 		</div>

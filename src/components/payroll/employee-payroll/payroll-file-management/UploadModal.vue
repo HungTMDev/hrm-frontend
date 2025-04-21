@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import CheckCircle from '@/assets/icons/Bold/Check Circle.svg';
+import DangerCircle from '@/assets/icons/Bold/Danger Circle.svg';
+import FileText from '@/assets/icons/Bold/File Text.svg';
+import Close from '@/assets/icons/Outline/Close.svg';
+import Restart from '@/assets/icons/Outline/Restart.svg';
+import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -11,20 +18,11 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
-import Restart from '@/assets/icons/Outline/Restart.svg';
-import Close from '@/assets/icons/Outline/Close.svg';
-import FileText from '@/assets/icons/Bold/File Text.svg';
-import DangerCircle from '@/assets/icons/Bold/Danger Circle.svg';
-import CheckCircle from '@/assets/icons/Bold/Check Circle.svg';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import CallApiButton from '@/components/common/CallApiButton.vue';
-import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 import Label from '@/components/ui/label/Label.vue';
-import ProgressCircle from '@/components/common/ProgressCircle.vue';
-import { ref } from 'vue';
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 import { formatFileSize } from '@/lib/utils';
 import { usePayrollStore } from '@/stores/payroll.store';
+import { ref } from 'vue';
 
 const payrollStore = usePayrollStore();
 

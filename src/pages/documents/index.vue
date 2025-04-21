@@ -79,9 +79,7 @@ const table = useVueTable({
 	},
 });
 
-onBeforeMount(() => {
-	console.log('Mounted');
-});
+onBeforeMount(() => {});
 </script>
 <template>
 	<ContentWrapper>

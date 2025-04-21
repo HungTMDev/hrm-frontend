@@ -10,8 +10,6 @@ import {
 import { RouterLink, useRoute } from 'vue-router';
 
 const route = useRoute();
-
-console.log(route.matched);
 </script>
 
 <template>

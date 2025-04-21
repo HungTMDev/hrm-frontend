@@ -28,7 +28,6 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit((values) => {
 	isLoading.value = true;
-	console.log(values);
 	setTimeout(() => {
 		isLoading.value = false;
 		router.push('/');

@@ -17,8 +17,12 @@ const props = defineProps<Prop>();
 			<FormControl>
 				<Textarea
 					:placeholder="placeholder"
-					class="resize-none focus-visible:ring-0 focus-visible:ring-offset-0"
-					:class="cn(props.class)"
+					:class="
+						cn(
+							'resize-none focus-visible:ring-0 focus-visible:ring-offset-0',
+							props.class,
+						)
+					"
 					v-bind="componentField" />
 			</FormControl>
 			<FormDescription> </FormDescription>

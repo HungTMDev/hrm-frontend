@@ -2,7 +2,6 @@
 import SheetContentCustom from '@/components/custom/SheetContentCustom.vue';
 import { Sheet } from '@/components/ui/sheet';
 import type { SalaryDefinition } from '@/types';
-import SalaryDefinitionSheetView from './sheet/SalaryDefinitionSheetView.vue';
 import SalaryDefinitionSheetForm from './sheet/SalaryDefinitionSheetForm.vue';
 
 defineProps<{

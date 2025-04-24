@@ -36,7 +36,7 @@ const data: Job[] = [
 	},
 	{
 		position: 'Mobile App Marketer',
-		status: 'Opening',
+		status: 'Draft',
 		level: 'Intern',
 		branch: 'Hà Nội',
 		cadidates: 51,

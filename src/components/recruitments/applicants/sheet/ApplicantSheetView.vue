@@ -21,10 +21,10 @@ import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 import Button from '@/components/ui/button/Button.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
-import type { Candidate } from '@/types';
+import type { Applicant } from '@/types';
 
 defineProps<{
-	data?: Candidate;
+	data?: Applicant;
 }>();
 
 const emit = defineEmits<{

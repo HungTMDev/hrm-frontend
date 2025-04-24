@@ -10,18 +10,18 @@ import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
-import { candidateColumn } from '@/components/recruitments/candidates/candidate.column';
-import CandidateSheet from '@/components/recruitments/candidates/CandidateSheet.vue';
+import { applicantColumn } from '@/components/recruitments/applicants/applicant.column';
+import ApplicantSheet from '@/components/recruitments/applicants/ApplicantSheet.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
 import { useCustomToast } from '@/lib/customToast';
 import { valueUpdater } from '@/lib/utils';
-import type { Candidate } from '@/types';
+import type { Applicant } from '@/types';
 import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
 import { ref } from 'vue';
 
-const data: Candidate[] = [
+const data: Applicant[] = [
 	{
 		name: 'John Doe',
 		email: 'john.doe@example.com',
@@ -71,7 +71,7 @@ const rowSelection = ref({});
 const openSheet = ref(false);
 const openAlert = ref(false);
 const isView = ref(false);
-const dataSent = ref<Candidate>();
+const dataSent = ref<Applicant>();
 
 const handleOpenSheet = (payload?: any, view?: boolean) => {
 	isView.value = view || false;
@@ -97,7 +97,7 @@ const handleCloseAlert = (open: boolean) => {
 
 const table = useVueTable({
 	data,
-	columns: candidateColumn(handleOpenSheet, handleOpenAlert),
+	columns: applicantColumn(handleOpenSheet, handleOpenAlert),
 	getCoreRowModel: getCoreRowModel(),
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
@@ -119,7 +119,7 @@ const table = useVueTable({
 
 const handleDelete = () => {
 	showToast({
-		message: 'Delete candidates success!',
+		message: 'Delete applicants success!',
 		type: 'success',
 		action: {
 			label: 'Undo',
@@ -129,12 +129,12 @@ const handleDelete = () => {
 </script>
 <template>
 	<ContentWrapper>
-		<Title>Candidates</Title>
+		<Title>Applicants</Title>
 		<div class="flex gap-4 items-center my-4">
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search candidates" />
+				placeholder="Search applicants" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<Button variant="outline" class="w-fit rounded-full">
 				<IconFromSvg :icon="Tuning" /> Filter
@@ -142,7 +142,7 @@ const handleDelete = () => {
 			<Button
 				class="bg-blue-500 hover:bg-blue-600 rounded-3xl font-medium"
 				@click="handleOpenSheet(undefined)">
-				<IconFromSvg :icon="UserPlus" />Add new candidate
+				<IconFromSvg :icon="UserPlus" />Add new applicant
 			</Button>
 		</div>
 		<div class="flex flex-col gap-4">
@@ -151,7 +151,7 @@ const handleDelete = () => {
 			<DataTablePagination :table="table" />
 		</div>
 	</ContentWrapper>
-	<CandidateSheet
+	<ApplicantSheet
 		:data="dataSent"
 		:open="openSheet"
 		@update:open="handleCloseSheet"
@@ -160,7 +160,7 @@ const handleDelete = () => {
 	<AlertPopup
 		:open="openAlert"
 		@update:open="handleCloseAlert"
-		title="Are you sure you want to delete this candidates?"
+		title="Are you sure you want to delete this applicant?"
 		:description="dataSent?.name"
 		@confirm="handleDelete" />
 </template>

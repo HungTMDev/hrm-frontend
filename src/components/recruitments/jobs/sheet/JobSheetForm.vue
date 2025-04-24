@@ -15,22 +15,20 @@ import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
+import FormTextarea from '@/components/form/FormTextarea.vue';
+import Button from '@/components/ui/button/Button.vue';
 import { FormField } from '@/components/ui/form';
 import FormControl from '@/components/ui/form/FormControl.vue';
 import FormDescription from '@/components/ui/form/FormDescription.vue';
 import FormItem from '@/components/ui/form/FormItem.vue';
 import Input from '@/components/ui/input/Input.vue';
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 import { SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { DEPARTMENTS, EDUCATION_LEVEL, EMPLOYMENT_TYPE, JOB_LEVEL } from '@/constants';
+import type { Job } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { jobSchema } from '../job.schema';
-import Button from '@/components/ui/button/Button.vue';
-import FormTextarea from '@/components/form/FormTextarea.vue';
-import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
-import { DEPARTMENTS, EDUCATION_LEVEL, EMPLOYMENT_TYPE, JOB_LEVEL } from '@/constants';
-import QuillEditor from '@/components/common/QuillEditor.vue';
-import FormLabel from '@/components/ui/form/FormLabel.vue';
-import type { Job } from '@/types';
 
 defineProps<{
 	data?: Job;
@@ -59,7 +57,7 @@ const setValue = (fieldName: any, value: any) => {
 						<Input
 							v-bind="componentField"
 							class="focus-visible:ring-0 focus-visible:ring-offset-0 border-none text-[28px] text-black px-0 placeholder:text-gray-200 font-semibold p-2"
-							placeholder="Add new job" />
+							placeholder="Enter job title" />
 					</FormControl>
 					<FormDescription />
 					<FormErrorCustom />
@@ -144,6 +142,7 @@ const setValue = (fieldName: any, value: any) => {
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 				<FormInput
 					name="quantity"
+					type="number"
 					:required="true"
 					label="Quantity"
 					class="w-full"
@@ -209,26 +208,18 @@ const setValue = (fieldName: any, value: any) => {
 					placeholder="Select appearance"
 					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
 			</div>
-			<div class="mt-6">
+			<div class="mt-6 grid gap-4">
 				<FormTextarea
 					label="Job description"
 					name="jobDesc"
 					placeholder="A detailed job description"
 					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
-				<div class="mt-3">
-					<FormField v-slot="{ componentField }" name="requiredSkill">
-						<FormItem>
-							<FormLabel>Skill required</FormLabel>
-							<FormControl>
-								<QuillEditor
-									v-bind="componentField"
-									placeholder="Essential skills needed for the job" />
-							</FormControl>
-							<FormDescription />
-							<FormErrorCustom />
-						</FormItem>
-					</FormField>
-				</div>
+
+				<FormTextarea
+					label="Skill required"
+					name="requiredSkill"
+					placeholder="Essential skills needed for the job"
+					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
 			</div>
 		</form>
 	</ScrollArea>

@@ -2,6 +2,7 @@ export const STATUS_STYLE: Record<string, string> = {
 	'To-do': 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
 	Rejected: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
 	Approved: 'bg-green-50 text-green-500 hover:bg-green-50 hover:text-green-500',
+	Canceled: 'bg-gray-50 text-slate-600 hover:bg-gray-50 hover:text-gray-500',
 };
 
 export const ROWS_PER_PAGE = [20, 50, 70, 120, 190];
@@ -12,9 +13,10 @@ export const ATTENDANCE_STYLE: Record<string, string> = {
 };
 
 export const JOB_STATUS_STYLE: Record<string, string> = {
-	PENDING: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
-	CLOSED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
-	OPENING: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	Pending: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
+	Closed: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+	Opening: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	Draft: 'bg-gray-50 text-slate-600 hover:bg-gray-100 hover:text-gray-500',
 };
 
 export const PAYROLL_FILE_STATUS_STYLE: Record<string, string> = {
@@ -24,15 +26,17 @@ export const PAYROLL_FILE_STATUS_STYLE: Record<string, string> = {
 	'Waiting to Send': 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
 };
 
-export enum CandidateStage {
+export enum ApplicantStage {
 	APPLIED = 'APPLIED',
 	'1ST_INTERVIEW' = '1ST_INTERVIEW',
 	'2ND_INTERVIEW' = '2ND_INTERVIEW',
 	HIRED = 'HIRED',
 	REJECTED = 'REJECTED',
+	SCREENING = 'SCREENING',
+	OFFERED = 'OFFERED',
 }
 
-export const candidateStages = Object.values(CandidateStage).map((value) => ({
+export const applicantStages = Object.values(ApplicantStage).map((value) => ({
 	label: value.replace(/_/g, ' '), // Chuyển "_" thành khoảng trắng để hiển thị đẹp hơn
 	value,
 }));

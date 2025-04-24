@@ -29,6 +29,7 @@ interface Prop {
 	label: string;
 	icon?: any;
 	dropdownWidth?: number;
+	list_size?: 'small' | 'medium' | 'large';
 }
 
 const props = defineProps<Prop>();
@@ -41,7 +42,6 @@ const selectedValue = ref<ComboboxType | ComboboxType[]>();
 const open = ref(false);
 
 const handleSelect = (value: any) => {
-	console.log(value);
 	selectedValue.value = value;
 	emit('update:modelValue', value);
 };
@@ -97,7 +97,15 @@ watch(
 			</ComboboxTrigger>
 		</ComboboxAnchor>
 
-		<ComboboxList class="rounded-xl">
+		<ComboboxList
+			:class="
+				cn(
+					'w-[300px] rounded-xl',
+					list_size === 'small' && 'w-[300px]',
+					list_size === 'medium' && 'w-[500px]',
+					list_size === 'large' && 'w-[700px]',
+				)
+			">
 			<div v-if="isSearch" class="relative w-full max-w-sm items-center">
 				<ComboboxInput
 					class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"

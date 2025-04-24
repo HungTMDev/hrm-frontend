@@ -20,12 +20,14 @@ import {
 } from '@/components/ui/sheet';
 import { STATUS_STYLE } from '@/constants';
 import type { RecruitmentRequest } from '@/types';
-import IconFromSvg from '../common/IconFromSvg.vue';
-import StatusTag from '../common/StatusTag.vue';
-import UserAvatar from '../common/UserAvatar.vue';
-import SheetContentCustom from '../custom/SheetContentCustom.vue';
-import Badge from '../ui/badge/Badge.vue';
-import ScrollArea from '../ui/scroll-area/ScrollArea.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
+import StatusTag from '@/components/common/StatusTag.vue';
+import UserAvatar from '@/components/common/UserAvatar.vue';
+import SheetContentCustom from '@/components/custom/SheetContentCustom.vue';
+import Badge from '@/components/ui/badge/Badge.vue';
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
+import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
+import CaseRound from '@/assets/icons/Outline/Case Round Minimalistic.svg';
 
 defineProps<{
 	open: boolean;
@@ -34,10 +36,15 @@ defineProps<{
 
 const emit = defineEmits<{
 	(e: 'update:open', payload: boolean): void;
+	(e: 'openDialog', payload: boolean): void;
 }>();
 
 const handleOpen = (isOpen: boolean) => {
 	emit('update:open', isOpen);
+};
+
+const handleReject = () => {
+	emit('openDialog', true);
 };
 </script>
 
@@ -63,12 +70,22 @@ const handleOpen = (isOpen: boolean) => {
 								:status="data?.status || ''" />
 						</div>
 					</div>
+					<div v-if="data?.reason" class="grid grid-cols-3 gap-6 py-[3px] items-start">
+						<div class="flex gap-2 items-center">
+							<IconFromSvg :icon="ChatLine" />
+							Reason for rejection
+						</div>
+						<div class="col-span-2 text-black">
+							After careful consideration, we have decided to reject the recruitment
+							request for the UI/UX designer position.
+						</div>
+					</div>
 					<div class="grid grid-cols-3 gap-6">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="User" />
 							Request from
 						</div>
-						<div class="flex gap-2 items-center col-span-2">
+						<div class="flex gap-2 items-center col-span-2 text-black">
 							<UserAvatar class="w-8 h-8" />
 							{{ data?.request_from }}
 						</div>
@@ -78,56 +95,56 @@ const handleOpen = (isOpen: boolean) => {
 							<IconFromSvg :icon="Building3" />
 							Branch
 						</div>
-						<div class="col-span-2">Da Nang</div>
+						<div class="col-span-2 text-black">Da Nang</div>
 					</div>
 					<div class="grid grid-cols-3 gap-6 py-1.5">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="Building" />
 							Department
 						</div>
-						<div class="col-span-2">Design</div>
+						<div class="col-span-2 text-black">Design</div>
 					</div>
 					<div class="grid grid-cols-3 gap-6 py-1.5">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="UserCircle" />
 							Role
 						</div>
-						<div class="col-span-2">{{ data?.position }}</div>
+						<div class="col-span-2 text-black">{{ data?.position }}</div>
 					</div>
 					<div class="grid grid-cols-3 gap-6 py-1.5">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="Chart2" />
 							Level
 						</div>
-						<div class="col-span-2">{{ data?.level }}</div>
+						<div class="col-span-2 text-black">{{ data?.level }}</div>
 					</div>
 					<div class="grid grid-cols-3 gap-6 py-1.5">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="Case" />
 							Employment type
 						</div>
-						<div class="col-span-2">Fultime</div>
+						<div class="col-span-2 text-black">Fultime</div>
 					</div>
 					<div class="grid grid-cols-3 gap-6 py-1.5">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="CheckList" />
 							Quantity
 						</div>
-						<div class="col-span-2">{{ data?.quantity }}</div>
+						<div class="col-span-2 text-black">{{ data?.quantity }}</div>
 					</div>
 					<div class="grid grid-cols-3 gap-6 py-1.5">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="Calendar" />
 							Expected date
 						</div>
-						<div class="col-span-2">{{ data?.expected_date }}</div>
+						<div class="col-span-2 text-black">{{ data?.expected_date }}</div>
 					</div>
 				</div>
 				<div class="mt-4">
 					<h3 class="flex gap-2 items-center">
 						<IconFromSvg :icon="Clipboard" />Job Description
 					</h3>
-					<p class="mt-2 text-sm">
+					<p class="mt-2 text-sm text-black">
 						We are seeking a passionate UI/UX Design Intern to join our dynamic mobile
 						app team. In this role, you will assist in creating intuitive and engaging
 						user interfaces, and collaborating with developers to enhance the overall
@@ -174,8 +191,16 @@ const handleOpen = (isOpen: boolean) => {
 				</div>
 			</ScrollArea>
 
+			<SheetFooter v-if="data?.status === 'Approved'">
+				<Button class="rounded-2xl h-auto py-3.5 px-6 bg-blue-500 hover:bg-blue-600"
+					><IconFromSvg :icon="CaseRound" />Create new job</Button
+				>
+			</SheetFooter>
 			<SheetFooter v-if="data?.status === 'To-do'">
-				<Button variant="outline" class="font-medium px-8 py-[13px] h-auto rounded-2xl"
+				<Button
+					variant="outline"
+					class="font-medium px-8 py-[13px] h-auto rounded-2xl"
+					@click="handleReject"
 					>Reject
 				</Button>
 				<Button

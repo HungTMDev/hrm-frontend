@@ -5,16 +5,16 @@ import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import CommonCombobox from '@/components/common/CommonCombobox.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
-import { candidateStages } from '@/constants';
-import type { ActionGroupType, Candidate } from '@/types';
+import { applicantStages } from '@/constants';
+import type { ActionGroupType, Applicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 
-export const candidateColumn = (
-	handleOpenSheet: (payload?: Candidate, view?: boolean) => void,
+export const applicantColumn = (
+	handleOpenSheet: (payload?: Applicant, view?: boolean) => void,
 	handleOpenAlert: (payload: any) => void,
-): ColumnDef<Candidate>[] => [
+): ColumnDef<Applicant>[] => [
 	{
 		id: 'select',
 		header: ({ table }) =>
@@ -85,10 +85,11 @@ export const candidateColumn = (
 		header: 'Stage',
 		cell: ({ row }) => {
 			return h(CommonCombobox, {
-				list: candidateStages,
+				list: applicantStages,
 				defaultValue: row.original.stage.toUpperCase(),
 				class: 'border-none hover:bg-inherit',
-				label: 'stage',
+				label: 'Stage',
+				onClick: (event: any) => event.stopPropagation(),
 			});
 		},
 		enableHiding: false,

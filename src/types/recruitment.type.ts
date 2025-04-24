@@ -1,4 +1,4 @@
-export interface Candidate {
+export interface Applicant {
 	name: string;
 	email: string;
 	phone: string;
@@ -14,6 +14,7 @@ export interface RecruitmentRequest {
 	request_from: string;
 	expected_date: string;
 	status: string;
+	reason?: string;
 }
 
 export interface Job {
@@ -23,4 +24,13 @@ export interface Job {
 	branch: string;
 	cadidates: number;
 	created_date: string;
+}
+
+export interface TalentPool {
+	name: string;
+	email: string;
+	phone: string;
+	job: string;
+	level: string;
+	last_modified: string;
 }

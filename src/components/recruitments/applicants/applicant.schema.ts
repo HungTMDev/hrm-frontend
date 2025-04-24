@@ -1,7 +1,7 @@
 import { ZUtils } from '@/lib/validation.utils';
 import { z } from 'zod';
 
-export const candidateSchema = z.object({
+export const applicantSchema = z.object({
 	fullname: z.string(),
 	phoneNumber: z.string(),
 	email: ZUtils.email(),

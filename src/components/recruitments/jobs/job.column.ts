@@ -51,7 +51,7 @@ export const jobColumn = (
 		cell: ({ row }) =>
 			h(StatusTag, {
 				status: row.original.status,
-				class: JOB_STATUS_STYLE[row.original.status.toLocaleUpperCase()],
+				class: JOB_STATUS_STYLE[row.original.status],
 			}),
 	},
 

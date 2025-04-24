@@ -17,6 +17,7 @@ interface Prop {
 	class?: HTMLAttributes['class'];
 	multiple?: boolean;
 	list: ComboboxType[];
+	list_size?: 'small' | 'medium' | 'large';
 }
 
 const props = defineProps<Prop>();

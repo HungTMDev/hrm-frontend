@@ -10,6 +10,7 @@ import { ref, type HTMLAttributes } from 'vue';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import CalendarCustom from '../custom/CalendarCustom.vue';
 import type { FormFieldCommon } from '@/types';
+import FormErrorCustom from './FormErrorCustom.vue';
 
 interface Prop extends FormFieldCommon {
 	class?: HTMLAttributes['class'];
@@ -79,7 +80,7 @@ const handleOpen = (open: boolean) => {
 						@update:model-value="handlePick(field.name)" />
 				</PopoverContent>
 			</Popover>
-			<FormMessage />
+			<FormErrorCustom />
 		</FormItem>
 	</FormField>
 </template>

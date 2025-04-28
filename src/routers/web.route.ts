@@ -211,6 +211,11 @@ export const webRoutes: RouteType[] = [
 				name: 'Meeting Schedule',
 				component: () => import('@/pages/meeting-schedule/index.vue'),
 			},
+			{
+				path: '/test',
+				name: 'Test',
+				component: () => import('@/pages/test/index.vue'),
+			},
 		],
 	},
 ];

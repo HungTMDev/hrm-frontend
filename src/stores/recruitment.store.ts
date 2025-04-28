@@ -1,10 +1,14 @@
-import type { TalentPool } from '@/types';
+import type { Applicant, TalentPool } from '@/types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useRecruitmentStore = defineStore('recruitment-store', () => {
 	//define State
 	const talentPools = ref<TalentPool[]>([]);
+	const applicantAppliedStage = ref<Applicant[]>([]);
+	const applicantProcessStage = ref<Applicant[]>([]);
+	const applicantWaitingStage = ref<Applicant[]>([]);
+	const applicantDoneStage = ref<Applicant[]>([]);
 
 	//define Action
 	const getAllTalentPool = () => {
@@ -100,8 +104,138 @@ export const useRecruitmentStore = defineStore('recruitment-store', () => {
 		];
 	};
 
+	const getAppliedStageData = () => {
+		applicantAppliedStage.value = [
+			{
+				name: 'Ngô Minh Tuấn',
+				email: 'minhtuan@icloud.com',
+				phone: '0278162049',
+				job: 'Product Manager',
+				cv: '',
+				stage: 'Applied',
+				status: 'Applied',
+			},
+			{
+				name: 'Trần Thị Bích',
+				email: 'bichtran8@yahoo.com',
+				phone: '0245837623',
+				job: 'UX Designer',
+				cv: '',
+				stage: 'Applied',
+				status: 'Applied',
+			},
+		];
+	};
+
+	const getWaitingStageData = () => {
+		applicantWaitingStage.value = [
+			{
+				name: 'Ngô Minh Tuấn',
+				email: 'minhtuan@icloud.com',
+				phone: '0278162049',
+				job: 'Product Manager',
+				cv: '',
+				stage: 'Waiting',
+				status: 'Passed',
+			},
+			{
+				name: 'Trần Thị Bích',
+				email: 'bichtran4@yahoo.com',
+				phone: '0245837623',
+				job: 'UX Designer',
+				cv: '',
+				stage: 'Waiting',
+				status: 'Failed',
+			},
+			{
+				name: 'Trần Thị Bích',
+				email: 'bichtran5@yahoo.com',
+				phone: '0245837623',
+				job: 'UX Designer',
+				cv: '',
+				stage: 'Waiting',
+				status: 'Sent',
+			},
+			{
+				name: 'Trần Thị Bích',
+				email: 'bichtran6@yahoo.com',
+				phone: '0245837623',
+				job: 'UX Designer',
+				cv: '',
+				stage: 'Waiting',
+				status: 'Accepted',
+			},
+			{
+				name: 'Trần Thị Bích',
+				email: 'bichtran7@yahoo.com',
+				phone: '0245837623',
+				job: 'UX Designer',
+				cv: '',
+				stage: 'Waiting',
+				status: 'Rejected',
+			},
+		];
+	};
+
+	const getDoneStageData = () => {
+		applicantDoneStage.value = [
+			{
+				name: 'Ngô Minh Tuấn',
+				email: 'minhtuan@icloud.com',
+				phone: '0278162049',
+				job: 'Product Manager',
+				cv: '',
+				stage: 'Done',
+				status: 'Hired',
+			},
+			{
+				name: 'Trần Thị Bích',
+				email: 'bichtran@yahoo.com',
+				phone: '0245837623',
+				job: 'UX Designer',
+				cv: '',
+				stage: 'Done',
+				status: 'Hired',
+			},
+			{
+				name: 'Trần Thị Bích',
+				email: 'bichtran1@yahoo.com',
+				phone: '0245837623',
+				job: 'UX Designer',
+				cv: '',
+				stage: 'Done',
+				status: 'Hired',
+			},
+			{
+				name: 'Trần Thị Bích',
+				email: 'bichtran2@yahoo.com',
+				phone: '0245837623',
+				job: 'UX Designer',
+				cv: '',
+				stage: 'Done',
+				status: 'Rejected',
+			},
+			{
+				name: 'Trần Thị Bích',
+				email: 'bichtran3@yahoo.com',
+				phone: '0245837623',
+				job: 'UX Designer',
+				cv: '',
+				stage: 'Done',
+				status: 'Rejected',
+			},
+		];
+	};
+
 	return {
 		talentPools,
+		applicantAppliedStage,
+		applicantProcessStage,
+		applicantWaitingStage,
+		applicantDoneStage,
 		getAllTalentPool,
+		getAppliedStageData,
+		getWaitingStageData,
+		getDoneStageData,
 	};
 });

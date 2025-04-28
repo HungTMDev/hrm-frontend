@@ -9,7 +9,7 @@ interface Prop {
 const props = defineProps<Prop>();
 </script>
 <template>
-	<section :class="cn('bg-white rounded-xl p-6', props.class)">
+	<section :class="cn('bg-white rounded-xl p-6 transition-all duration-300', props.class)">
 		<slot />
 	</section>
 </template>

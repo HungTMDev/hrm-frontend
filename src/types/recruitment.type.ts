@@ -5,6 +5,7 @@ export interface Applicant {
 	cv: string;
 	job: string;
 	stage: string;
+	status?: string;
 }
 
 export interface RecruitmentRequest {

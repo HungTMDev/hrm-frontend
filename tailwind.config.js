@@ -4,6 +4,9 @@ export default {
 	content: ['./index.html', './src/**/*.{ts,js,vue}', './src/**/**/*.{ts,js,vue}'],
 	theme: {
 		extend: {
+			screens: {
+				'3xl': '1920px',
+			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 			},

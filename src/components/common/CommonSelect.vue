@@ -37,12 +37,26 @@ const handleSelect = (value: any) => {
 		:model-value="modelValue"
 		@update:model-value="handleSelect"
 		:multiple="multiple">
-		<SelectTrigger :class="cn('w-[180px] focus:ring-0 focus:ring-offset-0 ', props.class)">
+		<SelectTrigger
+			:class="cn('w-[180px] focus:ring-0 focus:ring-offset-0 rounded-2xl', props.class)">
 			<SelectValue :placeholder="'Select...'" />
 		</SelectTrigger>
-		<SelectContent class="max-h-60">
+		<SelectContent
+			align="center"
+			class="max-h-60 rounded-2xl"
+			:class="
+				cn(
+					list_size === 'small' && 'w-[300px]',
+					list_size === 'medium' && 'w-[500px]',
+					list_size === 'large' && 'w-[700px]',
+				)
+			">
 			<SelectGroup>
-				<SelectItem v-for="(item, index) in list" :key="index" :value="item.value">
+				<SelectItem
+					v-for="(item, index) in list"
+					:key="index"
+					:value="item.value"
+					class="rounded-xl">
 					{{ item.label }}
 				</SelectItem>
 			</SelectGroup>

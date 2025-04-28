@@ -69,7 +69,7 @@ import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 
 		<div class="mt-4">
 			<div class="relative z-10 pb-8">
-				<div class="absolute bg-slate-200 h-full w-[3px] top-3 left-2.5 z-0"></div>
+				<div class="absolute bg-slate-100 h-full w-[3px] top-3 left-2.5 z-0"></div>
 				<div class="flex gap-2 items-center">
 					<div
 						class="w-6 h-6 rounded-full bg-slate-300 border-[6px] border-slate-100 self-start relative z-10"></div>

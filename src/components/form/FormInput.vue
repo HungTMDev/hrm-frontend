@@ -7,14 +7,23 @@ import FormControl from '../ui/form/FormControl.vue';
 import FormItem from '../ui/form/FormItem.vue';
 import FormLabel from '../ui/form/FormLabel.vue';
 import FormErrorCustom from './FormErrorCustom.vue';
+import { useVModel } from '@vueuse/core';
 
 interface Prop extends FormFieldCommon {
-	modelValue?: string | number;
 	type?: string;
 	icon?: any;
 }
 
 const props = defineProps<Prop>();
+
+const emits = defineEmits<{
+	(e: 'update:modelValue', payload: string | number): void;
+}>();
+
+const modelValue = useVModel(props, 'modelValue', emits, {
+	passive: true,
+	defaultValue: props.defaultValue,
+});
 </script>
 <template>
 	<FormField :model-value="modelValue" v-slot="{ componentField, errors }" :name="name">

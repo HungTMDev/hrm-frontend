@@ -1,89 +1,129 @@
 <script lang="ts" setup>
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
+import DateRangePicker from '@/components/common/DateRangePicker.vue';
+import StatusTag from '@/components/common/StatusTag.vue';
+import UserAvatar from '@/components/common/UserAvatar.vue';
+import Sheet from '@/components/training/Sheet.vue';
 import Button from '@/components/ui/button/Button.vue';
-import { FormField } from '@/components/ui/form';
-import FormControl from '@/components/ui/form/FormControl.vue';
-import FormItem from '@/components/ui/form/FormItem.vue';
-import FormLabel from '@/components/ui/form/FormLabel.vue';
-import FormMessage from '@/components/ui/form/FormMessage.vue';
-import Input from '@/components/ui/input/Input.vue';
-import { toTypedSchema } from '@vee-validate/zod';
-import { Form } from 'vee-validate';
-import { ref } from 'vue';
-import { z } from 'zod';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { APPLICANT_STAGE_STYLE, applicantStages } from '@/constants';
+import { useCustomToast } from '@/lib/customToast';
+import { cn } from '@/lib/utils';
+import { useAppStore } from '@/stores/app.store';
+import { onBeforeMount, ref } from 'vue';
+import draggable from 'vuedraggable';
 
-const schema = [
-	z.object({
-		name: z.string().min(1),
-		age: z.number().min(0),
-	}),
-	z.object({
-		address: z.string().min(1),
-	}),
-];
+export interface KanbanItem {
+	id: number;
+	name: string;
+	status: string;
+}
 
-const step = ref(1);
+export interface KanbanData {
+	id: number;
+	stage: string;
+	list: KanbanItem[];
+}
 
-const onSubmit = (values: any) => {
-	console.log(values);
+const appStore = useAppStore();
+const { showToast } = useCustomToast();
+
+const data = ref<KanbanData[]>([]);
+const isOpenSheet = ref(false);
+
+onBeforeMount(() => {
+	data.value = applicantStages.map((item, index) => {
+		const itemCount = Math.floor(Math.random() * 10);
+		const list = [];
+
+		for (let i = 0; i < itemCount; i++) {
+			list.push({
+				id: Math.floor(Math.random() * 1000000),
+				name: item.label + i,
+				status: item.value,
+			});
+		}
+
+		return {
+			id: index,
+			stage: item.label,
+			list,
+		};
+	});
+});
+
+const handleOpenSheet = () => {
+	isOpenSheet.value = true;
+};
+
+const handleCloseSheet = (open: boolean) => {
+	isOpenSheet.value = open;
+};
+
+const onAdd = (event: any, stage: string) => {
+	const currentItem = event.item.__draggable_context.element as KanbanItem;
+	currentItem.status = stage;
+	showToast({
+		message: 'Success!',
+		type: 'success',
+	});
 };
 </script>
 <template>
-	<ContentWrapper>
-		<Form
-			v-slot="{ meta, values, validate }"
-			as=""
-			keep-values
-			:validation-schema="toTypedSchema(schema[step - 1])">
-			<form
-				@submit="
-					async (e) => {
-						e.preventDefault();
-						await validate();
+	<ContentWrapper
+		:class="
+			cn(appStore.isSmallSidebar ? 'max-w-[calc(100vw-115px)]' : 'max-w-[calc(100vw-270px)]')
+		">
+		<div class="text-end">
+			<DateRangePicker />
+		</div>
+		<ScrollArea class="w-full pb-3 mt-4">
+			<div class="flex flex-row gap-4 w-fit">
+				<div
+					v-for="item in data"
+					:key="item.id"
+					class="p-4 pr-1 bg-slate-100 rounded-2xl w-[350px]">
+					<h3 class="text-base font-semibold mb-4">
+						{{ item.stage }} ({{ item.list.length }})
+					</h3>
+					<ScrollArea class="h-[calc(100vh-336px)] pr-3">
+						<draggable
+							:list="item.list"
+							item-key="id"
+							:animation="200"
+							group="recruitments"
+							class="flex flex-col gap-2 h-[calc(100vh-336px)]"
+							@add="(event) => onAdd(event, item.stage)">
+							<template #item="{ element }">
+								<Button
+									@click="handleOpenSheet"
+									variant="outline"
+									class="p-3 h-auto bg-white hover:bg-white items-start rounded-xl border flex flex-col gap-3 hover:cursor-pointer">
+									<div class="flex gap-2 items-center w-full">
+										<UserAvatar />
+										<div class="flex-1">
+											<p class="font-medium text-start">Nguyen Van An</p>
+											<span class="text-xs text-slate-600 text-start block"
+												>annguyen@gmail.com</span
+											>
+										</div>
+										<StatusTag
+											:status="element.status"
+											class="w-24"
+											:class="APPLICANT_STAGE_STYLE[element.status]" />
+									</div>
 
-						if (step === 2 && meta.valid) {
-							onSubmit(values);
-						}
+									<h3 class="font-medium text-base">{{ element.name }}</h3>
 
-						if (meta.valid && step < 2) {
-							step++;
-						}
-					}
-				">
-				<div v-if="step === 1">
-					<FormField v-slot="{ componentField }" name="name">
-						<FormItem>
-							<FormLabel>Full Name</FormLabel>
-							<FormControl>
-								<Input type="text" v-bind="componentField" />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					</FormField>
-					<FormField v-slot="{ componentField }" name="age">
-						<FormItem>
-							<FormLabel>Age</FormLabel>
-							<FormControl>
-								<Input type="number" v-bind="componentField" />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					</FormField>
-					<Button>Next</Button>
+									<span class="text-xs text-slate-600">March 20, 2025</span>
+								</Button>
+							</template>
+						</draggable>
+					</ScrollArea>
 				</div>
-				<div v-if="step === 2">
-					<FormField v-slot="{ componentField }" name="address">
-						<FormItem>
-							<FormLabel>Address</FormLabel>
-							<FormControl>
-								<Input type="text" v-bind="componentField" />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					</FormField>
-					<Button>Submit</Button>
-				</div>
-			</form>
-		</Form>
+			</div>
+			<ScrollBar orientation="horizontal" />
+		</ScrollArea>
 	</ContentWrapper>
+	<Sheet :open="isOpenSheet" @update:open="handleCloseSheet" />
 </template>

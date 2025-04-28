@@ -22,11 +22,12 @@ import ComboboxInput from '../ui/combobox/ComboboxInput.vue';
 import ComboboxEmpty from '../ui/combobox/ComboboxEmpty.vue';
 import ScrollArea from '../ui/scroll-area/ScrollArea.vue';
 
-interface Prop extends FormFieldCommon {
+interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
 	list: ComboboxType[];
 	modelValue?: string | string[];
 	multiple?: boolean;
 	isSearch?: boolean;
+	list_size?: 'small' | 'medium' | 'large';
 }
 
 const props = defineProps<Prop>();
@@ -125,7 +126,15 @@ const handleOpen = (value: boolean) => {
 					</ComboboxAnchor>
 				</FormControl>
 
-				<ComboboxList class="w-[350px] rounded-2xl">
+				<ComboboxList
+					:class="
+						cn(
+							'w-[300px] rounded-2xl',
+							list_size === 'small' && 'w-[300px]',
+							list_size === 'medium' && 'w-[500px]',
+							list_size === 'large' && 'w-[700px]',
+						)
+					">
 					<ComboboxGroup
 						v-if="list.length === 0"
 						class="text-sm min-h-20 grid place-items-center">

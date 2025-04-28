@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import SheetContentCustom from '@/components/custom/SheetContentCustom.vue';
 import { Sheet } from '@/components/ui/sheet';
-import CandidatesSheetView from './sheet/CandidatesSheetView.vue';
-import CandidatesSheetForm from './sheet/CandidatesSheetForm.vue';
+import TalentPoolSheetView from './sheet/TalentPoolSheetView.vue';
+import TalentPoolSheetForm from './sheet/TalentPoolSheetForm.vue';
 
 defineProps<{
 	open: boolean;
@@ -23,8 +23,8 @@ const handleOpen = (isOpen: boolean) => {
 <template>
 	<Sheet :open="open" @update:open="handleOpen">
 		<SheetContentCustom class="rounded-l-3xl sm:max-w-[880px] p-8 flex flex-col text-slate-600">
-			<CandidatesSheetView v-if="isView" @edit="emit('edit')" />
-			<CandidatesSheetForm v-else :data="data" />
+			<!-- <TalentPoolSheetView /> -->
+			<TalentPoolSheetForm />
 		</SheetContentCustom>
 	</Sheet>
 </template>

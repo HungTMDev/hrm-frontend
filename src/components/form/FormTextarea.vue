@@ -11,7 +11,7 @@ const props = defineProps<Prop>();
 </script>
 
 <template>
-	<FormField v-slot="{ componentField }" :name="name">
+	<FormField :model-value="modelValue" v-slot="{ componentField }" :name="name">
 		<FormItem class="flex flex-col">
 			<FormLabel>{{ label }}</FormLabel>
 			<FormControl>

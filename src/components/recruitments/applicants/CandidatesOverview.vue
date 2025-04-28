@@ -9,12 +9,12 @@ import DataTable from '@/components/datatable/DataTable.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { valueUpdater } from '@/lib/utils';
 import router from '@/routers';
-import type { Candidate } from '@/types';
+import type { Applicant } from '@/types';
 import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
 import { onMounted, ref } from 'vue';
-import { candidateColumn } from './candidate.column';
+import { applicantColumn } from './applicant.column';
 
-const data: Candidate[] = [
+const data: Applicant[] = [
 	{
 		name: 'John Doe',
 		email: 'john.doe@example.com',
@@ -64,7 +64,7 @@ const handleOpenAlert = () => {};
 
 const table = useVueTable({
 	data,
-	columns: candidateColumn(handleOpenSheet, handleOpenAlert),
+	columns: applicantColumn(handleOpenSheet, handleOpenAlert),
 	getCoreRowModel: getCoreRowModel(),
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	state: {
@@ -84,25 +84,25 @@ onMounted(() => {
 });
 
 const handleNavigate = () => {
-	router.push('candidates');
+	router.push('applicants');
 };
 </script>
 <template>
 	<div>
 		<div class="flex justify-between">
-			<Title>Candidates</Title>
+			<Title>Applicants</Title>
 			<Button variant="link" class="text-blue-500" @click="handleNavigate">View all</Button>
 		</div>
 		<div class="flex gap-4 items-center my-4">
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search candidates" />
+				placeholder="Search applicants" />
 			<Button variant="outline" class="w-fit rounded-full">
 				<IconFromSvg :icon="Tuning" /> Filter
 			</Button>
 			<Button class="bg-blue-500 hover:bg-blue-600 rounded-3xl font-medium">
-				<IconFromSvg :icon="UserPlus" />Add new candidate
+				<IconFromSvg :icon="UserPlus" />Add new applicant
 			</Button>
 		</div>
 		<div>

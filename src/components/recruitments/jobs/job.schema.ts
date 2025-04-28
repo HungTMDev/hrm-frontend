@@ -18,5 +18,5 @@ export const jobSchema = z.object({
 	workExperience: z.string().min(1, 'Work experience is required'),
 	appearance: z.string().optional(),
 	jobDesc: z.string(),
-	requiredSkill: z.array(z.string()),
+	requiredSkill: z.string(),
 });

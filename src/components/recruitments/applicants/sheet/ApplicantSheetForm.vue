@@ -20,16 +20,20 @@ import { FormField } from '@/components/ui/form';
 import FormControl from '@/components/ui/form/FormControl.vue';
 import FormItem from '@/components/ui/form/FormItem.vue';
 import Input from '@/components/ui/input/Input.vue';
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
-import { candidateSchema } from '../candidate.schema';
-import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
+import { applicantSchema } from '../applicant.schema';
 
-const formSchema = toTypedSchema(candidateSchema);
+defineProps<{
+	data: any;
+}>();
+
+const formSchema = toTypedSchema(applicantSchema);
 
 const { handleSubmit } = useForm({
 	validationSchema: formSchema,

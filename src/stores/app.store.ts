@@ -50,8 +50,13 @@ export const useAppStore = defineStore('app-store', () => {
 				},
 				{
 					id: '20003',
-					path: '/recruitments/candidates',
-					name: 'Candidates',
+					path: '/recruitments/applicants',
+					name: 'Applicants',
+				},
+				{
+					id: '20004',
+					path: '/recruitments/talent-pool',
+					name: 'Talent pool',
 				},
 			],
 		},

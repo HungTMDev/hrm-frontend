@@ -3,8 +3,8 @@ import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
-import { recruitmentRequestColumn } from '@/components/recruitments/recruitment-request.column';
-import RecruitmentSheet from '@/components/recruitments/RecruitmentSheet.vue';
+import { recruitmentRequestColumn } from '@/components/recruitments/recruitment-request/recruitment-request.column';
+import RecruitmentSheet from '@/components/recruitments/recruitment-request/RecruitmentSheet.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
 import type { FilterAccordion, RecruitmentRequest } from '@/types';
@@ -16,6 +16,7 @@ import Case from '@/assets/icons/Outline/Case.svg';
 import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
 import { ref } from 'vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';
+import RejectDialog from '@/components/common/RejectDialog.vue';
 
 const data: RecruitmentRequest[] = [
 	{
@@ -48,7 +49,7 @@ const data: RecruitmentRequest[] = [
 		level: 'Intern',
 		request_from: 'Phạm Anh Tú',
 		expected_date: 'March 5, 2025',
-		status: 'Approved',
+		status: 'Canceled',
 	},
 	{
 		position: 'Mobile App Marketer',
@@ -117,6 +118,7 @@ const data: RecruitmentRequest[] = [
 ];
 
 const isOpenSheet = ref(false);
+const isOpenDialog = ref(false);
 const dataSent = ref<RecruitmentRequest>();
 
 const table = useVueTable({
@@ -138,6 +140,14 @@ const handleOpenSheet = (data: any) => {
 
 const handleCloseSheet = (open: boolean) => {
 	isOpenSheet.value = open;
+};
+
+const handleOpenDialog = () => {
+	isOpenDialog.value = true;
+};
+
+const handleCloseDialog = (open: boolean) => {
+	isOpenDialog.value = open;
 };
 
 const accordionItems: FilterAccordion[] = [
@@ -265,5 +275,10 @@ const accordionItems: FilterAccordion[] = [
 		<Separator class="mb-4" />
 		<DataTablePagination :table="table" />
 	</ContentWrapper>
-	<RecruitmentSheet :data="dataSent" :open="isOpenSheet" @update:open="handleCloseSheet" />
+	<RecruitmentSheet
+		:data="dataSent"
+		:open="isOpenSheet"
+		@update:open="handleCloseSheet"
+		@open-dialog="handleOpenDialog" />
+	<RejectDialog :open="isOpenDialog" @update:open="handleCloseDialog" />
 </template>

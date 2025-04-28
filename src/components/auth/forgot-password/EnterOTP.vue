@@ -7,6 +7,9 @@ import router from '@/routers';
 import { onUnmounted, ref } from 'vue';
 import PinInput from './PinInput.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
+import { useAuthStore } from '@/stores/auth.store';
+
+const authStore = useAuthStore();
 
 const otp = ref('');
 const countdown = ref(0);
@@ -44,11 +47,15 @@ const handleOTP = (value: string) => {
 };
 
 const navigateBack = () => {
+	authStore.forgot_password_token = undefined;
 	router.back();
 };
 
-const navigateResetPasword = () => {
-	router.push('reset-password');
+const navigateResetPasword = async () => {
+	if (otp.value !== '') {
+		const status = await authStore.verifyCode(otp.value);
+		if (status === 204) router.push('reset-password');
+	}
 };
 </script>
 <template>

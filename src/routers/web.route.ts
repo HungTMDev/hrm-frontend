@@ -4,6 +4,7 @@ interface RouteType {
 	component?: any;
 	redirect: any;
 	children?: any;
+	meta?: any;
 }
 
 export const webRoutes: RouteType[] = [
@@ -31,11 +32,17 @@ export const webRoutes: RouteType[] = [
 					{
 						path: 'enter-otp',
 						name: 'Enter otp',
+						meta: {
+							requiresForgotPassword: true,
+						},
 						component: () => import('@/components/auth/forgot-password/EnterOTP.vue'),
 					},
 					{
 						path: 'reset-password',
 						name: 'Reset password',
+						meta: {
+							requiresForgotPassword: true,
+						},
 						component: () =>
 							import('@/components/auth/forgot-password/ResetPassword.vue'),
 					},
@@ -48,6 +55,9 @@ export const webRoutes: RouteType[] = [
 		name: 'Home',
 		redirect: '/dashboard',
 		component: () => import('@/layouts/MainLayout.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 		children: [
 			{
 				path: '/dashboard',

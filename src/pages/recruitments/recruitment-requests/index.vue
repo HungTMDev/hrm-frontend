@@ -7,7 +7,7 @@ import { recruitmentRequestColumn } from '@/components/recruitments/recruitment-
 import RecruitmentSheet from '@/components/recruitments/RecruitmentSheet.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
-import type { RecruitmentRequest } from '@/types';
+import type { FilterAccordion, RecruitmentRequest } from '@/types';
 import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
 import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
@@ -140,7 +140,7 @@ const handleCloseSheet = (open: boolean) => {
 	isOpenSheet.value = open;
 };
 
-const accordionItems = [
+const accordionItems: FilterAccordion[] = [
 	{
 		value: 'status',
 		title: 'Status',
@@ -159,6 +159,7 @@ const accordionItems = [
 			},
 		],
 		icon: ChartSqare,
+		type: 'list',
 	},
 	{
 		value: 'branch',
@@ -174,6 +175,7 @@ const accordionItems = [
 			},
 		],
 		icon: Building3,
+		type: 'list',
 	},
 	{
 		value: 'department',
@@ -205,6 +207,7 @@ const accordionItems = [
 			},
 		],
 		icon: Building,
+		type: 'list',
 	},
 	{
 		value: 'employment_type',
@@ -220,6 +223,7 @@ const accordionItems = [
 			},
 		],
 		icon: Case,
+		type: 'list',
 	},
 	{
 		value: 'level',
@@ -247,6 +251,7 @@ const accordionItems = [
 			},
 		],
 		icon: Chart2,
+		type: 'list',
 	},
 ];
 </script>

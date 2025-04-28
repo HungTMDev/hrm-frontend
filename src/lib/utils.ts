@@ -107,3 +107,19 @@ export const compareQuarters = (q1: string, q2: string): number => {
 
 	return index1 - index2;
 };
+
+export const parseDateTime = (dateString: string) => {
+	const date = new Date(dateString);
+
+	const yyyy = date.getFullYear();
+	const mm = String(date.getMonth() + 1).padStart(2, '0');
+	const dd = String(date.getDate()).padStart(2, '0');
+
+	const hours = date.getHours();
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+
+	return {
+		date: `${yyyy}-${mm}-${dd}`,
+		time: `${hours}:${minutes}`,
+	};
+};

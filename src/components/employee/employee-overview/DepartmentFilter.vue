@@ -79,7 +79,7 @@ const handleReset = () => {
 					:value="item"
 					class="flex gap-2 justify-start items-center p-2">
 					<Checkbox
-						class="w-5 h-5 rounded-md border-gray-200 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+						class="w-5 h-5 rounded-md data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
 						:model-value="!selectedDepartment.some((i) => i.value === item.value)" />
 					{{ item.label }}
 				</ComboboxItem>

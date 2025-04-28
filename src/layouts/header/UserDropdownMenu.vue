@@ -15,9 +15,15 @@ import router from '@/routers';
 import { LogOut, User } from 'lucide-vue-next';
 import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
+import { useAuthStore } from '@/stores/auth.store';
 
-const handleLogout = () => {
-	router.push('/auth');
+const authStore = useAuthStore();
+
+const handleLogout = async () => {
+	const status = await authStore.logout();
+	if (status === 204) {
+		router.push('/auth');
+	}
 };
 </script>
 

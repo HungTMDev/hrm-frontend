@@ -6,6 +6,19 @@ export * from './employee.type';
 export * from './payroll.type';
 export * from './documents.type';
 
+export interface IApiResponseV1<T> {
+	status: boolean;
+	statusCode: number;
+	data: T;
+}
+
+export interface ITokenResponse {
+	access_token: string;
+	refresh_token: string;
+	user_id: string;
+	token_expires: number;
+}
+
 export interface RouteType {
 	id: string;
 	path: string;

@@ -33,7 +33,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
 		<span>
 			<Checkbox
 				:model-value="forwarded.modelValue"
-				class="data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-200" />
+				class="data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500" />
 		</span>
 		<slot />
 	</DropdownMenuCheckboxItem>

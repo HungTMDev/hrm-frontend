@@ -93,7 +93,7 @@ axiosClient.interceptors.response.use(
 		});
 
 		NProgress.done();
-		return error.response;
+		throw new Error(error);
 	},
 );
 export default axiosClient;

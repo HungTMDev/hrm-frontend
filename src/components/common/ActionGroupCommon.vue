@@ -10,15 +10,15 @@ import {
 
 import MenuDots from '@/assets/icons/Bold/Menu Dots.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import type { ActionGroupType } from '@/types';
+import type { IActionGroupType } from '@/types';
 
 const props = defineProps<{
-	actions: ActionGroupType[];
+	actions: IActionGroupType[];
 }>();
 
 const emit = defineEmits();
 
-const handleAction = (action: ActionGroupType) => {
+const handleAction = (action: IActionGroupType) => {
 	emit(action.label.toLowerCase());
 };
 </script>

@@ -18,112 +18,57 @@ import { jobColumn } from '@/components/recruitments/jobs/job.column';
 import JobSheet from '@/components/recruitments/jobs/JobSheet.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
-import { ROWS_PER_PAGE } from '@/constants';
-import { useCustomToast } from '@/lib/customToast';
+import { useBranch } from '@/composables/branch/useBranch';
+import { useDepartment } from '@/composables/department/useDepartment';
+import { useJob } from '@/composables/recruitment/job/useJob';
+import { useDeleteJob } from '@/composables/recruitment/job/useUpdateJob';
+import { DEFAULT_PAGINATION, listEmploymentType, listJobLevel, listJobStatus } from '@/constants';
 import { valueUpdater } from '@/lib/utils';
-import type { FilterData, Job } from '@/types';
-import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
-import { ref } from 'vue';
+import type { FilterAccordion, FilterData, IJob, IJobFilter, IMeta } from '@/types';
+import {
+	getCoreRowModel,
+	useVueTable,
+	type PaginationState,
+	type VisibilityState,
+} from '@tanstack/vue-table';
+import { computed, ref } from 'vue';
 
-const data: Job[] = [
-	{
-		position: 'Mobile App Marketer',
-		status: 'Opening',
-		level: 'Intern',
-		branch: 'Đà Nẵng',
-		cadidates: 53,
-		created_date: 'March 1, 2025',
-	},
-	{
-		position: 'Mobile App Marketer',
-		status: 'Draft',
-		level: 'Intern',
-		branch: 'Hà Nội',
-		cadidates: 51,
-		created_date: 'March 5, 2025',
-	},
-	{
-		position: 'Data Analyst',
-		status: 'Pending',
-		level: 'Intern',
-		branch: 'Đà Nẵng',
-		cadidates: 45,
-		created_date: 'May 1, 2025',
-	},
-	{
-		position: 'Content Writer',
-		status: 'Opening',
-		level: 'Junior',
-		branch: 'Đà Nẵng',
-		cadidates: 41,
-		created_date: 'March 28, 2025',
-	},
-	{
-		position: 'DevOps Engineer',
-		status: 'Opening',
-		level: 'Senior',
-		branch: 'Đà Nẵng',
-		cadidates: 36,
-		created_date: 'April 20, 2025',
-	},
-	{
-		position: 'Blockchain Developer',
-		status: 'Pending',
-		level: 'Junior',
-		branch: 'Hà Nội',
-		cadidates: 34,
-		created_date: 'April 30, 2025',
-	},
-	{
-		position: 'Android Developer',
-		status: 'Closed',
-		level: 'Junior',
-		branch: 'Hà Nội',
-		cadidates: 31,
-		created_date: 'March 14, 2025',
-	},
-	{
-		position: 'Web Developer',
-		status: 'Pending',
-		level: 'Senior',
-		branch: 'Hà Nội',
-		cadidates: 29,
-		created_date: 'April 15, 2025',
-	},
-	{
-		position: 'Graphic Designer',
-		status: 'Closed',
-		level: 'Intern',
-		branch: 'Đà Nẵng',
-		cadidates: 27,
-		created_date: 'April 5, 2025',
-	},
-	{
-		position: 'UI/UX Designer',
-		status: 'Opening',
-		level: 'Intern',
-		branch: 'Hà Nội',
-		cadidates: 25,
-		created_date: 'March 22, 2025',
-	},
-	{
-		position: 'Product Manager',
-		status: 'Opening',
-		level: 'Mid-level',
-		branch: 'Hà Nội',
-		cadidates: 22,
-		created_date: 'April 2, 2025',
-	},
-];
-
-const { showToast } = useCustomToast();
+const { data: branches } = useBranch();
+const { data: departments } = useDepartment();
 
 const isOpenSheet = ref(false);
 const isOpenAlert = ref(false);
 const isView = ref(false);
+const dataSent = ref<IJob>();
+
 const rowSelection = ref({});
 const columnVisibility = ref<VisibilityState>({});
-const dataSent = ref<Job>();
+
+const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
+const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
+const filterPayload = ref<Partial<IJobFilter>>({});
+
+const pagination = computed<PaginationState>(() => ({
+	pageIndex: pageIndex.value,
+	pageSize: pageSize.value,
+}));
+
+const { data, isLoading } = useJob(pagination, filterPayload);
+const { mutate: deleteJob, isPending } = useDeleteJob(pagination, filterPayload);
+
+const jobs = computed<IJob[]>(() => data.value?.data || []);
+const meta = computed<IMeta | undefined>(() => data.value?.meta);
+const pageCount = computed(() => meta.value?.total_pages);
+
+const setPageSize = (newSize: number) => (pageSize.value = newSize);
+const setPageIndex = (newIndex: number) => (pageIndex.value = newIndex);
+
+const setPagination = ({ pageIndex, pageSize }: PaginationState): PaginationState => {
+	setPageIndex(pageIndex);
+	setPageSize(pageSize);
+
+	return { pageIndex, pageSize };
+};
 
 const handleCloseSheet = (open: boolean) => {
 	dataSent.value = undefined;
@@ -131,7 +76,7 @@ const handleCloseSheet = (open: boolean) => {
 	isOpenSheet.value = open;
 };
 
-const handleOpenAlert = (payload: any) => {
+const handleOpenAlert = (payload: IJob) => {
 	dataSent.value = payload;
 	isOpenAlert.value = true;
 };
@@ -141,18 +86,27 @@ const handleCloseAlert = (open: boolean) => {
 	dataSent.value = undefined;
 };
 
-const handleOpenSheet = (payload?: Job, view?: boolean) => {
+const handleOpenSheet = (payload?: IJob, view?: boolean) => {
+	if (payload instanceof PointerEvent) {
+		dataSent.value = undefined;
+	} else {
+		dataSent.value = payload;
+	}
 	isView.value = view || false;
-	dataSent.value = payload;
 	isOpenSheet.value = true;
 };
 
 const table = useVueTable({
-	data,
+	get data() {
+		return jobs.value;
+	},
+	get pageCount() {
+		return pageCount.value ?? 0;
+	},
+	get rowCount() {
+		return meta.value?.total_records ?? 0;
+	},
 	columns: jobColumn(handleOpenSheet, handleOpenAlert),
-	getCoreRowModel: getCoreRowModel(),
-	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
-	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -162,133 +116,70 @@ const table = useVueTable({
 		},
 	},
 	initialState: {
-		pagination: {
-			pageIndex: 0,
-			pageSize: ROWS_PER_PAGE[0],
-		},
+		pagination: pagination.value,
 	},
+	manualPagination: true,
+	getCoreRowModel: getCoreRowModel(),
+	onPaginationChange: (updater) => {
+		if (typeof updater === 'function') {
+			setPagination(updater(pagination.value));
+		} else {
+			setPagination(updater);
+		}
+	},
+	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
+	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 });
 
-const accordionItems = [
+const accordionItems = computed<FilterAccordion[]>(() => [
 	{
 		value: 'status',
 		title: 'Status',
-		items: [
-			{
-				label: 'To-do',
-				value: 'to-do',
-			},
-			{
-				label: 'Rejected',
-				value: 'rejected',
-			},
-			{
-				label: 'Approved',
-				value: 'approved',
-			},
-		],
+		items: listJobStatus,
 		icon: ChartSqare,
+		type: 'list',
 	},
 	{
 		value: 'branch',
 		title: 'Branch',
-		items: [
-			{
-				label: 'Đà Nẵng',
-				value: 'dn',
-			},
-			{
-				label: 'Hà Nội',
-				value: 'hn',
-			},
-		],
+		items: branches.value?.map((item) => ({ label: item.name, value: item.id })) || [],
 		icon: Building3,
+		type: 'list',
 	},
 	{
 		value: 'department',
 		title: 'Department',
-		items: [
-			{
-				label: 'Design',
-				value: 'design',
-			},
-			{
-				label: 'Marketing',
-				value: 'marketing',
-			},
-			{
-				label: 'Product',
-				value: 'product',
-			},
-			{
-				label: 'Development',
-				value: 'development',
-			},
-			{
-				label: 'Back Office',
-				value: 'BO',
-			},
-			{
-				label: 'E-commerce',
-				value: 'ecommerce',
-			},
-		],
+		items: departments.value?.map((item) => ({ label: item.name, value: item.id })) || [],
 		icon: Building,
+		type: 'list',
 	},
 	{
 		value: 'employment_type',
 		title: 'Employment type',
-		items: [
-			{
-				label: 'Part-time',
-				value: 'part_time',
-			},
-			{
-				label: 'Full-time',
-				value: 'full_time',
-			},
-		],
+		items: listEmploymentType,
 		icon: Case,
+		type: 'list',
 	},
 	{
 		value: 'level',
 		title: 'Level',
-		items: [
-			{
-				label: 'Intern',
-				value: 'Intern',
-			},
-			{
-				label: 'Fresher',
-				value: 'Fresher',
-			},
-			{
-				label: 'Junior',
-				value: 'Junior',
-			},
-			{
-				label: 'Mid-Level',
-				value: 'Mid_Level',
-			},
-			{
-				label: 'Senior',
-				value: 'Senior',
-			},
-		],
+		items: listJobLevel,
 		icon: Chart2,
+		type: 'list',
 	},
-];
-
-const handleFilter = (payload: FilterData[]) => {
-	console.log(payload);
-};
+]);
 
 const handleDelete = () => {
-	showToast({
-		message: 'Job deleted successfully',
-		description: 'The job has been deleted successfully!',
-		type: 'success',
+	if (dataSent.value) deleteJob(dataSent.value.id);
+	isOpenAlert.value = false;
+};
+
+const handleFilter = (payload: FilterData[]) => {
+	const newFilter: Record<string, string[]> = {};
+	payload.forEach((item) => {
+		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
+	filterPayload.value = newFilter;
 };
 </script>
 <template>
@@ -309,7 +200,7 @@ const handleDelete = () => {
 		</div>
 		<div v-else class="my-4 flex gap-2 justify-end">
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
-			<FilterPopover :list="[]" @update:value="handleFilter" />
+			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
 			<Button
 				class="bg-blue-500 hover:bg-blue-600 text-white rounded-2xl"
 				@click="handleOpenSheet">
@@ -318,16 +209,26 @@ const handleDelete = () => {
 			</Button>
 		</div>
 		<div class="flex flex-col gap-2">
-			<DataTable :table="table" @row:click="(payload) => handleOpenSheet(payload, true)" />
+			<DataTable
+				:table="table"
+				@row:click="(payload) => handleOpenSheet(payload, true)"
+				:is-loading="isLoading" />
 			<Separator class="mb-4" />
-			<DataTablePagination :table="table" />
+			<DataTablePagination :table="table" :meta="meta" />
 		</div>
 	</ContentWrapper>
 	<JobSheet
 		:open="isOpenSheet"
+		:data="dataSent"
+		:is-view="isView"
+		:pagination="pagination"
+		:filter="filterPayload"
 		@update:open="handleCloseSheet"
 		@open-alert="handleOpenAlert"
-		:is-view="isView"
 		@edit="isView = false" />
-	<AlertPopup :open="isOpenAlert" @update:open="handleCloseAlert" @confirm="handleDelete" />
+	<AlertPopup
+		:open="isOpenAlert"
+		:is-loading="isPending"
+		@update:open="handleCloseAlert"
+		@confirm="handleDelete" />
 </template>

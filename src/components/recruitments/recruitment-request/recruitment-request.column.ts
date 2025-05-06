@@ -1,17 +1,22 @@
-import { STATUS_STYLE } from '@/constants';
-import type { ActionGroupType, RecruitmentRequest } from '@/types';
-import type { ColumnDef } from '@tanstack/vue-table';
-import { h } from 'vue';
-import { Checkbox } from '../../ui/checkbox';
-import { Check, Minus } from 'lucide-vue-next';
-import Eye from '@/assets/icons/Outline/Eye.svg';
 import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
 import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
-import Case from '@/assets/icons/Outline/Case Round Minimalistic.svg';
-import StatusTag from '@/components/common/StatusTag.vue';
+import Eye from '@/assets/icons/Outline/Eye.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
+import StatusTag from '@/components/common/StatusTag.vue';
+import { RECRUITMENT_REQUEST_STATUS_STYLE } from '@/constants';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import type { IActionGroupType, IRecruitmentRequest } from '@/types';
+import type { ColumnDef } from '@tanstack/vue-table';
+import { Check, Minus } from 'lucide-vue-next';
+import { h } from 'vue';
+import { Checkbox } from '../../ui/checkbox';
 
-export const recruitmentRequestColumn = (): ColumnDef<RecruitmentRequest>[] => [
+export const recruitmentRequestColumn = (
+	handleOpenSheet: (payload: IRecruitmentRequest) => void,
+	handleSubmit: (id: string) => void,
+	handleApproveRequest: (id: string) => void,
+	handleRejectRequest: (id: string) => void,
+): ColumnDef<IRecruitmentRequest>[] => [
 	{
 		id: 'select',
 		header: ({ table }) =>
@@ -39,9 +44,9 @@ export const recruitmentRequestColumn = (): ColumnDef<RecruitmentRequest>[] => [
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'position',
-		header: 'Position',
-		cell: ({ row }) => row.original.position,
+		accessorKey: 'title',
+		header: 'Title',
+		cell: ({ row }) => row.original.title,
 	},
 	{
 		accessorKey: 'quantity',
@@ -56,19 +61,19 @@ export const recruitmentRequestColumn = (): ColumnDef<RecruitmentRequest>[] => [
 	{
 		accessorKey: 'request_from',
 		header: 'Request From',
-		cell: ({ row }) => row.original.request_from,
+		cell: ({ row }) => row.original.hiring_manager.name,
 	},
 	{
 		accessorKey: 'expected_date',
 		header: 'Expected Date',
-		cell: ({ row }) => row.original.expected_date,
+		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.expected_start_date).date,
 	},
 	{
 		accessorKey: 'status',
 		header: 'Status',
 		cell: ({ row }) =>
 			h(StatusTag, {
-				class: [STATUS_STYLE[row.original.status]],
+				class: [RECRUITMENT_REQUEST_STATUS_STYLE[row.original.status]],
 				status: row.original.status,
 			}),
 	},
@@ -76,38 +81,71 @@ export const recruitmentRequestColumn = (): ColumnDef<RecruitmentRequest>[] => [
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: ActionGroupType[] =
-				row.original.status !== 'Approved'
-					? [
-							{
-								label: 'View',
-								icon: Eye,
-								style: 'text-slate-600',
-							},
-							{
-								label: 'Approve',
-								icon: CheckCircle,
-								style: 'text-green-500',
-							},
-							{
-								label: 'Reject',
-								icon: CloseCircle,
-								style: 'text-red-500',
-							},
-						]
-					: [
-							{
-								label: 'View',
-								icon: Eye,
-								style: 'text-slate-600',
-							},
-							{
-								label: 'Create job',
-								icon: Case,
-								style: 'text-slate-600',
-							},
-						];
-			return h(ActionGroupCommon, { actions });
+			const actions = (): IActionGroupType[] => {
+				if (row.original.status === 'DRAFT') {
+					return [
+						{
+							label: 'View',
+							icon: Eye,
+							style: 'text-slate-600',
+						},
+						{
+							label: 'Submit',
+							icon: Eye,
+							style: 'text-slate-600',
+						},
+					];
+				}
+				if (row.original.status === 'ON_HOLD') {
+					return [
+						{
+							label: 'View',
+							icon: Eye,
+							style: 'text-slate-600',
+						},
+						{
+							label: 'Approve',
+							icon: CheckCircle,
+							style: 'text-green-500',
+						},
+						{
+							label: 'Reject',
+							icon: CloseCircle,
+							style: 'text-red-500',
+						},
+					];
+				}
+				return [
+					{
+						label: 'View',
+						icon: Eye,
+						style: 'text-slate-600',
+					},
+				];
+			};
+
+			const onView = () => {
+				handleOpenSheet(row.original);
+			};
+
+			const onSubmit = () => {
+				handleSubmit(row.original.id);
+			};
+
+			const onApprove = () => {
+				handleApproveRequest(row.original.id);
+			};
+
+			const onReject = () => {
+				handleRejectRequest(row.original.id);
+			};
+			return h(ActionGroupCommon, {
+				actions: actions(),
+				onSubmit,
+				onView,
+				onReject,
+				onApprove,
+			});
 		},
 	},
 ];

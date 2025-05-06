@@ -14,19 +14,19 @@ import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import type { ComboboxType, FormFieldCommon } from '@/types';
 import { Check } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { onMounted, onUpdated, ref } from 'vue';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import Button from '../ui/button/Button.vue';
-import FormErrorCustom from './FormErrorCustom.vue';
-import ComboboxInput from '../ui/combobox/ComboboxInput.vue';
 import ComboboxEmpty from '../ui/combobox/ComboboxEmpty.vue';
+import ComboboxInput from '../ui/combobox/ComboboxInput.vue';
 import ScrollArea from '../ui/scroll-area/ScrollArea.vue';
+import FormErrorCustom from './FormErrorCustom.vue';
 
 interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
 	list: ComboboxType[];
-	modelValue?: string | string[];
 	multiple?: boolean;
 	isSearch?: boolean;
+	modelValue?: string | string[];
 	list_size?: 'small' | 'medium' | 'large';
 }
 
@@ -40,31 +40,40 @@ const emit = defineEmits<{
 }>();
 
 const open = ref(false);
+const value = ref<ComboboxType | ComboboxType[]>();
 const comboboxInput = ref(props.placeholder ? props.placeholder : 'Select');
 
-const handleSelect = (value: any, fieldName: string) => {
+const handleSelect = (values: any, fieldName: string) => {
 	if (props.multiple) {
-		const data = (value as ComboboxType[]).map((item) => item.value);
+		const data = (values as ComboboxType[]).map((item) => item.value);
 		emit('update:modelValue', { fieldName: fieldName, data: data ? data : undefined });
 		comboboxInput.value = data.length > 0 ? `${data.length} Selected` : props.placeholder || '';
 		return;
 	}
-	const data = value as ComboboxType;
-	comboboxInput.value = data.label;
+	const data = values as ComboboxType;
+	value.value = data;
 	emit('update:modelValue', { fieldName, data: data.value });
 };
 
 const handleOpen = (value: boolean) => {
 	open.value = value;
 };
+
+onMounted(() => {
+	value.value = props.list.find((item) => item.value === props.modelValue);
+});
+
+onUpdated(() => {
+	value.value = props.list.find((item) => item.value === props.modelValue);
+});
 </script>
 <template>
-	<FormField v-slot="{ errors, field }" :name="name" :model-value="modelValue">
+	<FormField v-slot="{ errors, field }" :name="name">
 		<FormItem class="flex flex-col">
 			<FormLabel>{{ label }} <span v-if="!required">(optional)</span></FormLabel>
-
 			<Combobox
 				:multiple="multiple"
+				:model-value="value"
 				@update:model-value="(value: any) => handleSelect(value, field.name)"
 				@update:open="handleOpen">
 				<FormControl>
@@ -108,12 +117,12 @@ const handleOpen = (value: boolean) => {
 										props.class,
 									),
 									icon ? 'pl-10' : '',
-									comboboxInput !== '' && comboboxInput !== placeholder
+									(comboboxInput !== '' && comboboxInput !== placeholder) || value
 										? 'text-slate-600 hover:text-slate-600'
 										: '',
 									errors.length > 0 && 'border-destructive',
 								]">
-								{{ comboboxInput }}
+								{{ (value as ComboboxType)?.label || comboboxInput }}
 							</Button>
 							<span
 								class="absolute end-0 inset-y-0 flex items-center justify-center px-3">

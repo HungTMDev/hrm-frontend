@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import SheetContentCustom from '@/components/custom/SheetContentCustom.vue';
 import { Sheet } from '@/components/ui/sheet';
+import type { IJob, IJobFilter } from '@/types';
+import { ref } from 'vue';
+import CandidateView from './sheet/CandidateView.vue';
 import JobSheetForm from './sheet/JobSheetForm.vue';
 import JobSheetView from './sheet/JobSheetView.vue';
-import type { Job } from '@/types';
-import CandidateView from './sheet/CandidateView.vue';
-import { ref } from 'vue';
+import type { PaginationState } from '@tanstack/vue-table';
 
 defineProps<{
 	open: boolean;
 	isView?: boolean;
-	data?: Job;
+	data?: IJob;
+	pagination: PaginationState;
+	filter: Partial<IJobFilter>;
 }>();
 
 const emit = defineEmits<{
@@ -39,9 +42,15 @@ const handleViewCandidate = (payload: any) => {
 			<CandidateView v-if="isCandidateView" />
 			<JobSheetView
 				v-else-if="isView"
+				:data="data"
 				@edit="emit('edit')"
 				@view-candidate="handleViewCandidate" />
-			<JobSheetForm v-else :data="data" />
+			<JobSheetForm
+				v-else
+				:data="data"
+				:pagination="pagination"
+				:filter="filter"
+				@update:open="(payload) => emit('update:open', payload)" />
 		</SheetContentCustom>
 	</Sheet>
 </template>

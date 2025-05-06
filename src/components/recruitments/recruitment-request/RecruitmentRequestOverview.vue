@@ -9,7 +9,7 @@ import FilterPopover from '@/components/common/FilterPopover.vue';
 import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import { recruitmentRequestColumn } from '@/components/recruitments/recruitment-request/recruitment-request.column';
-import RecruitmentSheet from '@/components/recruitments/recruitment-request/RecruitmentSheet.vue';
+import RecruitmentSheet from '@/components/recruitments/recruitment-request/RecruitmentRequestSheet.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { ROWS_PER_PAGE } from '@/constants';
 import router from '@/routers';

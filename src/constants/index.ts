@@ -1,3 +1,30 @@
+import { convertEnumToComboboxType } from '@/lib/utils';
+
+export const DEFAULT_PAGINATION = {
+	DEFAULT_PAGE: 1,
+	DEFAULT_LIMIT: 5,
+};
+
+export enum RECRUITMENT_REQUEST_STATUS {
+	APPROVED = 'APPROVED',
+	REJECTED = 'REJECTED',
+	DRAFT = 'DRAFT',
+	ON_HOLD = 'ON_HOLD',
+	CANCELLED = 'CANCELLED',
+	PUBLISHED = 'PUBLISHED',
+}
+
+export const listRecruitmentRequestStatus = convertEnumToComboboxType(RECRUITMENT_REQUEST_STATUS);
+
+export const RECRUITMENT_REQUEST_STATUS_STYLE: Record<string, string> = {
+	APPROVED: 'bg-green-50 text-green-500 hover:bg-green-50 hover:text-green-500',
+	REJECTED: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
+	DRAFT: 'bg-gray-50 text-slate-600 hover:bg-gray-50 hover:text-gray-500',
+	ON_HOLD: 'bg-blue-50 text-blue-500 hover:bg-blue-50 hover:text-blue-500',
+	CANCELLED: 'CANCELLED',
+	PUBLISHED: 'PUBLISHED',
+};
+
 export const STATUS_STYLE: Record<string, string> = {
 	'To-do': 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
 	Rejected: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
@@ -47,75 +74,58 @@ export const APPLICANT_STAGE_STYLE: Record<string, string> = {
 	Rejected: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
 };
 
-export const applicantStages = Object.values(ApplicantStage).map((value) => ({
-	label: value.replace(/_/g, ' '), // Chuyển "_" thành khoảng trắng để hiển thị đẹp hơn
-	value,
-}));
+export const applicantStages = convertEnumToComboboxType(ApplicantStage);
 
-export enum Gender {
+export enum GENDER {
 	male,
 	female,
 }
 
-export const genderCombobox = Object.keys(Gender)
+export const genderCombobox = Object.keys(GENDER)
 	.filter((key) => isNaN(Number(key)))
 	.map((key) => ({
 		label: key.charAt(0).toUpperCase() + key.slice(1),
-		value: Gender[key as keyof typeof Gender].toString(),
+		value: GENDER[key as keyof typeof GENDER].toString(),
 	}));
 
-export const JOB_LEVEL = [
-	{
-		label: 'Intern',
-		value: 'Intern',
-	},
-	{
-		label: 'Junior',
-		value: 'Junior',
-	},
-	{
-		label: 'Mid',
-		value: 'Mid',
-	},
-	{
-		label: 'Senior',
-		value: 'Senior',
-	},
-];
+export enum JOB_LEVEL {
+	INTERN = 'INTERN',
+	FRESHER = 'FRESHER',
+	JUNIOR = 'JUNIOR',
+	MIDDLE = 'MIDDLE',
+	SENIOR = 'SENIOR',
+	LEADER = 'LEADER',
+	MANAGER = 'MANAGER',
+	DIRECTOR = 'DIRECTOR',
+}
 
-export const DEPARTMENTS = [
-	{
-		label: 'Design',
-		value: 'Design',
-	},
-	{
-		label: 'Development',
-		value: 'Development',
-	},
-	{
-		label: 'Marketing',
-		value: 'Marketing',
-	},
-	{
-		label: 'Product',
-		value: 'Product',
-	},
-];
+export type JobLevel = `${JOB_LEVEL}`;
 
-export const EMPLOYMENT_TYPE = [
-	{
-		label: 'Full-time',
-		value: 'Full-time',
-	},
-	{
-		label: 'Part-time',
-		value: 'Part-time',
-	},
-	{
-		label: 'Freelance',
-		value: 'Freelance',
-	},
-];
+export const listJobLevel = convertEnumToComboboxType(JOB_LEVEL);
+
+export enum EMPLOYMENT_TYPE {
+	PART_TIME = 'PART_TIME',
+	FULLTIME = 'FULLTIME',
+	CONTRACT = 'CONTRACT',
+	INTERN = 'INTERN',
+}
+
+export type EmploymentType = `${EMPLOYMENT_TYPE}`;
+
+export const listEmploymentType = convertEnumToComboboxType(EMPLOYMENT_TYPE);
+
+export enum JOB_STATUS {
+	DRAFT = 'DRAFT',
+	ON_HOLD = 'ON_HOLD',
+	OPEN = 'OPEN',
+	FILLED = 'FILLED',
+	CANCELLED = 'CANCELLED',
+	CLOSED = 'CLOSED',
+}
+
+export type JobStatus = `${JOB_STATUS}`;
+
+export const listJobStatus = convertEnumToComboboxType(JOB_STATUS);
 
 export const EDUCATION_LEVEL = [
 	{

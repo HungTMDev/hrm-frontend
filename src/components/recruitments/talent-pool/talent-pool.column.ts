@@ -1,6 +1,6 @@
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
-import type { ActionGroupType, TalentPool } from '@/types';
+import type { IActionGroupType, TalentPool } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
@@ -77,7 +77,7 @@ export const talentPoolColumns = (
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: ActionGroupType[] = [
+			const actions: IActionGroupType[] = [
 				{
 					label: 'Edit',
 					icon: Pen2,

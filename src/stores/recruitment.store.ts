@@ -1,9 +1,19 @@
-import type { Applicant, TalentPool } from '@/types';
+import { RECRUITMENT_REQUEST_API } from '@/constants/api/recruitment/recruitment-request.api';
+import axiosClient from '@/plugins';
+import type {
+	Applicant,
+	IApiResponseV1,
+	IFilterRequest,
+	IRecruitmentRequest,
+	IRecruitmentRequestFilter,
+	TalentPool,
+} from '@/types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useRecruitmentStore = defineStore('recruitment-store', () => {
 	//define State
+	const isLoading = ref(false);
 	const talentPools = ref<TalentPool[]>([]);
 	const applicantAppliedStage = ref<Applicant[]>([]);
 	const applicantProcessStage = ref<Applicant[]>([]);
@@ -11,6 +21,25 @@ export const useRecruitmentStore = defineStore('recruitment-store', () => {
 	const applicantDoneStage = ref<Applicant[]>([]);
 
 	//define Action
+	const getAllRecruitmentRequest = async (
+		filter?: Partial<IFilterRequest<IRecruitmentRequestFilter>>,
+	) => {
+		const { data, status } = await axiosClient.get<IApiResponseV1<IRecruitmentRequest[]>>(
+			RECRUITMENT_REQUEST_API.BASE,
+			{
+				params: {
+					page: filter?.page,
+					limit: filter?.limit,
+					...filter?.filter,
+				},
+			},
+		);
+		if (status >= 400) {
+			return;
+		}
+		return data;
+	};
+
 	const getAllTalentPool = () => {
 		talentPools.value = [
 			{
@@ -228,6 +257,7 @@ export const useRecruitmentStore = defineStore('recruitment-store', () => {
 	};
 
 	return {
+		isLoading,
 		talentPools,
 		applicantAppliedStage,
 		applicantProcessStage,
@@ -237,5 +267,6 @@ export const useRecruitmentStore = defineStore('recruitment-store', () => {
 		getAppliedStageData,
 		getWaitingStageData,
 		getDoneStageData,
+		getAllRecruitmentRequest,
 	};
 });

@@ -2,11 +2,11 @@
 import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
 import { Button } from '@/components/ui/button';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn, formatDateValueToLocalDate } from '@/lib/utils';
+import { cn, formatDateValueToLocalDate, formatISOStringToDateValue } from '@/lib/utils';
 import { type DateValue } from '@internationalized/date';
-import { ref, type HTMLAttributes } from 'vue';
+import { onMounted, ref, type HTMLAttributes } from 'vue';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import CalendarCustom from '../custom/CalendarCustom.vue';
 import type { FormFieldCommon } from '@/types';
@@ -27,12 +27,21 @@ const value = ref<DateValue>();
 const isOpen = ref(false);
 
 const handlePick = (fieldName: string) => {
-	emit('update:value', { fieldName, data: value.value?.toString() });
+	emit('update:value', {
+		fieldName,
+		data: value.value ? new Date(value.value.toDate('UTC')).toISOString() : undefined,
+	});
 };
 
 const handleOpen = (open: boolean) => {
 	isOpen.value = open;
 };
+
+onMounted(() => {
+	if (props.modelValue) {
+		value.value = formatISOStringToDateValue(props.modelValue as string);
+	}
+});
 </script>
 
 <template>

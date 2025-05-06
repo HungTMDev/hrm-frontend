@@ -1,3 +1,6 @@
+import type { EmploymentType, JobLevel, JobStatus } from '@/constants';
+import type { IBaseResponse, IBranch, IDepartment, IPosition, IUser } from '.';
+
 export interface Applicant {
 	name: string;
 	email: string;
@@ -8,23 +11,81 @@ export interface Applicant {
 	status?: string;
 }
 
-export interface RecruitmentRequest {
-	position: string;
+export interface IRecruitmentRequest extends IBaseResponse {
+	branch_id: string;
+	branch_name: string;
+	job_title_id: string;
+	title: string;
+	level: JobLevel | JobLevel[];
+	employment_type: EmploymentType | EmploymentType;
 	quantity: number;
-	level: string;
-	request_from: string;
-	expected_date: string;
+	justification: string;
+	expected_start_date: string;
+	description: string;
+	skills_required: string[];
 	status: string;
-	reason?: string;
+	submitted_at: string | null;
+	approved_at: string | null;
+	rejected_at: string | null;
+	cancelled_at: string | null;
+	cancelled_by: string | null;
+	cancelled_reason: null;
+	branch: IBranch;
+	department: IDepartment;
+	job_title: any;
+	hiring_manager: IUser;
 }
 
-export interface Job {
-	position: string;
-	status: string;
-	level: string;
-	branch: string;
-	cadidates: number;
-	created_date: string;
+export interface IRecruitmentRequestFilter {
+	keywords?: string;
+	order?: 'ASC' | 'DESC';
+	branch_id?: string[];
+	hiring_manager_id?: string[];
+	department_id?: string[];
+	job_title_id?: string[];
+	level?: string[];
+	employment_type?: string[];
+}
+
+export interface IJob extends IBaseResponse {
+	branch_id: string;
+	requisition_id: string;
+	department_id: string;
+	position_id: string;
+	hiring_manager_id: string;
+	created_by: string;
+	level: JobLevel | JobLevel[];
+	employment_type: EmploymentType | EmploymentType[];
+	status: JobStatus;
+	quantity: number;
+	due_date: string;
+	applicationCount: number;
+	title: string;
+	description: string;
+	requirements: string;
+	location: string;
+	gender: number;
+	education_level: string;
+	work_experience: string;
+	branch: IBranch;
+	department: IDepartment;
+	position: IPosition;
+	hiring_manager: IUser;
+	created_by_user: IUser;
+	[key: string]: any;
+}
+
+export interface IJobFilter {
+	keywords?: string;
+	order?: 'ASC' | 'DESC';
+	branch_id?: string[];
+	requisition_id?: string[];
+	department_id?: string[];
+	position_id?: string[];
+	hiring_manager_id?: string[];
+	level?: string[];
+	employmentType?: string[];
+	status?: string[];
 }
 
 export interface TalentPool {

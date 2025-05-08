@@ -79,7 +79,7 @@ const handleOpen = (value: boolean) => {
 							<ComboboxInput
 								:class="
 									cn(
-										'rounded-2xl p-3 h-auto !pl-10 focus:border-blue-100 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 text-slate-600',
+										'rounded-2xl shadow-none p-3 h-auto !pl-10 focus:border-blue-100 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 text-slate-600',
 										props.class,
 										errors.length > 0 && 'border-destructive',
 									)
@@ -113,7 +113,7 @@ const handleOpen = (value: boolean) => {
 										: '',
 									errors.length > 0 && 'border-destructive',
 								]">
-								{{ comboboxInput }}
+								<p class="truncate pr-8">{{ comboboxInput }}</p>
 							</Button>
 							<span
 								class="absolute end-0 inset-y-0 flex items-center justify-center px-3">
@@ -147,7 +147,7 @@ const handleOpen = (value: boolean) => {
 								v-for="item in list"
 								:key="item.value"
 								:value="item"
-								class="hover:bg-muted rounded-2xl py-2">
+								class="hover:bg-muted rounded-2xl py-2 truncate">
 								{{ item.label }}
 
 								<ComboboxItemIndicator>

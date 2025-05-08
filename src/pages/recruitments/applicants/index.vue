@@ -1,166 +1,78 @@
 <script lang="ts" setup>
-import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
-import Tuning from '@/assets/icons/Outline/Tuning.svg';
-import UserPlus from '@/assets/icons/Outline/User Plus.svg';
-import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
-import DisplayColumn from '@/components/common/DisplayColumn.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
-import DataTable from '@/components/datatable/DataTable.vue';
-import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
-import { applicantColumn } from '@/components/recruitments/applicants/applicant.column';
-import ApplicantSheet from '@/components/recruitments/applicants/ApplicantSheet.vue';
-import Button from '@/components/ui/button/Button.vue';
-import Separator from '@/components/ui/separator/Separator.vue';
-import { ROWS_PER_PAGE } from '@/constants';
-import { useCustomToast } from '@/lib/customToast';
-import { valueUpdater } from '@/lib/utils';
-import type { Applicant } from '@/types';
-import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ClipboardText from '@/assets/icons/Outline/Clipboard Text.svg';
+import ClipboardTextBold from '@/assets/icons/Bold/Clipboard Text.svg';
+import Dialog from '@/assets/icons/Outline/Dialog.svg';
+import DialogBold from '@/assets/icons/Bold/Dialog.svg';
+import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
+import DocumentAddBold from '@/assets/icons/Bold/Document Add.svg';
+import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
+import CloseCircleBold from '@/assets/icons/Bold/Close Circle.svg';
 import { ref } from 'vue';
+import ScreeningTab from '@/components/recruitments/applicants/screening-tab/ScreeningTab.vue';
+import InterviewTab from '@/components/recruitments/applicants/interview-tab/InterviewTab.vue';
 
-const data: Applicant[] = [
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-];
-
-const { showToast } = useCustomToast();
-
-const columnVisibility = ref<VisibilityState>({});
-const rowSelection = ref({});
-const openSheet = ref(false);
-const openAlert = ref(false);
-const isView = ref(false);
-const dataSent = ref<Applicant>();
-
-const handleOpenSheet = (payload?: any, view?: boolean) => {
-	isView.value = view || false;
-	dataSent.value = payload;
-	openSheet.value = true;
-};
-
-const handleCloseSheet = (open: boolean) => {
-	isView.value = false;
-	dataSent.value = undefined;
-	openSheet.value = open;
-};
-
-const handleOpenAlert = (payload?: any) => {
-	dataSent.value = payload;
-	openAlert.value = true;
-};
-
-const handleCloseAlert = (open: boolean) => {
-	dataSent.value = undefined;
-	openAlert.value = open;
-};
-
-const table = useVueTable({
-	data,
-	columns: applicantColumn(handleOpenSheet, handleOpenAlert),
-	getCoreRowModel: getCoreRowModel(),
-	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
-	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
-	state: {
-		get columnVisibility() {
-			return columnVisibility.value;
-		},
-		get rowSelection() {
-			return rowSelection.value;
-		},
-	},
-	initialState: {
-		pagination: {
-			pageIndex: 0,
-			pageSize: ROWS_PER_PAGE[0],
-		},
-	},
-});
-
-const handleDelete = () => {
-	showToast({
-		message: 'Delete applicants success!',
-		type: 'success',
-		action: {
-			label: 'Undo',
-		},
-	});
-};
+const activeTab = ref('screening');
 </script>
 <template>
 	<ContentWrapper>
 		<Title>Applicants</Title>
-		<div class="flex gap-4 items-center my-4">
-			<InputWithIcon
-				:icon="Magnifer"
-				class="py-2 flex-1 rounded-full"
-				placeholder="Search applicants" />
-			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
-			<Button variant="outline" class="w-fit rounded-full">
-				<IconFromSvg :icon="Tuning" /> Filter
-			</Button>
-			<Button
-				class="bg-blue-500 hover:bg-blue-600 rounded-3xl font-medium"
-				@click="handleOpenSheet(undefined)">
-				<IconFromSvg :icon="UserPlus" />Add new applicant
-			</Button>
-		</div>
-		<div class="flex flex-col gap-4">
-			<DataTable :table="table" @row:click="(payload) => handleOpenSheet(payload, true)" />
-			<Separator class="mb-2" />
-			<DataTablePagination :table="table" />
-		</div>
+		<Tabs v-model="activeTab" class="flex gap-4 mt-4" orientation="vertical">
+			<TabsList class="grid grid-cols-1 gap-4 p-4 border rounded-2xl bg-white h-fit">
+				<TabsTrigger
+					class="py-2 px-3 text-slate-600 w-40 justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
+					value="screening">
+					<div class="flex items-center gap-2">
+						<IconFromSvg
+							v-if="activeTab === 'screening'"
+							:icon="ClipboardTextBold"
+							class="!w-6 !h-6" />
+						<IconFromSvg v-else :icon="ClipboardText" class="!w-6 !h-6" /> Screening
+					</div>
+				</TabsTrigger>
+				<TabsTrigger
+					class="py-2 px-3 text-slate-600 w-40 justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
+					value="interview">
+					<div class="flex items-center gap-2">
+						<IconFromSvg
+							v-if="activeTab === 'interview'"
+							:icon="DialogBold"
+							class="!w-6 !h-6" />
+						<IconFromSvg v-else :icon="Dialog" class="!w-6 !h-6" /> Interview
+					</div>
+				</TabsTrigger>
+				<TabsTrigger
+					class="py-2 px-3 text-slate-600 w-40 justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
+					value="hired">
+					<div class="flex items-center gap-2">
+						<IconFromSvg
+							v-if="activeTab === 'hired'"
+							:icon="DocumentAddBold"
+							class="!w-6 !h-6" />
+						<IconFromSvg v-else :icon="DocumentAdd" class="!w-6 !h-6" /> Hired
+					</div>
+				</TabsTrigger>
+				<TabsTrigger
+					class="py-2 px-3 text-slate-600 w-40 justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
+					value="rejected">
+					<div class="flex items-center gap-2">
+						<IconFromSvg
+							v-if="activeTab === 'rejected'"
+							:icon="CloseCircleBold"
+							class="!w-6 !h-6" />
+						<IconFromSvg v-else :icon="CloseCircle" class="!w-6 !h-6" /> Rejected
+					</div>
+				</TabsTrigger>
+			</TabsList>
+			<div class="flex-1">
+				<TabsContent class="mt-0" value="screening"> <ScreeningTab /> </TabsContent>
+				<TabsContent class="mt-0" value="interview"> <InterviewTab /> </TabsContent>
+				<TabsContent class="mt-0" value="hired"> hired </TabsContent>
+				<TabsContent class="mt-0" value="rejected"> rejected </TabsContent>
+			</div>
+		</Tabs>
 	</ContentWrapper>
-	<ApplicantSheet
-		:data="dataSent"
-		:open="openSheet"
-		@update:open="handleCloseSheet"
-		:is-view="isView"
-		@edit="isView = false" />
-	<AlertPopup
-		:open="openAlert"
-		@update:open="handleCloseAlert"
-		title="Are you sure you want to delete this applicant?"
-		:description="dataSent?.name"
-		@confirm="handleDelete" />
 </template>

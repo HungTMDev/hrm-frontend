@@ -2,7 +2,7 @@
 import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
 import { Button } from '@/components/ui/button';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn, formatDateValueToLocalDate } from '@/lib/utils';
 import { type DateValue } from '@internationalized/date';
@@ -18,7 +18,7 @@ interface Prop extends FormFieldCommon {
 
 const props = defineProps<Prop>();
 
-const emit = defineEmits<{
+const emits = defineEmits<{
 	(e: 'update:value', payload: { fieldName: string; data: string | undefined }): void;
 }>();
 
@@ -27,7 +27,10 @@ const value = ref<DateValue>();
 const isOpen = ref(false);
 
 const handlePick = (fieldName: string) => {
-	emit('update:value', { fieldName, data: value.value?.toString() });
+	emits('update:value', {
+		fieldName,
+		data: value.value ? formatDateValueToLocalDate(value.value) : undefined,
+	});
 };
 
 const handleOpen = (open: boolean) => {
@@ -38,7 +41,7 @@ const handleOpen = (open: boolean) => {
 <template>
 	<FormField v-slot="{ errors, field }" :name="name">
 		<FormItem class="flex flex-col">
-			<FormLabel>{{ label }}</FormLabel>
+			<FormLabel class="text-slate-600">{{ label }}</FormLabel>
 			<Popover :open="isOpen" @update:open="handleOpen">
 				<PopoverTrigger as-child>
 					<FormControl>
@@ -59,7 +62,7 @@ const handleOpen = (open: boolean) => {
 									'flex-1 font-normal',
 								]"
 								>{{
-									value ? formatDateValueToLocalDate(value) : 'dd/MM/yyyy'
+									value ? formatDateValueToLocalDate(value) : 'dd/mm/yyyy'
 								}}</span
 							>
 							<span>

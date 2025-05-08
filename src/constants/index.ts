@@ -1,3 +1,10 @@
+import {
+	interviewEmailSchema,
+	invitationEmailSchema,
+	thanksEmailSchema,
+} from '@/components/recruitments/applicants/screening-tab/schema';
+import { INTERVIEW_INVITATION_EMAIL, INVITATION_EMAIL, THANKS_EMAIL } from './model';
+
 export const STATUS_STYLE: Record<string, string> = {
 	'To-do': 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
 	Rejected: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
@@ -127,3 +134,38 @@ export const EDUCATION_LEVEL = [
 		value: 'College',
 	},
 ];
+
+export const EMAIL_TEMPLATE: Record<
+	string,
+	{ subject: string; label: string; template: string; schema: object }
+> = {
+	invitation_email_to_receive_jobs: {
+		subject: '[LUTECH.LTD]THƯ MỜI NHẬN VIỆC',
+		label: 'THƯ MỜI NHẬN VIỆC',
+		template: INVITATION_EMAIL,
+		schema: invitationEmailSchema,
+	},
+	interview_invitation_email: {
+		subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
+		label: 'THƯ MỜI PHỎNG VẤN',
+		template: INTERVIEW_INVITATION_EMAIL,
+		schema: interviewEmailSchema,
+	},
+	email_of_thanks: {
+		subject: '[THƯ CẢM ƠN ỨNG TUYỂN - LUTECH.LTD]',
+		label: 'THƯ CẢM ƠN ỨNG TUYỂN',
+		template: THANKS_EMAIL,
+		schema: thanksEmailSchema,
+	},
+	email_thanks_to_the_interview: {
+		subject: '[THƯ CẢM ƠN PHỎNG VẤN - LUTECH.LTD]',
+		label: 'THƯ CẢM ƠN PHỎNG VẤN',
+		template: THANKS_EMAIL,
+		schema: thanksEmailSchema,
+	},
+};
+
+export const listEmailTemplates = Object.entries(EMAIL_TEMPLATE).map((item) => ({
+	label: item[1].label,
+	value: item[0],
+}));

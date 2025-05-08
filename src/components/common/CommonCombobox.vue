@@ -35,7 +35,7 @@ interface Prop {
 const props = defineProps<Prop>();
 
 const emit = defineEmits<{
-	(e: 'update:modelValue', payload: string | number | string[] | number[]): void;
+	(e: 'update:modelValue', payload: ComboboxType | ComboboxType[]): void;
 }>();
 
 const selectedValue = ref<ComboboxType | ComboboxType[]>();
@@ -90,7 +90,10 @@ watch(
 					@click.stop
 					:class="cn('justify-between text-sm text-slate-600', props.class)">
 					<IconFromSvg v-if="icon" :icon="icon" />
-					{{ (selectedValue as ComboboxType)?.label ?? label }}
+					<span class="flex-1 text-start">{{
+						(selectedValue as ComboboxType)?.label ?? label
+					}}</span>
+
 					<IconFromSvg
 						:icon="Down"
 						class="duration-200"
@@ -104,8 +107,8 @@ watch(
 				cn(
 					'w-[300px] rounded-xl',
 					list_size === 'small' && 'w-[300px]',
-					list_size === 'medium' && 'w-[500px]',
-					list_size === 'large' && 'w-[700px]',
+					list_size === 'medium' && 'w-[400px]',
+					list_size === 'large' && 'w-[500px]',
 				)
 			">
 			<div v-if="isSearch" class="relative w-full max-w-sm items-center">

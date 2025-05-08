@@ -96,3 +96,13 @@ export interface TalentPool {
 	level: string;
 	last_modified: string;
 }
+
+export interface DataFillInterviewEmail {
+	subject: string;
+	recipient: string;
+	position: string;
+	datetime: string;
+	work_location: string;
+	confirmation_before_date: string;
+	confirmation_before_time: string;
+}

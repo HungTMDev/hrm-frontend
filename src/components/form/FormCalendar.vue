@@ -18,7 +18,7 @@ interface Prop extends FormFieldCommon {
 
 const props = defineProps<Prop>();
 
-const emit = defineEmits<{
+const emits = defineEmits<{
 	(e: 'update:value', payload: { fieldName: string; data: string | undefined }): void;
 }>();
 
@@ -27,9 +27,9 @@ const value = ref<DateValue>();
 const isOpen = ref(false);
 
 const handlePick = (fieldName: string) => {
-	emit('update:value', {
+	emits('update:value', {
 		fieldName,
-		data: value.value ? new Date(value.value.toDate('UTC')).toISOString() : undefined,
+		data: value.value ? formatDateValueToLocalDate(value.value) : undefined,
 	});
 };
 
@@ -47,7 +47,7 @@ onMounted(() => {
 <template>
 	<FormField v-slot="{ errors, field }" :name="name">
 		<FormItem class="flex flex-col">
-			<FormLabel>{{ label }}</FormLabel>
+			<FormLabel class="text-slate-600">{{ label }}</FormLabel>
 			<Popover :open="isOpen" @update:open="handleOpen">
 				<PopoverTrigger as-child>
 					<FormControl>
@@ -68,7 +68,7 @@ onMounted(() => {
 									'flex-1 font-normal',
 								]"
 								>{{
-									value ? formatDateValueToLocalDate(value) : 'dd/MM/yyyy'
+									value ? formatDateValueToLocalDate(value) : 'dd/mm/yyyy'
 								}}</span
 							>
 							<span>

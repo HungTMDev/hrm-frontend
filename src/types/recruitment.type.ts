@@ -106,3 +106,56 @@ export interface DataFillInterviewEmail {
 	confirmation_before_date: string;
 	confirmation_before_time: string;
 }
+
+export interface IApplicantFilter {
+	keywords?: string;
+	order: 'ASC' | 'DESC';
+	candidate_id?: string;
+	job_id?: string[];
+	stage?: string | string[];
+	status?: string[];
+}
+
+export interface IApplicant extends IBaseResponse {
+	applied_at: string;
+	expected_salary: 0;
+	source: string;
+	resume_url: string;
+	cover_letter: string;
+	attaches: [string];
+	notes: string;
+	current_stage: string;
+	application_status: string;
+	candidate: ICandidate;
+	job: IJob;
+	position: IPosition;
+	department: IDepartment;
+	branch: IBranch;
+	created_by_user: IUser;
+	referred_by_user: IUser;
+}
+
+export interface ICandidate extends IBaseResponse {
+	created_by: string;
+	full_name: string;
+	email: string;
+	phone_number: string;
+	avatar: string | null;
+	address: string | null;
+	gender: string;
+	date_of_birth: string;
+	linkedin_profile: string | null;
+	portfolio_url: string | null;
+	resume_url: string;
+	parsed_data: string | null;
+	education: string | null;
+	work_experience: string | null;
+	skills: string | null;
+	languages: string | null;
+	certifications: string | null;
+	summary: string | null;
+	source: string | null;
+	attaches: string | null;
+	notes: string | null;
+	created_by_user: IUser;
+}

@@ -21,6 +21,7 @@ const emits = defineEmits<{
 const isSendEmail = ref(false);
 
 const handleOpen = (isOpen: boolean) => {
+	isSendEmail.value = false;
 	emits('update:open', isOpen);
 };
 
@@ -39,6 +40,7 @@ const handleCancle = () => {
 			<SendEmail v-if="isSendEmail" @cancel="handleCancle" />
 			<CandidateSheetView
 				v-else-if="isView"
+				:data="data"
 				@edit="emits('edit')"
 				@open-dialog="emits('openDialog')"
 				@send-email="handleSendEmail" />

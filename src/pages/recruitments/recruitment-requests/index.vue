@@ -38,12 +38,14 @@ import type {
 } from '@/types';
 import { getCoreRowModel, useVueTable, type PaginationState } from '@tanstack/vue-table';
 import { computed, ref } from 'vue';
+import Button from '@/components/ui/button/Button.vue';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
 
 const isOpenSheet = ref(false);
 const isOpenDialog = ref(false);
+const isView = ref(false);
 const dataSent = ref<IRecruitmentRequest>();
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
 const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
@@ -103,7 +105,10 @@ const accordionItems = computed<FilterAccordion[]>(() => [
 const { data, isLoading } = useRecruitmentRequest(pagination, filterPayload);
 const { mutate: submitRequest } = useSubmitRecruitmentRequest(pagination, filterPayload);
 const { mutate: approveRequest } = useApproveRecruitmentRequest(pagination, filterPayload);
-const { mutate: rejectRequest } = useRejectRecruitmentRequest(pagination, filterPayload);
+const { mutateAsync: rejectRequest, isPending: isRejecting } = useRejectRecruitmentRequest(
+	pagination,
+	filterPayload,
+);
 
 const recruimentRequests = computed<IRecruitmentRequest[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -118,8 +123,11 @@ const setPagination = ({ pageIndex, pageSize }: PaginationState): PaginationStat
 	return { pageIndex, pageSize };
 };
 
-const handleOpenSheet = (data: IRecruitmentRequest) => {
-	dataSent.value = data;
+const handleOpenSheet = (data?: IRecruitmentRequest, view?: boolean) => {
+	if (data instanceof PointerEvent) dataSent.value = undefined;
+	else dataSent.value = data;
+
+	isView.value = view ?? false;
 	isOpenSheet.value = true;
 };
 
@@ -131,8 +139,9 @@ const handleApproveRequest = (id: string) => {
 	approveRequest(id);
 };
 
-const handleRejectRequest = (id: string) => {
-	rejectRequest(id);
+const handleOpenDialog = (payload: IRecruitmentRequest) => {
+	dataSent.value = payload;
+	isOpenDialog.value = true;
 };
 
 const table = useVueTable({
@@ -150,7 +159,7 @@ const table = useVueTable({
 		handleOpenSheet,
 		handleSubmitRequest,
 		handleApproveRequest,
-		handleRejectRequest,
+		handleOpenDialog,
 	),
 	initialState: {
 		pagination: pagination.value,
@@ -168,15 +177,20 @@ const table = useVueTable({
 });
 
 const handleCloseSheet = (open: boolean) => {
+	dataSent.value = undefined;
 	isOpenSheet.value = open;
 };
 
-const handleOpenDialog = () => {
-	isOpenDialog.value = true;
+const handleCloseDialog = (open: boolean) => {
+	dataSent.value = undefined;
+	isOpenDialog.value = open;
 };
 
-const handleCloseDialog = (open: boolean) => {
-	isOpenDialog.value = open;
+const handleRejectRequest = async (reason: string) => {
+	const res = await rejectRequest({ id: dataSent.value?.id!, reason });
+	if (res.status_code === 200) {
+		isOpenDialog.value = false;
+	}
 };
 
 const handleFilter = (payload: FilterData[]) => {
@@ -190,17 +204,32 @@ const handleFilter = (payload: FilterData[]) => {
 <template>
 	<ContentWrapper class="flex gap-2 flex-col">
 		<Title>Recruitment requests</Title>
-		<div class="text-end">
+		<div class="flex justify-end gap-2 items-center">
 			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
+			<Button
+				class="h-auto py-2.5 px-6 rounded-2xl bg-blue-500 hover:bg-blue-600"
+				@click="handleOpenSheet"
+				>Add new request</Button
+			>
 		</div>
-		<DataTable :table="table" @row:click="handleOpenSheet" :is-loading="isLoading" />
+		<DataTable
+			:table="table"
+			@row:click="(payload) => handleOpenSheet(payload, true)"
+			:is-loading="isLoading" />
 		<Separator class="mb-4" />
 		<DataTablePagination :table="table" :meta="meta" />
 	</ContentWrapper>
 	<RecruitmentRequestSheet
 		:data="dataSent"
 		:open="isOpenSheet"
+		:is-view="isView"
+		:pagination="pagination"
+		:filter="filterPayload"
 		@update:open="handleCloseSheet"
-		@open-dialog="handleOpenDialog" />
-	<RejectDialog :open="isOpenDialog" @update:open="handleCloseDialog" />
+		@open-dialog="handleCloseDialog" />
+	<RejectDialog
+		:open="isOpenDialog"
+		:is-loading="isRejecting"
+		@update:open="handleCloseDialog"
+		@confirm="handleRejectRequest" />
 </template>

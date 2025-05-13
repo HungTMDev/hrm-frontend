@@ -4,12 +4,17 @@ import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
 import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn, formatDateValueToLocalDate, formatISOStringToDateValue } from '@/lib/utils';
+import {
+	cn,
+	formatDateValueToISOString,
+	formatDateValueToLocalDate,
+	formatISOStringToDateValue,
+} from '@/lib/utils';
+import type { FormFieldCommon } from '@/types';
 import { type DateValue } from '@internationalized/date';
 import { onMounted, ref, type HTMLAttributes } from 'vue';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import CalendarCustom from '../custom/CalendarCustom.vue';
-import type { FormFieldCommon } from '@/types';
 import FormErrorCustom from './FormErrorCustom.vue';
 
 interface Prop extends FormFieldCommon {
@@ -29,7 +34,7 @@ const isOpen = ref(false);
 const handlePick = (fieldName: string) => {
 	emits('update:value', {
 		fieldName,
-		data: value.value ? formatDateValueToLocalDate(value.value) : undefined,
+		data: value.value ? formatDateValueToISOString(value.value) : undefined,
 	});
 };
 
@@ -84,7 +89,6 @@ onMounted(() => {
 					<CalendarCustom
 						v-model:placeholder="placeholder"
 						v-model="value"
-						calendar-label="Date of birth"
 						initial-focus
 						@update:model-value="handlePick(field.name)" />
 				</PopoverContent>

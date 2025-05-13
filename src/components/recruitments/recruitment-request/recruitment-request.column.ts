@@ -1,6 +1,7 @@
 import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
 import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
+import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import { RECRUITMENT_REQUEST_STATUS_STYLE } from '@/constants';
@@ -12,10 +13,10 @@ import { h } from 'vue';
 import { Checkbox } from '../../ui/checkbox';
 
 export const recruitmentRequestColumn = (
-	handleOpenSheet: (payload: IRecruitmentRequest) => void,
+	handleOpenSheet: (payload?: IRecruitmentRequest, view?: boolean) => void,
 	handleSubmit: (id: string) => void,
 	handleApproveRequest: (id: string) => void,
-	handleRejectRequest: (id: string) => void,
+	handleRejectRequest: (payload: IRecruitmentRequest) => void,
 ): ColumnDef<IRecruitmentRequest>[] => [
 	{
 		id: 'select',
@@ -59,7 +60,7 @@ export const recruitmentRequestColumn = (
 		cell: ({ row }) => row.original.level,
 	},
 	{
-		accessorKey: 'request_from',
+		accessorKey: 'hiring_manager',
 		header: 'Request From',
 		cell: ({ row }) => row.original.hiring_manager.name,
 	},
@@ -90,8 +91,13 @@ export const recruitmentRequestColumn = (
 							style: 'text-slate-600',
 						},
 						{
+							label: 'Edit',
+							icon: Pen2,
+							style: 'text-yellow-500',
+						},
+						{
 							label: 'Submit',
-							icon: Eye,
+							icon: CheckCircle,
 							style: 'text-slate-600',
 						},
 					];
@@ -125,6 +131,10 @@ export const recruitmentRequestColumn = (
 			};
 
 			const onView = () => {
+				handleOpenSheet(row.original, true);
+			};
+
+			const onEdit = () => {
 				handleOpenSheet(row.original);
 			};
 
@@ -137,7 +147,7 @@ export const recruitmentRequestColumn = (
 			};
 
 			const onReject = () => {
-				handleRejectRequest(row.original.id);
+				handleRejectRequest(row.original);
 			};
 			return h(ActionGroupCommon, {
 				actions: actions(),
@@ -145,6 +155,7 @@ export const recruitmentRequestColumn = (
 				onView,
 				onReject,
 				onApprove,
+				onEdit,
 			});
 		},
 	},

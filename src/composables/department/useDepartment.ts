@@ -7,5 +7,6 @@ export const useDepartment = () => {
 		queryKey: [departmentKey.base],
 		queryFn: async () => await getAllDepartment(),
 		staleTime: 7 * 24 * 60 * 60 * 1000, //Fetch every 7 days
+		retry: false,
 	});
 };

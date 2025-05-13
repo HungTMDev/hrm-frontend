@@ -1,8 +1,14 @@
+import {
+	interviewEmailSchema,
+	invitationEmailSchema,
+	thanksEmailSchema,
+} from '@/components/recruitments/applicants/screening-tab/schema';
 import { convertEnumToComboboxType } from '@/lib/utils';
+import { INTERVIEW_INVITATION_EMAIL, INVITATION_EMAIL, THANKS_EMAIL } from './model';
 
 export const DEFAULT_PAGINATION = {
 	DEFAULT_PAGE: 1,
-	DEFAULT_LIMIT: 5,
+	DEFAULT_LIMIT: 10,
 };
 
 export enum RECRUITMENT_REQUEST_STATUS {
@@ -24,12 +30,6 @@ export const RECRUITMENT_REQUEST_STATUS_STYLE: Record<string, string> = {
 	CANCELLED: 'CANCELLED',
 	PUBLISHED: 'PUBLISHED',
 };
-import {
-	interviewEmailSchema,
-	invitationEmailSchema,
-	thanksEmailSchema,
-} from '@/components/recruitments/applicants/screening-tab/schema';
-import { INTERVIEW_INVITATION_EMAIL, INVITATION_EMAIL, THANKS_EMAIL } from './model';
 
 export const STATUS_STYLE: Record<string, string> = {
 	'To-do': 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
@@ -111,7 +111,7 @@ export const listJobLevel = convertEnumToComboboxType(JOB_LEVEL);
 
 export enum EMPLOYMENT_TYPE {
 	PART_TIME = 'PART_TIME',
-	FULLTIME = 'FULLTIME',
+	FULL_TIME = 'FULL_TIME',
 	CONTRACT = 'CONTRACT',
 	INTERN = 'INTERN',
 }
@@ -178,3 +178,14 @@ export const listEmailTemplates = Object.entries(EMAIL_TEMPLATE).map((item) => (
 	label: item[1].label,
 	value: item[0],
 }));
+
+export enum RECRUITMENT_STAGE {
+	APPLIED = 'APPLIED',
+	SCREENING = 'SCREENING',
+	INTERVIEW_1 = 'INTERVIEW_1',
+	INTERVIEW_2 = 'INTERVIEW_2',
+	OFFER = 'OFFER',
+	HIRED = 'HIRED',
+	REJECTED = 'REJECTED',
+	WITHDRAWN = 'WITHDRAWN',
+}

@@ -17,6 +17,7 @@ export const useRecruitmentRequest = (
 				limit: pagination.value.pageSize,
 				filter: filter.value,
 			}),
+		retry: false,
 		staleTime: 1 * 60 * 1000,
 		gcTime: 2 * 60 * 1000,
 	});
@@ -29,6 +30,7 @@ export const useListRecruitmentRequest = () => {
 			await getAllRecruitmentRequest({
 				limit: 100,
 			}),
+		retry: false,
 		staleTime: 3 * 60 * 1000,
 		gcTime: 5 * 60 * 1000,
 	});

@@ -3,7 +3,7 @@ import type { Ref } from 'vue';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { DateValue } from 'reka-ui';
-import { CalendarDate } from '@internationalized/date';
+import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -22,6 +22,13 @@ export const formatDateValueToLocalDate = (value: DateValue) => {
 	const month = String(value.month).padStart(2, '0');
 
 	return `${day}/${month}/${value.year}`;
+};
+
+export const formatDateValueToISOString = (value: DateValue) => {
+	const date = new Date(value.toDate(getLocalTimeZone()).toString());
+	const isoString = date.toISOString();
+
+	return isoString;
 };
 
 export const formatISOStringToDateValue = (ISOString: string) => {

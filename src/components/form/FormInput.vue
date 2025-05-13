@@ -32,7 +32,6 @@ const modelValue = useVModel(props, 'modelValue', emits, {
 			<FormControl>
 				<InputWithIcon
 					:type="type"
-					:model-value="modelValue"
 					:placeholder="placeholder"
 					:icon="icon"
 					:class="

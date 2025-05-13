@@ -15,23 +15,31 @@ import Label from '../ui/label/Label.vue';
 
 interface Prop extends FormFieldCommon {
 	type?: 'file' | 'photo';
+	allowedTypes?: string[];
 }
 const props = defineProps<Prop>();
 
+const emits = defineEmits<{
+	(e: 'update:value', payload: File | undefined): void;
+}>();
+
 const { showToast } = useCustomToast();
 
+const fileInputRef = ref<HTMLInputElement>();
 const selectedFile = ref<File>();
 const uploadProgress = ref(0);
 const error = ref<any>();
 const previewUrl = ref<string>();
 const allowedTypes = computed(() =>
-	props.type === 'photo'
-		? ['image/png', 'image/jpeg']
-		: [
-				'application/pdf',
-				'application/msword',
-				'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-			],
+	props.allowedTypes
+		? props.allowedTypes
+		: props.type === 'photo'
+			? ['image/png', 'image/jpeg']
+			: [
+					'application/pdf',
+					'application/msword',
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				],
 );
 const placeholder = computed(() =>
 	props.type === 'photo' ? 'Only .png or .jpg' : 'Only .pdf, .doc or .docx',
@@ -49,6 +57,7 @@ const processFile = (file: any) => {
 		uploadProgress.value = 0;
 		return;
 	}
+
 	selectedFile.value = file;
 
 	if (!allowedTypes.value.includes(file.type)) {
@@ -71,6 +80,8 @@ const processFile = (file: any) => {
 		return;
 	}
 
+	emits('update:value', selectedFile.value);
+
 	const interval = setInterval(() => {
 		uploadProgress.value += 20;
 		if (uploadProgress.value >= 100) {
@@ -84,6 +95,10 @@ const processFile = (file: any) => {
 const handleRemoveFile = () => {
 	selectedFile.value = undefined;
 	uploadProgress.value = 0;
+
+	if (fileInputRef.value) {
+		fileInputRef.value.value = '';
+	}
 };
 
 const handleDrop = (event: DragEvent) => {
@@ -170,6 +185,11 @@ const handleReset = () => {
 			</div>
 		</Label>
 
-		<input :id="name" type="file" class="hidden" @change="handleFileUpload" />
+		<input
+			ref="fileInputRef"
+			:id="name"
+			type="file"
+			class="hidden"
+			@change="handleFileUpload" />
 	</div>
 </template>

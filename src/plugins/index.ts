@@ -16,7 +16,9 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
 	function (config) {
 		NProgress.start();
-		config.headers['Content-Type'] = 'application/json';
+		if (!(config.data instanceof FormData)) {
+			config.headers['Content-Type'] = 'application/json';
+		}
 		config.headers['Accept'] = 'application/json';
 		config.headers['Access-Control-Allow-Origin'] = '*';
 
@@ -88,7 +90,7 @@ axiosClient.interceptors.response.use(
 
 		const { showToast } = useCustomToast();
 		showToast({
-			message: error.response.data.message,
+			message: error.response.data.message || error.response.data.error.error,
 			type: 'error',
 		});
 

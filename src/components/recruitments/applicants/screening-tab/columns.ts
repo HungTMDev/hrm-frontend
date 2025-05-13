@@ -1,20 +1,18 @@
+import File from '@/assets/icons/Outline/File.svg';
+import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
-import type { ActionGroupType } from '@/types';
+import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import Eye from '@/assets/icons/Outline/Eye.svg';
-import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
-import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
-import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import Letter from '@/assets/icons/Outline/Letter.svg';
 
 export const screeningColumn = (
-	tab: string,
-	handleOpenDialog?: (payload?: any) => void,
-	handleOpenSheet?: (payload?: any, isView?: boolean) => void,
-): ColumnDef<any>[] => [
+	handleOpenSheet: (payload?: IApplicant, view?: boolean) => void,
+	handleOpenAlert: (payload: IApplicant) => void,
+): ColumnDef<IApplicant>[] => [
 	{
 		id: 'select',
 		header: ({ table }) =>
@@ -42,66 +40,80 @@ export const screeningColumn = (
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'email',
-		header: 'Email address',
-		cell: ({ row }) => row.original.email,
+		accessorKey: 'name',
+		header: 'Name',
+		cell: ({ row }) => row.original.candidate.full_name,
+		enableHiding: false,
 	},
 	{
-		accessorKey: 'phone_number',
+		accessorKey: 'email',
+		header: 'Email address',
+		cell: ({ row }) => row.original.candidate.email,
+		enableHiding: false,
+	},
+	{
+		accessorKey: 'phone',
 		header: 'Phone number',
-		cell: ({ row }) => row.original.phone_number,
+		cell: ({ row }) => row.original.candidate.phone_number,
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'job',
 		header: 'Job',
-		cell: ({ row }) => row.original.job,
+		cell: ({ row }) => row.original.job.title,
+	},
+	{
+		accessorKey: 'cv',
+		header: 'CV',
+		cell: ({ row }) => {
+			return h(
+				'a',
+				{
+					onClick: (event: any) => event.stopPropagation(),
+					href: row.original.resume_url,
+					target: '_blank',
+					class: 'text-blue-500 p-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center',
+				},
+				[h(IconFromSvg, { icon: File }), 'CV'],
+			);
+		},
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'status',
 		header: 'Status',
-		cell: ({ row }) => row.original.status,
+		cell: ({ row }) => row.original.application_status,
 	},
 	{
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: ActionGroupType[] =
-				tab === 'applied'
-					? [
-							{
-								label: 'View',
-								icon: Eye,
-							},
-							{
-								label: 'Pass',
-								icon: CheckCircle,
-								style: 'text-green-500',
-							},
-							{
-								label: 'Fail',
-								icon: CloseCircle,
-								style: 'text-red-500',
-							},
-						]
-					: [
-							{
-								label: 'View',
-								icon: Eye,
-							},
-							{
-								label: 'Schedule interview',
-								icon: Calendar,
-							},
-							{
-								label: 'Send email',
-								icon: Letter,
-							},
-						];
+			const actions: IActionGroupType[] = [
+				{
+					label: 'Edit',
+					icon: Pen2,
+					style: '',
+				},
+				{
+					label: 'Delete',
+					icon: Trash,
+					style: 'text-red-500 ',
+				},
+			];
 
-			const onScheduleInterview = () => {
-				handleOpenDialog!(row.original);
+			const onEdit = () => {
+				handleOpenSheet(row.original);
 			};
-			return h(ActionGroupCommon, { class: 'w-48', actions, onScheduleInterview });
+
+			const onDelete = () => {
+				handleOpenAlert(row.original);
+			};
+
+			return h(ActionGroupCommon, {
+				actions,
+				onEdit,
+				onDelete,
+			});
 		},
 	},
 ];

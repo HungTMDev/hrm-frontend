@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Checklist from '@/assets/icons/Outline/Checklist Minimalistic.svg';
-import ChecklistBold from '@/assets/icons/Bold/Checklist Minimalistic.svg';
-import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
-import CheckCircleBold from '@/assets/icons/Bold/Check Circle.svg';
+import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import UserSpeakBold from '@/assets/icons/Bold/User Speak.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { ref } from 'vue';
+import Interview1Tab from './interview-1-tab/Interview1Tab.vue';
+import Interview2Tab from './interview-2-tab/Interview2Tab.vue';
 
-const activeTab = ref('applied');
+const activeTab = ref('interview_1');
 </script>
 
 <template>
@@ -15,22 +15,22 @@ const activeTab = ref('applied');
 		<TabsList class="rounded-2xl p-0.5">
 			<TabsTrigger
 				class="rounded-2xl px-4 py-2 w-40 data-[state=active]:text-blue-500"
-				value="applied">
+				value="interview_1">
 				<div class="flex items-center gap-2">
-					<IconFromSvg v-if="activeTab === 'applied'" :icon="ChecklistBold" />
-					<IconFromSvg v-else :icon="Checklist" /> Applied
+					<IconFromSvg v-if="activeTab === 'interview_1'" :icon="UserSpeakBold" />
+					<IconFromSvg v-else :icon="UserSpeak" /> Interview 1
 				</div>
 			</TabsTrigger>
 			<TabsTrigger
 				class="rounded-2xl px-4 py-2 w-40 data-[state=active]:text-blue-500"
-				value="passed">
+				value="interview_2">
 				<div class="flex items-center gap-2">
-					<IconFromSvg v-if="activeTab === 'passed'" :icon="CheckCircleBold" />
-					<IconFromSvg v-else :icon="CheckCircle" />Passed
+					<IconFromSvg v-if="activeTab === 'interview_2'" :icon="UserSpeakBold" />
+					<IconFromSvg v-else :icon="UserSpeak" />Interview 2
 				</div>
 			</TabsTrigger>
 		</TabsList>
-		<TabsContent value="applied"> Make changes to your account here. </TabsContent>
-		<TabsContent value="passed"> Change your password here. </TabsContent>
+		<TabsContent value="interview_1"> <Interview1Tab /> </TabsContent>
+		<TabsContent value="interview_2"> <Interview2Tab /> </TabsContent>
 	</Tabs>
 </template>

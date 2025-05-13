@@ -32,7 +32,7 @@ const activeTab = ref('applied');
 				</div>
 			</TabsTrigger>
 		</TabsList>
-		<TabsContent value="applied"> <AppliedTab tab="applied" /> </TabsContent>
-		<TabsContent value="passed"> <PassedTab tab="passed" /> </TabsContent>
+		<TabsContent value="applied"> <AppliedTab /> </TabsContent>
+		<TabsContent value="passed"> <PassedTab /> </TabsContent>
 	</Tabs>
 </template>

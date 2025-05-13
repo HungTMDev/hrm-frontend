@@ -25,9 +25,10 @@ import StatusTag from '@/components/common/StatusTag.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import InformationItem from '@/components/common/InformationItem.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
+import type { IApplicant } from '@/types';
 
 defineProps<{
-	data?: any;
+	data?: IApplicant;
 }>();
 
 const emits = defineEmits<{
@@ -55,29 +56,29 @@ const handleSendEmail = () => {
 			<UserAvatar class="w-36 h-36" />
 			<div class="flex flex-col gap-2">
 				<SheetTitle class="text-[28px] font-semibold flex items-center gap-2"
-					>Le Minh Tam
+					>{{ data?.candidate.full_name }}
 					<StatusTag class="bg-blue-50 text-blue-500 hover:bg-blue-100" status="Applied"
 				/></SheetTitle>
 				<SheetDescription class="text-base font-medium text-black">
-					Data Analyst
+					{{ data?.position.title }}
 				</SheetDescription>
 				<div class="flex items-center gap-2 text-sm">
-					<IconFromSvg :icon="Iphone" /><span>0971234567</span>
+					<IconFromSvg :icon="Iphone" /><span>{{ data?.candidate.phone_number }}</span>
 				</div>
 				<div class="flex items-center gap-2 text-sm">
-					<IconFromSvg :icon="Letter" /><span>tamle@gmail.com</span>
+					<IconFromSvg :icon="Letter" /><span>{{ data?.candidate.email }}</span>
 				</div>
 			</div>
 		</div>
 	</SheetHeader>
 	<ScrollArea class="flex-1 pr-3">
-		<div class="flex items-center justify-between">
+		<div v-if="data?.current_stage !== 'APPLIED'" class="flex items-center justify-between">
 			<h3 class="text-base text-black font-semibold">Interview</h3>
 			<Button variant="outline" class="rounded-2xl" @click="handleOpenDialog">
 				<IconFromSvg :icon="Calendar" />Interview schedule
 			</Button>
 		</div>
-		<div class="mt-4">
+		<div v-if="data?.current_stage !== 'APPLIED'" class="mt-4">
 			<h4 class="text-sm text-black font-medium">Interview 1</h4>
 			<div class="grid grid-cols-2 text-sm gap-4 mt-4">
 				<InformationItem :icon="Calendar" label="interview date" value="22 March, 2000" />
@@ -92,7 +93,7 @@ const handleSendEmail = () => {
 				<InformationItem :icon="UserSpeak" label="Interviewer" value="Trịnh Minh Hưng" />
 			</div>
 		</div>
-		<Separator class="my-4" />
+		<Separator v-if="data?.current_stage !== 'APPLIED'" class="my-4" />
 		<div class="flex items-center justify-between">
 			<h3 class="text-sm text-black font-semibold">Email</h3>
 			<Button variant="outline" class="rounded-2xl" @click="handleSendEmail">

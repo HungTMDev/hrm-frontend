@@ -9,7 +9,7 @@ export * from './recruitment.type';
 
 export interface IApiResponseV1<T> {
 	status: boolean;
-	statusCode: number;
+	status_code: number;
 	data: T;
 	meta: IMeta;
 }
@@ -108,7 +108,7 @@ export interface IUser extends IBaseResponse {
 	email: string;
 	personal_email: string | null;
 	phone_number: string | null;
-	name: string;
+	full_name: string;
 	avatar: string | null;
 	date_of_birth: string | null;
 	gender: GENDER;
@@ -116,6 +116,7 @@ export interface IUser extends IBaseResponse {
 	termination_date: string | null;
 	is_active: boolean;
 	is_confirmed: boolean;
+	name: string;
 }
 
 export interface IPosition extends IBaseResponse {

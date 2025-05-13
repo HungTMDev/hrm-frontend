@@ -24,25 +24,39 @@ import Separator from '@/components/ui/separator/Separator.vue';
 import { SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { EMAIL_TEMPLATE, listEmailTemplates } from '@/constants';
 import { formatCurrency } from '@/lib/utils';
-import type { ComboboxType } from '@/types';
+import type { ComboboxType, ICandidate } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import Handlebars from 'handlebars';
 import { useForm } from 'vee-validate';
 import { computed, ref, watch } from 'vue';
 import { thanksEmailSchema } from '../schema';
+import { useSendEmail } from '@/composables/recruitment/applicant/useUpdateApplicant';
+import { useCandidate } from '@/composables/recruitment/applicant/useCandidate';
 
 const emits = defineEmits<{
 	(e: 'cancel'): void;
 }>();
 
+const { data: candidatesData } = useCandidate();
+const { mutate } = useSendEmail();
+
 const renderedHtml = ref('');
 const templateSelected = ref<ComboboxType>();
 const schema = ref<any>(thanksEmailSchema);
 
+const candidates = computed(() => {
+	return (
+		(candidatesData?.value as ICandidate[])?.map((item) => ({
+			label: item.full_name,
+			value: item.id,
+		})) || []
+	);
+});
 const formSchema = computed(() => toTypedSchema(schema.value));
 const dataFill = computed(() => ({
 	subject: EMAIL_TEMPLATE[templateSelected.value?.value || '']?.subject,
-	recipient: values.recipient,
+	recipient: (candidatesData.value as ICandidate[])?.find((item) => item.id === values.recipient)
+		?.full_name,
 	position: values.position,
 	confirmation_before_date: values.confirmation_before_date,
 	confirmation_before_time: values.confirmation_before_time,
@@ -59,8 +73,8 @@ const { handleSubmit, values, setFieldValue } = useForm({
 	validationSchema: formSchema,
 });
 
-const onSubmit = handleSubmit((values) => {
-	console.log(values);
+const onSubmit = handleSubmit(() => {
+	mutate({ email: 'admin@lutech.ltd', html: renderedHtml.value.replace(/"/g, "'") });
 });
 
 watch(dataFill, () => {
@@ -117,12 +131,7 @@ const handleCancel = () => {
 			<form id="form" @submit="onSubmit">
 				<div class="grid grid-cols-2 gap-x-8 gap-y-4 mt-4">
 					<FormSelect
-						:list="[
-							{
-								label: 'Nguyễn Thanh Long',
-								value: 'Nguyễn Thanh Long',
-							},
-						]"
+						:list="candidates"
 						name="recipient"
 						label="Recipient"
 						:required="true"

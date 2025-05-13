@@ -21,7 +21,6 @@ import { Check } from 'lucide-vue-next';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import AddCircle from '@/assets/icons/Outline/Add Circle.svg';
-import Close from '@/assets/icons/Outline/Close.svg';
 import FormErrorCustom from './FormErrorCustom.vue';
 
 interface Props extends FormFieldCommon {

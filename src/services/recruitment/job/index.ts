@@ -2,10 +2,10 @@ import type { JobPayloadType } from '@/components/recruitments/jobs/job.schema';
 import { JOB_API } from '@/constants/api/recruitment/job.api';
 import { createApiEndpoint } from '@/lib/utils';
 import axiosClient from '@/plugins';
-import type { IFilterRequest, IJobFilter } from '@/types';
+import type { IApiResponseV1, IFilterRequest, IJob, IJobFilter } from '@/types';
 
 export const getJob = async (filter?: Partial<IFilterRequest<IJobFilter>>) => {
-	const { data, status } = await axiosClient.get(JOB_API.BASE, {
+	const { data, status } = await axiosClient.get<IApiResponseV1<IJob[]>>(JOB_API.BASE, {
 		params: {
 			page: filter?.page,
 			limit: filter?.limit,
@@ -39,5 +39,22 @@ export const deleteJob = async (id: string) => {
 	if (status >= 400) {
 		throw new Error();
 	}
+	return data;
+};
+
+export const uploadApplicantForJob = async (job_id: string, file: File) => {
+	console.log(job_id, file);
+	const formData = new FormData();
+	formData.append('file', file);
+
+	const { data, status } = await axiosClient.post(
+		createApiEndpoint(JOB_API.UPLOAD_APPLICANT_FOR_JOB, job_id),
+		formData,
+	);
+
+	if (status >= 400) {
+		throw new Error();
+	}
+
 	return data;
 };

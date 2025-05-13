@@ -62,7 +62,6 @@ watch(
 	<Combobox
 		v-model="selectedValue"
 		:open="open"
-		by="label"
 		@update:model-value="handleSelect"
 		@update:open="handleOpen"
 		:multiple="multiple">
@@ -125,7 +124,9 @@ watch(
 				class="min-h-10 grid place-items-center text-sm text-gray-300">
 				No data
 			</ComboboxGroup>
-			<ComboboxEmpty v-else-if="isSearch"> No framework found. </ComboboxEmpty>
+			<ComboboxEmpty v-else-if="isSearch">
+				No {{ label.toLowerCase() }} found.
+			</ComboboxEmpty>
 
 			<ScrollArea class="max-h-[300px] p-1 overflow-y-auto">
 				<ComboboxGroup v-if="list.length > 0">

@@ -1,11 +1,11 @@
 import type { JobPayloadType } from '@/components/recruitments/jobs/job.schema';
 import { useCustomToast } from '@/lib/customToast';
-import { createJob, deleteJob, updateJob } from '@/services/recruitment/job';
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import { jobKey } from './key';
-import type { Ref } from 'vue';
-import type { PaginationState } from '@tanstack/vue-table';
+import { createJob, deleteJob, updateJob, uploadApplicantForJob } from '@/services/recruitment/job';
 import type { IJobFilter } from '@/types';
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
+import type { PaginationState } from '@tanstack/vue-table';
+import type { Ref } from 'vue';
+import { jobKey } from './key';
 
 export const useCreateJob = (
 	pagination: Ref<PaginationState>,
@@ -60,6 +60,28 @@ export const useDeleteJob = (
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: async (id: string) => await deleteJob(id),
+		onSuccess: () => {
+			showToast({
+				message: 'Success!',
+				type: 'success',
+			});
+			queryClient.invalidateQueries({
+				queryKey: [jobKey.base, pagination, filter],
+			});
+		},
+	});
+};
+
+export const useUpLoadApplicantForJob = (
+	pagination: Ref<PaginationState>,
+	filter: Ref<Partial<IJobFilter>>,
+) => {
+	const { showToast } = useCustomToast();
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: async (payload: { job_id: string; file: File }) =>
+			await uploadApplicantForJob(payload.job_id, payload.file),
 		onSuccess: () => {
 			showToast({
 				message: 'Success!',

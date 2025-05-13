@@ -122,7 +122,9 @@ onUpdated(() => {
 										: '',
 									errors.length > 0 && 'border-destructive',
 								]">
-								<p class="truncate pr-8">{{ comboboxInput }}</p>
+								<p class="truncate pr-8">
+									{{ (value as ComboboxType)?.label || comboboxInput }}
+								</p>
 							</Button>
 							<span
 								class="absolute end-0 inset-y-0 flex items-center justify-center px-3">

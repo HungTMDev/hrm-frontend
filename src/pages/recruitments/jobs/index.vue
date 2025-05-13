@@ -142,14 +142,14 @@ const accordionItems = computed<FilterAccordion[]>(() => [
 	{
 		value: 'branch',
 		title: 'Branch',
-		items: branches.value?.map((item) => ({ label: item.name, value: item.id })) || [],
+		items: branches.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
 		icon: Building3,
 		type: 'list',
 	},
 	{
 		value: 'department',
 		title: 'Department',
-		items: departments.value?.map((item) => ({ label: item.name, value: item.id })) || [],
+		items: departments.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
 		icon: Building,
 		type: 'list',
 	},

@@ -14,6 +14,8 @@ import CloseCircleBold from '@/assets/icons/Bold/Close Circle.svg';
 import { ref } from 'vue';
 import ScreeningTab from '@/components/recruitments/applicants/screening-tab/ScreeningTab.vue';
 import InterviewTab from '@/components/recruitments/applicants/interview-tab/InterviewTab.vue';
+import HiredTab from '@/components/recruitments/applicants/hired-tab/HiredTab.vue';
+import RejectedTab from '@/components/recruitments/applicants/rejected-tab/RejectedTab.vue';
 
 const activeTab = ref('screening');
 </script>
@@ -70,8 +72,8 @@ const activeTab = ref('screening');
 			<div class="flex-1">
 				<TabsContent class="mt-0" value="screening"> <ScreeningTab /> </TabsContent>
 				<TabsContent class="mt-0" value="interview"> <InterviewTab /> </TabsContent>
-				<TabsContent class="mt-0" value="hired"> hired </TabsContent>
-				<TabsContent class="mt-0" value="rejected"> rejected </TabsContent>
+				<TabsContent class="mt-0" value="hired"> <HiredTab /> </TabsContent>
+				<TabsContent class="mt-0" value="rejected"> <RejectedTab /> </TabsContent>
 			</div>
 		</Tabs>
 	</ContentWrapper>

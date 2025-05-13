@@ -13,66 +13,23 @@ import RecruitmentSheet from '@/components/recruitments/recruitment-request/Recr
 import Button from '@/components/ui/button/Button.vue';
 import { ROWS_PER_PAGE } from '@/constants';
 import router from '@/routers';
-import type { RecruitmentRequest } from '@/types';
+import type { IRecruitmentRequest } from '@/types';
 import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { ref } from 'vue';
 
-const data: RecruitmentRequest[] = [
-	{
-		position: 'UI/UX Designer',
-		quantity: 1,
-		level: 'Intern',
-		request_from: 'Nguyễn Đức Phát',
-		expected_date: 'March 22, 2025',
-		status: 'To-do',
-	},
-	{
-		position: 'Android Developer',
-		quantity: 2,
-		level: 'Junior',
-		request_from: 'Lê Quốc Nghĩa',
-		expected_date: 'March 14, 2025',
-		status: 'Approved',
-	},
-	{
-		position: 'iOS Developer',
-		quantity: 1,
-		level: 'Intern',
-		request_from: 'Lê Quốc Nghĩa',
-		expected_date: 'March 10, 2025',
-		status: 'Rejected',
-	},
-	{
-		position: 'Mobile App Marketer',
-		quantity: 2,
-		level: 'Intern',
-		request_from: 'Phạm Anh Tú',
-		expected_date: 'March 5, 2025',
-		status: 'Approved',
-	},
-	{
-		position: 'Mobile App Marketer',
-		quantity: 1,
-		level: 'Intern',
-		request_from: 'Lê Thị Diệu Hoài',
-		expected_date: 'March 1, 2025',
-		status: 'Approved',
-	},
-];
-
 const isOpenSheet = ref(false);
 
-const table = useVueTable({
-	data,
-	columns: recruitmentRequestColumn(),
-	getCoreRowModel: getCoreRowModel(),
-	initialState: {
-		pagination: {
-			pageIndex: 0,
-			pageSize: ROWS_PER_PAGE[0],
-		},
-	},
-});
+// const table = useVueTable({
+// 	data:[],
+// 	columns: recruitmentRequestColumn(),
+// 	getCoreRowModel: getCoreRowModel(),
+// 	initialState: {
+// 		pagination: {
+// 			pageIndex: 0,
+// 			pageSize: ROWS_PER_PAGE[0],
+// 		},
+// 	},
+// });
 
 const handleOpenSheet = () => {
 	isOpenSheet.value = true;
@@ -205,7 +162,7 @@ const accordionItems = [
 		<div class="text-end">
 			<FilterPopover :list="[]" />
 		</div>
-		<DataTable :table="table" @row:click="handleOpenSheet" />
+		<!-- <DataTable :table="table" @row:click="handleOpenSheet" /> -->
 	</ContentWrapper>
 	<RecruitmentSheet :open="isOpenSheet" @update:open="handleCloseSheet" />
 </template>

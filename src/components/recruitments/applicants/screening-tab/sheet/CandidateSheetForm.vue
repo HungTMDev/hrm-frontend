@@ -9,7 +9,7 @@ import MultipleUploadField from '@/components/common/MultipleUploadField.vue';
 import UploadField from '@/components/common/UploadField.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
-import FormSelect from '@/components/form/FormSelect.vue';
+import FormCombobox from '@/components/form/FormCombobox.vue';
 import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
 import FormTextarea from '@/components/form/FormTextarea.vue';
 import Button from '@/components/ui/button/Button.vue';
@@ -115,14 +115,14 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 					placeholder="Enter email address"
 					:icon="Letter"
 					:model-value="data?.candidate.email" />
-				<FormSelect
+				<FormCombobox
 					name="job_id"
 					label="Job"
 					:list="listJob"
 					:required="true"
 					:icon="CaseRound"
+					list-size="md"
 					placeholder="Select job"
-					@update:model-value="setValue"
 					:model-value="data?.job.id" />
 				<FormSelectCalendar
 					name="date_of_birth"
@@ -149,22 +149,22 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 					:icon="Dollar"
 					placeholder="Enter expected salary"
 					:model-value="data?.expected_salary" />
-				<FormSelect
+				<FormCombobox
 					name="gender"
 					label="Gender"
+					list-size="md"
 					:list="genderCombobox"
 					:icon="UserHand"
 					placeholder="Select gender"
-					@update:model-value="setValue"
-					:model-value="data?.candidate.gender" />
+					@update:model-value="setValue" />
 
-				<FormSelect
+				<FormCombobox
 					name="referred_by"
 					label="Referred by"
 					:list="[]"
+					list-size="md"
 					:icon="UserHand"
-					placeholder="Select referred"
-					@update:model-value="setValue" />
+					placeholder="Select referred" />
 				<MultipleUploadField
 					name="attaches"
 					label="Attaches"

@@ -4,20 +4,22 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import type { ComboboxType } from '@/types';
 import { type HTMLAttributes } from 'vue';
+import SelectTriggerCustom from '../custom/SelectTriggerCustom.vue';
+import IconFromSvg from './IconFromSvg.vue';
 
 interface Prop {
-	defaultValue?: string | number;
-	modelValue?: string | number;
+	defaultValue?: string | number | string[] | number[];
+	modelValue?: string | number | string[] | number[];
 	class?: HTMLAttributes['class'];
 	multiple?: boolean;
 	list: ComboboxType[];
-	list_size?: 'small' | 'medium' | 'large';
+	icon?: any;
+	list_size?: 'sm' | 'md' | 'lg';
 }
 
 const props = defineProps<Prop>();
@@ -37,21 +39,34 @@ const handleSelect = (value: any) => {
 		:model-value="modelValue"
 		@update:model-value="handleSelect"
 		:multiple="multiple">
-		<SelectTrigger
-			:class="cn('w-[180px] focus:ring-0 focus:ring-offset-0 rounded-2xl', props.class)">
+		<SelectTriggerCustom
+			:class="
+				cn(
+					'w-full h-auto p-3 focus:ring-0 focus:ring-offset-0 rounded-2xl text-gray-200 relative',
+					icon && 'pl-10',
+					modelValue && 'text-slate-600',
+					props.class,
+				)
+			">
+			<span class="absolute left-3">
+				<IconFromSvg :icon="icon" />
+			</span>
 			<SelectValue :placeholder="'Select...'" />
-		</SelectTrigger>
+		</SelectTriggerCustom>
 		<SelectContent
 			align="center"
 			class="max-h-60 rounded-2xl"
 			:class="
 				cn(
-					list_size === 'small' && 'w-[300px]',
-					list_size === 'medium' && 'w-[500px]',
-					list_size === 'large' && 'w-[700px]',
+					list_size === 'sm' && 'w-[200px]',
+					list_size === 'md' && 'w-[300px]',
+					list_size === 'lg' && 'w-[400px]',
 				)
 			">
-			<SelectGroup>
+			<SelectGroup v-if="list.length === 0" class="text-sm text-center py-6"
+				>No data</SelectGroup
+			>
+			<SelectGroup v-else>
 				<SelectItem
 					v-for="(item, index) in list"
 					:key="index"

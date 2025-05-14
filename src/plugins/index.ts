@@ -90,7 +90,10 @@ axiosClient.interceptors.response.use(
 
 		const { showToast } = useCustomToast();
 		showToast({
-			message: error.response.data.message || error.response.data.error.error,
+			message:
+				error.response?.data?.error.details[0].message ||
+				error.response?.data?.error?.error ||
+				error.message,
 			type: 'error',
 		});
 

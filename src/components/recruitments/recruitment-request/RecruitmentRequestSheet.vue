@@ -33,7 +33,7 @@ const handleOpen = (isOpen: boolean) => {
 				:data="data"
 				:pagination="pagination"
 				:filter="filter"
-				@update:open="(payload) => handleOpen(payload)" />
+				@update:open="(open) => emit('update:open', open)" />
 		</SheetContentCustom>
 	</Sheet>
 </template>

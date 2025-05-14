@@ -17,6 +17,15 @@ export const formatCurrency = (amount: number) => {
 	return `đ${amount.toLocaleString('vi-VN')}`;
 };
 
+export const createISOStringFromDayAndTime = (dateStr: string, timeStr: string) => {
+	const dateTimeStr = `${dateStr}T${timeStr}`;
+
+	const dateObj = new Date(dateTimeStr);
+
+	const isoString = dateObj.toISOString();
+	return isoString;
+};
+
 export const formatDateValueToLocalDate = (value: DateValue) => {
 	const day = String(value.day).padStart(2, '0');
 	const month = String(value.month).padStart(2, '0');

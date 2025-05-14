@@ -11,7 +11,7 @@ import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import UploadField from '@/components/common/UploadField.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormInput from '@/components/form/FormInput.vue';
-import FormSelect from '@/components/form/FormSelect.vue';
+import FormCombobox from '@/components/form/FormCombobox.vue';
 import FormTime from '@/components/form/FormTime.vue';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
@@ -41,7 +41,7 @@ const { data: candidatesData } = useCandidate();
 const { mutate } = useSendEmail();
 
 const renderedHtml = ref('');
-const templateSelected = ref<ComboboxType>();
+const templateSelected = ref<string>();
 const schema = ref<any>(thanksEmailSchema);
 
 const candidates = computed(() => {
@@ -54,7 +54,7 @@ const candidates = computed(() => {
 });
 const formSchema = computed(() => toTypedSchema(schema.value));
 const dataFill = computed(() => ({
-	subject: EMAIL_TEMPLATE[templateSelected.value?.value || '']?.subject,
+	subject: EMAIL_TEMPLATE[templateSelected.value || '']?.subject,
 	recipient: (candidatesData.value as ICandidate[])?.find((item) => item.id === values.recipient)
 		?.full_name,
 	position: values.position,
@@ -78,14 +78,14 @@ const onSubmit = handleSubmit(() => {
 });
 
 watch(dataFill, () => {
-	const rawTemplate = EMAIL_TEMPLATE[templateSelected.value?.value || '']?.template || '';
+	const rawTemplate = EMAIL_TEMPLATE[templateSelected.value || '']?.template || '';
 	const compiled = Handlebars.compile(rawTemplate);
 	renderedHtml.value = compiled(dataFill.value);
 });
 
 const handleSelectTemplate = (payload: any) => {
-	templateSelected.value = payload as ComboboxType;
-	schema.value = EMAIL_TEMPLATE[templateSelected.value.value].schema;
+	templateSelected.value = payload as string;
+	schema.value = EMAIL_TEMPLATE[templateSelected.value || '']?.schema;
 };
 
 const setValue = (payload: { fieldName: any; data: any }) => {
@@ -120,7 +120,8 @@ const handleCancel = () => {
 				<CommonCombobox
 					label="Template"
 					:list="listEmailTemplates"
-					class="p-3 h-auto justify-start rounded-2xl w-80"
+					class="w-80"
+					list-size="md"
 					:icon="LetterOpened"
 					@update:model-value="handleSelectTemplate" />
 			</div>
@@ -130,18 +131,17 @@ const handleCancel = () => {
 			<h3 class="text-base font-semibold text-black">Information required</h3>
 			<form id="form" @submit="onSubmit">
 				<div class="grid grid-cols-2 gap-x-8 gap-y-4 mt-4">
-					<FormSelect
+					<FormCombobox
 						:list="candidates"
 						name="recipient"
 						label="Recipient"
 						:required="true"
 						:icon="User"
-						:is-search="true"
-						@update:model-value="setValue" />
-					<FormSelect
+						:is-search="true" />
+					<FormCombobox
 						v-if="
-							templateSelected?.value === 'invitation_email_to_receive_jobs' ||
-							templateSelected?.value === 'interview_invitation_email'
+							templateSelected === 'invitation_email_to_receive_jobs' ||
+							templateSelected === 'interview_invitation_email'
 						"
 						:list="[
 							{
@@ -152,11 +152,10 @@ const handleCancel = () => {
 						name="position"
 						label="Position"
 						:required="true"
-						:icon="UserCircle"
-						@update:model-value="setValue" />
+						:icon="UserCircle" />
 
-					<FormSelect
-						v-if="templateSelected?.value === 'invitation_email_to_receive_jobs'"
+					<FormCombobox
+						v-if="templateSelected === 'invitation_email_to_receive_jobs'"
 						:list="[
 							{
 								label: 'Data Analyst',
@@ -166,39 +165,38 @@ const handleCancel = () => {
 						name="title"
 						label="Title"
 						:required="true"
-						:icon="UserCircle"
-						@update:model-value="setValue" />
+						:icon="UserCircle" />
 
 					<FormCalendar
-						v-if="templateSelected?.value === 'interview_invitation_email'"
+						v-if="templateSelected === 'interview_invitation_email'"
 						name="interview_date"
 						label="Interview date"
 						class="w-full"
 						@update:value="setValue" />
 					<FormTime
-						v-if="templateSelected?.value === 'interview_invitation_email'"
+						v-if="templateSelected === 'interview_invitation_email'"
 						name="interview_time"
 						label="Interview time"
 						:required="true"
 						@update:value="setValue" />
 
 					<FormCalendar
-						v-if="templateSelected?.value === 'interview_invitation_email'"
+						v-if="templateSelected === 'interview_invitation_email'"
 						name="confirmation_before_date"
 						label="Confirmation before (date)"
 						class="w-full"
 						@update:value="setValue" />
 					<FormTime
-						v-if="templateSelected?.value === 'interview_invitation_email'"
+						v-if="templateSelected === 'interview_invitation_email'"
 						name="confirmation_before_time"
 						label="Confirmation before (time)"
 						:required="true"
 						@update:value="setValue" />
 
-					<FormSelect
+					<FormCombobox
 						v-if="
-							templateSelected?.value === 'invitation_email_to_receive_jobs' ||
-							templateSelected?.value === 'interview_invitation_email'
+							templateSelected === 'invitation_email_to_receive_jobs' ||
+							templateSelected === 'interview_invitation_email'
 						"
 						:list="[
 							{
@@ -210,22 +208,19 @@ const handleCancel = () => {
 						label="Location"
 						:required="true"
 						:icon="MapPoint"
-						list_size="medium"
-						@update:model-value="setValue" />
+						list_size="md" />
 					<FormCalendar
-						v-if="templateSelected?.value === 'invitation_email_to_receive_jobs'"
+						v-if="templateSelected === 'invitation_email_to_receive_jobs'"
 						name="start_date"
 						label="Start date"
-						class="w-full"
-						@update:value="setValue" />
+						class="w-full" />
 					<FormTime
-						v-if="templateSelected?.value === 'invitation_email_to_receive_jobs'"
+						v-if="templateSelected === 'invitation_email_to_receive_jobs'"
 						name="start_time"
 						label="Start time"
-						:required="true"
-						@update:value="setValue" />
+						:required="true" />
 					<FormInput
-						v-if="templateSelected?.value === 'invitation_email_to_receive_jobs'"
+						v-if="templateSelected === 'invitation_email_to_receive_jobs'"
 						name="salary"
 						type="number"
 						label="Salary"
@@ -234,7 +229,7 @@ const handleCancel = () => {
 						:icon="Dollar"
 						:required="true" />
 					<UploadField
-						v-if="templateSelected?.value === 'invitation_email_to_receive_jobs'"
+						v-if="templateSelected === 'invitation_email_to_receive_jobs'"
 						name="offer_letter"
 						label="Offer letter" />
 				</div>

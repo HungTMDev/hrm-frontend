@@ -13,7 +13,7 @@ import {
 import Label from '@/components/ui/label/Label.vue';
 import { useListJob } from '@/composables/recruitment/job/useJob';
 import { useUpLoadApplicantForJob } from '@/composables/recruitment/job/useUpdateJob';
-import type { ComboboxType, IJob, IJobFilter } from '@/types';
+import type { IJobFilter } from '@/types';
 import type { PaginationState } from '@tanstack/vue-table';
 import { computed, reactive } from 'vue';
 
@@ -44,8 +44,8 @@ const handleOpen = (isOpen: boolean) => {
 	emits('update:open', isOpen);
 };
 
-const handleSelectJob = (payload: ComboboxType | ComboboxType[]) => {
-	data.job_id = (payload as ComboboxType).value;
+const handleSelectJob = (payload: any) => {
+	data.job_id = payload as string;
 };
 
 const handleSelectFile = (payload: File | undefined) => {
@@ -72,7 +72,7 @@ const handleUpload = () => {
 					<CommonCombobox
 						:list="
 							jobs?.map((item) => ({
-								label: item.title,
+								label: item.position.title,
 								value: item.id,
 							})) || []
 						"

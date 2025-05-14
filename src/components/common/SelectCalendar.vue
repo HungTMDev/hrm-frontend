@@ -74,11 +74,14 @@ const formatter = useDateFormatter('en');
 							});
 						}
 					">
-					<SelectTrigger aria-label="Select month" class="w-[60%] rounded-2xl">
+					<SelectTrigger
+						aria-label="Select month"
+						class="w-[60%] rounded-2xl focus:ring-offset-0 focus:ring-0">
 						<SelectValue placeholder="Select month" />
 					</SelectTrigger>
-					<SelectContent class="max-h-[200px]">
+					<SelectContent class="max-h-[200px] rounded-2xl">
 						<SelectItem
+							class="rounded-xl"
 							v-for="month in createYear({ dateObj: date })"
 							:key="month.toString()"
 							:value="month.month.toString()">
@@ -98,11 +101,14 @@ const formatter = useDateFormatter('en');
 							});
 						}
 					">
-					<SelectTrigger aria-label="Select year" class="w-[40%] rounded-2xl">
+					<SelectTrigger
+						aria-label="Select year"
+						class="w-[40%] rounded-2xl focus:ring-offset-0 focus:ring-0">
 						<SelectValue placeholder="Select year" />
 					</SelectTrigger>
-					<SelectContent class="max-h-[200px]">
+					<SelectContent class="max-h-[200px] rounded-2xl">
 						<SelectItem
+							class="rounded-xl"
 							v-for="yearValue in createDecade({
 								dateObj: date,
 								startIndex: -100,

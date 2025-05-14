@@ -12,9 +12,9 @@ import UserCircle from '@/assets/icons/Outline/User Circle.svg';
 import UserHand from '@/assets/icons/Outline/User Hands.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
+import FormCombobox from '@/components/form/FormCombobox.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
-import FormSelect from '@/components/form/FormSelect.vue';
 import FormTextarea from '@/components/form/FormTextarea.vue';
 import { FormField } from '@/components/ui/form';
 import FormControl from '@/components/ui/form/FormControl.vue';
@@ -29,19 +29,12 @@ import { usePosition } from '@/composables/position/usePosition';
 import { useCreateJob, useUpdateJob } from '@/composables/recruitment/job/useUpdateJob';
 import { useListRecruitmentRequest } from '@/composables/recruitment/recruitment-request/useRecruitmentRequest';
 import { EDUCATION_LEVEL, genderCombobox, listEmploymentType, listJobLevel } from '@/constants';
-import type {
-	IBranch,
-	IDepartment,
-	IPosition,
-	IRecruitmentRequest,
-	IJob,
-	IJobFilter,
-} from '@/types';
+import type { IJob, IJobFilter, IRecruitmentRequest } from '@/types';
+import type { PaginationState } from '@tanstack/vue-table';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { jobSchema, type JobPayloadType } from '../job.schema';
-import type { PaginationState } from '@tanstack/vue-table';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
@@ -64,32 +57,33 @@ const filter = computed(() => props.filter);
 
 const listDepartment = computed(
 	() =>
-		(departments.value as IDepartment[])?.map((item) => ({
+		departments.value?.map((item) => ({
 			label: item.name,
 			value: item.id,
 		})) || [],
 );
 const listBranch = computed(
 	() =>
-		(branches.value as IBranch[])?.map((item) => ({
+		branches.value?.map((item) => ({
 			label: item.name,
 			value: item.id,
 		})) || [],
 );
 const listPosition = computed(
 	() =>
-		(positions.value as IPosition[])?.map((item) => ({
+		positions.value?.map((item) => ({
 			label: item.title,
 			value: item.id,
 		})) || [],
 );
-const listRecruitmentRequest = computed(
-	() =>
-		(recruitmentRequests.value?.data as IRecruitmentRequest[])?.map((item) => ({
+const listRecruitmentRequest = computed(() => {
+	return (
+		recruitmentRequests.value?.data?.map((item) => ({
 			label: item.title,
 			value: item.id,
-		})) || [],
-);
+		})) || []
+	);
+});
 const requisitionSelected = ref<IRecruitmentRequest>();
 
 const { mutateAsync: createJob, isPending: isPendingCreate } = useCreateJob(pagination, filter);
@@ -97,50 +91,36 @@ const { mutateAsync: updateJob, isPending: isPendingUpdate } = useUpdateJob(pagi
 
 const formSchema = toTypedSchema(jobSchema);
 
-const { handleSubmit, setFieldValue, values, resetForm } = useForm({
+const { handleSubmit, values } = useForm({
 	validationSchema: formSchema,
 });
 
 const onSubmit = handleSubmit(async (values: JobPayloadType) => {
-	const res = !props.data
-		? await createJob(values)
-		: await updateJob({ id: props.data.id, payload: values });
-	if ([200, 201].includes(res.status_code)) {
-		emits('update:open', false);
+	try {
+		const res = !props.data
+			? await createJob(values)
+			: await updateJob({ id: props.data.id, payload: values });
+		if ([200, 201].includes(res.status_code)) {
+			emits('update:open', false);
+		}
+	} catch (error) {
+		return error;
 	}
 });
 
-const selectRequisition = (fieldName: any, value: any) => {
-	const id = value as string;
-	const requisition = recruitmentRequests.value?.data.find((item) => item.id === id);
-	if (requisition) requisitionSelected.value = requisition;
-
-	setFieldValue('branch_id', requisitionSelected.value?.branch_id);
-	setFieldValue('department_id', requisitionSelected.value?.department.id);
-	setFieldValue('level', requisitionSelected.value?.level);
-	setFieldValue('employment_type', requisitionSelected.value?.employment_type);
-	setFieldValue(fieldName, value);
-};
-
-const setValue = (fieldName: any, value: any) => {
-	setFieldValue(fieldName, value);
-};
-
-onMounted(() => {
-	resetForm();
-	if (props.data) {
-		const keys = Object.keys(values);
-		keys.forEach((key) => {
-			if (props.data?.[key]) setValue(key, props.data?.[key]);
-		});
-	}
-});
+watch(
+	() => values.requisition_id,
+	(newVal) => {
+		const requisition = recruitmentRequests.value?.data.find((item) => item.id === newVal);
+		if (requisition) requisitionSelected.value = requisition;
+	},
+);
 </script>
 <template>
 	<ScrollArea class="flex-1 pr-3">
 		<form id="form" @submit="onSubmit">
 			<FormField
-				:modelValue="data?.title || requisitionSelected?.title"
+				:modelValue="data?.title ?? requisitionSelected?.title"
 				name="title"
 				v-slot="{ componentField }">
 				<FormItem>
@@ -161,47 +141,45 @@ onMounted(() => {
 			</SheetHeader>
 
 			<div class="grid grid-cols-2 gap-6">
-				<FormSelect
+				<FormCombobox
 					name="requisition_id"
 					label="Requisition"
 					:list="listRecruitmentRequest"
 					:model-value="data?.requisition_id"
 					:icon="ChartSqare"
 					:required="true"
-					placeholder="Select requisition"
-					@update:modelValue="
-						(payload) => selectRequisition(payload.fieldName, payload.data)
-					" />
+					list-size="md"
+					placeholder="Select requisition" />
 
-				<FormSelect
+				<FormCombobox
 					name="branch_id"
 					label="Branch"
 					:list="listBranch"
-					:modelValue="data?.branch_id || requisitionSelected?.branch_id"
+					:modelValue="requisitionSelected?.branch_id ?? data?.branch_id"
 					:icon="Building3"
 					:required="true"
-					placeholder="Select company branch"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
+					list-size="md"
+					placeholder="Select company branch" />
 
-				<FormSelect
+				<FormCombobox
 					name="department_id"
 					label="Department"
 					:list="listDepartment"
-					:modelValue="data?.department_id || requisitionSelected?.department.id"
+					:modelValue="requisitionSelected?.department.id ?? data?.department_id"
 					:required="true"
 					:icon="Building"
-					placeholder="Select department"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
+					list-size="md"
+					placeholder="Select department" />
 
-				<FormSelect
+				<FormCombobox
 					name="position_id"
 					label="Position"
 					:list="listPosition"
-					:modelValue="data?.position_id"
+					:modelValue="requisitionSelected?.job_title_id ?? data?.position_id"
 					:required="true"
 					:icon="Building"
-					placeholder="Select position"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
+					list-size="md"
+					placeholder="Select position" />
 
 				<div class="hidden">
 					<FormInput
@@ -209,39 +187,38 @@ onMounted(() => {
 						:required="true"
 						label="Hiring manager"
 						:modelValue="
-							data?.hiring_manager_id || requisitionSelected?.hiring_manager.id
+							requisitionSelected?.hiring_manager.id ?? data?.hiring_manager_id
 						"
 						:icon="UserCircle"
 						class="w-full"
 						placeholder="Enter hiring manager id" />
 				</div>
 
-				<FormSelect
+				<FormCombobox
 					name="level"
 					label="Level"
 					:required="true"
 					:list="listJobLevel"
-					:modelValue="data?.level || requisitionSelected?.level"
+					:modelValue="requisitionSelected?.level ?? data?.level"
 					:icon="Chart2"
-					:multiple="true"
-					placeholder="Select level"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
+					list-size="md"
+					placeholder="Select level" />
 
-				<FormSelect
+				<FormCombobox
 					name="employment_type"
 					label="Employment type"
 					:required="true"
 					:list="listEmploymentType"
-					:modelValue="data?.employment_type || requisitionSelected?.employment_type"
+					:modelValue="requisitionSelected?.employment_type ?? data?.employment_type"
 					:icon="Case"
-					placeholder="Select employment type"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
+					list-size="md"
+					placeholder="Select employment type" />
 
 				<FormInput
 					name="quantity"
 					type="number"
 					:required="true"
-					:modelValue="data?.quantity || requisitionSelected?.quantity"
+					:modelValue="requisitionSelected?.quantity ?? data?.quantity"
 					label="Quantity"
 					class="w-full"
 					:icon="CheckList"
@@ -254,8 +231,7 @@ onMounted(() => {
 					:icon="Calendar"
 					:model-value="data?.due_date"
 					class="w-full"
-					placeholder="dd/MM/yyyy"
-					@update:value="(payload) => setValue(payload.fieldName, payload.data)" />
+					placeholder="dd/MM/yyyy" />
 
 				<FormInput
 					name="location"
@@ -264,15 +240,15 @@ onMounted(() => {
 					:icon="CheckList"
 					placeholder="Enter location" />
 
-				<FormSelect
+				<FormCombobox
 					name="education_level"
 					label="Education level"
 					:list="EDUCATION_LEVEL"
 					:icon="SqureAcademic"
-					placeholder="Select education level"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
+					list-size="md"
+					placeholder="Select education level" />
 
-				<FormSelect
+				<FormCombobox
 					name="work_experience"
 					label="Work experience"
 					:list="[
@@ -298,24 +274,22 @@ onMounted(() => {
 						},
 					]"
 					:icon="Ranking"
-					placeholder="Select work experience"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
+					list-size="md"
+					placeholder="Select work experience" />
 
-				<FormSelect
+				<FormCombobox
 					name="gender"
 					label="Gender"
 					:list="genderCombobox"
 					:icon="UserHand"
-					placeholder="Select gender"
-					@update:modelValue="
-						(payload) => setValue(payload.fieldName, Number(payload.data))
-					" />
+					list-size="md"
+					placeholder="Select gender" />
 			</div>
 			<div class="mt-6 grid gap-4">
 				<FormTextarea
 					label="Description"
 					name="description"
-					:model-value="data?.description || requisitionSelected?.description"
+					:model-value="requisitionSelected?.description ?? data?.description"
 					placeholder="A detailed job description"
 					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
 

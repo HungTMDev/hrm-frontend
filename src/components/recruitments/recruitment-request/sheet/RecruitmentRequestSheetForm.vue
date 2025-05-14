@@ -7,10 +7,10 @@ import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
 import CheckList from '@/assets/icons/Outline/Checklist Minimalistic.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
+import FormCombobox from '@/components/form/FormCombobox.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormMarkdown from '@/components/form/FormMarkdown.vue';
-import FormSelect from '@/components/form/FormSelect.vue';
 import FormTextarea from '@/components/form/FormTextarea.vue';
 import { FormField } from '@/components/ui/form';
 import FormControl from '@/components/ui/form/FormControl.vue';
@@ -32,7 +32,7 @@ import type { IRecruitmentRequest, IRecruitmentRequestFilter } from '@/types';
 import type { PaginationState } from '@tanstack/vue-table';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { recruitmentRequestSchema } from '../recruitment-request.schema';
 
 const { data: branches } = useBranch();
@@ -71,7 +71,7 @@ const pagination = computed(() => props.pagination);
 
 const formSchema = toTypedSchema(recruitmentRequestSchema);
 
-const { handleSubmit, setFieldValue, values } = useForm({
+const { handleSubmit } = useForm({
 	validationSchema: formSchema,
 });
 
@@ -87,21 +87,8 @@ const onSubmit = handleSubmit(async (values) => {
 		? await editRecruitmentRequest({ id: props.data.id, data: values })
 		: await createRecruitmentRequest(values);
 	if ([200, 201].includes(res.status_code)) {
+		console.log(11);
 		emits('update:open', false);
-	}
-});
-
-const setValue = (fieldName: any, value: any) => {
-	setFieldValue(fieldName, value);
-};
-
-onMounted(() => {
-	if (props.data) {
-		const keys = Object.keys(values) as (keyof IRecruitmentRequest)[];
-		keys.forEach((key) => {
-			if ((key as any) === 'department_id') setValue(key, props.data?.department.id);
-			else setValue(key, props.data?.[key]);
-		});
 	}
 });
 </script>
@@ -127,51 +114,51 @@ onMounted(() => {
 			</SheetHeader>
 
 			<div class="grid grid-cols-2 gap-6">
-				<FormSelect
+				<FormCombobox
 					name="branch_id"
 					label="Branch"
 					:list="listBranch"
 					:icon="Building3"
 					:required="true"
+					list-size="md"
 					:modelValue="data?.branch_id"
-					placeholder="Select company branch"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
-				<FormSelect
+					placeholder="Select company branch" />
+				<FormCombobox
 					name="department_id"
 					label="Department"
+					list-size="md"
 					:list="listDepartment"
 					:required="true"
 					:icon="Building"
 					:modelValue="data?.department.id"
-					placeholder="Select department"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
-				<FormSelect
+					placeholder="Select department" />
+				<FormCombobox
 					name="job_title_id"
 					label="Job title"
+					list-size="md"
 					:list="listPosition"
 					:required="true"
 					:icon="Building"
 					:modelValue="data?.job_title_id"
-					placeholder="Select department"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
-				<FormSelect
+					placeholder="Select department" />
+				<FormCombobox
 					name="level"
 					label="Level"
+					list-size="md"
 					:required="true"
 					:list="listJobLevel"
 					:icon="Chart2"
 					:modelValue="data?.level"
-					placeholder="Select level"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
-				<FormSelect
+					placeholder="Select level" />
+				<FormCombobox
 					name="employment_type"
 					label="Employment type"
+					list-size="md"
 					:required="true"
 					:list="listEmploymentType"
 					:icon="Case"
 					:modelValue="data?.employment_type"
-					placeholder="Select employment type"
-					@update:modelValue="(payload) => setValue(payload.fieldName, payload.data)" />
+					placeholder="Select employment type" />
 				<FormInput
 					name="quantity"
 					type="number"
@@ -192,12 +179,10 @@ onMounted(() => {
 				<FormCalendar
 					name="expected_start_date"
 					label="Expected start date"
+					class="w-full"
 					:required="true"
 					:icon="Calendar"
-					class="w-full"
-					:modelValue="data?.expected_start_date"
-					placeholder="dd/mm/yyyy"
-					@update:value="(payload) => setValue(payload.fieldName, payload.data)" />
+					:modelValue="data?.expected_start_date" />
 			</div>
 			<div class="mt-6 grid gap-4">
 				<FormTextarea

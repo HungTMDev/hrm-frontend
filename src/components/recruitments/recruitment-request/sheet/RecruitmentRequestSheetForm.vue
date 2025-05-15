@@ -87,7 +87,6 @@ const onSubmit = handleSubmit(async (values) => {
 		? await editRecruitmentRequest({ id: props.data.id, data: values })
 		: await createRecruitmentRequest(values);
 	if ([200, 201].includes(res.status_code)) {
-		console.log(11);
 		emits('update:open', false);
 	}
 });

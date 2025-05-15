@@ -49,3 +49,14 @@ export const deleteCandidate = async (id: string) => {
 	}
 	return data;
 };
+
+export const updateStage = async (id: string, payload: { to_state: string; outcome: string }) => {
+	const { data, status } = await axiosClient.patch<IApiResponseV1<any>>(
+		createApiEndpoint(APPLICANT_API.UPDATE_STAGE, id),
+		payload,
+	);
+	if (status >= 400) {
+		throw new Error();
+	}
+	return data;
+};

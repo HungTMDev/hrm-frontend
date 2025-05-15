@@ -54,7 +54,6 @@ const emits = defineEmits<{
 
 const pagination = computed(() => props.pagination);
 const filter = computed(() => props.filter);
-
 const listDepartment = computed(
 	() =>
 		departments.value?.map((item) => ({

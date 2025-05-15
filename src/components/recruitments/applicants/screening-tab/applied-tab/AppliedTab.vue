@@ -44,6 +44,7 @@ import CandidateSheet from '../CandidateSheet.vue';
 import { screeningColumn } from '../columns';
 import AppliedDialog from './AppliedDialog.vue';
 import { useDeleteCandidate } from '@/composables/recruitment/applicant/useUpdateCandidate';
+import { useUpdateStage } from '@/composables/recruitment/applicant/useUpdateApplicant';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
@@ -80,6 +81,7 @@ const meta = computed<IMeta | undefined>(() => data.value?.meta);
 const pageCount = computed(() => meta.value?.total_pages);
 
 const { mutate } = useDeleteCandidate(pagination, filterPayload);
+const { mutate: updateStage } = useUpdateStage(pagination, filterPayload);
 
 const accordionItems = computed<FilterAccordion[]>(() => [
 	{
@@ -137,6 +139,20 @@ const handleOpenSheet = (payload?: IApplicant, view?: boolean) => {
 	isOpenSheet.value = true;
 };
 
+const handleStage = (action: string, payload: IApplicant) => {
+	if (action === 'PASS') {
+		updateStage({
+			id: payload.id,
+			data: { to_state: RECRUITMENT_STAGE.SCREENING, outcome: 'PASSED' },
+		});
+		return;
+	}
+	updateStage({
+		id: payload.id,
+		data: { to_state: RECRUITMENT_STAGE.REJECTED, outcome: 'FAILED' },
+	});
+};
+
 const table = useVueTable({
 	get data() {
 		return applicants.value;
@@ -147,7 +163,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: screeningColumn(handleOpenSheet, handleOpenAlert),
+	columns: screeningColumn(handleOpenSheet, handleOpenAlert, handleStage),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;

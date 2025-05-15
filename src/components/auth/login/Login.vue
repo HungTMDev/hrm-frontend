@@ -12,10 +12,8 @@ import { loginSchema } from './LoginSchema';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import Letter from '@/assets/icons/Outline/Letter.svg';
 import Lock from '@/assets/icons/Outline/Lock.svg';
-import { useAuthStore } from '@/stores/auth.store';
 import { ref } from 'vue';
-
-const authStore = useAuthStore();
+import { useLogin } from '@/composables/auth/useAuth';
 
 const remember = ref(true);
 
@@ -23,17 +21,16 @@ const navigateForgotPassword = () => {
 	router.push('/auth/forgot-password');
 };
 
+const { mutate, isPending } = useLogin(remember.value);
+
 const formSchema = toTypedSchema(loginSchema);
 
 const { handleSubmit } = useForm({
 	validationSchema: formSchema,
 });
 
-const onSubmit = handleSubmit(async (values) => {
-	const status = await authStore.login(values, remember.value);
-	if (status === 200) {
-		router.push('/');
-	}
+const onSubmit = handleSubmit((values) => {
+	mutate(values);
 });
 </script>
 <template>
@@ -81,7 +78,7 @@ const onSubmit = handleSubmit(async (values) => {
 
 			<CallApiButton
 				class="w-full rounded-xl bg-blue-500 hover:bg-blue-600 h-auto p-3"
-				:is-loading="authStore.isLoading">
+				:is-loading="isPending">
 				Login
 			</CallApiButton>
 		</form>

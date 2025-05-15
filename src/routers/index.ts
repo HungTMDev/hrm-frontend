@@ -38,7 +38,7 @@ router.beforeEach(async (to, from, next) => {
 	}
 
 	if (isAuthRoute && !isLoggedIn) {
-		authStore.clearLocalStorage();
+		authStore.clearStorage();
 		next('/auth');
 		return;
 	}

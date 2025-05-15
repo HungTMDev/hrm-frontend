@@ -1,6 +1,7 @@
+import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
+import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
+import Eye from '@/assets/icons/Outline/Eye.svg';
 import File from '@/assets/icons/Outline/File.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
@@ -12,6 +13,7 @@ import { h } from 'vue';
 export const screeningColumn = (
 	handleOpenSheet: (payload?: IApplicant, view?: boolean) => void,
 	handleOpenAlert: (payload: IApplicant) => void,
+	handleStage?: (action: string, payload: IApplicant) => void,
 ): ColumnDef<IApplicant>[] => [
 	{
 		id: 'select',
@@ -88,18 +90,38 @@ export const screeningColumn = (
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: IActionGroupType[] = [
-				{
-					label: 'Edit',
-					icon: Pen2,
-					style: '',
-				},
-				{
-					label: 'Delete',
-					icon: Trash,
-					style: 'text-red-500 ',
-				},
-			];
+			const actions: IActionGroupType[] =
+				row.original.current_stage === 'APPLIED'
+					? [
+							{
+								label: 'View',
+								icon: Eye,
+								style: '',
+							},
+							{
+								label: 'Pass',
+								icon: CheckCircle,
+								style: 'text-green-500 ',
+							},
+							{
+								label: 'Fail',
+								icon: CloseCircle,
+								style: 'text-red-500 ',
+							},
+						]
+					: [];
+
+			const onView = () => {
+				handleOpenSheet(row.original, true);
+			};
+
+			const onPass = () => {
+				handleStage?.('PASS', row.original);
+			};
+
+			const onFail = () => {
+				handleStage?.('FAIL', row.original);
+			};
 
 			const onEdit = () => {
 				handleOpenSheet(row.original);
@@ -113,6 +135,9 @@ export const screeningColumn = (
 				actions,
 				onEdit,
 				onDelete,
+				onView,
+				onPass,
+				onFail,
 			});
 		},
 	},

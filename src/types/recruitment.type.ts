@@ -135,6 +135,20 @@ export interface IApplicant extends IBaseResponse {
 	referred_by_user: IUser;
 }
 
+export interface IApplicantInterview extends IBaseResponse {
+	application_id: string;
+	stage: string;
+	interview_type: string;
+	interview_name: string;
+	scheduled_time: string;
+	duration_minutes: number;
+	location: string | null;
+	meeting_link: string | null;
+	status: string;
+	participants: IUser[];
+	candidate: ICandidate;
+}
+
 export interface ICandidate extends IBaseResponse {
 	created_by: string;
 	full_name: string;
@@ -158,4 +172,28 @@ export interface ICandidate extends IBaseResponse {
 	attaches: string | null;
 	notes: string | null;
 	created_by_user: IUser;
+}
+
+export interface InterviewPayload {
+	application_id: string;
+	stage: string;
+	interview_type: string;
+	interview_name: string;
+	scheduled_time: string;
+	duration_minutes?: number;
+	location?: string;
+	meeting_link?: string;
+	participant_ids?: string[];
+}
+
+export interface IApplicantInterviewFilter {
+	keywords?: string;
+	order?: 'ASC' | 'DESC';
+	status?: string[];
+	candidate_id?: string[];
+	interviewer_id?: string[];
+	from_date?: string;
+	to_date?: string;
+	department_id?: string[];
+	branch_id?: string[];
 }

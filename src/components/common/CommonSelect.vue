@@ -44,7 +44,7 @@ const handleSelect = (value: any) => {
 				cn(
 					'w-full h-auto p-3 focus:ring-0 focus:ring-offset-0 rounded-2xl text-gray-200 relative',
 					icon && 'pl-10',
-					modelValue && 'text-slate-600',
+					modelValue && 'text-black',
 					props.class,
 				)
 			">

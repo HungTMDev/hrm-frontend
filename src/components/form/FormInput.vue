@@ -28,7 +28,9 @@ const modelValue = useVModel(props, 'modelValue', emits, {
 <template>
 	<FormField :model-value="modelValue" v-slot="{ componentField, errors }" :name="name">
 		<FormItem class="flex flex-col">
-			<FormLabel>{{ label }} <span v-if="!required">(optional)</span></FormLabel>
+			<FormLabel class="text-slate-600"
+				>{{ label }} <span v-if="!required">(optional)</span></FormLabel
+			>
 			<FormControl>
 				<InputWithIcon
 					:type="type"

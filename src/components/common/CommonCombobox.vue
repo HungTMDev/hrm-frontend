@@ -119,6 +119,7 @@ watch(
 							cn(
 								'shadow-none h-auto p-3 rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 truncate',
 								icon && 'pl-10',
+								props.class,
 							)
 						"
 						:display-value="(val) => val?.label ?? ''"

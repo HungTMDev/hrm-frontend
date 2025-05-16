@@ -13,3 +13,13 @@ export enum CANDIDATE_API {
 export enum NOTIFICATION_API {
 	SEND_EMAIL = '/notifications/send-mail',
 }
+
+export enum INTERVIEW_API {
+	BASE = '/interviews',
+	BY_ID = '/interviews/%s',
+	UPCOMING = '/interviews/upcoming',
+	CANCEL = '/interviews/%s/cancel',
+	COMPLETE = '/interviews/%s/complete',
+	PARTICIPANTS = '/interviews/%s/participants',
+	DELETE_PARTICIPANT = '/interviews/%s/participants/%s',
+}

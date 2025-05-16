@@ -101,11 +101,11 @@ const listCandidates = [
 				:icon="UserCircle"
 				label="Position"
 				:value="data?.position.title || ''" />
-			<InformationItem :icon="Chart2" label="Level" :value="data?.level || ''" />
+			<InformationItem :icon="Chart2" label="Level" :value="data?.level as string" />
 			<InformationItem
 				:icon="Case"
 				label="Employment type"
-				:value="data?.employment_type || ''" />
+				:value="(data?.employment_type as string) || ''" />
 			<InformationItem
 				:icon="CheckList"
 				label="Quantity"

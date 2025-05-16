@@ -11,6 +11,13 @@ export const DEFAULT_PAGINATION = {
 	DEFAULT_LIMIT: 10,
 };
 
+export const DATA_TIME = {
+	TABLE: 30 * 1000,
+	MORE_CHANGE: 60 * 1000,
+	LESS_CHANGE: 24 * 60 * 60 * 1000,
+	DELETE: 5 * 60 * 1000,
+};
+
 export enum RECRUITMENT_REQUEST_STATUS {
 	APPROVED = 'APPROVED',
 	REJECTED = 'REJECTED',
@@ -46,10 +53,12 @@ export const ATTENDANCE_STYLE: Record<string, string> = {
 };
 
 export const JOB_STATUS_STYLE: Record<string, string> = {
-	Pending: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
-	Closed: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
-	Opening: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
-	Draft: 'bg-gray-50 text-slate-600 hover:bg-gray-100 hover:text-gray-500',
+	DRAFT: 'bg-slate-100 text-slate-600 hover:bg-slate-100 hover:text-slate-600',
+	ON_HOLD: 'bg-blue-50 text-blue-500 hover:bg-blue-50 hover:text-blue-500',
+	OPEN: 'bg-blue-50 text-blue-500 hover:bg-blue-50 hover:text-blue-500',
+	FILLED: 'bg-green-50 text-green-500 hover:bg-green-50 hover:text-green-500',
+	CANCELLED: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
+	CLOSED: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
 };
 
 export const PAYROLL_FILE_STATUS_STYLE: Record<string, string> = {
@@ -71,6 +80,18 @@ export enum ApplicantStage {
 	Hired = 'Hired',
 	Rejected = 'Rejected',
 }
+
+export const APPLICANT_STATUS_STYLE: Record<string, string> = {
+	ACTIVE: 'bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500',
+	WITHDRAW: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+	HIRED: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	REJECTED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+};
+
+export const APPLICANT_OUTCOME_STYLE: Record<string, string> = {
+	PASSED: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	FAILED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+};
 
 export const APPLICANT_STAGE_STYLE: Record<string, string> = {
 	Applied: 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-500',
@@ -189,3 +210,32 @@ export enum RECRUITMENT_STAGE {
 	REJECTED = 'REJECTED',
 	WITHDRAWN = 'WITHDRAWN',
 }
+
+export enum INTERVIEW_TYPE {
+	IN_PERSON = 'IN_PERSON',
+	ONLINE = 'ONLINE',
+}
+
+export const listInterviewType = convertEnumToComboboxType(INTERVIEW_TYPE);
+
+export enum INTERVIEW_STATUS {
+	SCHEDULED = 'SCHEDULED',
+	CANCELLED = 'CANCELLED',
+	COMPLETED = 'COMPLETED',
+	PENDING_FEEDBACK = 'PENDING_FEEDBACK',
+}
+
+export const INTERVIEW_STATUS_STYLE: Record<string, string> = {
+	SCHEDULED: 'bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500',
+	CANCELLED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+	COMPLETED: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	PENDING_FEEDBACK: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
+};
+
+export enum INTERVIEW_ROLE {
+	INTERVIEWER = 'INTERVIEWER',
+	SCHEDULER = 'SCHEDULER',
+	OBSERVER = 'OBSERVER',
+}
+
+export const listInterviewRole = convertEnumToComboboxType(INTERVIEW_ROLE);

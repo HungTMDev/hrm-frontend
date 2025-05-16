@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
@@ -11,7 +12,6 @@ import Ranking from '@/assets/icons/Outline/Ranking.svg';
 import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 import UserHand from '@/assets/icons/Outline/User Hand Up.svg';
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import StatusTag from '@/components/common/StatusTag.vue';

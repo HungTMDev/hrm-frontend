@@ -19,6 +19,7 @@ import type { TalentPool } from '@/types';
 import TalentPoolSheet from '@/components/recruitments/talent-pool/TalentPoolSheet.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';
+import AlertPopup from '@/components/common/AlertPopup.vue';
 
 const recruitmentStore = useRecruitmentStore();
 
@@ -30,16 +31,23 @@ const isView = ref(false);
 const dataSent = ref<TalentPool>();
 
 const handleOpenSheet = (payload?: TalentPool, view?: boolean) => {
-	dataSent.value = payload;
+	if (payload instanceof PointerEvent) {
+		dataSent.value = undefined;
+	} else dataSent.value = payload;
 	isView.value = view || false;
 	isOpenSheet.value = true;
+};
+
+const handleOpenAlert = (payload?: TalentPool) => {
+	dataSent.value = payload;
+	isOpenAlert.value = true;
 };
 
 const table = useVueTable({
 	get data() {
 		return recruitmentStore.talentPools;
 	},
-	columns: talentPoolColumns(handleOpenSheet),
+	columns: talentPoolColumns(handleOpenSheet, handleOpenAlert),
 	getCoreRowModel: getCoreRowModel(),
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
@@ -65,6 +73,12 @@ const handleCloseSheet = (open: boolean) => {
 	isView.value = false;
 };
 
+const handleCloseAlert = (open: boolean) => {
+	isOpenAlert.value = open;
+	dataSent.value = undefined;
+	isView.value = false;
+};
+
 onBeforeMount(() => {
 	if (recruitmentStore.talentPools.length === 0) {
 		recruitmentStore.getAllTalentPool();
@@ -81,15 +95,22 @@ onBeforeMount(() => {
 				placeholder="Search talent" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="[]" />
-			<Button class="bg-blue-500 hover:bg-blue-600 rounded-3xl font-medium">
-				<IconFromSvg :icon="UserPlus" />Add new talent
+			<Button
+				class="bg-blue-500 hover:bg-blue-600 rounded-3xl font-medium"
+				@click="handleOpenSheet">
+				<IconFromSvg :icon="UserPlus" />Add new
 			</Button>
 		</div>
 		<div class="flex flex-col gap-3">
-			<DataTable :table="table" @row:click="handleOpenSheet()" />
+			<DataTable :table="table" @row:click="(payload) => handleOpenSheet(payload, true)" />
 			<Separator />
 			<DataTablePagination :table="table" />
 		</div>
 	</ContentWrapper>
-	<TalentPoolSheet :open="isOpenSheet" @update:open="handleCloseSheet" />
+	<TalentPoolSheet
+		:open="isOpenSheet"
+		@update:open="handleCloseSheet"
+		:is-view="isView"
+		@edit="isView = false" />
+	<AlertPopup :open="isOpenAlert" :description="dataSent?.name" @update:open="handleCloseAlert" />
 </template>

@@ -27,6 +27,7 @@ interface Props extends FormFieldCommon {
 	list: ComboboxType[];
 	button_label?: string;
 	list_size?: 'small' | 'medium' | 'large';
+	icon?: any;
 }
 
 const emit = defineEmits<{
@@ -55,13 +56,21 @@ const handleSelect = (fieldName: string, data: string) => {
 							>
 						</div>
 					</div>
-					<Combobox by="label">
+					<Combobox>
 						<FormControl>
 							<ComboboxAnchor class="w-full">
 								<div class="w-full flex items-center gap-2 relative">
+									<span class="absolute left-3 text-gray-200">
+										<IconFromSvg :icon="icon" />
+									</span>
 									<ComboboxInput
 										:display-value="(val) => val?.label ?? ''"
-										class="h-12 rounded-2xl focus-visible:border-blue-100 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+										:class="
+											cn(
+												'h-[46px] rounded-2xl focus-visible:border-blue-100 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none',
+												icon && 'pl-10',
+											)
+										"
 										:placeholder="placeholder ?? 'Select...'" />
 									<ComboboxTrigger
 										class="absolute end-0 inset-y-0 flex items-center justify-center px-3">

@@ -23,8 +23,8 @@ const handleOpen = (isOpen: boolean) => {
 <template>
 	<Sheet :open="open" @update:open="handleOpen">
 		<SheetContentCustom class="rounded-l-3xl sm:max-w-[880px] p-8 flex flex-col text-slate-600">
-			<TalentPoolSheetView />
-			<!-- <TalentPoolSheetForm /> -->
+			<TalentPoolSheetView v-if="isView" :data="data" @edit="emit('edit')" />
+			<TalentPoolSheetForm v-else :data="data" />
 		</SheetContentCustom>
 	</Sheet>
 </template>

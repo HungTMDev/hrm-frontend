@@ -1,3 +1,4 @@
+import { AUTH_API } from '@/constants/api/auth.api';
 import { useCustomToast } from '@/lib/customToast';
 import { axiosConfig } from '@/plugins/axiosConfig.ts';
 import router from '@/routers';
@@ -73,10 +74,9 @@ const refreshToken = async () => {
 	}
 
 	try {
-		const { data } = await axios.post<IApiResponseV1<ITokenResponse>>(
-			axiosConfig.path.refreshToken,
-			{ refresh_token },
-		);
+		const { data } = await axios.post<IApiResponseV1<ITokenResponse>>(AUTH_API.REFRESH_TOKEN, {
+			refresh_token,
+		});
 
 		const token = data.data;
 		authStore.setToken(token.access_token, token.refresh_token, true);
@@ -136,7 +136,7 @@ axiosClient.interceptors.response.use(
 		if (error.response) {
 			const errorMessage =
 				error.response?.data?.error?.details?.[0]?.message ||
-				error.response?.data?.error?.error ||
+				error.response?.data?.error?.message ||
 				error.message;
 
 			if (error.response.status !== 401) {

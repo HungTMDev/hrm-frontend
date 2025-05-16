@@ -1,20 +1,26 @@
 import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
+import Calendar from '@/assets/icons/Outline/Calendar.svg';
+import Letter from '@/assets/icons/Outline/Letter.svg';
 import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import File from '@/assets/icons/Outline/File.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
+import StatusTag from '@/components/common/StatusTag.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
+import { APPLICANT_STATUS_STYLE } from '@/constants';
 import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
+import { cn } from '@/lib/utils';
 
-export const screeningColumn = (
-	handleOpenSheet: (payload?: IApplicant, view?: boolean) => void,
-	handleOpenAlert: (payload: IApplicant) => void,
-	handleStage?: (action: string, payload: IApplicant) => void,
-): ColumnDef<IApplicant>[] => [
+export const screeningColumn = (payload: {
+	handleOpenSheet?: (payload?: IApplicant, view?: boolean) => void;
+	handleOpenAlert?: (payload: IApplicant) => void;
+	handleStage?: (action: string, payload: IApplicant) => void;
+	handleOpenDialog?: (payload: IApplicant) => void;
+}): ColumnDef<IApplicant>[] => [
 	{
 		id: 'select',
 		header: ({ table }) =>
@@ -84,7 +90,11 @@ export const screeningColumn = (
 	{
 		accessorKey: 'status',
 		header: 'Status',
-		cell: ({ row }) => row.original.application_status,
+		cell: ({ row }) =>
+			h(StatusTag, {
+				status: row.original.application_status,
+				class: APPLICANT_STATUS_STYLE[row.original.application_status],
+			}),
 	},
 	{
 		accessorKey: 'action',
@@ -96,7 +106,7 @@ export const screeningColumn = (
 							{
 								label: 'View',
 								icon: Eye,
-								style: '',
+								style: 'text-slate-600',
 							},
 							{
 								label: 'Pass',
@@ -109,26 +119,50 @@ export const screeningColumn = (
 								style: 'text-red-500 ',
 							},
 						]
-					: [];
+					: [
+							{
+								label: 'View',
+								icon: Eye,
+								style: 'text-slate-600',
+							},
+							{
+								label: 'Schedule interview',
+								icon: Calendar,
+								style: 'text-slate-600',
+							},
+							{
+								label: 'Send email',
+								icon: Letter,
+								style: 'text-slate-600',
+							},
+						];
 
 			const onView = () => {
-				handleOpenSheet(row.original, true);
+				payload.handleOpenSheet?.(row.original, true);
 			};
 
 			const onPass = () => {
-				handleStage?.('PASS', row.original);
+				payload.handleStage?.('PASS', row.original);
 			};
 
 			const onFail = () => {
-				handleStage?.('FAIL', row.original);
+				payload.handleStage?.('FAIL', row.original);
 			};
 
 			const onEdit = () => {
-				handleOpenSheet(row.original);
+				payload.handleOpenSheet?.(row.original);
 			};
 
 			const onDelete = () => {
-				handleOpenAlert(row.original);
+				payload.handleOpenAlert?.(row.original);
+			};
+
+			const onSendEmail = () => {
+				console.log(111);
+			};
+
+			const onScheduleInterview = () => {
+				payload.handleOpenDialog?.(row.original);
 			};
 
 			return h(ActionGroupCommon, {
@@ -138,6 +172,9 @@ export const screeningColumn = (
 				onView,
 				onPass,
 				onFail,
+				onScheduleInterview,
+				onSendEmail,
+				class: cn(row.original.current_stage === 'SCREENING' && 'w-[200px]'),
 			});
 		},
 	},

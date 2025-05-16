@@ -52,7 +52,7 @@ onMounted(() => {
 					)
 				">
 				<IconFromSvg :icon="CalendarIcon" class="text-gray-200" />
-				<span :class="[value ? 'text-slate-600' : 'text-gray-200', 'flex-1 font-normal']">{{
+				<span :class="[value ? 'text-black' : 'text-gray-200', 'flex-1 font-normal']">{{
 					value ? formatDateValueToLocalDate(value) : 'dd/mm/yyyy'
 				}}</span>
 				<span>

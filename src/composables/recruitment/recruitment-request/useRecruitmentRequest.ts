@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/vue-query';
 import type { PaginationState } from '@tanstack/vue-table';
 import type { Ref } from 'vue';
 import { recruitmentRequestKey } from './key';
+import { DATA_TIME } from '@/constants';
 
 export const useRecruitmentRequest = (
 	pagination: Ref<PaginationState>,
@@ -18,8 +19,8 @@ export const useRecruitmentRequest = (
 				filter: filter.value,
 			}),
 		retry: false,
-		staleTime: 1 * 60 * 1000,
-		gcTime: 2 * 60 * 1000,
+		staleTime: DATA_TIME.TABLE,
+		gcTime: DATA_TIME.DELETE,
 	});
 };
 
@@ -31,7 +32,7 @@ export const useListRecruitmentRequest = () => {
 				limit: 100,
 			}),
 		retry: false,
-		staleTime: 3 * 60 * 1000,
-		gcTime: 5 * 60 * 1000,
+		staleTime: DATA_TIME.MORE_CHANGE,
+		gcTime: DATA_TIME.DELETE,
 	});
 };

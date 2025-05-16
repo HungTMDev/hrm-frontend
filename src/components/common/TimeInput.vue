@@ -49,7 +49,7 @@ onMounted(() => {
 			<TimeFieldInput v-if="item.part === 'literal'" :part="item.part" class="p-0.5">
 				{{ item.value }}
 			</TimeFieldInput>
-			<TimeFieldInput v-else :part="item.part" class="rounded p-0.5 focus:outline">
+			<TimeFieldInput v-else :part="item.part" class="rounded p-0.5 focus:outline text-black">
 				{{ item.value }}
 			</TimeFieldInput>
 		</template>

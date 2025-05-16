@@ -1,9 +1,10 @@
 import type { PaginationState } from '@tanstack/vue-table';
 import type { Ref } from 'vue';
 import { jobKey } from './key';
-import type { IApiResponseV1, IJob, IJobFilter } from '@/types';
+import type { IJob, IJobFilter } from '@/types';
 import { useQuery } from '@tanstack/vue-query';
 import { getJob } from '@/services/recruitment/job';
+import { DATA_TIME } from '@/constants';
 
 export const useJob = (pagination: Ref<PaginationState>, filter: Ref<Partial<IJobFilter>>) => {
 	return useQuery({
@@ -15,8 +16,7 @@ export const useJob = (pagination: Ref<PaginationState>, filter: Ref<Partial<IJo
 				filter: filter.value,
 			}),
 		retry: false,
-		staleTime: 2 * 60 * 1000,
-		gcTime: 5 * 60 * 1000,
+		gcTime: DATA_TIME.DELETE,
 	});
 };
 
@@ -43,7 +43,7 @@ export const useListJob = () => {
 			return list;
 		},
 		retry: false,
-		staleTime: 10 * 60 * 1000,
-		gcTime: 5 * 60 * 1000,
+		staleTime: DATA_TIME.MORE_CHANGE,
+		gcTime: DATA_TIME.DELETE,
 	});
 };

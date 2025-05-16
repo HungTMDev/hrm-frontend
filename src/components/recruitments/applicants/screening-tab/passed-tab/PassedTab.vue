@@ -119,7 +119,8 @@ const handleOpenSheet = (payload?: IApplicant, view?: boolean) => {
 	isOpenSheet.value = true;
 };
 
-const handleOpenDialog = () => {
+const handleOpenDialog = (payload?: IApplicant) => {
+	dataSent.value = payload;
 	isOpenDialog.value = true;
 };
 
@@ -133,7 +134,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: screeningColumn(handleOpenSheet, handleOpenAlert),
+	columns: screeningColumn({ handleOpenSheet, handleOpenAlert, handleOpenDialog }),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -174,10 +175,12 @@ const handleFilter = (payload: FilterData[]) => {
 };
 
 const handleCloseDialog = (open: boolean) => {
+	dataSent.value = undefined;
 	isOpenDialog.value = open;
 };
 
 const handleCloseSheet = (open: boolean) => {
+	dataSent.value = undefined;
 	isOpenSheet.value = open;
 };
 </script>
@@ -207,5 +210,10 @@ const handleCloseSheet = (open: boolean) => {
 		@edit="isView = false"
 		@update:open="handleCloseSheet"
 		@open-dialog="handleOpenDialog" />
-	<PassedTabDialog :open="isOpenDialog" @update:open="handleCloseDialog" />
+	<PassedTabDialog
+		:open="isOpenDialog"
+		:id="dataSent?.id"
+		:filters="filterPayload"
+		:pagination="pagination"
+		@update:open="handleCloseDialog" />
 </template>

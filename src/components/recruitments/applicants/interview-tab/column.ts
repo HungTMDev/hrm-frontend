@@ -1,16 +1,23 @@
-import Eye from '@/assets/icons/Outline/Eye.svg';
 import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
 import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import Eye from '@/assets/icons/Outline/Eye.svg';
+import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
+import StatusTag from '@/components/common/StatusTag.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
-import type { IActionGroupType, IApplicant } from '@/types';
+import { INTERVIEW_STATUS_STYLE } from '@/constants';
+import { cn, formatISOStringToLocalDateTime } from '@/lib/utils';
+import type { IActionGroupType, IApplicantInterview } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 
-export const interviewColumn = (): ColumnDef<IApplicant>[] => [
+export const interviewColumn = (
+	handleComplete?: (payload: IApplicantInterview) => void,
+	handleOpenAlert?: (payload: IApplicantInterview) => void,
+	handleOpenSheet?: (payload: IApplicantInterview) => void,
+	handleOpenDialog?: (payload: IApplicantInterview) => void,
+): ColumnDef<IApplicantInterview>[] => [
 	{
 		id: 'select',
 		header: ({ table }) =>
@@ -46,49 +53,124 @@ export const interviewColumn = (): ColumnDef<IApplicant>[] => [
 	{
 		accessorKey: 'interviewer',
 		header: 'Interviewer',
-		cell: ({ row }) => '',
+		cell: ({ row }) => row.original.participants[0].name,
 		enableHiding: false,
 	},
 	{
 		accessorKey: 'interview_date',
 		header: 'Interview date',
-		cell: ({ row }) => '',
+		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.scheduled_time).date,
 		enableHiding: false,
 	},
 	{
 		accessorKey: 'interview_time',
 		header: 'Interview time',
-		cell: ({ row }) => '',
+		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.scheduled_time).time,
 	},
 	{
 		accessorKey: 'status',
 		header: 'Status',
-		cell: ({ row }) => '',
+		cell: ({ row }) =>
+			h(StatusTag, {
+				status: row.original.status,
+				class: [INTERVIEW_STATUS_STYLE[row.original.status]],
+			}),
 	},
 	{
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: IActionGroupType[] = [
-				{
-					label: 'View',
-					icon: Eye,
-					style: '',
-				},
-				{
-					label: 'Approve',
-					icon: CheckCircle,
-					style: 'text-green-500',
-				},
-				{
-					label: 'Reject',
-					icon: CloseCircle,
-					style: 'text-red-500',
-				},
-			];
+			const actions = (): IActionGroupType[] => {
+				if (row.original.status === 'SCHEDULED') {
+					return [
+						{
+							label: 'View',
+							icon: Eye,
+							style: 'text-slate-600',
+						},
+						{
+							label: 'Complete',
+							icon: CheckCircle,
+							style: 'text-green-500',
+						},
+						{
+							label: 'Cancel',
+							icon: CloseCircle,
+							style: 'text-red-500',
+						},
+					];
+				}
+				if (row.original.status === 'CANCELLED') {
+					const arr = [
+						{
+							label: 'View',
+							icon: Eye,
+							style: 'text-slate-600',
+						},
+						{
+							label: 'Reject',
+							icon: CloseCircle,
+							style: 'text-red-500',
+						},
+					];
+					return row.original.stage === 'INTERVIEW_1'
+						? [
+								...arr,
+								{
+									label: 'Schedule interview',
+									icon: Calendar,
+									style: 'text-slate-600',
+								},
+							]
+						: arr;
+				}
+				const arr = [
+					{
+						label: 'View',
+						icon: Eye,
+						style: 'text-slate-600',
+					},
+					{
+						label: 'Hire',
+						icon: CheckCircle,
+						style: 'text-green-500',
+					},
+				];
+				return row.original.stage === 'INTERVIEW_1'
+					? [
+							...arr,
+							{
+								label: 'Schedule interview',
+								icon: Calendar,
+								style: 'text-slate-600',
+							},
+						]
+					: arr;
+			};
+
+			const onView = () => {
+				handleOpenSheet?.(row.original);
+			};
+
+			const onComplete = () => {
+				handleComplete?.(row.original);
+			};
+
+			const onCancel = () => {
+				handleOpenAlert?.(row.original);
+			};
+
+			const onScheduleInterview = () => {
+				handleOpenDialog?.(row.original);
+			};
 
 			return h(ActionGroupCommon, {
-				actions,
+				actions: actions(),
+				onComplete,
+				onCancel,
+				onView,
+				onScheduleInterview,
+				class: cn(row.original.status === 'CANCELLED' && 'w-[200px]'),
 			});
 		},
 	},

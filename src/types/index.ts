@@ -129,5 +129,12 @@ export interface IPosition extends IBaseResponse {
 export interface IFilterRequest<T = any> {
 	page: number;
 	limit: number;
-	filter: T;
+	filter?: T;
+}
+
+export interface IUserFilter {
+	keywords?: string;
+	order?: 'ASC' | 'DESC';
+	only_deleted?: boolean;
+	role?: string[];
 }

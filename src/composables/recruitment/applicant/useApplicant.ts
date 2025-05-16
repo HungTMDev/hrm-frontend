@@ -1,9 +1,14 @@
 import { useQuery } from '@tanstack/vue-query';
 import { applicantKey } from './key';
-import type { Ref } from 'vue';
+import { computed, type Ref } from 'vue';
 import type { PaginationState } from '@tanstack/vue-table';
-import type { IApplicantFilter } from '@/types';
-import { getApplicant } from '@/services/recruitment/applicant';
+import type { IApplicantFilter, IApplicantInterviewFilter } from '@/types';
+import {
+	getApplicant,
+	getApplicantInterview,
+	getApplicantInterviewById,
+} from '@/services/recruitment/applicant';
+import { DATA_TIME } from '@/constants';
 
 export const useApplicant = (
 	pagination: Ref<PaginationState>,
@@ -17,7 +22,37 @@ export const useApplicant = (
 				limit: pagination.value.pageSize,
 				filter: filter.value,
 			}),
-		staleTime: 7 * 24 * 60 * 60 * 1000, //Fetch every 7 days
 		retry: false,
+		staleTime: DATA_TIME.TABLE,
+		gcTime: DATA_TIME.DELETE,
+	});
+};
+
+export const useApplicantInterview = (
+	pagination: Ref<PaginationState>,
+	filter: Ref<Partial<IApplicantInterviewFilter>>,
+) => {
+	return useQuery({
+		queryKey: [applicantKey.interview, pagination, filter],
+		queryFn: async () =>
+			await getApplicantInterview({
+				page: pagination.value.pageIndex + 1,
+				limit: pagination.value.pageSize,
+				filter: filter.value,
+			}),
+		retry: false,
+		staleTime: DATA_TIME.TABLE,
+		gcTime: DATA_TIME.DELETE,
+	});
+};
+
+export const useGetApplicantById = (id: Ref<string | undefined>) => {
+	return useQuery({
+		queryKey: [applicantKey.interview, id],
+		queryFn: async () => await getApplicantInterviewById(id.value || ''),
+		staleTime: 5 * 60 * 1000,
+		retry: false,
+		enabled: computed(() => !!id.value),
+		gcTime: DATA_TIME.DELETE,
 	});
 };

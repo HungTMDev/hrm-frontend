@@ -9,6 +9,7 @@ import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
 
 export const talentPoolColumns = (
 	handleOpenSheet: (payload?: TalentPool, view?: boolean) => void,
+	handleOpenAlert: (payload?: TalentPool) => void,
 ): ColumnDef<TalentPool>[] => [
 	{
 		id: 'select',
@@ -90,10 +91,14 @@ export const talentPoolColumns = (
 			];
 
 			const onEdit = () => {
-				handleOpenSheet(row.original, true);
+				handleOpenSheet(row.original);
 			};
 
-			return h(ActionGroupCommon, { actions, onEdit });
+			const onDelete = () => {
+				handleOpenAlert(row.original);
+			};
+
+			return h(ActionGroupCommon, { actions, onEdit, onDelete });
 		},
 	},
 ];

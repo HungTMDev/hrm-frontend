@@ -32,7 +32,10 @@ const handleShowPassword = () => {
 </script>
 
 <template>
-	<div :class="cn('flex gap-2 border p-3 rounded-2xl w-fit items-center ', props.class)">
+	<div
+		:class="
+			cn('flex gap-2 border border-input p-3 rounded-2xl w-fit items-center ', props.class)
+		">
 		<span v-if="icon" class="text-gray-200"><IconFromSvg :icon="icon" /></span>
 		<input
 			:type="showPassword ? 'text' : type"

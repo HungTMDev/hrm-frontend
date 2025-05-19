@@ -8,8 +8,16 @@ import { AUTH_API } from '@/constants/api/auth.api';
 export const useAuthStore = defineStore('auth-store', () => {
 	//defineState
 	const isLoading = ref(false);
-	const access_token = ref<string>(localStorage.getItem(axiosConfig.key.accessToken) || '');
-	const refresh_token = ref<string>(localStorage.getItem(axiosConfig.key.refreshToken) || '');
+	const access_token = ref<string>(
+		sessionStorage.getItem(axiosConfig.key.accessToken) ||
+			localStorage.getItem(axiosConfig.key.accessToken) ||
+			'',
+	);
+	const refresh_token = ref<string>(
+		sessionStorage.getItem(axiosConfig.key.refreshToken) ||
+			localStorage.getItem(axiosConfig.key.refreshToken) ||
+			'',
+	);
 	const forgot_password_token = ref<string | undefined>();
 
 	//defineGetters
@@ -67,9 +75,34 @@ export const useAuthStore = defineStore('auth-store', () => {
 		refresh_token.value = '';
 	};
 
-	const setToken = (accessToken: string, refreshToken: string) => {
+	const clearStorage = () => {
+		localStorage.removeItem(axiosConfig.key.accessToken);
+		localStorage.removeItem(axiosConfig.key.refreshToken);
+		localStorage.removeItem(axiosConfig.key.account);
+
+		sessionStorage.removeItem(axiosConfig.key.account);
+		sessionStorage.removeItem(axiosConfig.key.accessToken);
+		sessionStorage.removeItem(axiosConfig.key.refreshToken);
+
+		access_token.value = '';
+		refresh_token.value = '';
+	};
+
+	const setToken = (
+		accessToken: string,
+		refreshToken: string,
+		remember?: boolean,
+		user_id?: string,
+	) => {
 		access_token.value = accessToken;
 		refresh_token.value = refreshToken;
+		if (!remember) {
+			sessionStorage.setItem(axiosConfig.key.account, user_id || '');
+			sessionStorage.setItem(axiosConfig.key.accessToken, accessToken);
+			sessionStorage.setItem(axiosConfig.key.refreshToken, refreshToken);
+			return;
+		}
+		localStorage.setItem(axiosConfig.key.account, user_id || '');
 		localStorage.setItem(axiosConfig.key.accessToken, accessToken);
 		localStorage.setItem(axiosConfig.key.refreshToken, refreshToken);
 	};
@@ -119,6 +152,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 		login,
 		logout,
 		setToken,
+		clearStorage,
 		clearLocalStorage,
 		forgotPassword,
 		verifyCode,

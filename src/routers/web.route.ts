@@ -69,10 +69,15 @@ export const webRoutes: RouteType[] = [
 				name: 'Recruitments',
 				redirect: '/recruitments/overview',
 				children: [
+					// {
+					// 	path: 'overview',
+					// 	name: 'Recruitments Overview',
+					// 	component: () => import('@/pages/recruitments/index.vue'),
+					// },
 					{
-						path: 'overview',
+						path: '',
 						name: 'Recruitments Overview',
-						component: () => import('@/pages/recruitments/index.vue'),
+						redirect: '/recruitments/requests',
 					},
 					{
 						path: 'requests',
@@ -102,10 +107,15 @@ export const webRoutes: RouteType[] = [
 				name: 'Employees',
 				redirect: '/employees/overview',
 				children: [
+					// {
+					// 	path: 'overview',
+					// 	name: 'Overview',
+					// 	component: () => import('@/pages/employees/index.vue'),
+					// },
 					{
-						path: 'overview',
+						path: '',
 						name: 'Overview',
-						component: () => import('@/pages/employees/index.vue'),
+						redirect: '/employees/employee-overview',
 					},
 					{
 						path: 'employee-overview',
@@ -220,11 +230,6 @@ export const webRoutes: RouteType[] = [
 				path: '/meeting-schedule',
 				name: 'Meeting Schedule',
 				component: () => import('@/pages/meeting-schedule/index.vue'),
-			},
-			{
-				path: '/test',
-				name: 'Test',
-				component: () => import('@/pages/test/index.vue'),
 			},
 		],
 	},

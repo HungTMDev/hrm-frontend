@@ -1,6 +1,6 @@
+import { useAuthStore } from '@/stores/auth.store';
 import { createRouter, createWebHistory } from 'vue-router';
 import { webRoutes } from './web.route';
-import { useAuthStore } from '@/stores/auth.store';
 
 const routes = [
 	...webRoutes,
@@ -38,7 +38,7 @@ router.beforeEach(async (to, from, next) => {
 	}
 
 	if (isAuthRoute && !isLoggedIn) {
-		authStore.clearLocalStorage();
+		authStore.clearStorage();
 		next('/auth');
 		return;
 	}

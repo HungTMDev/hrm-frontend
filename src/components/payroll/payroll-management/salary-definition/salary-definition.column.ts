@@ -1,7 +1,7 @@
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { formatCurrency } from '@/lib/utils';
-import type { ActionGroupType, SalaryDefinition } from '@/types';
+import type { IActionGroupType, SalaryDefinition } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
@@ -84,7 +84,7 @@ export const salaryDefinitionColumn = (
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: ActionGroupType[] = [
+			const actions: IActionGroupType[] = [
 				{
 					label: 'Edit',
 					icon: Pen2,

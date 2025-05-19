@@ -1,3 +1,43 @@
+import {
+	interviewEmailSchema,
+	invitationEmailSchema,
+	thanksEmailSchema,
+} from '@/components/recruitments/applicants/screening-tab/schema';
+import { convertEnumToComboboxType } from '@/lib/utils';
+import { INTERVIEW_INVITATION_EMAIL, INVITATION_EMAIL, THANKS_EMAIL } from './model';
+
+export const DEFAULT_PAGINATION = {
+	DEFAULT_PAGE: 1,
+	DEFAULT_LIMIT: 10,
+};
+
+export const DATA_TIME = {
+	TABLE: 30 * 1000,
+	MORE_CHANGE: 60 * 1000,
+	LESS_CHANGE: 24 * 60 * 60 * 1000,
+	DELETE: 5 * 60 * 1000,
+};
+
+export enum RECRUITMENT_REQUEST_STATUS {
+	APPROVED = 'APPROVED',
+	REJECTED = 'REJECTED',
+	DRAFT = 'DRAFT',
+	ON_HOLD = 'ON_HOLD',
+	CANCELLED = 'CANCELLED',
+	PUBLISHED = 'PUBLISHED',
+}
+
+export const listRecruitmentRequestStatus = convertEnumToComboboxType(RECRUITMENT_REQUEST_STATUS);
+
+export const RECRUITMENT_REQUEST_STATUS_STYLE: Record<string, string> = {
+	APPROVED: 'bg-green-50 text-green-500 hover:bg-green-50 hover:text-green-500',
+	REJECTED: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
+	DRAFT: 'bg-gray-50 text-slate-600 hover:bg-gray-50 hover:text-gray-500',
+	ON_HOLD: 'bg-blue-50 text-blue-500 hover:bg-blue-50 hover:text-blue-500',
+	CANCELLED: 'CANCELLED',
+	PUBLISHED: 'PUBLISHED',
+};
+
 export const STATUS_STYLE: Record<string, string> = {
 	'To-do': 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
 	Rejected: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
@@ -13,10 +53,12 @@ export const ATTENDANCE_STYLE: Record<string, string> = {
 };
 
 export const JOB_STATUS_STYLE: Record<string, string> = {
-	Pending: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
-	Closed: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
-	Opening: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
-	Draft: 'bg-gray-50 text-slate-600 hover:bg-gray-100 hover:text-gray-500',
+	DRAFT: 'bg-slate-100 text-slate-600 hover:bg-slate-100 hover:text-slate-600',
+	ON_HOLD: 'bg-blue-50 text-blue-500 hover:bg-blue-50 hover:text-blue-500',
+	OPEN: 'bg-blue-50 text-blue-500 hover:bg-blue-50 hover:text-blue-500',
+	FILLED: 'bg-green-50 text-green-500 hover:bg-green-50 hover:text-green-500',
+	CANCELLED: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
+	CLOSED: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
 };
 
 export const PAYROLL_FILE_STATUS_STYLE: Record<string, string> = {
@@ -39,6 +81,18 @@ export enum ApplicantStage {
 	Rejected = 'Rejected',
 }
 
+export const APPLICANT_STATUS_STYLE: Record<string, string> = {
+	ACTIVE: 'bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500',
+	WITHDRAW: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+	HIRED: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	REJECTED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+};
+
+export const APPLICANT_OUTCOME_STYLE: Record<string, string> = {
+	PASSED: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	FAILED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+};
+
 export const APPLICANT_STAGE_STYLE: Record<string, string> = {
 	Applied: 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-500',
 	Screening: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
@@ -47,75 +101,58 @@ export const APPLICANT_STAGE_STYLE: Record<string, string> = {
 	Rejected: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
 };
 
-export const applicantStages = Object.values(ApplicantStage).map((value) => ({
-	label: value.replace(/_/g, ' '), // Chuyển "_" thành khoảng trắng để hiển thị đẹp hơn
-	value,
-}));
+export const applicantStages = convertEnumToComboboxType(ApplicantStage);
 
-export enum Gender {
+export enum GENDER {
 	male,
 	female,
 }
 
-export const genderCombobox = Object.keys(Gender)
+export const genderCombobox = Object.keys(GENDER)
 	.filter((key) => isNaN(Number(key)))
 	.map((key) => ({
 		label: key.charAt(0).toUpperCase() + key.slice(1),
-		value: Gender[key as keyof typeof Gender].toString(),
+		value: GENDER[key as keyof typeof GENDER].toString(),
 	}));
 
-export const JOB_LEVEL = [
-	{
-		label: 'Intern',
-		value: 'Intern',
-	},
-	{
-		label: 'Junior',
-		value: 'Junior',
-	},
-	{
-		label: 'Mid',
-		value: 'Mid',
-	},
-	{
-		label: 'Senior',
-		value: 'Senior',
-	},
-];
+export enum JOB_LEVEL {
+	INTERN = 'INTERN',
+	FRESHER = 'FRESHER',
+	JUNIOR = 'JUNIOR',
+	MIDDLE = 'MIDDLE',
+	SENIOR = 'SENIOR',
+	LEADER = 'LEADER',
+	MANAGER = 'MANAGER',
+	DIRECTOR = 'DIRECTOR',
+}
 
-export const DEPARTMENTS = [
-	{
-		label: 'Design',
-		value: 'Design',
-	},
-	{
-		label: 'Development',
-		value: 'Development',
-	},
-	{
-		label: 'Marketing',
-		value: 'Marketing',
-	},
-	{
-		label: 'Product',
-		value: 'Product',
-	},
-];
+export type JobLevel = `${JOB_LEVEL}`;
 
-export const EMPLOYMENT_TYPE = [
-	{
-		label: 'Full-time',
-		value: 'Full-time',
-	},
-	{
-		label: 'Part-time',
-		value: 'Part-time',
-	},
-	{
-		label: 'Freelance',
-		value: 'Freelance',
-	},
-];
+export const listJobLevel = convertEnumToComboboxType(JOB_LEVEL);
+
+export enum EMPLOYMENT_TYPE {
+	PART_TIME = 'PART_TIME',
+	FULL_TIME = 'FULL_TIME',
+	CONTRACT = 'CONTRACT',
+	INTERN = 'INTERN',
+}
+
+export type EmploymentType = `${EMPLOYMENT_TYPE}`;
+
+export const listEmploymentType = convertEnumToComboboxType(EMPLOYMENT_TYPE);
+
+export enum JOB_STATUS {
+	DRAFT = 'DRAFT',
+	ON_HOLD = 'ON_HOLD',
+	OPEN = 'OPEN',
+	FILLED = 'FILLED',
+	CANCELLED = 'CANCELLED',
+	CLOSED = 'CLOSED',
+}
+
+export type JobStatus = `${JOB_STATUS}`;
+
+export const listJobStatus = convertEnumToComboboxType(JOB_STATUS);
 
 export const EDUCATION_LEVEL = [
 	{
@@ -127,3 +164,78 @@ export const EDUCATION_LEVEL = [
 		value: 'College',
 	},
 ];
+
+export const EMAIL_TEMPLATE: Record<
+	string,
+	{ subject: string; label: string; template: string; schema: object }
+> = {
+	invitation_email_to_receive_jobs: {
+		subject: '[LUTECH.LTD]THƯ MỜI NHẬN VIỆC',
+		label: 'THƯ MỜI NHẬN VIỆC',
+		template: INVITATION_EMAIL,
+		schema: invitationEmailSchema,
+	},
+	interview_invitation_email: {
+		subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
+		label: 'THƯ MỜI PHỎNG VẤN',
+		template: INTERVIEW_INVITATION_EMAIL,
+		schema: interviewEmailSchema,
+	},
+	email_of_thanks: {
+		subject: '[THƯ CẢM ƠN ỨNG TUYỂN - LUTECH.LTD]',
+		label: 'THƯ CẢM ƠN ỨNG TUYỂN',
+		template: THANKS_EMAIL,
+		schema: thanksEmailSchema,
+	},
+	email_thanks_to_the_interview: {
+		subject: '[THƯ CẢM ƠN PHỎNG VẤN - LUTECH.LTD]',
+		label: 'THƯ CẢM ƠN PHỎNG VẤN',
+		template: THANKS_EMAIL,
+		schema: thanksEmailSchema,
+	},
+};
+
+export const listEmailTemplates = Object.entries(EMAIL_TEMPLATE).map((item) => ({
+	label: item[1].label,
+	value: item[0],
+}));
+
+export enum RECRUITMENT_STAGE {
+	APPLIED = 'APPLIED',
+	SCREENING = 'SCREENING',
+	INTERVIEW_1 = 'INTERVIEW_1',
+	INTERVIEW_2 = 'INTERVIEW_2',
+	OFFER = 'OFFER',
+	HIRED = 'HIRED',
+	REJECTED = 'REJECTED',
+	WITHDRAWN = 'WITHDRAWN',
+}
+
+export enum INTERVIEW_TYPE {
+	IN_PERSON = 'IN_PERSON',
+	ONLINE = 'ONLINE',
+}
+
+export const listInterviewType = convertEnumToComboboxType(INTERVIEW_TYPE);
+
+export enum INTERVIEW_STATUS {
+	SCHEDULED = 'SCHEDULED',
+	CANCELLED = 'CANCELLED',
+	COMPLETED = 'COMPLETED',
+	PENDING_FEEDBACK = 'PENDING_FEEDBACK',
+}
+
+export const INTERVIEW_STATUS_STYLE: Record<string, string> = {
+	SCHEDULED: 'bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500',
+	CANCELLED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+	COMPLETED: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	PENDING_FEEDBACK: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
+};
+
+export enum INTERVIEW_ROLE {
+	INTERVIEWER = 'INTERVIEWER',
+	SCHEDULER = 'SCHEDULER',
+	OBSERVER = 'OBSERVER',
+}
+
+export const listInterviewRole = convertEnumToComboboxType(INTERVIEW_ROLE);

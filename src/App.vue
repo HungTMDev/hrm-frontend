@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Toaster } from 'vue-sonner';
+import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 </script>
 
 <template>
@@ -17,6 +18,7 @@ import { Toaster } from 'vue-sonner';
 			<component :is="Component" />
 		</transition>
 	</router-view>
+	<VueQueryDevtools />
 </template>
 <style>
 .slide-enter-active {

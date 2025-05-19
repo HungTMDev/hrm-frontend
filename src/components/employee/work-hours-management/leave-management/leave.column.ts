@@ -4,7 +4,7 @@ import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { STATUS_STYLE } from '@/constants';
-import type { ActionGroupType, LeaveManagement } from '@/types';
+import type { IActionGroupType, LeaveManagement } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
@@ -78,7 +78,7 @@ export const leaveColumns = (
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: ActionGroupType[] = [
+			const actions: IActionGroupType[] = [
 				{
 					label: 'Approve',
 					icon: Pen2,

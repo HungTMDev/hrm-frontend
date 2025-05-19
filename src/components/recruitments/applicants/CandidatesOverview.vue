@@ -63,7 +63,7 @@ const handleOpenSheet = () => {};
 const handleOpenAlert = () => {};
 
 const table = useVueTable({
-	data,
+	data: [],
 	columns: applicantColumn(handleOpenSheet, handleOpenAlert),
 	getCoreRowModel: getCoreRowModel(),
 	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),

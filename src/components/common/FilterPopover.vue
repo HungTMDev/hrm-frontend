@@ -15,11 +15,12 @@ import {
 } from '@/components/ui/accordion';
 import Badge from '@/components/ui/badge/Badge.vue';
 import type { ComboboxType, FilterAccordion, FilterData } from '@/types';
-import { onMounted, ref } from 'vue';
+import { onMounted, onUpdated, ref } from 'vue';
 import SliderCustom from '../custom/SliderCustom.vue';
 import QuarterRange from './QuarterRange.vue';
 
 interface Prop {
+	modelValue?: FilterData[];
 	list: FilterAccordion[];
 }
 
@@ -33,6 +34,16 @@ const isOpen = ref(false);
 const selectedFilter = ref<Record<string, ComboboxType[]>>({});
 const sliderList = ref<Record<string, number[]>>({});
 
+const handleApply = () => {
+	emit(
+		'update:value',
+		Object.entries(selectedFilter.value).map(([key, value]) => ({
+			field: key,
+			filters: value,
+		})),
+	);
+};
+
 const handleRemoveFilter = (field: string, value: ComboboxType) => {
 	if (!selectedFilter.value[field]) return;
 
@@ -43,13 +54,6 @@ const handleRemoveFilter = (field: string, value: ComboboxType) => {
 		if (selectedFilter.value[field].length === 0) {
 			delete selectedFilter.value[field];
 		}
-		emit(
-			'update:value',
-			Object.entries(selectedFilter.value).map(([key, value]) => ({
-				field: key,
-				filters: value,
-			})),
-		);
 	}
 };
 
@@ -68,14 +72,6 @@ const handleAddFilter = (field: string, filter: ComboboxType) => {
 	} else {
 		selectedFilter.value[field].push(filter);
 	}
-
-	emit(
-		'update:value',
-		Object.entries(selectedFilter.value).map(([key, value]) => ({
-			field: key,
-			filters: value,
-		})),
-	);
 };
 
 const handleReset = () => {
@@ -114,6 +110,14 @@ const handleQuarterRange = (payload: { from: string; to: string }) => {
 		},
 	];
 };
+
+onUpdated(() => {
+	if (isOpen.value) {
+		props.modelValue?.forEach((item) => {
+			selectedFilter.value[item.field] = item.filters;
+		});
+	}
+});
 
 onMounted(() => {
 	props.list.forEach((item) => {
@@ -235,7 +239,8 @@ onMounted(() => {
 					Reset
 				</Button>
 				<Button
-					class="bg-blue-500 hover:bg-blue-500 text-white rounded-2xl h-auto py-3 px-8">
+					class="bg-blue-500 hover:bg-blue-500 text-white rounded-2xl h-auto py-3 px-8"
+					@click="handleApply">
 					Apply
 				</Button>
 			</div>

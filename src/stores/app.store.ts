@@ -33,11 +33,11 @@ export const useAppStore = defineStore('app-store', () => {
 			icon: shallowRef(Case),
 			activeIcon: shallowRef(CaseBold),
 			children: [
-				{
-					id: '20001',
-					path: '/recruitments/overview',
-					name: 'Overview',
-				},
+				// {
+				// 	id: '20001',
+				// 	path: '/recruitments/overview',
+				// 	name: 'Overview',
+				// },
 				{
 					id: '20002',
 					path: '/recruitments/requests',
@@ -67,11 +67,11 @@ export const useAppStore = defineStore('app-store', () => {
 			icon: shallowRef(UserGroup),
 			activeIcon: shallowRef(UserGroupBold),
 			children: [
-				{
-					id: '30001',
-					path: '/employees/overview',
-					name: 'Overview',
-				},
+				// {
+				// 	id: '30001',
+				// 	path: '/employees/overview',
+				// 	name: 'Overview',
+				// },
 				{
 					id: '30002',
 					path: '/employees/all-employee',

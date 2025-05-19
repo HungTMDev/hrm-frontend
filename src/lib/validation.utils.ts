@@ -16,4 +16,10 @@ export class ZUtils {
 	static email = () => {
 		return z.string().email({ message: 'The value is not a valid email address.' });
 	};
+	static phoneNumber = () => {
+		return z
+			.string()
+			.trim()
+			.regex(/^0\d{9}$/, 'Invalid phone number');
+	};
 }

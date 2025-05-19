@@ -1,4 +1,4 @@
-import type { ActionGroupType, Employee } from '@/types';
+import type { IActionGroupType, Employee } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
@@ -71,7 +71,7 @@ export const employeeColumn = (
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: ActionGroupType[] = [
+			const actions: IActionGroupType[] = [
 				{
 					label: 'Edit',
 					icon: Pen2,

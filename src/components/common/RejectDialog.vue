@@ -16,16 +16,18 @@ import FormErrorCustom from '../form/FormErrorCustom.vue';
 import { Button } from '../ui/button';
 import { FormControl, FormDescription, FormField, FormItem } from '../ui/form';
 import { Textarea } from '../ui/textarea';
+import CallApiButton from './CallApiButton.vue';
 
 defineProps<{
 	open: boolean;
 	title?: string;
 	description?: string;
+	isLoading?: boolean;
 }>();
 
-const emit = defineEmits<{
+const emits = defineEmits<{
 	(e: 'update:open', payload: boolean): void;
-	(e: 'confirm'): void;
+	(e: 'confirm', reason: string): void;
 }>();
 
 const formSchema = toTypedSchema(
@@ -40,12 +42,12 @@ const { handleSubmit, resetForm, meta } = useForm({
 });
 
 const onSubmit = handleSubmit((values) => {
-	console.log(values);
+	emits('confirm', values.reason);
 });
 
 const handleOpen = (open: boolean) => {
 	resetForm();
-	emit('update:open', open);
+	emits('update:open', open);
 };
 </script>
 
@@ -83,12 +85,13 @@ const handleOpen = (open: boolean) => {
 				<AlertDialogCancel class="rounded-2xl w-full py-3.5 h-auto"
 					>Cancel</AlertDialogCancel
 				>
-				<Button
+				<CallApiButton
 					class="rounded-2xl w-full py-3 h-auto"
 					variant="destructive"
 					form="form"
 					:disabled="!meta.valid"
-					>Reject</Button
+					:is-loading="isLoading"
+					>Reject</CallApiButton
 				>
 			</AlertDialogFooter>
 		</AlertDialogContent>

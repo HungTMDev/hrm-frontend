@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
 	AlertDialog,
-	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
 	AlertDialogDescription,
@@ -10,11 +9,13 @@ import {
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import img from '@/assets/images/delete_img.png';
+import CallApiButton from './CallApiButton.vue';
 
 defineProps<{
 	open: boolean;
 	title?: string;
 	description?: string;
+	isLoading?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -51,11 +52,12 @@ const handleConfirm = () => {
 					class="w-full rounded-2xl h-auto p-3">
 					Cancel
 				</AlertDialogCancel>
-				<AlertDialogAction
+				<CallApiButton
+					:is-loading="isLoading"
+					class="w-full rounded-2xl h-auto p-3 bg-red-500 hover:bg-red-600 text-white"
 					@click="handleConfirm"
-					class="w-full rounded-2xl h-auto p-3 bg-red-500 hover:bg-red-600 text-white">
-					Continue
-				</AlertDialogAction>
+					>Delete</CallApiButton
+				>
 			</AlertDialogFooter>
 		</AlertDialogContent>
 	</AlertDialog>

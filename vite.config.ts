@@ -5,7 +5,6 @@ import autoprefixer from 'autoprefixer';
 import tailwind from 'tailwindcss';
 import svgLoader from 'vite-svg-loader';
 
-// https://vite.dev/config/
 export default defineConfig(({ mode }): UserConfig => {
 	const ENV = loadEnv(mode, process.cwd());
 	const port = ENV.VITE_PORT || 8080;

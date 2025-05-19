@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
+import { onMounted, ref } from 'vue';
 
 const props = defineProps<{
 	modelValue?: string[];
@@ -28,6 +28,11 @@ onMounted(() => {
 		},
 	});
 
+	if (props.modelValue && props.modelValue.length > 0) {
+		const htmlList = `<ol>${props.modelValue.map((item) => `<li data-list="ordered">${item}</li>`).join('')}</ol>`;
+		quill.root.innerHTML = htmlList;
+	}
+
 	quill.on('text-change', () => {
 		const data = quill.getText().trim().split('\n');
 		if (data[0] === '') {
@@ -40,7 +45,7 @@ onMounted(() => {
 </script>
 <template>
 	<div class="mt-2">
-		<div ref="editorRef" class="min-h-[300px]" />
+		<div ref="editorRef" class="min-h-[300px] w-full" />
 	</div>
 </template>
 

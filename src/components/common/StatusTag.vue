@@ -9,7 +9,7 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-	<Badge :class="cn('text-sm font-normal w-[100px] h-7 grid place-items-center', props.class)">{{
+	<Badge :class="cn('text-xs font-medium w-[100px] h-7 grid place-items-center', props.class)">{{
 		status
 	}}</Badge>
 </template>

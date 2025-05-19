@@ -2,7 +2,7 @@ import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import Badge from '@/components/ui/badge/Badge.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { ATTENDANCE_STYLE, STATUS_STYLE } from '@/constants';
-import type { ActionGroupType, AttendanceManagement } from '@/types';
+import type { IActionGroupType, AttendanceManagement } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
@@ -88,7 +88,7 @@ export const attendanceColumns = (
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: ActionGroupType[] = [
+			const actions: IActionGroupType[] = [
 				{
 					label: 'Approve',
 					icon: Pen2,

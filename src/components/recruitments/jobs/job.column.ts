@@ -1,7 +1,7 @@
 import StatusTag from '@/components/common/StatusTag.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { JOB_STATUS_STYLE } from '@/constants';
-import type { ActionGroupType, Job } from '@/types';
+import type { IActionGroupType, IJob } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
@@ -10,9 +10,9 @@ import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
 
 export const jobColumn = (
-	handleOpenSheet: (payload?: Job, view?: boolean) => void,
-	handleOpenAlert: (payload: Job) => void,
-): ColumnDef<Job>[] => [
+	handleOpenSheet: (payload?: IJob, view?: boolean) => void,
+	handleOpenAlert: (payload: IJob) => void,
+): ColumnDef<IJob>[] => [
 	{
 		id: 'select',
 		header: ({ table }) =>
@@ -42,7 +42,7 @@ export const jobColumn = (
 	{
 		accessorKey: 'position',
 		header: 'Position',
-		cell: ({ row }) => row.original.position,
+		cell: ({ row }) => row.original.position.title,
 		enableHiding: false,
 	},
 	{
@@ -63,23 +63,23 @@ export const jobColumn = (
 	{
 		accessorKey: 'branch',
 		header: 'Branch',
-		cell: ({ row }) => row.original.branch,
+		cell: ({ row }) => row.original.branch.name,
 	},
 	{
-		accessorKey: 'cadidates',
-		header: 'Candidates',
-		cell: ({ row }) => row.original.cadidates,
+		accessorKey: 'employmentType',
+		header: 'Employment type',
+		cell: ({ row }) => row.original.employment_type,
 	},
 	{
-		accessorKey: 'created_date',
-		header: 'Created Date',
-		cell: ({ row }) => row.original.created_date,
+		accessorKey: 'hiring_manager',
+		header: 'Hiring manager',
+		cell: ({ row }) => row.original.hiring_manager.name,
 	},
 	{
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: ActionGroupType[] = [
+			const actions: IActionGroupType[] = [
 				{
 					label: 'Edit',
 					icon: Pen2,

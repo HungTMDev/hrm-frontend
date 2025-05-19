@@ -10,7 +10,7 @@ import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
 import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { parseDateTime } from '@/lib/utils';
+import { formatISOStringToLocalDateTime, parseDateTime } from '@/lib/utils';
 import {
 	Dialog,
 	DialogContent,
@@ -19,7 +19,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import Label from '@/components/ui/label/Label.vue';
 import Input from '@/components/ui/input/Input.vue';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
@@ -65,11 +64,8 @@ const handlePick = (payload: DateValue | undefined) => {
 const handleDragToCreate = (value: any) => {
 	isOpenDialog.value = true;
 
-	const { date: startDate, time: startTime } = parseDateTime(value.start);
-	const { date: endDate, time: endTime } = parseDateTime(value.end);
-
-	const start = `${startDate} ${startTime}`;
-	const end = `${endDate} ${endTime}`;
+	const start = `${parseDateTime(value.start)?.date || '2025-01-01'} ${parseDateTime(value.start)?.time || '00:00'}`;
+	const end = `${parseDateTime(value.start)?.date || '2025-01-01'} ${parseDateTime(value.start)?.time || '00:00'}`;
 
 	events.value.push({
 		id: value._eid,
@@ -147,9 +143,13 @@ const handleCloseDialog = (open: boolean) => {
 								class="flex h-full text-white rounded w-full flex-col justify-start items-center hover:cursor-pointer bg-blue-400 hover:bg-blue-400 border-white border">
 								<span class="w-full truncate">{{ event.title }}</span>
 								<div class="flex gap-1 flex-wrap justify-center">
-									<span>{{ parseDateTime(event.start).time }}</span>
+									<span>{{
+										formatISOStringToLocalDateTime(event.start).time
+									}}</span>
 									-
-									<span>{{ parseDateTime(event.end).time }}</span>
+									<span>{{
+										formatISOStringToLocalDateTime(event.end).time
+									}}</span>
 								</div>
 							</div>
 						</PopoverTrigger>

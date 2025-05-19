@@ -1,37 +1,37 @@
 <script lang="ts" setup>
-import ContentWrapper from '@/components/common/ContentWrapper.vue';
-import InputWithIcon from '@/components/common/InputWithIcon.vue';
-import Title from '@/components/common/Title.vue';
-import { Button } from '@/components/ui/button';
-import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
-import ClipboardAdd from '@/assets/icons/Outline/Clipboard Add.svg';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import { onBeforeMount, ref } from 'vue';
-import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
-import type { FilterAccordion, SalaryDefinition } from '@/types';
-import { valueUpdater } from '@/lib/utils';
-import { JOB_LEVEL, ROWS_PER_PAGE } from '@/constants';
-import { salaryDefinitionColumn } from '@/components/payroll/payroll-management/salary-definition/salary-definition.column';
-import DataTable from '@/components/datatable/DataTable.vue';
-import Separator from '@/components/ui/separator/Separator.vue';
-import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
-import { usePayrollStore } from '@/stores/payroll.store';
-import SalaryDefinitionSheet from '@/components/payroll/payroll-management/salary-definition/SalaryDefinitionSheet.vue';
-import AlertPopup from '@/components/common/AlertPopup.vue';
-import DisplayColumn from '@/components/common/DisplayColumn.vue';
-import FilterPopover from '@/components/common/FilterPopover.vue';
 import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
 import Buildings from '@/assets/icons/Outline/Buildings.svg';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
+import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
+import ClipboardAdd from '@/assets/icons/Outline/Clipboard Add.svg';
+import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
+import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
+import AlertPopup from '@/components/common/AlertPopup.vue';
+import ContentWrapper from '@/components/common/ContentWrapper.vue';
+import DisplayColumn from '@/components/common/DisplayColumn.vue';
+import FilterPopover from '@/components/common/FilterPopover.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
+import InputWithIcon from '@/components/common/InputWithIcon.vue';
+import Title from '@/components/common/Title.vue';
+import DataTable from '@/components/datatable/DataTable.vue';
+import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
+import { salaryDefinitionColumn } from '@/components/payroll/payroll-management/salary-definition/salary-definition.column';
+import SalaryDefinitionSheet from '@/components/payroll/payroll-management/salary-definition/SalaryDefinitionSheet.vue';
+import { Button } from '@/components/ui/button';
+import Separator from '@/components/ui/separator/Separator.vue';
+import { listJobLevel, ROWS_PER_PAGE } from '@/constants';
+import { valueUpdater } from '@/lib/utils';
+import { usePayrollStore } from '@/stores/payroll.store';
+import type { FilterAccordion, SalaryDefinition } from '@/types';
+import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
+import { onBeforeMount, ref } from 'vue';
 
 const filter: FilterAccordion[] = [
 	{
 		title: 'Level',
 		value: 'level',
 		icon: ChartSquare,
-		items: JOB_LEVEL,
+		items: listJobLevel,
 		type: 'list',
 	},
 	{

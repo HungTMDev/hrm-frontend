@@ -1,15 +1,17 @@
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
-import type { ActionGroupType, TalentPool } from '@/types';
+import type { IActionGroupType, ICandidate } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
 
 export const talentPoolColumns = (
-	handleOpenSheet: (payload?: TalentPool, view?: boolean) => void,
-): ColumnDef<TalentPool>[] => [
+	handleOpenSheet: (payload?: ICandidate, view?: boolean) => void,
+	handleOpenAlert: (payload?: ICandidate) => void,
+): ColumnDef<ICandidate>[] => [
 	{
 		id: 'select',
 		header: ({ table }) =>
@@ -46,7 +48,7 @@ export const talentPoolColumns = (
 	{
 		accessorKey: 'name',
 		header: 'Name',
-		cell: ({ row }) => row.original.name,
+		cell: ({ row }) => row.original.full_name,
 	},
 	{
 		accessorKey: 'email',
@@ -56,28 +58,28 @@ export const talentPoolColumns = (
 	{
 		accessorKey: 'phone',
 		header: 'Phone',
-		cell: ({ row }) => row.original.phone,
+		cell: ({ row }) => row.original.phone_number,
 	},
-	{
-		accessorKey: 'job',
-		header: 'Job',
-		cell: ({ row }) => row.original.job,
-	},
-	{
-		accessorKey: 'level',
-		header: 'Level',
-		cell: ({ row }) => row.original.level,
-	},
+	// {
+	// 	accessorKey: 'job',
+	// 	header: 'Job',
+	// 	cell: ({ row }) => '',
+	// },
+	// {
+	// 	accessorKey: 'level',
+	// 	header: 'Level',
+	// 	cell: ({ row }) => '',
+	// },
 	{
 		accessorKey: 'last_modified',
 		header: 'Last Modified',
-		cell: ({ row }) => row.original.last_modified,
+		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.updated_at).date,
 	},
 	{
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
-			const actions: ActionGroupType[] = [
+			const actions: IActionGroupType[] = [
 				{
 					label: 'Edit',
 					icon: Pen2,
@@ -90,10 +92,14 @@ export const talentPoolColumns = (
 			];
 
 			const onEdit = () => {
-				handleOpenSheet(row.original, true);
+				handleOpenSheet(row.original);
 			};
 
-			return h(ActionGroupCommon, { actions, onEdit });
+			const onDelete = () => {
+				handleOpenAlert(row.original);
+			};
+
+			return h(ActionGroupCommon, { actions, onEdit, onDelete });
 		},
 	},
 ];

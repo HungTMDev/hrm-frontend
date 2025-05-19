@@ -21,13 +21,13 @@ import { Check } from 'lucide-vue-next';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import AddCircle from '@/assets/icons/Outline/Add Circle.svg';
-import Close from '@/assets/icons/Outline/Close.svg';
 import FormErrorCustom from './FormErrorCustom.vue';
 
 interface Props extends FormFieldCommon {
 	list: ComboboxType[];
 	button_label?: string;
 	list_size?: 'small' | 'medium' | 'large';
+	icon?: any;
 }
 
 const emit = defineEmits<{
@@ -45,26 +45,37 @@ const handleSelect = (fieldName: string, data: string) => {
 		<div v-for="(field, index) in fields" :key="`${name}-${field.key}`">
 			<FormField :name="`${name}[${index}]`">
 				<FormItem class="flex flex-col flex-1">
-					<FormLabel :class="cn(index !== 0 && 'sr-only')">{{ label }}</FormLabel>
-					<Combobox by="label">
+					<div class="flex justify-between items-center">
+						<FormLabel :class="cn(index !== 0 && 'sr-only')">{{ label }}</FormLabel>
+						<div class="flex-1 text-end">
+							<Button
+								@click="remove(index)"
+								variant="link"
+								class="p-0 h-auto text-red-500 text-xs"
+								>Remove</Button
+							>
+						</div>
+					</div>
+					<Combobox>
 						<FormControl>
 							<ComboboxAnchor class="w-full">
-								<div class="relative w-full flex items-center gap-2">
+								<div class="w-full flex items-center gap-2 relative">
+									<span class="absolute left-3 text-gray-200">
+										<IconFromSvg :icon="icon" />
+									</span>
 									<ComboboxInput
 										:display-value="(val) => val?.label ?? ''"
-										class="h-12 rounded-2xl focus-visible:border-blue-100 focus-visible:ring-0 focus-visible:ring-offset-0"
+										:class="
+											cn(
+												'h-[46px] rounded-2xl focus-visible:border-blue-100 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none',
+												icon && 'pl-10',
+											)
+										"
 										:placeholder="placeholder ?? 'Select...'" />
 									<ComboboxTrigger
-										class="absolute end-12 inset-y-0 flex items-center justify-center px-3">
+										class="absolute end-0 inset-y-0 flex items-center justify-center px-3">
 										<IconFromSvg :icon="Down" />
 									</ComboboxTrigger>
-									<Button
-										type="button"
-										variant="ghost"
-										class="p-2"
-										@click="remove(index)">
-										<IconFromSvg :icon="Close" />
-									</Button>
 								</div>
 							</ComboboxAnchor>
 						</FormControl>

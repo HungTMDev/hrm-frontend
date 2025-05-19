@@ -4,9 +4,7 @@ import { Button } from '@/components/ui/button';
 import {
 	Combobox,
 	ComboboxAnchor,
-	ComboboxEmpty,
 	ComboboxGroup,
-	ComboboxInput,
 	ComboboxItem,
 	ComboboxItemIndicator,
 	ComboboxList,
@@ -15,86 +13,183 @@ import {
 import { cn } from '@/lib/utils';
 import type { ComboboxType } from '@/types';
 import { Check, Search } from 'lucide-vue-next';
-import { ref, watch, type HTMLAttributes } from 'vue';
-import ScrollArea from '../ui/scroll-area/ScrollArea.vue';
+import { computed, onMounted, ref, watch, type HTMLAttributes } from 'vue';
 import IconFromSvg from './IconFromSvg.vue';
+import { FormControl } from '../ui/form';
+import ComboboxInput from '../ui/combobox/ComboboxInput.vue';
+import ComboboxEmpty from '../ui/combobox/ComboboxEmpty.vue';
 
-interface Prop {
-	defaultValue?: string | number;
-	modelValue?: string | number;
-	class?: HTMLAttributes['class'];
+const props = defineProps<{
+	modelValue?: string | string[];
+	defaultValue?: any;
 	multiple?: boolean;
+	label?: string;
 	list: ComboboxType[];
-	isSearch?: boolean;
-	label: string;
 	icon?: any;
-	dropdownWidth?: number;
-	list_size?: 'small' | 'medium' | 'large';
-}
-
-const props = defineProps<Prop>();
-
-const emit = defineEmits<{
-	(e: 'update:modelValue', payload: string | number | string[] | number[]): void;
+	listSize?: 'sm' | 'md' | 'lg';
+	class?: HTMLAttributes['class'];
+	isSearch?: boolean;
+	isForm?: boolean;
 }>();
 
-const selectedValue = ref<ComboboxType | ComboboxType[]>();
-const open = ref(false);
+const emits = defineEmits<{
+	(e: 'update:modelValue', payload: string | string[] | undefined): void;
+}>();
 
-const handleSelect = (value: any) => {
-	selectedValue.value = value;
-	emit('update:modelValue', value);
+const value = ref<ComboboxType | ComboboxType[]>();
+const isOpen = ref(false);
+
+const placeholder = computed(() =>
+	props.multiple
+		? (value.value as ComboboxType[])?.map((item) => item.label).join(', ') ||
+			`Select ${props.label?.toLocaleLowerCase() ?? ''}`
+		: '',
+);
+
+const handleOpen = (open: boolean) => {
+	isOpen.value = open;
 };
 
-const handleOpen = (isOpen: boolean) => {
-	open.value = isOpen;
+const handleSelect = (payload: any) => {
+	value.value = payload;
+
+	if (props.multiple) {
+		const data = (payload as ComboboxType[]).map((item) => item.value);
+		if (data.length === 0) {
+			emits('update:modelValue', undefined);
+		} else {
+			console.log(data);
+			emits('update:modelValue', data);
+		}
+		return;
+	}
+
+	emits('update:modelValue', (payload as ComboboxType).value);
 };
+
+const setValue = (newVal: string | string[] | undefined, newList: ComboboxType[]) => {
+	if (props.multiple) {
+		if (Array.isArray(newVal)) {
+			const selectedItems: ComboboxType[] = [];
+			newVal.forEach((item) => {
+				const data = newList.find((i) => i.value === item);
+				if (data) {
+					selectedItems.push(data);
+				}
+			});
+			value.value = selectedItems.length > 0 ? selectedItems : undefined;
+		} else if (newVal !== undefined) {
+			const data = newList.find((i) => i.value === newVal);
+			if (data) {
+				value.value = [data];
+			}
+		}
+		return;
+	}
+	value.value = props.list.find((item) => item.value === newVal);
+};
+
+onMounted(() => {
+	setValue(props.modelValue, props.list);
+});
 
 watch(
-	() => props.list,
-	() => {
-		selectedValue.value = undefined;
+	() => [props.modelValue, props.list],
+	(newVal) => {
+		setValue(newVal[0] as string | string[] | undefined, newVal[1] as ComboboxType[]);
 	},
 );
 </script>
 
 <template>
 	<Combobox
-		v-model="selectedValue"
-		:open="open"
-		by="label"
-		@update:model-value="handleSelect"
+		:model-value="value"
+		:open="isOpen"
+		:multiple="multiple"
 		@update:open="handleOpen"
-		:multiple="multiple">
-		<ComboboxAnchor as-child>
+		@update:model-value="handleSelect">
+		<FormControl v-if="isForm && isSearch && !multiple">
+			<ComboboxAnchor class="w-full">
+				<div class="relative w-full items-center">
+					<span class="absolute left-3 top-3 text-gray-200">
+						<IconFromSvg :icon="icon" />
+					</span>
+					<ComboboxInput
+						:class="
+							cn(
+								'shadow-none h-auto p-3 rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 truncate',
+								icon && 'pl-10',
+								props.class,
+							)
+						"
+						:display-value="(val) => val?.label ?? ''"
+						:placeholder="`Select ${label?.toLocaleLowerCase() ?? ''}`" />
+					<ComboboxTrigger
+						class="absolute end-0 inset-y-0 flex items-center justify-center px-3">
+						<IconFromSvg
+							:icon="Down"
+							:class="
+								cn(
+									'transition-all duration-200',
+									isOpen ? 'rotate-180' : 'rotate-0',
+								)
+							" />
+					</ComboboxTrigger>
+				</div>
+			</ComboboxAnchor>
+		</FormControl>
+		<ComboboxAnchor v-else-if="isSearch && !multiple" class="w-full">
+			<div class="relative w-full items-center">
+				<span class="absolute left-3 top-3 text-gray-200">
+					<IconFromSvg :icon="icon" />
+				</span>
+				<ComboboxInput
+					:class="
+						cn(
+							'shadow-none h-auto p-3 rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 truncate',
+							icon && 'pl-10',
+						)
+					"
+					:display-value="(val) => val?.label ?? ''"
+					:placeholder="`Select ${label?.toLocaleLowerCase() ?? ''}`" />
+				<ComboboxTrigger
+					class="absolute end-0 inset-y-0 flex items-center justify-center px-3">
+					<IconFromSvg
+						:icon="Down"
+						:class="
+							cn('transition-all duration-200', isOpen ? 'rotate-180' : 'rotate-0')
+						" />
+				</ComboboxTrigger>
+			</div>
+		</ComboboxAnchor>
+		<ComboboxAnchor v-else as-child>
 			<ComboboxTrigger as-child>
 				<Button
-					v-if="multiple"
 					variant="outline"
-					@click.stop
-					:class="cn('justify-start text-sm text-slate-600', props.class)">
-					<IconFromSvg v-if="icon" :icon="icon" />
-					<span class="flex-1 text-start">{{
-						selectedValue && (selectedValue as ComboboxType[]).length > 0
-							? `${(selectedValue as ComboboxType[]).length} selected`
-							: label
+					:class="
+						cn(
+							'justify-between h-auto p-3 rounded-2xl w-full relative focus:border-blue-200',
+							icon && 'pl-10',
+							value
+								? 'text-slate-600 hover:text-slate-600'
+								: 'text-gray-200 hover:text-gray-200',
+							props.class,
+						)
+					">
+					<span v-if="icon" class="absolute left-3 text-gray-200">
+						<IconFromSvg :icon="icon" />
+					</span>
+					<span v-if="multiple" class="truncate">{{ placeholder }}</span>
+					<span v-else>{{
+						(value as ComboboxType)?.label ??
+						`Select ${label?.toLocaleLowerCase() ?? ''}`
 					}}</span>
+
 					<IconFromSvg
 						:icon="Down"
-						class="duration-200"
-						:class="open ? 'rotate-180' : 'rotate-0'" />
-				</Button>
-				<Button
-					v-else
-					variant="outline"
-					@click.stop
-					:class="cn('justify-between text-sm text-slate-600', props.class)">
-					<IconFromSvg v-if="icon" :icon="icon" />
-					{{ (selectedValue as ComboboxType)?.label ?? label }}
-					<IconFromSvg
-						:icon="Down"
-						class="duration-200"
-						:class="open ? 'rotate-180' : 'rotate-0'" />
+						:class="
+							cn('transition-all duration-200', isOpen ? 'rotate-180' : 'rotate-0')
+						" />
 				</Button>
 			</ComboboxTrigger>
 		</ComboboxAnchor>
@@ -102,43 +197,41 @@ watch(
 		<ComboboxList
 			:class="
 				cn(
-					'w-[300px] rounded-xl',
-					list_size === 'small' && 'w-[300px]',
-					list_size === 'medium' && 'w-[500px]',
-					list_size === 'large' && 'w-[700px]',
+					'rounded-2xl',
+					listSize === 'sm' && 'w-[200px]',
+					listSize === 'md' && 'w-[300px]',
+					listSize === 'lg' && 'w-[400px]',
 				)
 			">
-			<div v-if="isSearch" class="relative w-full max-w-sm items-center">
-				<ComboboxInput
-					class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
-					:placeholder="`Search ${label}...`" />
-				<span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
-					<Search class="size-4 text-muted-foreground" />
-				</span>
-			</div>
-
-			<ComboboxGroup
-				v-if="list.length <= 0"
-				class="min-h-10 grid place-items-center text-sm text-gray-300">
+			<ComboboxGroup v-if="list.length === 0" class="text-sm text-center py-8">
 				No data
 			</ComboboxGroup>
-			<ComboboxEmpty v-else-if="isSearch"> No framework found. </ComboboxEmpty>
+			<template v-else-if="!isForm">
+				<div class="relative w-full max-w-sm items-center">
+					<ComboboxInput
+						class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
+						placeholder="Select framework..." />
+					<span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
+						<Search class="size-4 text-muted-foreground" />
+					</span>
+				</div>
 
-			<ScrollArea class="max-h-[300px] p-1 overflow-y-auto">
-				<ComboboxGroup v-if="list.length > 0">
-					<ComboboxItem
-						v-for="item in list"
-						:key="item.value"
-						:value="item"
-						class="rounded-xl">
-						{{ item.label }}
+				<ComboboxEmpty> No framework found. </ComboboxEmpty>
+			</template>
 
-						<ComboboxItemIndicator>
-							<Check :class="cn('ml-auto h-4 w-4 text-blue-500')" />
-						</ComboboxItemIndicator>
-					</ComboboxItem>
-				</ComboboxGroup>
-			</ScrollArea>
+			<ComboboxGroup class="max-h-60 overflow-auto">
+				<ComboboxItem
+					v-for="item in list"
+					:key="item.value"
+					:value="item"
+					class="hover:bg-muted rounded-xl">
+					<p class="truncate">{{ item.label }}</p>
+
+					<ComboboxItemIndicator>
+						<Check :class="cn('ml-auto h-4 w-4')" />
+					</ComboboxItemIndicator>
+				</ComboboxItem>
+			</ComboboxGroup>
 		</ComboboxList>
 	</Combobox>
 </template>

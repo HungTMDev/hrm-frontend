@@ -16,6 +16,7 @@ export const useJob = (pagination: Ref<PaginationState>, filter: Ref<Partial<IJo
 				filter: filter.value,
 			}),
 		retry: false,
+		staleTime: DATA_TIME.TABLE,
 		gcTime: DATA_TIME.DELETE,
 	});
 };

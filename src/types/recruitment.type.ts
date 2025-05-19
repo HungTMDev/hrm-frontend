@@ -45,6 +45,7 @@ export interface IRecruitmentRequestFilter {
 	job_title_id?: string[];
 	level?: string[];
 	employment_type?: string[];
+	status?: string[];
 }
 
 export interface IJob extends IBaseResponse {

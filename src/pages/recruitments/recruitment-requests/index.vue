@@ -12,13 +12,8 @@ import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
 import { recruitmentRequestColumn } from '@/components/recruitments/recruitment-request/recruitment-request.column';
 import RecruitmentRequestSheet from '@/components/recruitments/recruitment-request/RecruitmentRequestSheet.vue';
+import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
-import {
-	DEFAULT_PAGINATION,
-	listEmploymentType,
-	listJobLevel,
-	listRecruitmentRequestStatus,
-} from '@/constants';
 import { useBranch } from '@/composables/branch/useBranch';
 import { useDepartment } from '@/composables/department/useDepartment';
 import { useRecruitmentRequest } from '@/composables/recruitment/recruitment-request/useRecruitmentRequest';
@@ -27,6 +22,13 @@ import {
 	useRejectRecruitmentRequest,
 	useSubmitRecruitmentRequest,
 } from '@/composables/recruitment/recruitment-request/useUpdateRecruitmentRequest';
+import {
+	DEFAULT_PAGINATION,
+	listEmploymentType,
+	listJobLevel,
+	listRecruitmentRequestStatus,
+} from '@/constants';
+import router from '@/routers';
 import type {
 	FilterAccordion,
 	FilterData,
@@ -37,22 +39,31 @@ import type {
 	IRecruitmentRequestFilter,
 } from '@/types';
 import { getCoreRowModel, useVueTable, type PaginationState } from '@tanstack/vue-table';
-import { computed, ref } from 'vue';
-import Button from '@/components/ui/button/Button.vue';
+import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
 
+const query = computed(() => route.query);
 const isOpenSheet = ref(false);
 const isOpenDialog = ref(false);
 const isView = ref(false);
 const dataSent = ref<IRecruitmentRequest>();
-const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
-const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
+const pageIndex = ref(
+	query.value.page ? Number(query.value.page) - 1 : DEFAULT_PAGINATION.DEFAULT_PAGE - 1,
+);
+const pageSize = ref(
+	query.value.limit ? Number(query.value.limit) : DEFAULT_PAGINATION.DEFAULT_LIMIT,
+);
+const filterData = ref<FilterData[]>([]);
+
 const pagination = computed<PaginationState>(() => ({
 	pageIndex: pageIndex.value,
 	pageSize: pageSize.value,
 }));
+
 const filterPayload = ref<Partial<IRecruitmentRequestFilter>>({});
 
 const pageCount = computed(() => meta.value?.total_pages);
@@ -200,12 +211,65 @@ const handleFilter = (payload: FilterData[]) => {
 	});
 	filterPayload.value = newFilter;
 };
+
+const syncQueryToFilter = () => {
+	const keys = Object.keys(query.value) as (keyof IRecruitmentRequestFilter)[];
+
+	for (let key of keys) {
+		if ((key as any) === 'page' || (key as any) === 'limit') continue;
+
+		if (key === 'order') {
+			filterPayload.value[key] = 'DESC';
+			continue;
+		}
+
+		if (key === 'keywords') {
+			filterPayload.value[key] = (query.value[key] as string) ?? undefined;
+			continue;
+		}
+
+		filterPayload.value[key] =
+			typeof query.value[key] === 'string'
+				? [query.value[key] as string]
+				: (query.value[key] as string[]);
+
+		const item = accordionItems.value.find((item) => item.value === key);
+		if (item) {
+			const selectedItems =
+				item.items?.filter((i) =>
+					(filterPayload.value[key] as string[]).includes(i.value),
+				) || [];
+
+			if (selectedItems.length) {
+				filterData.value.push({
+					field: key,
+					filters: selectedItems,
+				});
+			}
+		}
+	}
+};
+
+watch([pageIndex, pageSize, filterPayload], () => {
+	router.replace({
+		query: { page: pageIndex.value + 1, limit: pageSize.value, ...filterPayload.value },
+	});
+});
+
+watch([branches, departments], ([newBranches, newDepartments]) => {
+	if (newBranches && newDepartments) {
+		syncQueryToFilter();
+	}
+});
 </script>
 <template>
 	<ContentWrapper class="flex gap-2 flex-col">
 		<Title>Recruitment requests</Title>
 		<div class="flex justify-end gap-2 items-center">
-			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
+			<FilterPopover
+				:model-value="filterData"
+				:list="accordionItems"
+				@update:value="handleFilter" />
 			<Button
 				class="h-auto py-2.5 px-6 rounded-2xl bg-blue-500 hover:bg-blue-600"
 				@click="handleOpenSheet"

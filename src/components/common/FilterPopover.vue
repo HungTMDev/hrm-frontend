@@ -15,11 +15,12 @@ import {
 } from '@/components/ui/accordion';
 import Badge from '@/components/ui/badge/Badge.vue';
 import type { ComboboxType, FilterAccordion, FilterData } from '@/types';
-import { onMounted, ref } from 'vue';
+import { onMounted, onUpdated, ref } from 'vue';
 import SliderCustom from '../custom/SliderCustom.vue';
 import QuarterRange from './QuarterRange.vue';
 
 interface Prop {
+	modelValue?: FilterData[];
 	list: FilterAccordion[];
 }
 
@@ -109,6 +110,14 @@ const handleQuarterRange = (payload: { from: string; to: string }) => {
 		},
 	];
 };
+
+onUpdated(() => {
+	if (isOpen.value) {
+		props.modelValue?.forEach((item) => {
+			selectedFilter.value[item.field] = item.filters;
+		});
+	}
+});
 
 onMounted(() => {
 	props.list.forEach((item) => {

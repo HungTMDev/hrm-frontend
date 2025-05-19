@@ -24,6 +24,7 @@ import { useJob } from '@/composables/recruitment/job/useJob';
 import { useDeleteJob } from '@/composables/recruitment/job/useUpdateJob';
 import { DEFAULT_PAGINATION, listEmploymentType, listJobLevel, listJobStatus } from '@/constants';
 import { valueUpdater } from '@/lib/utils';
+import router from '@/routers';
 import type { FilterAccordion, FilterData, IJob, IJobFilter, IMeta } from '@/types';
 import {
 	getCoreRowModel,
@@ -31,11 +32,14 @@ import {
 	type PaginationState,
 	type VisibilityState,
 } from '@tanstack/vue-table';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
 
+const query = computed(() => route.query);
 const isOpenSheet = ref(false);
 const isOpenAlert = ref(false);
 const isView = ref(false);
@@ -47,6 +51,7 @@ const columnVisibility = ref<VisibilityState>({});
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
 const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
 const filterPayload = ref<Partial<IJobFilter>>({});
+const filterData = ref<FilterData[]>([]);
 
 const pagination = computed<PaginationState>(() => ({
 	pageIndex: pageIndex.value,
@@ -181,6 +186,56 @@ const handleFilter = (payload: FilterData[]) => {
 	});
 	filterPayload.value = newFilter;
 };
+
+const syncQueryToFilter = () => {
+	const keys = Object.keys(query.value) as (keyof IJobFilter)[];
+
+	for (let key of keys) {
+		if ((key as any) === 'page' || (key as any) === 'limit') continue;
+
+		if (key === 'order') {
+			filterPayload.value[key] = 'DESC';
+			continue;
+		}
+
+		if (key === 'keywords') {
+			filterPayload.value[key] = (query.value[key] as string) ?? undefined;
+			continue;
+		}
+
+		filterPayload.value[key] =
+			typeof query.value[key] === 'string'
+				? [query.value[key] as string]
+				: (query.value[key] as string[]);
+
+		const item = accordionItems.value.find((item) => item.value === key);
+		if (item) {
+			const selectedItems =
+				item.items?.filter((i) =>
+					(filterPayload.value[key] as string[]).includes(i.value),
+				) || [];
+
+			if (selectedItems.length) {
+				filterData.value.push({
+					field: key,
+					filters: selectedItems,
+				});
+			}
+		}
+	}
+};
+
+watch([pageIndex, pageSize, filterPayload], () => {
+	router.replace({
+		query: { page: pageIndex.value + 1, limit: pageSize.value, ...filterPayload.value },
+	});
+});
+
+watch([branches, departments], ([newBranches, newDepartments]) => {
+	if (newBranches && newDepartments) {
+		syncQueryToFilter();
+	}
+});
 </script>
 <template>
 	<ContentWrapper>

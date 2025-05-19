@@ -74,9 +74,12 @@ const refreshToken = async () => {
 	}
 
 	try {
-		const { data } = await axios.post<IApiResponseV1<ITokenResponse>>(AUTH_API.REFRESH_TOKEN, {
-			refresh_token,
-		});
+		const { data } = await axios.post<IApiResponseV1<ITokenResponse>>(
+			`${axiosConfig.baseURL}/${AUTH_API.REFRESH_TOKEN}`,
+			{
+				refresh_token,
+			},
+		);
 
 		const token = data.data;
 		authStore.setToken(token.access_token, token.refresh_token, true);

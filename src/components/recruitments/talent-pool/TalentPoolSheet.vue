@@ -3,10 +3,11 @@ import SheetContentCustom from '@/components/custom/SheetContentCustom.vue';
 import { Sheet } from '@/components/ui/sheet';
 import TalentPoolSheetView from './sheet/TalentPoolSheetView.vue';
 import TalentPoolSheetForm from './sheet/TalentPoolSheetForm.vue';
+import type { ICandidate } from '@/types';
 
 defineProps<{
 	open: boolean;
-	data?: any;
+	data?: ICandidate;
 	isView?: boolean;
 }>();
 

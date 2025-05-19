@@ -89,15 +89,6 @@ export interface IJobFilter {
 	status?: string[];
 }
 
-export interface TalentPool {
-	name: string;
-	email: string;
-	phone: string;
-	job: string;
-	level: string;
-	last_modified: string;
-}
-
 export interface DataFillInterviewEmail {
 	subject: string;
 	recipient: string;
@@ -155,24 +146,45 @@ export interface ICandidate extends IBaseResponse {
 	full_name: string;
 	email: string;
 	phone_number: string;
-	avatar: string | null;
-	address: string | null;
+	avatar?: string;
+	address?: string;
 	gender: string;
 	date_of_birth: string;
-	linkedin_profile: string | null;
-	portfolio_url: string | null;
-	resume_url: string;
-	parsed_data: string | null;
-	education: string | null;
-	work_experience: string | null;
-	skills: string | null;
-	languages: string | null;
-	certifications: string | null;
-	summary: string | null;
-	source: string | null;
-	attaches: string | null;
-	notes: string | null;
+	linkedin_profile?: string;
+	portfolio_url?: string;
+	resume_url?: string;
+	parsed_data?: string;
+	education?: IEducation;
+	work_experience?: IWorkExperience;
+	skills?: string[];
+	languages?: string[];
+	certifications?: string[];
+	summary?: string;
+	source?: string;
+	attaches?: string[];
+	notes?: string;
 	created_by_user: IUser;
+}
+
+export interface ICandidateFilter {
+	keywords?: string;
+	order?: 'ASC' | 'DESC';
+}
+
+export interface IEducation {
+	school: string;
+	degree: string;
+	major: string;
+	start_date: string;
+	end_date: string;
+}
+
+export interface IWorkExperience {
+	company: string;
+	position: string;
+	start_date: string;
+	end_date: string;
+	description: string;
 }
 
 export interface InterviewPayload {

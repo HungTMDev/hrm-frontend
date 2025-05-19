@@ -48,8 +48,12 @@ const dataSent = ref<IJob>();
 const rowSelection = ref({});
 const columnVisibility = ref<VisibilityState>({});
 
-const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
-const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
+const pageIndex = ref(
+	query.value.page ? Number(query.value.page) - 1 : DEFAULT_PAGINATION.DEFAULT_PAGE - 1,
+);
+const pageSize = ref(
+	query.value.limit ? Number(query.value.limit) : DEFAULT_PAGINATION.DEFAULT_LIMIT,
+);
 const filterPayload = ref<Partial<IJobFilter>>({});
 const filterData = ref<FilterData[]>([]);
 

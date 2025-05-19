@@ -29,12 +29,11 @@ import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { talentPoolSchema } from '../talent-pool.schema';
-import type { TalentPool } from '@/types';
 import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
 import { genderCombobox } from '@/constants';
 
 defineProps<{
-	data?: TalentPool;
+	data?: any;
 }>();
 
 const formSchema = toTypedSchema(talentPoolSchema);

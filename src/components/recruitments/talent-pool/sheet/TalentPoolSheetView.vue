@@ -30,7 +30,8 @@ import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
-import type { Applicant } from '@/types';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import type { ICandidate } from '@/types';
 
 const accordionItems = [
 	{
@@ -51,7 +52,7 @@ const accordionItems = [
 ];
 
 defineProps<{
-	data?: Applicant;
+	data?: ICandidate;
 }>();
 
 const emit = defineEmits<{
@@ -69,19 +70,17 @@ const handleEdit = () => {
 				<UserAvatar class="w-36 h-36" />
 				<div class="flex flex-col gap-2">
 					<SheetTitle class="text-[28px] font-semibold flex items-center gap-2"
-						>Le Minh Tam
+						>{{ data?.full_name }}
 						<StatusTag
 							class="bg-blue-50 text-blue-500 hover:bg-blue-100"
 							status="Applied"
 					/></SheetTitle>
-					<SheetDescription class="text-base font-medium text-black">
-						Data Analyst
-					</SheetDescription>
+					<SheetDescription class="text-base font-medium text-black"> </SheetDescription>
 					<div class="flex items-center gap-2 text-sm">
-						<IconFromSvg :icon="Iphone" /><span>0971234567</span>
+						<IconFromSvg :icon="Iphone" /><span>{{ data?.phone_number }}</span>
 					</div>
 					<div class="flex items-center gap-2 text-sm">
-						<IconFromSvg :icon="Letter" /><span>tamle@gmail.com</span>
+						<IconFromSvg :icon="Letter" /><span>{{ data?.email }}</span>
 					</div>
 				</div>
 			</div>
@@ -95,13 +94,16 @@ const handleEdit = () => {
 						<InformationItem
 							:icon="Calendar"
 							label="Date of birth"
-							value="November 4, 2000" />
-						<InformationItem :icon="UserHand" label="Gender" value="Female" />
-						<InformationItem :icon="Building3" label="City" value="Đà Nẵng" />
+							:value="formatISOStringToLocalDateTime(data?.date_of_birth).date" />
+						<InformationItem
+							:icon="UserHand"
+							label="Gender"
+							:value="data?.gender || ''" />
+						<InformationItem :icon="Building3" label="City" value="" />
 						<InformationItem
 							:icon="SquareAcademic"
 							label="Education level"
-							value="University" />
+							:value="data?.education?.school || ''" />
 					</div>
 				</div>
 

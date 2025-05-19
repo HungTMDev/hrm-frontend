@@ -75,7 +75,7 @@ const refreshToken = async () => {
 
 	try {
 		const { data } = await axios.post<IApiResponseV1<ITokenResponse>>(
-			`${axiosConfig.baseURL}/${AUTH_API.REFRESH_TOKEN}`,
+			`${axiosConfig.baseURL}${AUTH_API.REFRESH_TOKEN}`,
 			{
 				refresh_token,
 			},

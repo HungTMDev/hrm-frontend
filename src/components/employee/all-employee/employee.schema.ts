@@ -1,0 +1,31 @@
+import { ZUtils } from '@/lib/validation.utils';
+import { z } from 'zod';
+
+export const employeeSchema = z.object({
+	employeeName: z.string().min(1),
+	phoneNumber: z.string().regex(/^(0[1-9][0-9]{8})$/, 'Invalid phone number'),
+	email: ZUtils.email(),
+	dob: z.string(),
+	gender: z.union([z.literal('0'), z.literal('1')]),
+	branch: z.string(),
+	department: z.string(),
+	role: z.string(),
+	workEmail: ZUtils.email(),
+	status: z.string(),
+	salary: z.number(),
+	joiningDate: z.string(),
+	lineManager: z.string(),
+	contractType: z.string(),
+	contractFile: z.string().optional(),
+	photo: z.string().optional(),
+	socialInsurance: z.string(),
+	personalTaxId: z.string(),
+	cityBorned: z.number().optional(),
+	districtBorned: z.number().optional(),
+	wardBorned: z.number().optional(),
+	streetBorned: z.string().optional(),
+	currentCity: z.number().optional(),
+	currentDistrict: z.number().optional(),
+	currentWard: z.number().optional(),
+	currentStreet: z.string().optional(),
+});

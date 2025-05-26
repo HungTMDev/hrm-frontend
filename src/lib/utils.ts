@@ -171,7 +171,7 @@ export const parseDateTime = (dateString?: string) => {
 
 export const convertEnumToComboboxType = (payload: object) => {
 	return Object.values(payload).map((value) => ({
-		label: value.replace(/_/g, ' '),
+		label: formatStatus(value),
 		value,
 	}));
 };
@@ -189,4 +189,12 @@ export const getItemRange = (
 export const parseGender = (genderNumber?: number) => {
 	if (!genderNumber) return '';
 	return genderNumber === 1 ? 'Male' : 'Female';
+};
+
+export const formatStatus = (status: string): string => {
+	return status
+		.toLowerCase()
+		.split('_')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
 };

@@ -66,20 +66,30 @@ export const rejectRecruitmentRequest = async (id: string, reason: string) => {
 };
 
 export const createRecruitmentRequest = async (payload: RecruitmentRequestPayload) => {
-	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(
+	const { data, status } = await axiosClient.post<IApiResponseV1<IRecruitmentRequest>>(
 		RECRUITMENT_REQUEST_API.BASE,
 		payload,
 	);
 	if (status >= 400) {
 		throw new Error();
 	}
-	return data;
+	return data.data;
 };
 
 export const editRecruitmentRequest = async (id: string, payload: RecruitmentRequestPayload) => {
-	const { data, status } = await axiosClient.put<IApiResponseV1<any>>(
+	const { data, status } = await axiosClient.put<IApiResponseV1<IRecruitmentRequest>>(
 		createApiEndpoint(RECRUITMENT_REQUEST_API.BY_ID, id),
 		payload,
+	);
+	if (status >= 400) {
+		throw new Error();
+	}
+	return data.data;
+};
+
+export const cancelRecruitmentRequest = async (id: string) => {
+	const { data, status } = await axiosClient.delete(
+		createApiEndpoint(RECRUITMENT_REQUEST_API.RECALL, id),
 	);
 	if (status >= 400) {
 		throw new Error();

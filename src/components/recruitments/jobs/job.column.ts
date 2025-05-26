@@ -8,6 +8,7 @@ import { h } from 'vue';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import { formatStatus } from '@/lib/utils';
 
 export const jobColumn = (
 	handleOpenSheet: (payload?: IJob, view?: boolean) => void,
@@ -45,20 +46,11 @@ export const jobColumn = (
 		cell: ({ row }) => row.original.position.title,
 		enableHiding: false,
 	},
-	{
-		accessorKey: 'status',
-		header: 'Status',
-		cell: ({ row }) =>
-			h(StatusTag, {
-				status: row.original.status,
-				class: JOB_STATUS_STYLE[row.original.status],
-			}),
-	},
 
 	{
 		accessorKey: 'level',
 		header: 'Level',
-		cell: ({ row }) => row.original.level,
+		cell: ({ row }) => formatStatus(row.original.level as string),
 	},
 	{
 		accessorKey: 'branch',
@@ -68,12 +60,21 @@ export const jobColumn = (
 	{
 		accessorKey: 'employmentType',
 		header: 'Employment type',
-		cell: ({ row }) => row.original.employment_type,
+		cell: ({ row }) => formatStatus(row.original.employment_type as string),
 	},
 	{
 		accessorKey: 'hiring_manager',
 		header: 'Hiring manager',
 		cell: ({ row }) => row.original.hiring_manager.name,
+	},
+	{
+		accessorKey: 'status',
+		header: 'Status',
+		cell: ({ row }) =>
+			h(StatusTag, {
+				status: row.original.status,
+				class: JOB_STATUS_STYLE[row.original.status],
+			}),
 	},
 	{
 		accessorKey: 'action',

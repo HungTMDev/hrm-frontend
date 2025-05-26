@@ -1,6 +1,7 @@
 import { useCustomToast } from '@/lib/customToast';
 import {
 	approveRecruitmentRequest,
+	cancelRecruitmentRequest,
 	createRecruitmentRequest,
 	editRecruitmentRequest,
 	rejectRecruitmentRequest,
@@ -74,36 +75,28 @@ export const useRejectRecruitmentRequest = (
 	});
 };
 
-export const useCreateRecruitmentRequest = (
-	pagination: Ref<PaginationState>,
-	filter: Ref<Partial<IRecruitmentRequestFilter>>,
-) => {
-	const { showToast } = useCustomToast();
-	const queryClient = useQueryClient();
+export const useCreateRecruitmentRequest = () => {
 	return useMutation({
 		mutationFn: async (payload: RecruitmentRequestPayload) =>
 			await createRecruitmentRequest(payload),
-		onSuccess: () => {
-			showToast({
-				message: 'Success!',
-				type: 'success',
-			});
-			queryClient.invalidateQueries({
-				queryKey: [recruitmentRequestKey.base, pagination, filter],
-			});
-		},
 	});
 };
 
-export const useEditRecruitmentRequest = (
+export const useEditRecruitmentRequest = () => {
+	return useMutation({
+		mutationFn: async (payload: { id: string; data: RecruitmentRequestPayload }) =>
+			await editRecruitmentRequest(payload.id, payload.data),
+	});
+};
+
+export const useCancelRecruitmentRequest = (
 	pagination: Ref<PaginationState>,
 	filter: Ref<Partial<IRecruitmentRequestFilter>>,
 ) => {
 	const { showToast } = useCustomToast();
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: async (payload: { id: string; data: RecruitmentRequestPayload }) =>
-			await editRecruitmentRequest(payload.id, payload.data),
+		mutationFn: async (id: string) => await cancelRecruitmentRequest(id),
 		onSuccess: () => {
 			showToast({
 				message: 'Success!',

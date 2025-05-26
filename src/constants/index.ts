@@ -19,12 +19,12 @@ export const DATA_TIME = {
 };
 
 export enum RECRUITMENT_REQUEST_STATUS {
+	TO_DO = 'TO_DO',
 	APPROVED = 'APPROVED',
 	REJECTED = 'REJECTED',
 	DRAFT = 'DRAFT',
 	ON_HOLD = 'ON_HOLD',
-	CANCELLED = 'CANCELLED',
-	PUBLISHED = 'PUBLISHED',
+	CANCELED = 'CANCELED',
 }
 
 export const listRecruitmentRequestStatus = convertEnumToComboboxType(RECRUITMENT_REQUEST_STATUS);
@@ -32,10 +32,10 @@ export const listRecruitmentRequestStatus = convertEnumToComboboxType(RECRUITMEN
 export const RECRUITMENT_REQUEST_STATUS_STYLE: Record<string, string> = {
 	APPROVED: 'bg-green-50 text-green-500 hover:bg-green-50 hover:text-green-500',
 	REJECTED: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
-	DRAFT: 'bg-gray-50 text-slate-600 hover:bg-gray-50 hover:text-gray-500',
-	ON_HOLD: 'bg-blue-50 text-blue-500 hover:bg-blue-50 hover:text-blue-500',
-	CANCELLED: 'CANCELLED',
-	PUBLISHED: 'PUBLISHED',
+	DRAFT: 'bg-purple-50 text-purple-500 hover:bg-purple-50 hover:text-purple-500',
+	ON_HOLD: 'bg-emerald-50 text-emerald-500 hover:bg-emerald-50 hover:text-emerald-500',
+	CANCELED: 'bg-slate-50 text-slate-500 hover:bg-slate-50 hover:text-slate-500',
+	TO_DO: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
 };
 
 export const STATUS_STYLE: Record<string, string> = {
@@ -54,10 +54,8 @@ export const ATTENDANCE_STYLE: Record<string, string> = {
 
 export const JOB_STATUS_STYLE: Record<string, string> = {
 	DRAFT: 'bg-slate-100 text-slate-600 hover:bg-slate-100 hover:text-slate-600',
-	ON_HOLD: 'bg-blue-50 text-blue-500 hover:bg-blue-50 hover:text-blue-500',
-	OPEN: 'bg-blue-50 text-blue-500 hover:bg-blue-50 hover:text-blue-500',
-	FILLED: 'bg-green-50 text-green-500 hover:bg-green-50 hover:text-green-500',
-	CANCELLED: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
+	PENDING: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
+	OPENING: 'bg-green-50 text-green-500 hover:bg-green-50 hover:text-green-500',
 	CLOSED: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
 };
 
@@ -143,10 +141,8 @@ export const listEmploymentType = convertEnumToComboboxType(EMPLOYMENT_TYPE);
 
 export enum JOB_STATUS {
 	DRAFT = 'DRAFT',
-	ON_HOLD = 'ON_HOLD',
-	OPEN = 'OPEN',
-	FILLED = 'FILLED',
-	CANCELLED = 'CANCELLED',
+	OPENING = 'OPENING',
+	PENDING = 'PENDING',
 	CLOSED = 'CLOSED',
 }
 
@@ -220,14 +216,14 @@ export const listInterviewType = convertEnumToComboboxType(INTERVIEW_TYPE);
 
 export enum INTERVIEW_STATUS {
 	SCHEDULED = 'SCHEDULED',
-	CANCELLED = 'CANCELLED',
+	CANCELED = 'CANCELED',
 	COMPLETED = 'COMPLETED',
 	PENDING_FEEDBACK = 'PENDING_FEEDBACK',
 }
 
 export const INTERVIEW_STATUS_STYLE: Record<string, string> = {
 	SCHEDULED: 'bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500',
-	CANCELLED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+	CANCELED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
 	COMPLETED: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
 	PENDING_FEEDBACK: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
 };

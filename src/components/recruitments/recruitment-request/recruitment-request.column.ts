@@ -2,10 +2,11 @@ import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
 import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import Case from '@/assets/icons/Outline/Case Round Minimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import { RECRUITMENT_REQUEST_STATUS_STYLE } from '@/constants';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import { formatISOStringToLocalDateTime, formatStatus } from '@/lib/utils';
 import type { IActionGroupType, IRecruitmentRequest } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
@@ -17,36 +18,37 @@ export const recruitmentRequestColumn = (
 	handleSubmit: (id: string) => void,
 	handleApproveRequest: (id: string) => void,
 	handleRejectRequest: (payload: IRecruitmentRequest) => void,
+	handleRecall: (payload: IRecruitmentRequest) => void,
 ): ColumnDef<IRecruitmentRequest>[] => [
+	// {
+	// 	id: 'select',
+	// 	header: ({ table }) =>
+	// 		h(
+	// 			Checkbox,
+	// 			{
+	// 				modelValue:
+	// 					table.getIsAllPageRowsSelected() ||
+	// 					(table.getIsSomePageRowsSelected() && 'indeterminate'),
+	// 				'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
+	// 				ariaLabel: 'Select all',
+	// 				class: 'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white border-gray-300',
+	// 			},
+	// 			() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
+	// 		),
+	// 	cell: ({ row }) =>
+	// 		h(Checkbox, {
+	// 			onClick: (event: any) => event.stopPropagation(),
+	// 			modelValue: row.getIsSelected(),
+	// 			'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+	// 			ariaLabel: 'Select row',
+	// 			class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+	// 		}),
+	// 	enableSorting: false,
+	// 	enableHiding: false,
+	// },
 	{
-		id: 'select',
-		header: ({ table }) =>
-			h(
-				Checkbox,
-				{
-					modelValue:
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate'),
-					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white border-gray-300',
-				},
-				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
-			),
-		cell: ({ row }) =>
-			h(Checkbox, {
-				onClick: (event: any) => event.stopPropagation(),
-				modelValue: row.getIsSelected(),
-				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-				ariaLabel: 'Select row',
-				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-			}),
-		enableSorting: false,
-		enableHiding: false,
-	},
-	{
-		accessorKey: 'title',
-		header: 'Title',
+		accessorKey: 'position',
+		header: 'Position',
 		cell: ({ row }) => row.original.title,
 	},
 	{
@@ -57,16 +59,16 @@ export const recruitmentRequestColumn = (
 	{
 		accessorKey: 'level',
 		header: 'Level',
-		cell: ({ row }) => row.original.level,
+		cell: ({ row }) => formatStatus(row.original.level as string),
 	},
 	{
 		accessorKey: 'hiring_manager',
-		header: 'Request From',
+		header: 'Request from',
 		cell: ({ row }) => row.original.hiring_manager.name,
 	},
 	{
 		accessorKey: 'expected_date',
-		header: 'Expected Date',
+		header: 'Expected date',
 		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.expected_start_date).date,
 	},
 	{
@@ -96,13 +98,13 @@ export const recruitmentRequestColumn = (
 							style: 'text-yellow-500',
 						},
 						{
-							label: 'Submit',
-							icon: CheckCircle,
-							style: 'text-slate-600',
+							label: 'Recall',
+							icon: CloseCircle,
+							style: 'text-red-500',
 						},
 					];
 				}
-				if (row.original.status === 'ON_HOLD') {
+				if (row.original.status === 'TO_DO') {
 					return [
 						{
 							label: 'View',
@@ -118,6 +120,20 @@ export const recruitmentRequestColumn = (
 							label: 'Reject',
 							icon: CloseCircle,
 							style: 'text-red-500',
+						},
+					];
+				}
+				if (row.original.status === 'APPROVED') {
+					return [
+						{
+							label: 'View',
+							icon: Eye,
+							style: 'text-slate-600',
+						},
+						{
+							label: 'Create job',
+							icon: Case,
+							style: 'text-slate-600',
 						},
 					];
 				}
@@ -149,6 +165,11 @@ export const recruitmentRequestColumn = (
 			const onReject = () => {
 				handleRejectRequest(row.original);
 			};
+
+			const onRecall = () => {
+				handleRecall(row.original);
+			};
+
 			return h(ActionGroupCommon, {
 				actions: actions(),
 				onSubmit,
@@ -156,6 +177,7 @@ export const recruitmentRequestColumn = (
 				onReject,
 				onApprove,
 				onEdit,
+				onRecall,
 			});
 		},
 	},

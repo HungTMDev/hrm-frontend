@@ -188,6 +188,9 @@ const handleFilter = (payload: FilterData[]) => {
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
+
+	pageIndex.value = 0;
+
 	filterPayload.value = newFilter;
 };
 

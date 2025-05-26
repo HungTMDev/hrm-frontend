@@ -100,7 +100,7 @@ export const interviewColumn = (
 						},
 					];
 				}
-				if (row.original.status === 'CANCELLED') {
+				if (row.original.status === 'CANCELED') {
 					const arr = [
 						{
 							label: 'View',
@@ -170,7 +170,7 @@ export const interviewColumn = (
 				onCancel,
 				onView,
 				onScheduleInterview,
-				class: cn(row.original.status === 'CANCELLED' && 'w-[200px]'),
+				class: cn(row.original.status === 'CANCELED' && 'w-[200px]'),
 			});
 		},
 	},

@@ -4,8 +4,11 @@ import Building from '@/assets/icons/Outline/Buildings.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
 import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
 import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
+import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import RejectDialog from '@/components/common/RejectDialog.vue';
 import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
@@ -19,6 +22,7 @@ import { useDepartment } from '@/composables/department/useDepartment';
 import { useRecruitmentRequest } from '@/composables/recruitment/recruitment-request/useRecruitmentRequest';
 import {
 	useApproveRecruitmentRequest,
+	useCancelRecruitmentRequest,
 	useRejectRecruitmentRequest,
 	useSubmitRecruitmentRequest,
 } from '@/composables/recruitment/recruitment-request/useUpdateRecruitmentRequest';
@@ -49,6 +53,7 @@ const { data: departments } = useDepartment();
 const query = computed(() => route.query);
 const isOpenSheet = ref(false);
 const isOpenDialog = ref(false);
+const isOpenAlert = ref(false);
 const isView = ref(false);
 const dataSent = ref<IRecruitmentRequest>();
 const pageIndex = ref(
@@ -120,6 +125,7 @@ const { mutateAsync: rejectRequest, isPending: isRejecting } = useRejectRecruitm
 	pagination,
 	filterPayload,
 );
+const { mutate: cancelRequest, isPending } = useCancelRecruitmentRequest(pagination, filterPayload);
 
 const recruimentRequests = computed<IRecruitmentRequest[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -144,15 +150,22 @@ const handleOpenSheet = (data?: IRecruitmentRequest, view?: boolean) => {
 
 const handleSubmitRequest = (id: string) => {
 	submitRequest(id);
+	isOpenSheet.value = false;
 };
 
 const handleApproveRequest = (id: string) => {
 	approveRequest(id);
+	isOpenSheet.value = false;
 };
 
 const handleOpenDialog = (payload: IRecruitmentRequest) => {
 	dataSent.value = payload;
 	isOpenDialog.value = true;
+};
+
+const handleRecall = (payload: IRecruitmentRequest) => {
+	dataSent.value = payload;
+	isOpenAlert.value = true;
 };
 
 const table = useVueTable({
@@ -171,6 +184,7 @@ const table = useVueTable({
 		handleSubmitRequest,
 		handleApproveRequest,
 		handleOpenDialog,
+		handleRecall,
 	),
 	initialState: {
 		pagination: pagination.value,
@@ -193,7 +207,6 @@ const handleCloseSheet = (open: boolean) => {
 };
 
 const handleCloseDialog = (open: boolean) => {
-	dataSent.value = undefined;
 	isOpenDialog.value = open;
 };
 
@@ -209,7 +222,24 @@ const handleFilter = (payload: FilterData[]) => {
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
+
+	pageIndex.value = 0;
+
 	filterPayload.value = newFilter;
+};
+
+const handleCancelRequest = () => {
+	cancelRequest(dataSent.value?.id || '', {
+		onSuccess: () => {
+			dataSent.value = undefined;
+			isOpenAlert.value = false;
+			isOpenSheet.value = false;
+		},
+	});
+};
+
+const handleCloseAlert = () => {
+	isOpenAlert.value = false;
 };
 
 const syncQueryToFilter = () => {
@@ -264,16 +294,16 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 </script>
 <template>
 	<ContentWrapper class="flex gap-2 flex-col">
-		<Title>Recruitment requests</Title>
+		<Title>Recruitment Requests</Title>
 		<div class="flex justify-end gap-2 items-center">
 			<FilterPopover
 				:model-value="filterData"
 				:list="accordionItems"
 				@update:value="handleFilter" />
 			<Button
-				class="h-auto py-2.5 px-6 rounded-2xl bg-blue-500 hover:bg-blue-600"
+				class="h-auto py-2.5 px-4 rounded-2xl bg-blue-500 hover:bg-blue-600"
 				@click="handleOpenSheet"
-				>Add new request</Button
+				><IconFromSvg :icon="DocumentAdd" /> Create request</Button
 			>
 		</div>
 		<DataTable
@@ -281,7 +311,7 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 			@row:click="(payload) => handleOpenSheet(payload, true)"
 			:is-loading="isLoading" />
 		<Separator class="mb-4" />
-		<DataTablePagination :table="table" :meta="meta" />
+		<DataTablePagination :table="table" :meta="meta" item-name="requests" />
 	</ContentWrapper>
 	<RecruitmentRequestSheet
 		:data="dataSent"
@@ -289,11 +319,22 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 		:is-view="isView"
 		:pagination="pagination"
 		:filter="filterPayload"
+		@edit="isView = false"
 		@update:open="handleCloseSheet"
-		@open-dialog="handleCloseDialog" />
+		@open-dialog="isOpenDialog = true"
+		@approve="handleApproveRequest"
+		@recall="handleCancelRequest" />
 	<RejectDialog
 		:open="isOpenDialog"
 		:is-loading="isRejecting"
+		:description="dataSent?.title"
 		@update:open="handleCloseDialog"
 		@confirm="handleRejectRequest" />
+	<AlertPopup
+		:open="isOpenAlert"
+		:description="dataSent?.title"
+		:is-loading="isPending"
+		title="Are  you sure you want to delete this request?"
+		@confirm="handleCancelRequest"
+		@update:open="handleCloseAlert" />
 </template>

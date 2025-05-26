@@ -18,6 +18,7 @@ import type { ComboboxType, FilterAccordion, FilterData } from '@/types';
 import { onMounted, onUpdated, ref } from 'vue';
 import SliderCustom from '../custom/SliderCustom.vue';
 import QuarterRange from './QuarterRange.vue';
+import { formatStatus } from '@/lib/utils';
 
 interface Prop {
 	modelValue?: FilterData[];
@@ -171,7 +172,7 @@ onMounted(() => {
 								variant="outline"
 								class="text-xs font-normal py-1 flex gap-2"
 								:class="['bg-blue-500 hover:bg-blue-500 text-white']"
-								>{{ item1.label }}
+								>{{ formatStatus(item1.label) }}
 								<button @click="() => handleRemoveFilter(key, item1)">
 									<X :size="14" />
 								</button>
@@ -209,7 +210,7 @@ onMounted(() => {
 											: '',
 									]"
 									@click="() => handleAddFilter(item.value, i)"
-									>{{ i.label }}</Badge
+									>{{ formatStatus(i.label) }}</Badge
 								>
 							</div>
 							<div v-if="item.type === 'numberSlider'" class="pt-2">

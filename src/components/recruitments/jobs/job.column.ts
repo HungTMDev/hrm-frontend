@@ -8,6 +8,7 @@ import { h } from 'vue';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
 
 export const jobColumn = (
 	handleOpenSheet: (payload?: IJob, view?: boolean) => void,
@@ -66,14 +67,14 @@ export const jobColumn = (
 		cell: ({ row }) => row.original.branch.name,
 	},
 	{
-		accessorKey: 'employmentType',
-		header: 'Employment type',
-		cell: ({ row }) => row.original.employment_type,
+		accessorKey: 'candidates',
+		header: 'Candidates',
+		cell: ({ row }) => row.original.application_count,
 	},
 	{
-		accessorKey: 'hiring_manager',
-		header: 'Hiring manager',
-		cell: ({ row }) => row.original.hiring_manager.name,
+		accessorKey: 'created_date',
+		header: 'Created date',
+		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.created_at).date,
 	},
 	{
 		accessorKey: 'action',

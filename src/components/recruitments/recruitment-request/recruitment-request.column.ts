@@ -5,7 +5,7 @@ import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import { RECRUITMENT_REQUEST_STATUS_STYLE } from '@/constants';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import { formatISOStringToLocalDateTime, formatStatus } from '@/lib/utils';
 import type { IActionGroupType, IRecruitmentRequest } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
@@ -57,7 +57,7 @@ export const recruitmentRequestColumn = (
 	{
 		accessorKey: 'level',
 		header: 'Level',
-		cell: ({ row }) => row.original.level,
+		cell: ({ row }) => formatStatus(row.original.level as string),
 	},
 	{
 		accessorKey: 'hiring_manager',

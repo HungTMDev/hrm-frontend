@@ -12,12 +12,11 @@ import {
 } from '@/components/ui/combobox';
 import { cn } from '@/lib/utils';
 import type { ComboboxType } from '@/types';
-import { Check, Search } from 'lucide-vue-next';
+import { Check } from 'lucide-vue-next';
 import { computed, onMounted, ref, watch, type HTMLAttributes } from 'vue';
-import IconFromSvg from './IconFromSvg.vue';
-import { FormControl } from '../ui/form';
 import ComboboxInput from '../ui/combobox/ComboboxInput.vue';
-import ComboboxEmpty from '../ui/combobox/ComboboxEmpty.vue';
+import { FormControl } from '../ui/form';
+import IconFromSvg from './IconFromSvg.vue';
 
 const props = defineProps<{
 	modelValue?: string | string[];
@@ -138,7 +137,7 @@ watch(
 				</div>
 			</ComboboxAnchor>
 		</FormControl>
-		<ComboboxAnchor v-else-if="isSearch && !multiple" class="w-full">
+		<ComboboxAnchor v-else-if="isSearch && !multiple" :class="cn(props.class)" class="w-full">
 			<div class="relative w-full items-center">
 				<span class="absolute left-3 top-3 text-gray-200">
 					<IconFromSvg :icon="icon" />
@@ -206,18 +205,6 @@ watch(
 			<ComboboxGroup v-if="list.length === 0" class="text-sm text-center py-8">
 				No data
 			</ComboboxGroup>
-			<template v-else-if="!isForm">
-				<div class="relative w-full max-w-sm items-center">
-					<ComboboxInput
-						class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10"
-						placeholder="Select framework..." />
-					<span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
-						<Search class="size-4 text-muted-foreground" />
-					</span>
-				</div>
-
-				<ComboboxEmpty> No framework found. </ComboboxEmpty>
-			</template>
 
 			<ComboboxGroup class="max-h-60 overflow-auto">
 				<ComboboxItem

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Download from '@/assets/icons/Outline/Download Minimalistic.svg';
 import Buildings from '@/assets/icons/Outline/Buildings.svg';
 import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
@@ -20,10 +21,11 @@ import { employeeColumn } from '@/components/employee/all-employee/employee.colu
 import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
-import { valueUpdater } from '@/lib/utils';
+import { exportToExcel, valueUpdater } from '@/lib/utils';
 import type { Employee, FilterAccordion } from '@/types';
 import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
 import { ref } from 'vue';
+import router from '@/routers';
 
 const data: Employee[] = [
 	{
@@ -160,20 +162,22 @@ const rowSelection = ref({});
 
 const isOpenSheet = ref(false);
 const isOpenAlert = ref(false);
-const isView = ref(false);
 const dataSent = ref<Employee>();
 
-const handleOpenSheet = (payload?: Employee, view?: boolean) => {
+const handleOpenSheet = (payload?: Employee) => {
 	if (payload instanceof PointerEvent) {
 		dataSent.value = undefined;
 	} else dataSent.value = payload;
-	isView.value = view || false;
 	isOpenSheet.value = true;
 };
 
 const handleOpenAlert = (payload: Employee) => {
 	dataSent.value = payload;
 	isOpenAlert.value = true;
+};
+
+const handleNavigate = (id: string) => {
+	router.push(`/employees/all-employee/${id}`);
 };
 
 const table = useVueTable({
@@ -199,7 +203,6 @@ const table = useVueTable({
 });
 
 const handleCloseSheet = (open: boolean) => {
-	isView.value = false;
 	dataSent.value = undefined;
 	isOpenSheet.value = open;
 };
@@ -207,6 +210,10 @@ const handleCloseSheet = (open: boolean) => {
 const handleCloseAlert = (open: boolean) => {
 	dataSent.value = undefined;
 	isOpenAlert.value = open;
+};
+
+const handleExportToExcel = () => {
+	exportToExcel(data, 'employees');
 };
 </script>
 <template>
@@ -233,14 +240,17 @@ const handleCloseAlert = (open: boolean) => {
 				placeholder="Search employee" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="filter" />
+			<Button class="hover:bg-blue-600 rounded-2xl" @click="handleExportToExcel">
+				<IconFromSvg :icon="Download" />Download
+			</Button>
 			<Button
-				class="bg-blue-500 hover:bg-blue-600 rounded-3xl font-medium"
+				class="bg-blue-500 hover:bg-blue-600 rounded-2xl font-medium"
 				@click="handleOpenSheet">
 				<IconFromSvg :icon="UserPlus" />Add new employee
 			</Button>
 		</div>
 		<div class="flex flex-col gap-2">
-			<DataTable :table="table" @row:click="(payload) => handleOpenSheet(payload, true)" />
+			<DataTable :table="table" @row:click="(payload) => handleNavigate(payload.id)" />
 			<Separator class="mb-2" />
 			<DataTablePagination :table="table" />
 		</div>
@@ -249,8 +259,6 @@ const handleCloseAlert = (open: boolean) => {
 		:data="dataSent"
 		:open="isOpenSheet"
 		@update:open="handleCloseSheet"
-		:is-view="isView"
-		@edit="isView = false"
 		@delete="handleOpenAlert" />
 	<AlertPopup :open="isOpenAlert" @update:open="handleCloseAlert" />
 </template>

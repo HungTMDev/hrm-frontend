@@ -60,7 +60,7 @@ export interface IJob extends IBaseResponse {
 	status: JobStatus;
 	quantity: number;
 	due_date: string;
-	applicationCount: number;
+	application_count: number;
 	title: string;
 	description: string;
 	requirements: string;

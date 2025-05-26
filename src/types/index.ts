@@ -44,6 +44,11 @@ export interface ComboboxType {
 	value: string;
 }
 
+export interface StepType {
+	current: number;
+	total: number;
+}
+
 export interface FormFieldCommon {
 	name: string;
 	label: string;

@@ -1,21 +1,21 @@
 <script lang="ts" setup>
+import ClipboardTextBold from '@/assets/icons/Bold/Clipboard Text.svg';
+import CloseCircleBold from '@/assets/icons/Bold/Close Circle.svg';
+import DialogBold from '@/assets/icons/Bold/Dialog.svg';
+import DocumentAddBold from '@/assets/icons/Bold/Document Add.svg';
+import ClipboardText from '@/assets/icons/Outline/Clipboard Text.svg';
+import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
+import Dialog from '@/assets/icons/Outline/Dialog.svg';
+import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Title from '@/components/common/Title.vue';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ClipboardText from '@/assets/icons/Outline/Clipboard Text.svg';
-import ClipboardTextBold from '@/assets/icons/Bold/Clipboard Text.svg';
-import Dialog from '@/assets/icons/Outline/Dialog.svg';
-import DialogBold from '@/assets/icons/Bold/Dialog.svg';
-import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
-import DocumentAddBold from '@/assets/icons/Bold/Document Add.svg';
-import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
-import CloseCircleBold from '@/assets/icons/Bold/Close Circle.svg';
-import { ref } from 'vue';
-import ScreeningTab from '@/components/recruitments/applicants/screening-tab/ScreeningTab.vue';
-import InterviewTab from '@/components/recruitments/applicants/interview-tab/InterviewTab.vue';
 import HiredTab from '@/components/recruitments/applicants/hired-tab/HiredTab.vue';
+import InterviewTab from '@/components/recruitments/applicants/interview-tab/InterviewTab.vue';
 import RejectedTab from '@/components/recruitments/applicants/rejected-tab/RejectedTab.vue';
+import ScreeningTab from '@/components/recruitments/applicants/screening-tab/ScreeningTab.vue';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ref } from 'vue';
 
 const activeTab = ref('screening');
 </script>

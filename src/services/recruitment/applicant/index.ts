@@ -30,8 +30,12 @@ export const getApplicant = async (filter?: IFilterRequest<Partial<IApplicantFil
 	return data;
 };
 
-export const sendEmail = async (email: string, html: string) => {
-	const { data, status } = await axiosClient.post(NOTIFICATION_API.SEND_EMAIL, { email, html });
+export const sendEmail = async (email: string, content: string, subject: string) => {
+	const { data, status } = await axiosClient.post(NOTIFICATION_API.SEND_EMAIL, {
+		email,
+		content,
+		subject,
+	});
 	if (status >= 400) {
 		throw new Error();
 	}

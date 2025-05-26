@@ -48,15 +48,13 @@ onMounted(() => {
 					:class="
 						cn(
 							'w-full gap-3 ps-3 p-3 h-auto text-start font-normal rounded-2xl border justify-start focus:border-blue-200',
-							!value && 'text-muted-foreground',
 							props.class,
 						)
 					">
 					<IconFromSvg :icon="CalendarIcon" class="text-gray-200" />
-					<span
-						:class="[value ? 'text-slate-600' : 'text-gray-200', 'flex-1 font-normal']"
-						>{{ value ? formatDateValueToLocalDate(value) : 'dd/mm/yyyy' }}</span
-					>
+					<span :class="[value ? 'text-black' : 'text-gray-200', 'flex-1 font-normal']">{{
+						value ? formatDateValueToLocalDate(value) : 'dd/mm/yyyy'
+					}}</span>
 					<span>
 						<IconFromSvg
 							:icon="Down"

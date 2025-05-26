@@ -6,6 +6,7 @@ import { onMounted, ref } from 'vue';
 const props = defineProps<{
 	modelValue?: string[];
 	placeholder: string;
+	type?: 'ordered' | 'bullet';
 }>();
 
 const emit = defineEmits<{
@@ -28,8 +29,10 @@ onMounted(() => {
 		},
 	});
 
+	const type = props.type ?? 'ordered';
+
 	if (props.modelValue && props.modelValue.length > 0) {
-		const htmlList = `<ol>${props.modelValue.map((item) => `<li data-list="ordered">${item}</li>`).join('')}</ol>`;
+		const htmlList = `<ol>${props.modelValue.map((item) => `<li data-list="${type}">${item}</li>`).join('')}</ol>`;
 		quill.root.innerHTML = htmlList;
 	}
 

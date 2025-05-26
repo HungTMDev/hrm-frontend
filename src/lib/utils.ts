@@ -4,6 +4,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { DateValue } from 'reka-ui';
 import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
+import * as XLSX from 'xlsx';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -171,7 +172,7 @@ export const parseDateTime = (dateString?: string) => {
 
 export const convertEnumToComboboxType = (payload: object) => {
 	return Object.values(payload).map((value) => ({
-		label: value.replace(/_/g, ' '),
+		label: formatStatus(value),
 		value,
 	}));
 };
@@ -189,4 +190,57 @@ export const getItemRange = (
 export const parseGender = (genderNumber?: number) => {
 	if (!genderNumber) return '';
 	return genderNumber === 1 ? 'Male' : 'Female';
+};
+
+export const exportToExcel = (data: any[], name: string) => {
+	const worksheet = XLSX.utils.json_to_sheet(data);
+	const workbook = XLSX.utils.book_new();
+	XLSX.utils.book_append_sheet(workbook, worksheet, name);
+
+	const date = new Date();
+	const fileName = `${name}_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}-${date.getMinutes() - 1}-${date.getSeconds()}.xlsx`;
+
+	XLSX.writeFile(workbook, fileName);
+};
+
+export const generateRandomID = (length = 10): string => {
+	const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let result = '';
+
+	for (let i = 0; i < length; i++) {
+		const randomIndex = Math.floor(Math.random() * chars.length);
+		result += chars[randomIndex];
+	}
+
+	return result;
+};
+
+export const fetchFileFromUrl = async (url?: string) => {
+	if (!url) return;
+
+	const response = await fetch(url);
+
+	const contentDisposition = response.headers.get('Content-Disposition');
+
+	const arr = url.split('/');
+
+	let fileName = arr[arr.length - 1];
+
+	if (contentDisposition) {
+		const match = contentDisposition.match(/filename="?([^"]+)"?/);
+		if (match?.[1]) {
+			fileName = match[1];
+		}
+	}
+
+	const blob = await response.blob();
+	return new File([blob], fileName, { type: blob.type });
+};
+
+export const formatStatus = (status: string): string => {
+	return status
+		.toLowerCase()
+		.split('_')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
 };

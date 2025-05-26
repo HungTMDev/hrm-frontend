@@ -9,12 +9,12 @@ import Ranking from '@/assets/icons/Outline/Ranking.svg';
 import Routing3 from '@/assets/icons/Outline/Routing 3.svg';
 import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
 import UserHand from '@/assets/icons/Outline/User Hands.svg';
+import UploadField from '@/components/common/UploadField.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
 import FormTextarea from '@/components/form/FormTextarea.vue';
-import FormUpload from '@/components/form/FormUpload.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { FormField } from '@/components/ui/form';
 import FormControl from '@/components/ui/form/FormControl.vue';
@@ -132,8 +132,8 @@ const onSubmit = handleSubmit(() => {});
 					class="w-full"
 					:icon="Dollar"
 					placeholder="Enter expected salary" />
-				<FormUpload name="cv" label="CV" :required="true" />
-				<FormUpload name="photo" label="Photo" :required="true" type="photo" />
+				<UploadField name="cv" label="CV" :required="true" />
+				<UploadField name="photo" label="Photo" :required="true" type="photo" />
 			</div>
 
 			<div class="mt-4 flex flex-col gap-4">

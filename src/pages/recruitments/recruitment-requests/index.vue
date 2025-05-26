@@ -264,7 +264,7 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 </script>
 <template>
 	<ContentWrapper class="flex gap-2 flex-col">
-		<Title>Recruitment requests</Title>
+		<Title>Recruitment Requests</Title>
 		<div class="flex justify-end gap-2 items-center">
 			<FilterPopover
 				:model-value="filterData"

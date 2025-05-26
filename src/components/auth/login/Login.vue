@@ -38,7 +38,7 @@ const onSubmit = handleSubmit((values) => {
 		<Title class="text-2xl">Welcome to Lutech!</Title>
 		<Description class="self-start text-sm">Login with your email and password.</Description>
 
-		<form @submit="onSubmit" class="w-full" autocomplete="off">
+		<form @submit="onSubmit" class="w-full flex flex-col gap-2" autocomplete="off">
 			<FormInput
 				name="email"
 				label="Email"

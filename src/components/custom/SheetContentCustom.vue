@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
 import { cn } from '@/lib/utils';
+import type { StepType } from '@/types';
 import {
 	DialogClose,
 	DialogContent,
@@ -10,13 +12,14 @@ import {
 	useForwardPropsEmits,
 } from 'reka-ui';
 import { computed, type HTMLAttributes } from 'vue';
-import { sheetVariants, type SheetVariants } from '../ui/sheet';
 import IconFromSvg from '../common/IconFromSvg.vue';
-import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
+import { sheetVariants, type SheetVariants } from '../ui/sheet';
 
 interface SheetContentProps extends DialogContentProps {
 	class?: HTMLAttributes['class'];
 	side?: SheetVariants['side'];
+	steps?: StepType;
+	isShowStep?: boolean;
 }
 
 defineOptions({
@@ -43,9 +46,15 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
 		<DialogContent
 			:class="cn(sheetVariants({ side }), props.class)"
 			v-bind="{ ...forwarded, ...$attrs }">
-			<DialogClose class="w-10 h-10 border rounded-full grid place-items-center">
-				<IconFromSvg :icon="Right" />
-			</DialogClose>
+			<div class="flex justify-between items-center">
+				<DialogClose class="w-10 h-10 border rounded-full grid place-items-center">
+					<IconFromSvg :icon="Right" />
+				</DialogClose>
+				<p v-if="isShowStep" class="text-sm text-gray-200">
+					<span class="text-blue-500">Step {{ steps?.current ?? 0 }}</span> of
+					{{ steps?.total ?? 0 }}
+				</p>
+			</div>
 			<slot />
 		</DialogContent>
 	</DialogPortal>

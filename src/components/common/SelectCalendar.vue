@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { cn } from '@/lib/utils';
 import {
 	CalendarCell,
 	CalendarCellTrigger,
@@ -18,6 +17,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import { type DateValue, getLocalTimeZone, today } from '@internationalized/date';
 import { useVModel } from '@vueuse/core';
 import {
@@ -27,7 +27,7 @@ import {
 	useDateFormatter,
 	useForwardPropsEmits,
 } from 'reka-ui';
-import { createDecade, createYear, toDate } from 'reka-ui/date';
+import { createYear, toDate } from 'reka-ui/date';
 import { computed, type HTMLAttributes, type Ref } from 'vue';
 
 const props = withDefaults(defineProps<CalendarRootProps & { class?: HTMLAttributes['class'] }>(), {
@@ -38,6 +38,11 @@ const props = withDefaults(defineProps<CalendarRootProps & { class?: HTMLAttribu
 	weekdayFormat: 'short',
 });
 const emits = defineEmits<CalendarRootEmits>();
+
+const currentYear = new Date().getFullYear();
+const startYear = currentYear - 100;
+const endYear = currentYear + 50;
+const years = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
 
 const delegatedProps = computed(() => {
 	const { class: _, placeholder: __, ...delegated } = props;
@@ -91,7 +96,7 @@ const formatter = useDateFormatter('en');
 				</Select>
 
 				<Select
-					:default-value="placeholder?.year.toString()"
+					:default-value="currentYear"
 					@update:model-value="
 						(v: any) => {
 							if (!v || !placeholder) return;
@@ -109,14 +114,10 @@ const formatter = useDateFormatter('en');
 					<SelectContent class="max-h-[200px] rounded-2xl">
 						<SelectItem
 							class="rounded-xl"
-							v-for="yearValue in createDecade({
-								dateObj: date,
-								startIndex: -100,
-								endIndex: 0,
-							})"
-							:key="yearValue.toString()"
-							:value="yearValue.year.toString()">
-							{{ yearValue.year }}
+							v-for="year in years"
+							:key="year"
+							:value="year">
+							{{ year }}
 						</SelectItem>
 					</SelectContent>
 				</Select>

@@ -5,13 +5,16 @@ import type { Table } from '@tanstack/vue-table';
 import { FlexRender } from '@tanstack/vue-table';
 import CustomTable from './CustomTable.vue';
 import Skeleton from '../ui/skeleton/Skeleton.vue';
+import type { HTMLAttributes } from 'vue';
+import { cn } from '@/lib/utils';
 
 interface Prop {
 	table: Table<any>;
 	isLoading?: boolean;
 	static_header?: boolean;
+	class?: HTMLAttributes['class'];
 }
-defineProps<Prop>();
+const props = defineProps<Prop>();
 
 const emit = defineEmits<{
 	(e: 'row:click', payload: any): void;
@@ -24,7 +27,7 @@ const handleClickRow = (data: any) => {
 
 <template>
 	<div class="space-y-4">
-		<div class="">
+		<div :class="cn(props.class)">
 			<CustomTable :class="static_header ? 'max-h-[800px]' : ''">
 				<TableHeader :class="static_header ? 'sticky top-0 z-[35] ' : ''">
 					<TableRow
@@ -83,11 +86,17 @@ const handleClickRow = (data: any) => {
 								<TableRow
 									v-for="subRow in row.subRows"
 									:key="subRow.id"
-									class="bg-accent/90">
+									class="bg-muted/90">
 									<!-- Ô trống cho cột mở rộng -->
 									<TableCell
-										v-for="cell in subRow.getVisibleCells()"
-										:key="cell.id">
+										v-for="(cell, index) in subRow.getVisibleCells()"
+										:key="cell.id"
+										class="p-2"
+										:class="[
+											index === 0 && 'rounded-l-xl pl-10',
+											index === row.getVisibleCells().length - 1 &&
+												'rounded-r-xl',
+										]">
 										<FlexRender
 											v-if="!cell.column.columnDef.enableHiding"
 											:render="cell.column.columnDef.cell"

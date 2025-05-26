@@ -20,6 +20,7 @@ interface Prop {
 	list: ComboboxType[];
 	icon?: any;
 	list_size?: 'sm' | 'md' | 'lg';
+	placeHolder?: string;
 }
 
 const props = defineProps<Prop>();
@@ -42,20 +43,21 @@ const handleSelect = (value: any) => {
 		<SelectTriggerCustom
 			:class="
 				cn(
-					'w-full h-auto p-3 focus:ring-0 focus:ring-offset-0 rounded-2xl text-gray-200 relative',
+					'w-full h-auto p-3 focus:ring-0 focus:ring-offset-0 rounded-2xl relative',
 					icon && 'pl-10',
-					modelValue && 'text-black',
 					props.class,
 				)
 			">
-			<span class="absolute left-3">
+			<span class="absolute left-3 text-gray-200">
 				<IconFromSvg :icon="icon" />
 			</span>
-			<SelectValue :placeholder="'Select...'" />
+			<SelectValue
+				:placeholder="placeHolder ?? 'Select...'"
+				:class="cn('text-gray-200', modelValue && 'text-black')" />
 		</SelectTriggerCustom>
 		<SelectContent
 			align="center"
-			class="max-h-60 rounded-2xl"
+			class="max-h-60 rounded-2xl p-0"
 			:class="
 				cn(
 					list_size === 'sm' && 'w-[200px]',
@@ -71,7 +73,7 @@ const handleSelect = (value: any) => {
 					v-for="(item, index) in list"
 					:key="index"
 					:value="item.value"
-					class="rounded-xl">
+					class="rounded-xl py-2">
 					{{ item.label }}
 				</SelectItem>
 			</SelectGroup>

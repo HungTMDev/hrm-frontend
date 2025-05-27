@@ -13,11 +13,16 @@ const props = defineProps<Prop>();
 <template>
 	<FormField :model-value="modelValue" v-slot="{ componentField }" :name="name">
 		<FormItem class="flex flex-col">
-			<FormLabel>{{ label }}</FormLabel>
+			<FormLabel
+				>{{ label }}
+				<span v-if="!required" class="text-slate-400 font-light"
+					>(optional)</span
+				></FormLabel
+			>
 			<FormControl>
 				<Textarea
 					:placeholder="placeholder"
-					class="resize-none focus-visible:ring-0 focus-visible:ring-offset-0"
+					class="resize-none focus-visible:ring-0 focus-visible:ring-offset-0 rounded-2xl placeholder:text-gray-200"
 					:class="cn(props.class)"
 					v-bind="componentField" />
 			</FormControl>

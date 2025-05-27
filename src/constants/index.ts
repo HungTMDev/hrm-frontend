@@ -235,3 +235,59 @@ export enum INTERVIEW_ROLE {
 }
 
 export const listInterviewRole = convertEnumToComboboxType(INTERVIEW_ROLE);
+
+export const listWorkHour = [
+	{
+		label: '7:45 AM - 5:15 PM',
+		value: '07:45:00-17:15:00',
+	},
+	{
+		label: '8:00 AM - 5:30 PM',
+		value: '08:00:00-17:30:00',
+	},
+	{
+		label: '8:15 AM - 5:45 PM',
+		value: '08:15:00-17:45:00',
+	},
+	{
+		label: '8:30 AM - 6:00 PM',
+		value: '08:30:00-18:00:00',
+	},
+	{
+		label: '8:45 AM - 6:15 PM',
+		value: '08:45:00-18:15:00',
+	},
+];
+
+export enum CONTRACT_TYPE {
+	TRAINEE_CONTRACT = 'TRAINEE_CONTRACT',
+	PROBATIONARY_CONTRACT = 'PROBATIONARY_CONTRACT',
+	DEFINITE_CONTRACT_ONE_YEAR = 'DEFINITE_CONTRACT_ONE_YEAR',
+	DEFINITE_CONTRACT_TWO_YEAR = 'DEFINITE_CONTRACT_TWO_YEAR',
+	INDEFINITE_CONTRACT = 'INDEFINITE_CONTRACT',
+}
+
+export const listContractType = convertEnumToComboboxType(CONTRACT_TYPE);
+
+export enum CONTRACT_STATUS {
+	ACTIVE = 'ACTIVE',
+	EXPIRING_SOON = 'EXPIRING_SOON',
+	PENDING_RENEWAL = 'PENDING_RENEWAL',
+	EXPIRED = 'EXPIRED',
+}
+
+export const listContractStatus = convertEnumToComboboxType(CONTRACT_STATUS);
+
+export const LEAVE_REQUEST_STATUS = {
+	TO_DO: 'TO_DO',
+	APPROVED: 'APPROVED',
+	REJECTED: 'REJECTED',
+	CANCELLED: 'CANCELLED',
+};
+
+export const LEAVE_REQUEST_STATUS_STYLE: Record<string, string> = {
+	TO_DO: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-500',
+	APPROVED: 'bg-green-50 text-green-500 hover:bg-green-50 hover:text-green-500',
+	REJECTED: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
+	CANCELLED: 'bg-slate-100 text-slate-600 hover:bg-slate-100 hover:text-slate-600',
+};

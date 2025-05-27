@@ -18,8 +18,8 @@ import { DEFAULT_PAGINATION } from '@/constants';
 export const useSendEmail = () => {
 	const { showToast } = useCustomToast();
 	return useMutation({
-		mutationFn: async (payload: { email: string; html: string }) =>
-			await sendEmail(payload.email, payload.html),
+		mutationFn: async (payload: { email: string; content: string; subject: string }) =>
+			await sendEmail(payload.email, payload.content, payload.subject),
 		onSuccess: () => {
 			showToast({
 				message: 'Success!',

@@ -237,6 +237,7 @@ watch(
 				<FormInput
 					name="location"
 					label="Location"
+					:required="true"
 					class="w-full"
 					:icon="CheckList"
 					placeholder="Enter location" />
@@ -290,6 +291,7 @@ watch(
 				<FormTextarea
 					label="Description"
 					name="description"
+					:required="true"
 					:model-value="requisitionSelected?.description ?? data?.description"
 					placeholder="A detailed job description"
 					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
@@ -297,6 +299,7 @@ watch(
 				<FormTextarea
 					label="Requirements"
 					name="requirements"
+					:required="true"
 					:model-value="data?.requirements"
 					placeholder="Essential skills needed for the job"
 					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />

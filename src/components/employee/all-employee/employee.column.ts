@@ -8,7 +8,7 @@ import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { Check, Minus } from 'lucide-vue-next';
 
 export const employeeColumn = (
-	handleOpenSheet: (payload?: Employee, view?: boolean) => void,
+	handleOpenSheet: (payload?: Employee) => void,
 	handleOpenAlert: (payload: Employee) => void,
 ): ColumnDef<Employee>[] => [
 	{

@@ -81,6 +81,27 @@ export const jobColumn = (
 				class: JOB_STATUS_STYLE[row.original.status],
 			}),
 	},
+
+	{
+		accessorKey: 'level',
+		header: 'Level',
+		cell: ({ row }) => row.original.level,
+	},
+	{
+		accessorKey: 'branch',
+		header: 'Branch',
+		cell: ({ row }) => row.original.branch.name,
+	},
+	{
+		accessorKey: 'candidates',
+		header: 'Candidates',
+		cell: ({ row }) => row.original.application_count,
+	},
+	{
+		accessorKey: 'created_date',
+		header: 'Created date',
+		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.created_at).date,
+	},
 	{
 		accessorKey: 'action',
 		header: 'Action',

@@ -125,7 +125,21 @@ export const webRoutes: RouteType[] = [
 					{
 						path: 'all-employee',
 						name: 'All Employee',
-						component: () => import('@/pages/employees/all-employee/index.vue'),
+						children: [
+							{
+								path: '',
+								name: 'List Employee',
+								component: () => import('@/pages/employees/all-employee/index.vue'),
+							},
+							{
+								path: ':id',
+								name: 'Employee Detail',
+								component: () =>
+									import(
+										'@/pages/employees/all-employee/employee-detail/index.vue'
+									),
+							},
+						],
 					},
 					{
 						path: 'work-hours-management',

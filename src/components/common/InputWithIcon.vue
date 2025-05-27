@@ -41,7 +41,7 @@ const handleShowPassword = () => {
 			:type="showPassword ? 'text' : type"
 			v-model="modelValue"
 			:placeholder="placeholder"
-			class="focus:outline-none placeholder:text-sm placeholder:text-gray-200 w-full text-sm bg-[--backgorund]"
+			class="focus:outline-none placeholder:text-sm placeholder:text-gray-200 w-full text-sm bg-[--backgorund] text-black"
 			autocomplete="off" />
 		<button
 			type="button"

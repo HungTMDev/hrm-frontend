@@ -59,6 +59,7 @@ const filter = ref<Record<string, string[]>>();
 const isOpenAlert = ref(false);
 const isOpenSheet = ref(false);
 const isOpenDialog = ref(false);
+const isView = ref(false);
 
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
 const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
@@ -139,6 +140,8 @@ const handleOpenSheet = (payload?: IApplicantInterview, view?: boolean) => {
 	} else {
 		dataSent.value = payload;
 	}
+
+	isView.value = view ?? false;
 	isOpenSheet.value = true;
 };
 
@@ -226,7 +229,7 @@ const handleCreateInterview = (payload: InterviewPayload) => {
 		onSuccess: () => {
 			const queryClient = useQueryClient();
 			queryClient.invalidateQueries({
-				queryKey: [applicantKey.interview, pagination, filter],
+				queryKey: [applicantKey.base, pagination, filter],
 			});
 		},
 	});
@@ -259,12 +262,13 @@ onMounted(() => {
 		:data="dataSent?.id"
 		:filter="filterPayload"
 		:pagination="pagination"
+		:is-view="isView"
 		@update:open="handleCloseSheet" />
 
 	<SetInterviewDialog
 		:id="dataSent?.id"
 		:open="isOpenDialog"
-		:key="applicantKey.interview"
+		:key="applicantKey.base"
 		:pagination="pagination"
 		:filters="filterPayload"
 		@update:open="handleCloseDialog"

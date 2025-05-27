@@ -67,13 +67,13 @@ const handleRecall = () => {
 						:status="data?.status || ''" />
 				</div>
 			</div>
-			<div v-if="data?.canceled_reason" class="grid grid-cols-3 gap-6 py-[3px] items-start">
+			<div v-if="data?.cancelled_reason" class="grid grid-cols-3 gap-6 py-[3px] items-start">
 				<div class="flex gap-2 items-center">
 					<IconFromSvg :icon="ChatLine" />
 					Reason for rejection
 				</div>
 				<div class="col-span-2 text-black">
-					{{ data.canceled_reason }}
+					{{ data.cancelled_reason }}
 				</div>
 			</div>
 			<div class="grid grid-cols-3 gap-6">

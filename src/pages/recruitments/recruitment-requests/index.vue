@@ -121,7 +121,7 @@ const accordionItems = computed<FilterAccordion[]>(() => [
 const { data, isLoading } = useRecruitmentRequest(pagination, filterPayload);
 const { mutate: submitRequest } = useSubmitRecruitmentRequest(pagination, filterPayload);
 const { mutate: approveRequest } = useApproveRecruitmentRequest(pagination, filterPayload);
-const { mutateAsync: rejectRequest, isPending: isRejecting } = useRejectRecruitmentRequest(
+const { mutate: rejectRequest, isPending: isRejecting } = useRejectRecruitmentRequest(
 	pagination,
 	filterPayload,
 );
@@ -210,11 +210,17 @@ const handleCloseDialog = (open: boolean) => {
 	isOpenDialog.value = open;
 };
 
-const handleRejectRequest = async (reason: string) => {
-	const res = await rejectRequest({ id: dataSent.value?.id!, reason });
-	if (res.status_code === 200) {
-		isOpenDialog.value = false;
-	}
+const handleRejectRequest = (reason: string) => {
+	rejectRequest(
+		{ id: dataSent.value?.id!, reason },
+		{
+			onSuccess: () => {
+				dataSent.value = undefined;
+				isOpenDialog.value = false;
+				isOpenSheet.value = false;
+			},
+		},
+	);
 };
 
 const handleFilter = (payload: FilterData[]) => {

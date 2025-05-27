@@ -13,6 +13,7 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import type { PaginationState } from '@tanstack/vue-table';
 import type { Ref } from 'vue';
 import { applicantKey } from './key';
+import { DEFAULT_PAGINATION } from '@/constants';
 
 export const useSendEmail = () => {
 	const { showToast } = useCustomToast();
@@ -38,13 +39,25 @@ export const useUpdateStage = (
 	return useMutation({
 		mutationFn: async (payload: { id: string; data: { to_stage: string; outcome: string } }) =>
 			await updateStage(payload.id, payload.data),
-		onSuccess: () => {
+		onSuccess: (data) => {
 			showToast({
 				message: 'Success!',
 				type: 'success',
 			});
 			queryClient.invalidateQueries({
 				queryKey: [key, filter.value.stage, pagination, filter],
+			});
+
+			queryClient.invalidateQueries({
+				queryKey: [
+					key,
+					data.current_stage,
+					{
+						pageIndex: DEFAULT_PAGINATION.DEFAULT_PAGE - 1,
+						pageSize: DEFAULT_PAGINATION.DEFAULT_LIMIT,
+					},
+					{ stage: data.current_stage },
+				],
 			});
 		},
 	});
@@ -77,7 +90,7 @@ export const useCompleteInterview = (
 				type: 'success',
 			});
 			queryClient.invalidateQueries({
-				queryKey: [applicantKey.interview, pagination, filter],
+				queryKey: [applicantKey.base, filter.value.stage, pagination, filter],
 			});
 		},
 	});
@@ -97,7 +110,7 @@ export const useCancelInterview = (
 				type: 'success',
 			});
 			queryClient.invalidateQueries({
-				queryKey: [applicantKey.interview, pagination, filter],
+				queryKey: [applicantKey.base, filter.value.stage, pagination, filter],
 			});
 		},
 	});
@@ -125,10 +138,10 @@ export const useAddParticipant = (
 				type: 'success',
 			});
 			queryClient.invalidateQueries({
-				queryKey: [applicantKey.interview, id],
+				queryKey: [applicantKey.base, id],
 			});
 			queryClient.invalidateQueries({
-				queryKey: [applicantKey.interview, pagination, filter],
+				queryKey: [applicantKey.base, pagination, filter],
 			});
 		},
 	});
@@ -150,10 +163,10 @@ export const useRemoveParticipant = (
 				type: 'success',
 			});
 			queryClient.invalidateQueries({
-				queryKey: [applicantKey.interview, id],
+				queryKey: [applicantKey.base, id],
 			});
 			queryClient.invalidateQueries({
-				queryKey: [applicantKey.interview, pagination, filter],
+				queryKey: [applicantKey.base, pagination, filter],
 			});
 		},
 	});

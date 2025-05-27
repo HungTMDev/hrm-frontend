@@ -89,7 +89,7 @@ export const interviewColumn = (
 							style: 'text-slate-600',
 						},
 						{
-							label: 'Complete',
+							label: 'Feedback',
 							icon: CheckCircle,
 							style: 'text-green-500',
 						},
@@ -152,8 +152,8 @@ export const interviewColumn = (
 				handleOpenSheet?.(row.original);
 			};
 
-			const onComplete = () => {
-				handleComplete?.(row.original);
+			const onFeedback = () => {
+				handleOpenSheet?.(row.original);
 			};
 
 			const onCancel = () => {
@@ -166,7 +166,7 @@ export const interviewColumn = (
 
 			return h(ActionGroupCommon, {
 				actions: actions(),
-				onComplete,
+				onFeedback,
 				onCancel,
 				onView,
 				onScheduleInterview,

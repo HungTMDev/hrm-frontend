@@ -33,7 +33,7 @@ export const useApplicantInterview = (
 	filter: Ref<Partial<IApplicantInterviewFilter>>,
 ) => {
 	return useQuery({
-		queryKey: [applicantKey.interview, pagination, filter],
+		queryKey: [applicantKey.base, filter.value.stage, pagination, filter],
 		queryFn: async () =>
 			await getApplicantInterview({
 				page: pagination.value.pageIndex + 1,
@@ -48,7 +48,7 @@ export const useApplicantInterview = (
 
 export const useGetApplicantById = (id: Ref<string | undefined>) => {
 	return useQuery({
-		queryKey: [applicantKey.interview, id],
+		queryKey: [applicantKey.base, id],
 		queryFn: async () => await getApplicantInterviewById(id.value || ''),
 		staleTime: 5 * 60 * 1000,
 		retry: false,

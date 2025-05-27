@@ -44,8 +44,8 @@ const handleConfirm = () => {
 					title ?? 'Are you sure you want to delete?'
 				}}</AlertDialogTitle>
 				<AlertDialogDescription class="text-sm text-slate-600">
-					"{{ description ?? '' }}"</AlertDialogDescription
-				>
+					"{{ description ?? '' }}"
+				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<AlertDialogFooter class="w-full flex mt-4">
 				<AlertDialogCancel

@@ -8,6 +8,7 @@ import { createApiEndpoint } from '@/lib/utils';
 import axiosClient from '@/plugins';
 import type {
 	IApiResponseV1,
+	IApplicant,
 	IApplicantFilter,
 	IApplicantInterview,
 	IApplicantInterviewFilter,
@@ -60,14 +61,14 @@ export const deleteCandidate = async (id: string) => {
 };
 
 export const updateStage = async (id: string, payload: { to_stage: string; outcome: string }) => {
-	const { data, status } = await axiosClient.patch<IApiResponseV1<any>>(
+	const { data, status } = await axiosClient.patch<IApiResponseV1<IApplicant>>(
 		createApiEndpoint(APPLICANT_API.UPDATE_STAGE, id),
 		payload,
 	);
 	if (status >= 400) {
 		throw new Error();
 	}
-	return data;
+	return data.data;
 };
 
 export const createInterview = async (payload: InterviewPayload) => {

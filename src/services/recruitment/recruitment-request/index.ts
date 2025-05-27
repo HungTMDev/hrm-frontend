@@ -55,7 +55,7 @@ export const approveRecruitmentRequest = async (id: string) => {
 export const rejectRecruitmentRequest = async (id: string, reason: string) => {
 	const { data, status } = await axiosClient.patch<IApiResponseV1<any>>(
 		createApiEndpoint(RECRUITMENT_REQUEST_API.REJECT, id),
-		{ comments: reason },
+		{ reason },
 	);
 
 	if (status >= 400) {

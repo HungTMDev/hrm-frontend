@@ -12,7 +12,10 @@ import DataTablePagination from '@/components/datatable/DataTablePagination.vue'
 import Separator from '@/components/ui/separator/Separator.vue';
 import { useBranch } from '@/composables/branch/useBranch';
 import { useDepartment } from '@/composables/department/useDepartment';
-import { useApplicant } from '@/composables/recruitment/applicant/useApplicant';
+import {
+	useApplicant,
+	useApplicantInterview,
+} from '@/composables/recruitment/applicant/useApplicant';
 import {
 	DEFAULT_PAGINATION,
 	listEmploymentType,
@@ -20,7 +23,15 @@ import {
 	RECRUITMENT_STAGE,
 } from '@/constants';
 import { valueUpdater } from '@/lib/utils';
-import type { FilterAccordion, FilterData, IApplicant, IApplicantFilter, IMeta } from '@/types';
+import type {
+	FilterAccordion,
+	FilterData,
+	IApplicant,
+	IApplicantFilter,
+	IApplicantInterview,
+	IApplicantInterviewFilter,
+	IMeta,
+} from '@/types';
 import {
 	getCoreRowModel,
 	useVueTable,
@@ -41,7 +52,7 @@ const filter = ref<Record<string, string[]>>();
 
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
 const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
-const filterPayload = computed<Partial<IApplicantFilter>>(() => ({
+const filterPayload = computed<Partial<IApplicantInterviewFilter>>(() => ({
 	stage: RECRUITMENT_STAGE.INTERVIEW_2,
 	keywords: keywords.value,
 	...filter.value,
@@ -52,9 +63,9 @@ const pagination = computed<PaginationState>(() => ({
 	pageSize: pageSize.value,
 }));
 
-const { data, isLoading } = useApplicant(pagination, filterPayload);
+const { data, isLoading } = useApplicantInterview(pagination, filterPayload);
 
-const applicants = computed<IApplicant[]>(() => data.value?.data || []);
+const applicants = computed<IApplicantInterview[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
 const pageCount = computed(() => meta.value?.total_pages);
 

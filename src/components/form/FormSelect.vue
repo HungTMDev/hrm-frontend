@@ -38,6 +38,7 @@ onUpdated(() => {
 				:list="list"
 				:multiple="multiple"
 				:model-value="componentField.modelValue"
+				:placeholder="placeholder"
 				:class="cn(props.class, errors.length > 0 && 'border-destructive')"
 				@update:model-value="componentField.onChange" />
 			<FormErrorCustom />

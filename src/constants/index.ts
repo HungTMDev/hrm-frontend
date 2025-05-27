@@ -12,7 +12,7 @@ export const DEFAULT_PAGINATION = {
 };
 
 export const DATA_TIME = {
-	TABLE: 30 * 1000,
+	TABLE: 60 * 1000,
 	MORE_CHANGE: 60 * 1000,
 	LESS_CHANGE: 24 * 60 * 60 * 1000,
 	DELETE: 5 * 60 * 1000,

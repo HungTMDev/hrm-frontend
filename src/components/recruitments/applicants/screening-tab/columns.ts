@@ -21,32 +21,32 @@ export const screeningColumn = (payload: {
 	handleStage?: (action: string, payload: IApplicant) => void;
 	handleOpenDialog?: (payload: IApplicant) => void;
 }): ColumnDef<IApplicant>[] => [
-	{
-		id: 'select',
-		header: ({ table }) =>
-			h(
-				Checkbox,
-				{
-					modelValue:
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate'),
-					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
-				},
-				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
-			),
-		cell: ({ row }) =>
-			h(Checkbox, {
-				onClick: (event: any) => event.stopPropagation(),
-				modelValue: row.getIsSelected(),
-				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-				ariaLabel: 'Select row',
-				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-			}),
-		enableSorting: false,
-		enableHiding: false,
-	},
+	// {
+	// 	id: 'select',
+	// 	header: ({ table }) =>
+	// 		h(
+	// 			Checkbox,
+	// 			{
+	// 				modelValue:
+	// 					table.getIsAllPageRowsSelected() ||
+	// 					(table.getIsSomePageRowsSelected() && 'indeterminate'),
+	// 				'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
+	// 				ariaLabel: 'Select all',
+	// 				class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
+	// 			},
+	// 			() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
+	// 		),
+	// 	cell: ({ row }) =>
+	// 		h(Checkbox, {
+	// 			onClick: (event: any) => event.stopPropagation(),
+	// 			modelValue: row.getIsSelected(),
+	// 			'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+	// 			ariaLabel: 'Select row',
+	// 			class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+	// 		}),
+	// 	enableSorting: false,
+	// 	enableHiding: false,
+	// },
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -70,23 +70,23 @@ export const screeningColumn = (payload: {
 		header: 'Job',
 		cell: ({ row }) => row.original.job.title,
 	},
-	{
-		accessorKey: 'cv',
-		header: 'CV',
-		cell: ({ row }) => {
-			return h(
-				'a',
-				{
-					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url,
-					target: '_blank',
-					class: 'text-blue-500 p-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center',
-				},
-				[h(IconFromSvg, { icon: File }), 'CV'],
-			);
-		},
-		enableHiding: false,
-	},
+	// {
+	// 	accessorKey: 'cv',
+	// 	header: 'CV',
+	// 	cell: ({ row }) => {
+	// 		return h(
+	// 			'a',
+	// 			{
+	// 				onClick: (event: any) => event.stopPropagation(),
+	// 				href: row.original.resume_url,
+	// 				target: '_blank',
+	// 				class: 'text-blue-500 p-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center',
+	// 			},
+	// 			[h(IconFromSvg, { icon: File }), 'CV'],
+	// 		);
+	// 	},
+	// 	enableHiding: false,
+	// },
 	{
 		accessorKey: 'status',
 		header: 'Status',

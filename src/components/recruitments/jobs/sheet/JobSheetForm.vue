@@ -77,10 +77,12 @@ const listPosition = computed(
 );
 const listRecruitmentRequest = computed(() => {
 	return (
-		recruitmentRequests.value?.data?.map((item) => ({
-			label: item.title,
-			value: item.id,
-		})) || []
+		recruitmentRequests.value?.data
+			?.filter((item) => item.status === 'APPROVED')
+			.map((item) => ({
+				label: item.title,
+				value: item.id,
+			})) || []
 	);
 });
 const requisitionSelected = ref<IRecruitmentRequest>();
@@ -301,7 +303,10 @@ watch(
 			</div>
 		</form>
 	</ScrollArea>
-	<div class="text-end mt-4">
+	<div class="flex justify-end gap-2 mt-4">
+		<CallApiButton variant="outline" class="h-auto py-3.5 px-4 rounded-2xl"
+			>Save as draft</CallApiButton
+		>
 		<CallApiButton
 			:isLoading="isPendingCreate || isPendingUpdate"
 			form="form"

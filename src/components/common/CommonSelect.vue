@@ -20,6 +20,7 @@ interface Prop {
 	list: ComboboxType[];
 	icon?: any;
 	list_size?: 'sm' | 'md' | 'lg';
+	placeholder?: string;
 }
 
 const props = defineProps<Prop>();
@@ -51,7 +52,7 @@ const handleSelect = (value: any) => {
 			<span class="absolute left-3">
 				<IconFromSvg :icon="icon" />
 			</span>
-			<SelectValue :placeholder="'Select...'" />
+			<SelectValue :placeholder="placeholder ?? 'Select...'" />
 		</SelectTriggerCustom>
 		<SelectContent
 			align="center"

@@ -34,6 +34,16 @@ export const updateJob = async (id: string, payload: JobPayloadType) => {
 	return data;
 };
 
+export const updateJobStatus = async (id: string, statusPayload: string) => {
+	const { data, status } = await axiosClient.patch(createApiEndpoint(JOB_API.UPDATE_STATUS, id), {
+		status: statusPayload,
+	});
+	if (status >= 400) {
+		throw new Error();
+	}
+	return data;
+};
+
 export const deleteJob = async (id: string) => {
 	const { data, status } = await axiosClient.delete(createApiEndpoint(JOB_API.BY_ID, id));
 	if (status >= 400) {

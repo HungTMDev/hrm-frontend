@@ -13,7 +13,7 @@ import {
 import Label from '@/components/ui/label/Label.vue';
 import { useListJob } from '@/composables/recruitment/job/useJob';
 import { useUpLoadApplicantForJob } from '@/composables/recruitment/job/useUpdateJob';
-import type { IJobFilter } from '@/types';
+import type { IApplicantFilter } from '@/types';
 import type { PaginationState } from '@tanstack/vue-table';
 import { computed, reactive } from 'vue';
 
@@ -22,7 +22,7 @@ const { data: jobs } = useListJob();
 const props = defineProps<{
 	open: boolean;
 	pagination: PaginationState;
-	filter: Partial<IJobFilter>;
+	filter: Partial<IApplicantFilter>;
 }>();
 
 const emits = defineEmits<{
@@ -54,7 +54,14 @@ const handleSelectFile = (payload: File | undefined) => {
 
 const handleUpload = () => {
 	if (data.job_id && data.file) {
-		mutate({ job_id: data.job_id, file: data.file });
+		mutate(
+			{ job_id: data.job_id, file: data.file },
+			{
+				onSuccess: () => {
+					handleOpen(false);
+				},
+			},
+		);
 	}
 };
 </script>

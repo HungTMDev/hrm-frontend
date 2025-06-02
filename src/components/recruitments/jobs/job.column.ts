@@ -1,18 +1,12 @@
-import StatusTag from '@/components/common/StatusTag.vue';
-import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
-import { JOB_STATUS_STYLE } from '@/constants';
+import Eye from '@/assets/icons/Outline/Eye.svg';
+import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
+import { listJobStatus } from '@/constants';
+import { formatISOStringToLocalDateTime, formatStatus } from '@/lib/utils';
 import type { IActionGroupType, IJob } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Eye from '@/assets/icons/Outline/Eye.svg';
-import CheckCircel from '@/assets/icons/Outline/Check Circle.svg';
-import CloseCircel from '@/assets/icons/Outline/Check Circle.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
-import Pause from '@/assets/icons/Outline/Pause Circle.svg';
-import { formatISOStringToLocalDateTime, formatStatus } from '@/lib/utils';
+import JobStatusCell from './JobStatusCell.vue';
+import CopyValue from '@/components/common/CopyValue.vue';
 
 export const jobColumn = (
 	handleOpenSheet: (payload?: IJob, view?: boolean) => void,
@@ -46,9 +40,15 @@ export const jobColumn = (
 	// 	enableHiding: false,
 	// },
 	{
+		accessorKey: 'id',
+		header: 'ID',
+		cell: ({ row }) => h(CopyValue, { value: row.original.id }),
+		enableHiding: false,
+	},
+	{
 		accessorKey: 'position',
 		header: 'Position',
-		cell: ({ row }) => row.original.position.title,
+		cell: ({ row }) => row.original.title,
 		enableHiding: false,
 	},
 
@@ -63,6 +63,11 @@ export const jobColumn = (
 		cell: ({ row }) => row.original.branch.name,
 	},
 	{
+		accessorKey: 'hiring_manager_id',
+		header: 'Hiring manager',
+		cell: ({ row }) => row.original.hiring_manager.name,
+	},
+	{
 		accessorKey: 'candidates',
 		header: 'Candidates',
 		cell: ({ row }) => row.original.application_count,
@@ -75,154 +80,38 @@ export const jobColumn = (
 	{
 		accessorKey: 'status',
 		header: 'Status',
-		cell: ({ row }) =>
-			h(StatusTag, {
-				status: row.original.status,
-				class: JOB_STATUS_STYLE[row.original.status],
-			}),
-	},
-
-	{
-		accessorKey: 'level',
-		header: 'Level',
-		cell: ({ row }) => row.original.level,
-	},
-	{
-		accessorKey: 'branch',
-		header: 'Branch',
-		cell: ({ row }) => row.original.branch.name,
-	},
-	{
-		accessorKey: 'candidates',
-		header: 'Candidates',
-		cell: ({ row }) => row.original.application_count,
-	},
-	{
-		accessorKey: 'created_date',
-		header: 'Created date',
-		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.created_at).date,
-	},
-	{
-		accessorKey: 'action',
-		header: 'Action',
 		cell: ({ row }) => {
-			const actions = (): IActionGroupType[] => {
-				if (row.original.status === 'DRAFT') {
-					return [
-						{
-							label: 'View',
-							icon: Eye,
-							style: 'text-slate-600',
-						},
-						{
-							label: 'Edit',
-							icon: Pen2,
-							style: 'text-yellow-500',
-						},
-						{
-							label: 'Open',
-							icon: CheckCircel,
-							style: 'text-green-500',
-						},
-						{
-							label: 'Delete',
-							icon: Trash,
-							style: 'text-red-500 ',
-						},
-					];
-				}
-
-				if (row.original.status === 'OPENING') {
-					return [
-						{
-							label: 'View',
-							icon: Eye,
-							style: 'text-slate-600',
-						},
-						{
-							label: 'Pending',
-							icon: Pause,
-							style: 'text-yellow-500',
-						},
-						{
-							label: 'Close',
-							icon: CloseCircel,
-							style: 'text-red-500 ',
-						},
-					];
-				}
-
-				if (row.original.status === 'PENDING') {
-					return [
-						{
-							label: 'View',
-							icon: Eye,
-							style: 'text-slate-600',
-						},
-						{
-							label: 'Open',
-							icon: CheckCircel,
-							style: 'text-green-500',
-						},
-						{
-							label: 'Close',
-							icon: CloseCircel,
-							style: 'text-red-500 ',
-						},
-					];
-				}
-
-				return [
-					{
-						label: 'View',
-						icon: Eye,
-						style: 'text-slate-600',
-					},
-					{
-						label: 'Open',
-						icon: CheckCircel,
-						style: 'text-green-500',
-					},
-					{
-						label: 'Delete',
-						icon: Trash,
-						style: 'text-red-500 ',
-					},
-				];
+			const onUpdate = (status: string) => {
+				handleUpdateStatus(row.original.id, status);
 			};
 
-			const onView = () => {
-				handleOpenSheet(row.original);
-			};
-
-			const onOpen = () => {
-				handleUpdateStatus(row.original.id, 'OPENING');
-			};
-
-			const onPending = () => {
-				handleUpdateStatus(row.original.id, 'PENDING');
-			};
-
-			const onClose = () => {
-				handleUpdateStatus(row.original.id, 'CLOSED');
-			};
-
-			const onEdit = () => {
-				handleOpenSheet(row.original);
-			};
-			const onDelete = () => {
-				handleOpenAlert(row.original);
-			};
-
-			return h(ActionGroupCommon, {
-				actions: actions(),
-				onEdit,
-				onDelete,
-				onView,
-				onOpen,
-				onPending,
-				onClose,
+			return h(JobStatusCell, {
+				list: listJobStatus,
+				modelValue: row.original.status,
+				onUpdate,
 			});
 		},
 	},
+	// {
+	// 	accessorKey: 'action',
+	// 	header: 'Action',
+	// 	cell: ({ row }) => {
+	// 		const actions: IActionGroupType[] = [
+	// 			{
+	// 				label: 'View',
+	// 				icon: Eye,
+	// 				style: 'text-slate-600',
+	// 			},
+	// 		];
+
+	// 		const onView = () => {
+	// 			handleOpenSheet(row.original, true);
+	// 		};
+
+	// 		return h(ActionGroupCommon, {
+	// 			actions,
+	// 			onView,
+	// 		});
+	// 	},
+	// },
 ];

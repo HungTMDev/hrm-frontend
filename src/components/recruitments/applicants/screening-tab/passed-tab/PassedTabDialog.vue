@@ -15,7 +15,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import { applicantKey } from '@/composables/recruitment/applicant/key';
 import {
 	useCreateInterview,
 	useUpdateStage,
@@ -23,18 +22,14 @@ import {
 import { useListUser } from '@/composables/user/useUser';
 import { listInterviewType } from '@/constants';
 import { createISOStringFromDayAndTime } from '@/lib/utils';
-import type { IApplicantFilter, InterviewPayload } from '@/types';
-import type { PaginationState } from '@tanstack/vue-table';
+import type { InterviewPayload } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
-import { computed } from 'vue';
 import { interviewSchema, type InterviewFormData } from './schema';
 
 const props = defineProps<{
 	open: boolean;
 	id?: string;
-	pagination: PaginationState;
-	filters: Partial<IApplicantFilter>;
 }>();
 
 const emits = defineEmits<{
@@ -42,9 +37,6 @@ const emits = defineEmits<{
 }>();
 
 const { data: users } = useListUser();
-
-const filters = computed(() => props.filters);
-const pagination = computed(() => props.pagination);
 
 const formSchema = toTypedSchema(interviewSchema);
 
@@ -55,32 +47,38 @@ const { handleSubmit, setFieldValue } = useForm({
 	},
 });
 
-const { mutate: updateStage } = useUpdateStage(applicantKey.base, pagination, filters);
+const { mutate: updateStage } = useUpdateStage();
 const { mutate: createInterview, isPending } = useCreateInterview();
 
 const onSubmit = handleSubmit((values: InterviewFormData) => {
 	try {
 		const payload: InterviewPayload = {
-			...values,
+			interview_name: values.interview_name,
+			interview_type: values.interview_type,
+			participant_ids: values.interviewer,
 			scheduled_time: createISOStringFromDayAndTime(
 				values.interview_date,
 				values.interview_time,
 			),
 			application_id: props.id || '',
+			duration_minutes: values.duration_minutes,
+			location: values.location,
+			meeting_link: values.meeting_link,
 			stage: 'INTERVIEW_1',
 		};
-		updateStage(
-			{ id: props.id || '', data: { to_stage: 'INTERVIEW_1', outcome: 'PASSED' } },
-			{
-				onSuccess: () => {
-					createInterview(payload, {
+
+		createInterview(payload, {
+			onSuccess: () => {
+				updateStage(
+					{ id: props.id || '', data: { to_stage: 'INTERVIEW_1', outcome: 'PASSED' } },
+					{
 						onSuccess: () => {
 							emits('update:open', false);
 						},
-					});
-				},
+					},
+				);
 			},
-		);
+		});
 	} catch (error) {
 		return error;
 	}

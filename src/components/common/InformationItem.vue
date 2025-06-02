@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 const props = defineProps<{
 	label: string;
-	value: string;
+	value?: string;
 	icon: any;
 	class?: HTMLAttributes['class'];
 }>();
@@ -16,6 +16,7 @@ const props = defineProps<{
 			<IconFromSvg :icon="icon" />
 			{{ label }}
 		</div>
-		<span class="text-black truncate">{{ value }}</span>
+		<span v-if="value" class="text-black truncate">{{ value }}</span>
+		<span v-else class="text-gray-200 truncate">No data available</span>
 	</div>
 </template>

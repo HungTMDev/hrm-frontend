@@ -5,4 +5,5 @@ export enum AUTH_API {
 	FORGOT_PASSWORD = '/auth/forgot-password',
 	VERIFY_PINCODE = '/auth/reset-password/verify-pincode',
 	RESET_PASSWORD = '/auth/reset-password',
+	ME = '/users/me',
 }

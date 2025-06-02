@@ -24,9 +24,7 @@ import Separator from '@/components/ui/separator/Separator.vue';
 import { SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useCandidate } from '@/composables/recruitment/applicant/useCandidate';
 import { useSendEmail } from '@/composables/recruitment/applicant/useUpdateApplicant';
-import { EMAIL_TEMPLATE, listEmailTemplates } from '@/constants';
 import { formatCurrency } from '@/lib/utils';
-import type { ICandidate } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import Handlebars from 'handlebars';
 import { useForm } from 'vee-validate';
@@ -46,7 +44,7 @@ const schema = ref<any>(thanksEmailSchema);
 
 const candidates = computed(() => {
 	return (
-		(candidatesData?.value as ICandidate[])?.map((item) => ({
+		candidatesData.value?.map((item) => ({
 			label: item.full_name,
 			value: item.id,
 		})) || []
@@ -54,9 +52,8 @@ const candidates = computed(() => {
 });
 const formSchema = computed(() => toTypedSchema(schema.value));
 const dataFill = computed(() => ({
-	subject: EMAIL_TEMPLATE[templateSelected.value || '']?.subject,
-	recipient: (candidatesData.value as ICandidate[])?.find((item) => item.id === values.recipient)
-		?.full_name,
+	subject: '',
+	recipient: candidatesData.value?.find((item) => item.id === values.recipient)?.full_name,
 	position: values.position,
 	confirmation_before_date: values.confirmation_before_date,
 	confirmation_before_time: values.confirmation_before_time,
@@ -82,14 +79,14 @@ const onSubmit = handleSubmit(() => {
 });
 
 watch(dataFill, () => {
-	const rawTemplate = EMAIL_TEMPLATE[templateSelected.value || '']?.template || '';
+	const rawTemplate = '';
 	const compiled = Handlebars.compile(rawTemplate);
 	renderedHtml.value = compiled(dataFill.value);
 });
 
 const handleSelectTemplate = (payload: any) => {
 	templateSelected.value = payload as string;
-	schema.value = EMAIL_TEMPLATE[templateSelected.value || '']?.schema;
+	schema.value = '';
 };
 
 const setValue = (payload: { fieldName: any; data: any }) => {
@@ -126,7 +123,7 @@ const handleCancel = () => {
 					class="w-80"
 					list-size="md"
 					:is-search="true"
-					:list="listEmailTemplates"
+					:list="[]"
 					:icon="LetterOpened"
 					@update:model-value="handleSelectTemplate" />
 			</div>

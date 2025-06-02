@@ -1,19 +1,19 @@
 <script lang="ts" setup>
+import Letter from '@/assets/icons/Outline/Letter.svg';
+import Lock from '@/assets/icons/Outline/Lock.svg';
+import CallApiButton from '@/components/common/CallApiButton.vue';
 import Description from '@/components/common/Description.vue';
 import Title from '@/components/common/Title.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import Label from '@/components/ui/label/Label.vue';
+import { useLogin } from '@/composables/auth/useAuth';
 import router from '@/routers';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
-import { loginSchema } from './LoginSchema';
-import CallApiButton from '@/components/common/CallApiButton.vue';
-import Letter from '@/assets/icons/Outline/Letter.svg';
-import Lock from '@/assets/icons/Outline/Lock.svg';
 import { ref } from 'vue';
-import { useLogin } from '@/composables/auth/useAuth';
+import { loginSchema } from './LoginSchema';
 
 const remember = ref(true);
 
@@ -21,7 +21,7 @@ const navigateForgotPassword = () => {
 	router.push('/auth/forgot-password');
 };
 
-const { mutate, isPending } = useLogin(remember.value);
+const { mutateAsync, isPending } = useLogin(remember.value);
 
 const formSchema = toTypedSchema(loginSchema);
 
@@ -29,8 +29,8 @@ const { handleSubmit } = useForm({
 	validationSchema: formSchema,
 });
 
-const onSubmit = handleSubmit((values) => {
-	mutate(values);
+const onSubmit = handleSubmit(async (values) => {
+	await mutateAsync(values);
 });
 </script>
 <template>

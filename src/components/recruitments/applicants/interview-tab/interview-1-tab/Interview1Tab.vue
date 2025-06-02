@@ -13,11 +13,13 @@ import DataTablePagination from '@/components/datatable/DataTablePagination.vue'
 import Separator from '@/components/ui/separator/Separator.vue';
 import { useBranch } from '@/composables/branch/useBranch';
 import { useDepartment } from '@/composables/department/useDepartment';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
 import { useApplicantInterview } from '@/composables/recruitment/applicant/useApplicant';
 import {
 	useCancelInterview,
 	useCompleteInterview,
 	useCreateInterview,
+	useUpdateStage,
 } from '@/composables/recruitment/applicant/useUpdateApplicant';
 import {
 	DEFAULT_PAGINATION,
@@ -25,7 +27,7 @@ import {
 	listJobStatus,
 	RECRUITMENT_STAGE,
 } from '@/constants';
-import { valueUpdater } from '@/lib/utils';
+import { formatStatus, valueUpdater } from '@/lib/utils';
 import type {
 	FilterAccordion,
 	FilterData,
@@ -34,21 +36,21 @@ import type {
 	IMeta,
 	InterviewPayload,
 } from '@/types';
+import { useQueryClient } from '@tanstack/vue-query';
 import {
 	getCoreRowModel,
 	useVueTable,
 	type PaginationState,
 	type VisibilityState,
 } from '@tanstack/vue-table';
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
+import SetInterviewDialog from '../../SetInterviewDialog.vue';
 import { interviewColumn } from '../column';
 import InterviewSheet from '../InterviewSheet.vue';
-import SetInterviewDialog from '../../SetInterviewDialog.vue';
-import { applicantKey } from '@/composables/recruitment/applicant/key';
-import { useQueryClient } from '@tanstack/vue-query';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
+const queryClient = useQueryClient();
 
 let timeout: any;
 const columnVisibility = ref<VisibilityState>({});
@@ -59,7 +61,7 @@ const filter = ref<Record<string, string[]>>();
 const isOpenAlert = ref(false);
 const isOpenSheet = ref(false);
 const isOpenDialog = ref(false);
-const isView = ref(false);
+const action = ref<'cancel' | 'reject'>();
 
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
 const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
@@ -74,15 +76,19 @@ const pagination = computed<PaginationState>(() => ({
 	pageSize: pageSize.value,
 }));
 
-const { data, isLoading, refetch } = useApplicantInterview(pagination, filterPayload);
+const { data, isLoading } = useApplicantInterview(pagination, filterPayload);
 
 const applicants = computed<IApplicantInterview[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
 const pageCount = computed(() => meta.value?.total_pages);
 
-const { mutate: completeInterview } = useCompleteInterview(pagination, filterPayload);
 const { mutate: cancelInterview, isPending } = useCancelInterview(pagination, filterPayload);
-const { mutate: createInterview } = useCreateInterview();
+const { mutate: createInterview, isPending: isPendingInterview } = useCreateInterview();
+const { mutate: updateStage, isPending: isPendingUpdate } = useUpdateStage();
+const { mutate: completeInterview, isPending: isCompleting } = useCompleteInterview(
+	pagination,
+	filterPayload,
+);
 
 const accordionItems = computed<FilterAccordion[]>(() => [
 	{
@@ -125,29 +131,29 @@ const setPagination = ({ pageIndex, pageSize }: PaginationState): PaginationStat
 	return { pageIndex, pageSize };
 };
 
-const handleOpenAlert = (payload: IApplicantInterview) => {
+const handleOpenAlert = (payload: IApplicantInterview, actionPayload: 'cancel' | 'reject') => {
+	action.value = actionPayload;
 	dataSent.value = payload;
 	isOpenAlert.value = true;
 };
 
-const handleComplete = (payload: IApplicantInterview) => {
-	completeInterview(payload.id);
-};
-
-const handleOpenSheet = (payload?: IApplicantInterview, view?: boolean) => {
+const handleOpenSheet = (payload?: IApplicantInterview) => {
 	if (payload instanceof PointerEvent) {
 		dataSent.value = undefined;
 	} else {
 		dataSent.value = payload;
 	}
-
-	isView.value = view ?? false;
 	isOpenSheet.value = true;
 };
 
 const handleOpenDialog = (payload?: IApplicantInterview) => {
 	dataSent.value = payload;
 	isOpenDialog.value = true;
+};
+
+const handleHireApplicant = (payload: IApplicantInterview) => {
+	dataSent.value = payload;
+	handleHire();
 };
 
 const table = useVueTable({
@@ -160,7 +166,12 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: interviewColumn(handleComplete, handleOpenAlert, handleOpenSheet, handleOpenDialog),
+	columns: interviewColumn(
+		handleOpenAlert,
+		handleOpenSheet,
+		handleOpenDialog,
+		handleHireApplicant,
+	),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -197,11 +208,102 @@ const handleFilter = (payload: FilterData[]) => {
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
+
+	pageIndex.value = 0;
+
 	filter.value = newFilter;
 };
 
+const handleHire = () => {
+	updateStage(
+		{
+			id: dataSent.value?.application_id || '',
+			data: { to_stage: RECRUITMENT_STAGE.HIRED, outcome: 'PASSED' },
+		},
+		{
+			onSuccess: () => {
+				isOpenSheet.value = false;
+				dataSent.value = undefined;
+			},
+		},
+	);
+};
+
+const handleCompleteInterview = () => {
+	completeInterview(dataSent.value?.id || '', {
+		onSuccess: () => {
+			isOpenSheet.value = false;
+			dataSent.value = undefined;
+			queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
+		},
+	});
+};
+
+const handleConfirmAlert = () => {
+	try {
+		if (action.value === 'cancel') {
+			cancelInterview(dataSent.value?.id || '', {
+				onSuccess: () => {
+					queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
+					isOpenAlert.value = false;
+					handleCloseSheet(false);
+				},
+			});
+			return;
+		}
+		updateStage(
+			{
+				id: dataSent.value?.application_id || '',
+				data: { to_stage: RECRUITMENT_STAGE.REJECTED, outcome: 'FAILED' },
+			},
+			{
+				onSuccess: () => {
+					queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
+					isOpenAlert.value = false;
+					handleCloseSheet(false);
+				},
+			},
+		);
+	} catch (error) {
+		return;
+	}
+};
+
+const handleCreateInterview = (payload: InterviewPayload) => {
+	const data: InterviewPayload = {
+		...payload,
+		stage:
+			dataSent.value?.status === 'CANCELED'
+				? RECRUITMENT_STAGE.INTERVIEW_1
+				: RECRUITMENT_STAGE.INTERVIEW_2,
+	};
+
+	createInterview(data, {
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: [applicantKey.base, 'INTERVIEW_1', pagination, filterPayload],
+			});
+
+			if (dataSent.value?.status === 'COMPLETED') {
+				updateStage(
+					{
+						id: dataSent.value?.application_id || '',
+						data: { to_stage: RECRUITMENT_STAGE.INTERVIEW_2, outcome: 'PASSED' },
+					},
+					{
+						onSuccess: () => {
+							dataSent.value = undefined;
+						},
+					},
+				);
+			}
+			isOpenDialog.value = false;
+			handleCloseSheet(false);
+		},
+	});
+};
+
 const handleCloseAlert = (payload: boolean) => {
-	dataSent.value = undefined;
 	isOpenAlert.value = payload;
 };
 
@@ -211,33 +313,8 @@ const handleCloseSheet = (open: boolean) => {
 };
 
 const handleCloseDialog = (open: boolean) => {
-	dataSent.value = undefined;
 	isOpenDialog.value = open;
 };
-
-const handleCancelInterview = () => {
-	cancelInterview(dataSent.value?.id || '', {
-		onSuccess: () => {
-			isOpenAlert.value = false;
-			dataSent.value = undefined;
-		},
-	});
-};
-
-const handleCreateInterview = (payload: InterviewPayload) => {
-	createInterview(payload, {
-		onSuccess: () => {
-			const queryClient = useQueryClient();
-			queryClient.invalidateQueries({
-				queryKey: [applicantKey.base, pagination, filter],
-			});
-		},
-	});
-};
-
-onMounted(() => {
-	refetch();
-});
 </script>
 <template>
 	<div>
@@ -245,7 +322,7 @@ onMounted(() => {
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search candidate"
+				placeholder="Search..."
 				@update:model-value="handleSearch" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
@@ -262,22 +339,31 @@ onMounted(() => {
 		:data="dataSent?.id"
 		:filter="filterPayload"
 		:pagination="pagination"
-		:is-view="isView"
+		:is-completing="isCompleting"
+		:is-hiring="isPendingUpdate"
+		@open-dialog="handleOpenDialog"
+		@hire="handleHire"
+		@reject="(payload) => handleOpenAlert(payload.data, payload.action)"
+		@cancel="(payload) => handleOpenAlert(payload.data, payload.action)"
+		@complete="handleCompleteInterview"
 		@update:open="handleCloseSheet" />
 
 	<SetInterviewDialog
-		:id="dataSent?.id"
+		:id="dataSent?.application_id"
 		:open="isOpenDialog"
 		:key="applicantKey.base"
 		:pagination="pagination"
 		:filters="filterPayload"
+		:is-loading="isPendingInterview"
 		@update:open="handleCloseDialog"
 		@submit="handleCreateInterview" />
 
 	<AlertPopup
 		:open="isOpenAlert"
 		:description="dataSent?.candidate.full_name"
-		:is-loading="isPending"
+		:is-loading="isPending || isPendingUpdate"
+		:title="`Are you sure you want to ${action}?`"
+		:button-label="formatStatus(action ?? '')"
 		@update:open="handleCloseAlert"
-		@confirm="handleCancelInterview" />
+		@confirm="handleConfirmAlert" />
 </template>

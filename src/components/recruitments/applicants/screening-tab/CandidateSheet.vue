@@ -5,16 +5,21 @@ import CandidateSheetView from './sheet/CandidateSheetView.vue';
 import SendEmail from './sheet/SendEmail.vue';
 import { ref } from 'vue';
 import CandidateSheetForm from './sheet/CandidateSheetForm.vue';
+import type { PaginationState } from '@tanstack/vue-table';
+import type { IApplicantFilter } from '@/types';
 
 defineProps<{
 	open: boolean;
 	data?: any;
 	isView?: boolean;
+	pagination: PaginationState;
+	filter: Partial<IApplicantFilter>;
 }>();
 
 const emits = defineEmits<{
 	(e: 'update:open', payload: boolean): void;
 	(e: 'edit'): void;
+	(e: 'back'): void;
 	(e: 'openDialog'): void;
 }>();
 
@@ -32,6 +37,11 @@ const handleSendEmail = () => {
 const handleCancle = () => {
 	isSendEmail.value = false;
 };
+
+const handleClose = () => {
+	isSendEmail.value = false;
+	emits('update:open', false);
+};
 </script>
 
 <template>
@@ -41,10 +51,19 @@ const handleCancle = () => {
 			<CandidateSheetView
 				v-else-if="isView"
 				:data="data"
+				:filter="filter"
+				:pagination="pagination"
 				@edit="emits('edit')"
+				@close="handleClose"
 				@open-dialog="emits('openDialog')"
 				@send-email="handleSendEmail" />
-			<CandidateSheetForm v-else :data="data" />
+			<CandidateSheetForm
+				v-else
+				:filter="filter"
+				:pagination="pagination"
+				:data="data"
+				@close="handleClose"
+				@back="emits('back')" />
 		</SheetContentCustom>
 	</Sheet>
 </template>

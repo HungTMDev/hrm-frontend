@@ -113,7 +113,6 @@ export interface IUser extends IBaseResponse {
 	email: string;
 	personal_email: string | null;
 	phone_number: string | null;
-	full_name: string;
 	avatar: string | null;
 	date_of_birth: string | null;
 	gender: GENDER;

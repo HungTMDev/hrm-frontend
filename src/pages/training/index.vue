@@ -1,46 +1,29 @@
-<script lang="ts" setup>
-import ContentWrapper from '@/components/common/ContentWrapper.vue';
-import FormArray from '@/components/form/FormArray.vue';
-import FormInput from '@/components/form/FormInput.vue';
-import Button from '@/components/ui/button/Button.vue';
-import { FormControl } from '@/components/ui/form';
-import Input from '@/components/ui/input/Input.vue';
-import { toTypedSchema } from '@vee-validate/zod';
-import { useForm } from 'vee-validate';
-import { ref } from 'vue';
-import { z } from 'zod';
-
-const formSchema = toTypedSchema(
-	z.object({
-		users: z.array(z.string()),
-	}),
-);
-
-const initValue = ref({
-	users: ['sdfsdf', 'âfasdasd'],
-});
-
-const initialValues = ref('');
-
-const { handleSubmit } = useForm({
-	validationSchema: formSchema,
-	initialValues: initValue.value,
-});
-
-const onSubmit = handleSubmit((values) => {
-	console.log(values);
-});
-</script>
 <template>
-	<ContentWrapper>
-		<form @submit.prevent="onSubmit" class="space-y-6">
-			<FormArray name="users" label="User" :init-value="initialValues">
-				<template #default="{ baseName }">
-					<FormInput :name="`${baseName}`" label="Name" />
-				</template>
-			</FormArray>
+	<div class="lists">
+		<draggable v-model="list1" group="shared" item-key="id">
+			<template #item="{ element }">
+				<div>{{ element.name }}</div>
+			</template>
+		</draggable>
 
-			<Button type="submit">Submit</Button>
-		</form>
-	</ContentWrapper>
+		<draggable v-model="list2" group="shared" item-key="id">
+			<template #item="{ element }">
+				<div>{{ element.name }}</div>
+			</template>
+		</draggable>
+	</div>
 </template>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+import draggable from 'vuedraggable';
+
+const list1 = ref([
+	{ id: 1, name: 'A' },
+	{ id: 2, name: 'B' },
+]);
+const list2 = ref([
+	{ id: 3, name: 'C' },
+	{ id: 4, name: 'D' },
+]);
+</script>

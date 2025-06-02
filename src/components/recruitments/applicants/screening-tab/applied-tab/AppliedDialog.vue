@@ -13,16 +13,12 @@ import {
 import Label from '@/components/ui/label/Label.vue';
 import { useListJob } from '@/composables/recruitment/job/useJob';
 import { useUpLoadApplicantForJob } from '@/composables/recruitment/job/useUpdateJob';
-import type { IApplicantFilter } from '@/types';
-import type { PaginationState } from '@tanstack/vue-table';
 import { computed, reactive } from 'vue';
 
 const { data: jobs } = useListJob();
 
-const props = defineProps<{
+defineProps<{
 	open: boolean;
-	pagination: PaginationState;
-	filter: Partial<IApplicantFilter>;
 }>();
 
 const emits = defineEmits<{
@@ -33,10 +29,17 @@ const data = reactive<{
 	job_id?: string;
 	file?: File;
 }>({});
-const pagination = computed(() => props.pagination);
-const filter = computed(() => props.filter);
+const list = computed(
+	() =>
+		jobs.value
+			?.filter((item) => item.status === 'OPENING')
+			.map((item) => ({
+				label: item.title,
+				value: item.id,
+			})) || [],
+);
 
-const { mutate, isPending } = useUpLoadApplicantForJob(pagination, filter);
+const { mutate, isPending } = useUpLoadApplicantForJob();
 
 const handleOpen = (isOpen: boolean) => {
 	data.job_id = undefined;
@@ -77,13 +80,9 @@ const handleUpload = () => {
 				<div class="flex flex-col gap-2 mb-4">
 					<Label>Job</Label>
 					<CommonCombobox
-						:list="
-							jobs?.map((item) => ({
-								label: item.position.title,
-								value: item.id,
-							})) || []
-						"
+						:list="list"
 						label="Job"
+						list-size="md"
 						class="w-full rounded-2xl h-auto p-3"
 						@update:model-value="handleSelectJob" />
 				</div>

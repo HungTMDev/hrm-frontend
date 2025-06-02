@@ -231,6 +231,7 @@ const handleFilter = (payload: FilterData[]) => {
 
 	pageIndex.value = 0;
 
+	filterData.value = payload;
 	filterPayload.value = newFilter;
 };
 

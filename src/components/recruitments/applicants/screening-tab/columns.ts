@@ -1,6 +1,6 @@
 import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import Letter from '@/assets/icons/Outline/Letter.svg';
+import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
 import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import File from '@/assets/icons/Outline/File.svg';
@@ -13,7 +13,7 @@ import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import { cn } from '@/lib/utils';
+import { cn, formatISOStringToLocalDateTime } from '@/lib/utils';
 
 export const screeningColumn = (payload: {
 	handleOpenSheet?: (payload?: IApplicant, view?: boolean) => void;
@@ -66,35 +66,34 @@ export const screeningColumn = (payload: {
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'job',
-		header: 'Job',
+		accessorKey: 'position',
+		header: 'Position',
 		cell: ({ row }) => row.original.job.title,
 	},
-	// {
-	// 	accessorKey: 'cv',
-	// 	header: 'CV',
-	// 	cell: ({ row }) => {
-	// 		return h(
-	// 			'a',
-	// 			{
-	// 				onClick: (event: any) => event.stopPropagation(),
-	// 				href: row.original.resume_url,
-	// 				target: '_blank',
-	// 				class: 'text-blue-500 p-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center',
-	// 			},
-	// 			[h(IconFromSvg, { icon: File }), 'CV'],
-	// 		);
-	// 	},
-	// 	enableHiding: false,
-	// },
 	{
-		accessorKey: 'status',
-		header: 'Status',
-		cell: ({ row }) =>
-			h(StatusTag, {
-				status: row.original.application_status,
-				class: APPLICANT_STATUS_STYLE[row.original.application_status],
-			}),
+		accessorKey: 'cv',
+		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
+		cell: ({ row }) => {
+			if (row.original.resume_url === 'REFER') {
+				return '';
+			}
+			return h(
+				'a',
+				{
+					onClick: (event: any) => event.stopPropagation(),
+					href: row.original.resume_url,
+					target: '_blank',
+					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
+				},
+				[h(IconFromSvg, { icon: File }), 'CV'],
+			);
+		},
+		enableHiding: false,
+	},
+	{
+		accessorKey: 'created_at',
+		header: 'Created at',
+		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.created_at).date,
 	},
 	{
 		accessorKey: 'action',
@@ -131,9 +130,9 @@ export const screeningColumn = (payload: {
 								style: 'text-slate-600',
 							},
 							{
-								label: 'Send email',
-								icon: Letter,
-								style: 'text-slate-600',
+								label: 'Reject',
+								icon: Trash,
+								style: 'text-red-500',
 							},
 						];
 
@@ -157,8 +156,8 @@ export const screeningColumn = (payload: {
 				payload.handleOpenAlert?.(row.original);
 			};
 
-			const onSendEmail = () => {
-				console.log(111);
+			const onReject = () => {
+				payload.handleOpenAlert?.(row.original);
 			};
 
 			const onScheduleInterview = () => {
@@ -173,7 +172,7 @@ export const screeningColumn = (payload: {
 				onPass,
 				onFail,
 				onScheduleInterview,
-				onSendEmail,
+				onReject,
 				class: cn(row.original.current_stage === 'SCREENING' && 'w-[200px]'),
 			});
 		},

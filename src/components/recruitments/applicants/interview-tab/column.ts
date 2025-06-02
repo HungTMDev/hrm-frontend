@@ -13,37 +13,37 @@ import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 
 export const interviewColumn = (
-	handleComplete?: (payload: IApplicantInterview) => void,
-	handleOpenAlert?: (payload: IApplicantInterview) => void,
+	handleOpenAlert?: (payload: IApplicantInterview, action: 'cancel' | 'reject') => void,
 	handleOpenSheet?: (payload: IApplicantInterview) => void,
 	handleOpenDialog?: (payload: IApplicantInterview) => void,
+	handleHire?: (payload: IApplicantInterview) => void,
 ): ColumnDef<IApplicantInterview>[] => [
-	{
-		id: 'select',
-		header: ({ table }) =>
-			h(
-				Checkbox,
-				{
-					modelValue:
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate'),
-					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
-				},
-				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
-			),
-		cell: ({ row }) =>
-			h(Checkbox, {
-				onClick: (event: any) => event.stopPropagation(),
-				modelValue: row.getIsSelected(),
-				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-				ariaLabel: 'Select row',
-				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-			}),
-		enableSorting: false,
-		enableHiding: false,
-	},
+	// {
+	// 	id: 'select',
+	// 	header: ({ table }) =>
+	// 		h(
+	// 			Checkbox,
+	// 			{
+	// 				modelValue:
+	// 					table.getIsAllPageRowsSelected() ||
+	// 					(table.getIsSomePageRowsSelected() && 'indeterminate'),
+	// 				'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
+	// 				ariaLabel: 'Select all',
+	// 				class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
+	// 			},
+	// 			() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
+	// 		),
+	// 	cell: ({ row }) =>
+	// 		h(Checkbox, {
+	// 			onClick: (event: any) => event.stopPropagation(),
+	// 			modelValue: row.getIsSelected(),
+	// 			'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+	// 			ariaLabel: 'Select row',
+	// 			class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+	// 		}),
+	// 	enableSorting: false,
+	// 	enableHiding: false,
+	// },
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -53,7 +53,7 @@ export const interviewColumn = (
 	{
 		accessorKey: 'interviewer',
 		header: 'Interviewer',
-		cell: ({ row }) => row.original.participants[0].name,
+		cell: ({ row }) => row.original.participants[0]?.name,
 		enableHiding: false,
 	},
 	{
@@ -66,6 +66,11 @@ export const interviewColumn = (
 		accessorKey: 'interview_time',
 		header: 'Interview time',
 		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.scheduled_time).time,
+	},
+	{
+		accessorKey: 'score',
+		header: 'Score',
+		cell: ({ row }) => row.original.score,
 	},
 	{
 		accessorKey: 'status',
@@ -89,11 +94,6 @@ export const interviewColumn = (
 							style: 'text-slate-600',
 						},
 						{
-							label: 'Feedback',
-							icon: CheckCircle,
-							style: 'text-green-500',
-						},
-						{
 							label: 'Cancel',
 							icon: CloseCircle,
 							style: 'text-red-500',
@@ -101,7 +101,7 @@ export const interviewColumn = (
 					];
 				}
 				if (row.original.status === 'CANCELED') {
-					const arr = [
+					return [
 						{
 							label: 'View',
 							icon: Eye,
@@ -112,17 +112,12 @@ export const interviewColumn = (
 							icon: CloseCircle,
 							style: 'text-red-500',
 						},
+						{
+							label: 'Schedule interview',
+							icon: Calendar,
+							style: 'text-slate-600',
+						},
 					];
-					return row.original.stage === 'INTERVIEW_1'
-						? [
-								...arr,
-								{
-									label: 'Schedule interview',
-									icon: Calendar,
-									style: 'text-slate-600',
-								},
-							]
-						: arr;
 				}
 				const arr = [
 					{
@@ -134,6 +129,11 @@ export const interviewColumn = (
 						label: 'Hire',
 						icon: CheckCircle,
 						style: 'text-green-500',
+					},
+					{
+						label: 'Reject',
+						icon: CloseCircle,
+						style: 'text-red-500',
 					},
 				];
 				return row.original.stage === 'INTERVIEW_1'
@@ -152,25 +152,33 @@ export const interviewColumn = (
 				handleOpenSheet?.(row.original);
 			};
 
-			const onFeedback = () => {
-				handleOpenSheet?.(row.original);
+			const onCancel = () => {
+				handleOpenAlert?.(row.original, 'cancel');
 			};
 
-			const onCancel = () => {
-				handleOpenAlert?.(row.original);
+			const onReject = () => {
+				handleOpenAlert?.(row.original, 'reject');
 			};
 
 			const onScheduleInterview = () => {
 				handleOpenDialog?.(row.original);
 			};
 
+			const onHire = () => {
+				handleHire?.(row.original);
+			};
+
 			return h(ActionGroupCommon, {
 				actions: actions(),
-				onFeedback,
 				onCancel,
 				onView,
+				onReject,
+				onHire,
 				onScheduleInterview,
-				class: cn(row.original.status === 'CANCELED' && 'w-[200px]'),
+				class: cn(
+					(row.original.status === 'CANCELED' || row.original.status === 'COMPLETED') &&
+						'w-[200px]',
+				),
 			});
 		},
 	},

@@ -233,12 +233,12 @@ const handleCreateDraft = async () => {
 					placeholder="Enter quantity" />
 				<FormInput
 					name="justification"
-					label="Justification"
+					label="Reason"
 					class="w-full"
 					:required="true"
 					:icon="CheckList"
 					:modelValue="data?.justification"
-					placeholder="Enter justification" />
+					placeholder="Enter reason" />
 				<FormCalendar
 					name="expected_start_date"
 					label="Expected start date"

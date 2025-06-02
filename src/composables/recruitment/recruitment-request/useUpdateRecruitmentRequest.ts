@@ -13,6 +13,7 @@ import type { PaginationState } from '@tanstack/vue-table';
 import type { Ref } from 'vue';
 import { recruitmentRequestKey } from './key';
 import type { RecruitmentRequestPayload } from '@/components/recruitments/recruitment-request/recruitment-request.schema';
+import { jobKey } from '../job/key';
 
 export const useSubmitRecruitmentRequest = (
 	pagination: Ref<PaginationState>,
@@ -49,6 +50,9 @@ export const useApproveRecruitmentRequest = (
 			});
 			queryClient.invalidateQueries({
 				queryKey: [recruitmentRequestKey.base, pagination, filter],
+			});
+			queryClient.invalidateQueries({
+				queryKey: [jobKey.base],
 			});
 		},
 	});

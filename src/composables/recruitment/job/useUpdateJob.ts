@@ -12,6 +12,7 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import type { PaginationState } from '@tanstack/vue-table';
 import type { Ref } from 'vue';
 import { jobKey } from './key';
+import { applicantKey } from '../applicant/key';
 
 export const useCreateJob = (
 	pagination: Ref<PaginationState>,
@@ -99,10 +100,7 @@ export const useDeleteJob = (
 	});
 };
 
-export const useUpLoadApplicantForJob = (
-	pagination: Ref<PaginationState>,
-	filter: Ref<Partial<IApplicantFilter>>,
-) => {
+export const useUpLoadApplicantForJob = () => {
 	const { showToast } = useCustomToast();
 	const queryClient = useQueryClient();
 
@@ -115,7 +113,7 @@ export const useUpLoadApplicantForJob = (
 				type: 'success',
 			});
 			queryClient.invalidateQueries({
-				queryKey: [jobKey.base, , filter.value.stage, pagination, filter],
+				queryKey: [applicantKey.base],
 			});
 		},
 	});

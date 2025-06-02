@@ -123,7 +123,7 @@ export const recruitmentRequestColumn = (
 						},
 					];
 				}
-				if (row.original.status === 'APPROVED') {
+				if (row.original.status === 'ON_HOLD') {
 					return [
 						{
 							label: 'View',
@@ -131,9 +131,9 @@ export const recruitmentRequestColumn = (
 							style: 'text-slate-600',
 						},
 						{
-							label: 'Create job',
-							icon: Case,
-							style: 'text-slate-600',
+							label: 'Approve',
+							icon: CheckCircle,
+							style: 'text-green-500',
 						},
 					];
 				}

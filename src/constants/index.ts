@@ -4,7 +4,7 @@ import {
 	thanksEmailSchema,
 } from '@/components/recruitments/applicants/screening-tab/schema';
 import { convertEnumToComboboxType } from '@/lib/utils';
-import { INTERVIEW_INVITATION_EMAIL, INVITATION_EMAIL, THANKS_EMAIL } from './model';
+import { INVITATION_EMAIL, THANKS_EMAIL } from './model';
 
 export const DEFAULT_PAGINATION = {
 	DEFAULT_PAGE: 1,
@@ -92,18 +92,20 @@ export const APPLICANT_OUTCOME_STYLE: Record<string, string> = {
 };
 
 export const APPLICANT_STAGE_STYLE: Record<string, string> = {
-	Applied: 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-500',
-	Screening: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
-	Interview: 'bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500',
-	Hired: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
-	Rejected: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
+	APPLIED: 'bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500',
+	SCREENING: 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
+	INTERVIEW_1: 'bg-indigo-50 text-indigo-500 hover:bg-indigo-100 hover:text-indigo-500',
+	INTERVIEW_2: 'bg-indigo-50 text-indigo-500 hover:bg-indigo-100 hover:text-indigo-500',
+	OFFER: 'bg-orange-50 text-orange-500 hover:bg-orange-100 hover:text-orange-500',
+	HIRED: 'bg-green-50 text-green-500 hover:bg-green-100 hover:text-green-500',
+	REJECTED: 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500',
 };
 
 export const applicantStages = convertEnumToComboboxType(ApplicantStage);
 
 export enum GENDER {
-	male,
-	female,
+	MALE,
+	FEMALE,
 }
 
 export const genderCombobox = Object.keys(GENDER)
@@ -161,40 +163,40 @@ export const EDUCATION_LEVEL = [
 	},
 ];
 
-export const EMAIL_TEMPLATE: Record<
-	string,
-	{ subject: string; label: string; template: string; schema: object }
-> = {
-	invitation_email_to_receive_jobs: {
-		subject: '[LUTECH.LTD]THƯ MỜI NHẬN VIỆC',
-		label: 'THƯ MỜI NHẬN VIỆC',
-		template: INVITATION_EMAIL,
-		schema: invitationEmailSchema,
-	},
-	interview_invitation_email: {
-		subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
-		label: 'THƯ MỜI PHỎNG VẤN',
-		template: INTERVIEW_INVITATION_EMAIL,
-		schema: interviewEmailSchema,
-	},
-	email_of_thanks: {
-		subject: '[THƯ CẢM ƠN ỨNG TUYỂN - LUTECH.LTD]',
-		label: 'THƯ CẢM ƠN ỨNG TUYỂN',
-		template: THANKS_EMAIL,
-		schema: thanksEmailSchema,
-	},
-	email_thanks_to_the_interview: {
-		subject: '[THƯ CẢM ƠN PHỎNG VẤN - LUTECH.LTD]',
-		label: 'THƯ CẢM ƠN PHỎNG VẤN',
-		template: THANKS_EMAIL,
-		schema: thanksEmailSchema,
-	},
-};
+// export const EMAIL_TEMPLATE: Record<
+// 	string,
+// 	{ subject: string; label: string; template: string; schema: object }
+// > = {
+// 	invitation_email_to_receive_jobs: {
+// 		subject: '[LUTECH.LTD]THƯ MỜI NHẬN VIỆC',
+// 		label: 'THƯ MỜI NHẬN VIỆC',
+// 		template: INVITATION_EMAIL,
+// 		schema: invitationEmailSchema,
+// 	},
+// 	interview_invitation_email: {
+// 		subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
+// 		label: 'THƯ MỜI PHỎNG VẤN',
+// 		template: INTERVIEW_INVITATION_EMAIL,
+// 		schema: interviewEmailSchema,
+// 	},
+// 	email_of_thanks: {
+// 		subject: '[THƯ CẢM ƠN ỨNG TUYỂN - LUTECH.LTD]',
+// 		label: 'THƯ CẢM ƠN ỨNG TUYỂN',
+// 		template: THANKS_EMAIL,
+// 		schema: thanksEmailSchema,
+// 	},
+// 	email_thanks_to_the_interview: {
+// 		subject: '[THƯ CẢM ƠN PHỎNG VẤN - LUTECH.LTD]',
+// 		label: 'THƯ CẢM ƠN PHỎNG VẤN',
+// 		template: THANKS_EMAIL,
+// 		schema: thanksEmailSchema,
+// 	},
+// };
 
-export const listEmailTemplates = Object.entries(EMAIL_TEMPLATE).map((item) => ({
-	label: item[1].label,
-	value: item[0],
-}));
+// export const listEmailTemplates = Object.entries(EMAIL_TEMPLATE).map((item) => ({
+// 	label: item[1].label,
+// 	value: item[0],
+// }));
 
 export enum RECRUITMENT_STAGE {
 	APPLIED = 'APPLIED',
@@ -291,3 +293,13 @@ export const LEAVE_REQUEST_STATUS_STYLE: Record<string, string> = {
 	REJECTED: 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500',
 	CANCELLED: 'bg-slate-100 text-slate-600 hover:bg-slate-100 hover:text-slate-600',
 };
+
+export enum RECOMMEND_RECRUITMENT {
+	STRONG_HIRE = 'STRONG_HIRE',
+	HIRE = 'HIRE',
+	WEAK_HIRE = 'WEAK_HIRE',
+	NO_HIRE = 'NO_HIRE',
+	STRONG_NO_HIRE = 'STRONG_NO_HIRE',
+}
+
+export const listRecommendRecruitment = convertEnumToComboboxType(RECOMMEND_RECRUITMENT);

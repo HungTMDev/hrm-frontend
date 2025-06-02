@@ -1,27 +1,85 @@
 <script lang="ts" setup>
+import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
+import UserCircle from '@/assets/icons/Outline/User Circle.svg';
 import Title from '@/components/common/Title.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
-import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
+import FormTextarea from '@/components/form/FormTextarea.vue';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import type { IApplicantInterview } from '@/types';
-import UserRounded from '@/assets/icons/Outline/User Rounded.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
-import UploadField from '@/components/common/UploadField.vue';
-import FormTextarea from '@/components/form/FormTextarea.vue';
+import { listRecommendRecruitment } from '@/constants';
+import type { IApplicantInterview, IApplicantInterviewFilter } from '@/types';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+import { interviewFeedbackScheama, type InterviewerFeedbackPayload } from '../schema';
+import FormMarkdown from '@/components/form/FormMarkdown.vue';
+import { useCreateInterviewFeedback } from '@/composables/recruitment/applicant/useUpdateApplicant';
+import type { PaginationState } from '@tanstack/vue-table';
+import CallApiButton from '@/components/common/CallApiButton.vue';
+import { useQueryClient } from '@tanstack/vue-query';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
+import { computed } from 'vue';
 
-defineProps<{
+const props = defineProps<{
 	data?: IApplicantInterview;
+	pagination: PaginationState;
+	filter: Partial<IApplicantInterviewFilter>;
 }>();
+
+const emits = defineEmits<{
+	(e: 'update:open', payload: boolean): void;
+	(e: 'cancel'): void;
+}>();
+
+const queryClient = useQueryClient();
+
+const pagination = computed(() => props.pagination);
+const filter = computed(() => props.filter);
+
+const formSchema = toTypedSchema(interviewFeedbackScheama);
+
+const { handleSubmit } = useForm({
+	validationSchema: formSchema,
+});
+
+const { mutateAsync: createInterviewFeedback, isPending: isCreating } =
+	useCreateInterviewFeedback();
+
+const onSubmit = handleSubmit(async (values) => {
+	const payload: InterviewerFeedbackPayload = {
+		...values,
+		strengths: (values.strengths as string[]).join('\n'),
+		weaknesses: (values.weaknesses as string[]).join('\n'),
+	};
+
+	await createInterviewFeedback(
+		{
+			id: props.data?.id || '',
+			data: payload,
+		},
+		{
+			onSuccess: () => {
+				emits('cancel');
+
+				queryClient.invalidateQueries({
+					queryKey: [applicantKey.feedback, props.data?.id || ''],
+				});
+
+				queryClient.invalidateQueries({
+					queryKey: [applicantKey.base, filter.value.stage, pagination, filter],
+				});
+			},
+		},
+	);
+});
+
+const handleCancel = () => emits('cancel');
 </script>
 <template>
 	<ScrollArea class="flex-1 pr-3">
 		<Title class="text-[28px] text-black">Candidate evaluation</Title>
-		<form>
+		<form id="form" @submit="onSubmit">
 			<SheetHeader>
 				<SheetTitle></SheetTitle>
 				<SheetDescription> </SheetDescription>
@@ -29,58 +87,53 @@ defineProps<{
 
 			<div class="grid grid-cols-2 gap-6">
 				<FormInput
-					name="candidate_name"
-					label="Candidate name"
-					class="w-full"
-					:icon="UserRounded"
-					:required="true"
-					placeholder="Enter candidate name" />
-				<FormSelect
-					name="position"
-					label="Position"
-					:list="[]"
-					:icon="UserCircle"
-					:required="true"
-					placeholder="Select position" />
-				<FormSelectCalendar name="date_of_birth" label="Date of birth" :required="true" />
-				<FormInput
 					name="score"
 					type="number"
-					label="HR fit score (out of 10)"
+					label="Score"
 					:required="true"
 					:icon="Chart2"
 					class="w-full"
 					placeholder="Enter score" />
-				<FormInput
-					name="expected_salary"
-					type="number"
-					label="Expected salary"
+				<FormSelect
+					name="recommendation"
+					label="Recommendation"
+					:list="listRecommendRecruitment"
+					:icon="UserCircle"
 					:required="true"
-					:icon="Dollar"
-					class="w-full"
-					placeholder="Enter expected salary" />
-				<UploadField name="cv" label="CV" />
+					placeholder="Select recommendation" />
+				<FormMarkdown
+					name="strengths"
+					label="Strengths"
+					:required="true"
+					class="rounded-2xl h-[200px]"
+					placeholder="Enter strengths" />
+				<FormMarkdown
+					name="weaknesses"
+					label="Weaknesses"
+					:required="true"
+					class="rounded-2xl h-[200px]"
+					placeholder="Enter weaknesses" />
 			</div>
 
 			<div class="mt-6 grid gap-4">
 				<FormTextarea
-					name="strength"
-					label="Strength"
+					name="comments"
+					label="Comments"
 					:required="true"
 					class="rounded-2xl h-[200px]"
-					placeholder="Enter candidate strength" />
-				<FormTextarea
-					name="areas"
-					label="Areas for improvement"
-					:required="true"
-					class="rounded-2xl h-[200px]"
-					placeholder="Enter areas for improvement" />
+					placeholder="Enter comments" />
 			</div>
 		</form>
 	</ScrollArea>
 	<SheetFooter>
-		<Button form="form" class="rounded-2xl h-auto py-3.5 px-5 bg-blue-500 hover:bg-blue-600">
-			Submit
+		<Button variant="outline" class="rounded-2xl h-auto py-3 px-6" @click="handleCancel">
+			Cancel
 		</Button>
+		<CallApiButton
+			:is-loading="isCreating"
+			form="form"
+			class="rounded-2xl h-auto py-3 px-5 bg-blue-500 hover:bg-blue-600">
+			Create
+		</CallApiButton>
 	</SheetFooter>
 </template>

@@ -27,7 +27,8 @@ const props = defineProps<Prop>();
 			<FormControl>
 				<CurrencyInput
 					:icon="icon"
-					v-bind="componentField"
+					:model-value="Number(componentField.modelValue)"
+					@update:model-value="componentField.onChange"
 					:class="
 						cn(
 							props.class,

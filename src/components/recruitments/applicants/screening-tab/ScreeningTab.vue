@@ -5,15 +5,32 @@ import ChecklistBold from '@/assets/icons/Bold/Checklist Minimalistic.svg';
 import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
 import CheckCircleBold from '@/assets/icons/Bold/Check Circle.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import AppliedTab from './applied-tab/AppliedTab.vue';
 import PassedTab from './passed-tab/PassedTab.vue';
+import { useRoute } from 'vue-router';
+import router from '@/routers';
+
+const route = useRoute();
+
+const query = computed(() => route.query);
 
 const activeTab = ref('applied');
+
+const handleUpdate = (value: any) => {
+	activeTab.value = value;
+	router.push({ query: { ...query.value, subTab: activeTab.value } });
+};
+
+onMounted(() => {
+	activeTab.value = ['applied', 'passed'].includes(query.value.subTab as string)
+		? (query.value.subTab as string)
+		: 'applied';
+});
 </script>
 
 <template>
-	<Tabs v-model="activeTab">
+	<Tabs :model-value="activeTab" @update:model-value="handleUpdate">
 		<TabsList class="rounded-2xl p-0.5">
 			<TabsTrigger
 				class="rounded-2xl px-4 py-2 w-40 data-[state=active]:text-blue-500"

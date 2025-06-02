@@ -1,19 +1,85 @@
+import type { InterviewerFeedbackPayload } from '@/components/recruitments/applicants/interview-tab/schema';
 import { useCustomToast } from '@/lib/customToast';
 import {
 	addParticipant,
 	cancelApplicantInterview,
 	completeApplicantInterview,
+	createApplicant,
 	createInterview,
+	createInterviewFeedback,
+	deleteApplicant,
+	editApplicant,
 	removeParticipant,
 	sendEmail,
 	updateStage,
 } from '@/services/recruitment/applicant';
-import type { IApplicantInterviewFilter, InterviewPayload } from '@/types';
+import type { IApplicantFilter, IApplicantInterviewFilter, InterviewPayload } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import type { PaginationState } from '@tanstack/vue-table';
 import type { Ref } from 'vue';
 import { applicantKey } from './key';
-import { DEFAULT_PAGINATION } from '@/constants';
+import type { AddApplicantPayload } from '@/components/recruitments/applicants/screening-tab/schema';
+
+export const useCreateApplicant = (
+	pagination: Ref<PaginationState>,
+	filter: Ref<Partial<IApplicantFilter>>,
+) => {
+	const queryClient = useQueryClient();
+	const { showToast } = useCustomToast();
+	return useMutation({
+		mutationFn: async (payload: AddApplicantPayload) => await createApplicant(payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: [applicantKey.base, filter.value.stage, pagination, filter],
+			});
+			showToast({
+				message: 'Success!',
+				type: 'success',
+			});
+		},
+	});
+};
+
+export const useEditApplicant = (
+	pagination: Ref<PaginationState>,
+	filter: Ref<Partial<IApplicantFilter>>,
+) => {
+	const queryClient = useQueryClient();
+	const { showToast } = useCustomToast();
+	return useMutation({
+		mutationFn: async (payload: { id: string; data: AddApplicantPayload }) =>
+			await editApplicant(payload.id, payload.data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: [applicantKey.base, filter.value.stage, pagination, filter],
+			});
+			showToast({
+				message: 'Success!',
+				type: 'success',
+			});
+		},
+	});
+};
+
+export const useDeleteApplicant = (
+	pagination: Ref<PaginationState>,
+	filter: Ref<Partial<IApplicantFilter>>,
+) => {
+	const { showToast } = useCustomToast();
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: async (id: string) => await deleteApplicant(id),
+		onSuccess: () => {
+			showToast({
+				message: 'Success!',
+				type: 'success',
+			});
+			queryClient.invalidateQueries({
+				queryKey: [applicantKey.base, filter.value.stage, pagination, filter],
+			});
+		},
+	});
+};
 
 export const useSendEmail = () => {
 	const { showToast } = useCustomToast();
@@ -29,50 +95,27 @@ export const useSendEmail = () => {
 	});
 };
 
-export const useUpdateStage = (
-	key: string,
-	pagination: Ref<PaginationState>,
-	filter: Ref<Partial<any>>,
-) => {
+export const useUpdateStage = () => {
 	const { showToast } = useCustomToast();
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: async (payload: { id: string; data: { to_stage: string; outcome: string } }) =>
 			await updateStage(payload.id, payload.data),
-		onSuccess: (data) => {
+		onSuccess: () => {
 			showToast({
 				message: 'Success!',
 				type: 'success',
 			});
 			queryClient.invalidateQueries({
-				queryKey: [key, filter.value.stage, pagination, filter],
-			});
-
-			queryClient.invalidateQueries({
-				queryKey: [
-					key,
-					data.current_stage,
-					{
-						pageIndex: DEFAULT_PAGINATION.DEFAULT_PAGE - 1,
-						pageSize: DEFAULT_PAGINATION.DEFAULT_LIMIT,
-					},
-					{ stage: data.current_stage },
-				],
+				queryKey: [applicantKey.base],
 			});
 		},
 	});
 };
 
 export const useCreateInterview = () => {
-	const { showToast } = useCustomToast();
 	return useMutation({
 		mutationFn: async (payload: InterviewPayload) => await createInterview(payload),
-		onSuccess: () => {
-			showToast({
-				message: 'Success!',
-				type: 'success',
-			});
-		},
 	});
 };
 
@@ -91,6 +134,20 @@ export const useCompleteInterview = (
 			});
 			queryClient.invalidateQueries({
 				queryKey: [applicantKey.base, filter.value.stage, pagination, filter],
+			});
+		},
+	});
+};
+
+export const useCreateInterviewFeedback = () => {
+	const { showToast } = useCustomToast();
+	return useMutation({
+		mutationFn: async (payload: { id: string; data: InterviewerFeedbackPayload }) =>
+			await createInterviewFeedback(payload.id, payload.data),
+		onSuccess: () => {
+			showToast({
+				message: 'Success!',
+				type: 'success',
 			});
 		},
 	});
@@ -116,13 +173,7 @@ export const useCancelInterview = (
 	});
 };
 
-export const useAddParticipant = (
-	id: Ref<string | undefined>,
-	pagination: Ref<PaginationState>,
-	filter: Ref<Partial<IApplicantInterviewFilter>>,
-) => {
-	const { showToast } = useCustomToast();
-	const queryClient = useQueryClient();
+export const useAddParticipant = () => {
 	return useMutation({
 		mutationFn: async (payload: {
 			interview_id: string;
@@ -132,42 +183,12 @@ export const useAddParticipant = (
 			const { interview_id, ...data } = payload;
 			return await addParticipant(interview_id, data);
 		},
-		onSuccess: () => {
-			showToast({
-				message: 'Success!',
-				type: 'success',
-			});
-			queryClient.invalidateQueries({
-				queryKey: [applicantKey.base, id],
-			});
-			queryClient.invalidateQueries({
-				queryKey: [applicantKey.base, pagination, filter],
-			});
-		},
 	});
 };
 
-export const useRemoveParticipant = (
-	id: Ref<string | undefined>,
-	pagination: Ref<PaginationState>,
-	filter: Ref<Partial<IApplicantInterviewFilter>>,
-) => {
-	const { showToast } = useCustomToast();
-	const queryClient = useQueryClient();
+export const useRemoveParticipant = () => {
 	return useMutation({
 		mutationFn: async (payload: { interview_id: string; participant_id: string }) =>
 			await removeParticipant(payload.interview_id, payload.participant_id),
-		onSuccess: () => {
-			showToast({
-				message: 'Success!',
-				type: 'success',
-			});
-			queryClient.invalidateQueries({
-				queryKey: [applicantKey.base, id],
-			});
-			queryClient.invalidateQueries({
-				queryKey: [applicantKey.base, pagination, filter],
-			});
-		},
 	});
 };

@@ -105,7 +105,7 @@ const handleOpenSheet = (payload?: IJob, view?: boolean) => {
 	} else {
 		dataSent.value = payload;
 	}
-	isView.value = view || false;
+	isView.value = view ?? false;
 	isOpenSheet.value = true;
 };
 

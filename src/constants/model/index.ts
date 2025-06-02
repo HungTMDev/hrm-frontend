@@ -1,4 +1,4 @@
-export const INTERVIEW_INVITATION_EMAIL = `
+export const OFFLINE_INTERVIEW_INVITATION_EMAIL = `
 Gửi bạn thân mến, 
 <br/><br/>
 Qua hồ sơ ứng tuyển của bạn với vị trí <span style="font-weight: 600">{{position}}</span> chúng tôi nhận thấy bạn có những tiềm năng rất phù hợp với vị trí này. Hy vọng có thể trao đổi thêm với bạn trong một cuộc phỏng vấn trực tiếp. Đây là một bước cần thiết trong quá trình tuyển dụng để chúng tôi có thể hiểu hơn về bạn cũng như được chia sẻ với bạn nhiều hơn về câu chuyện của chúng tôi.
@@ -7,13 +7,13 @@ Sau đây là cách thức tham gia vào buổi phỏng vấn:
 <br/><br/>
 <span style="font-weight: 600">Thời gian</span>: {{interview_time}}, {{interview_date}}
 <br/><br/>
-<span style="font-weight: 600">Địa điểm</span>: {{work_location}}
+<span style="font-weight: 600">Địa điểm</span>: {{ location }}
 <br/><br/>
 <span style="font-weight: 600">Lưu ý</span>:  Ứng viên xác nhận tham gia phỏng vấn trước {{confirmation_before_time}} ngày {{confirmation_before_date}}. 
 <br/><br/>
-(Khi đến ứng viên liên hệ Admin - Ms Quỳnh - 0917.240.819 để được hướng dẫn)
+(Khi đến ứng viên liên hệ {{hr_name}} - {{phone_number}} để được hướng dẫn)
 <br/><br/>
-Mọi  thắc mắc ứng viên phản hồi trong Email hoặc liên hệ qua 0917.240.819 (Ms Quỳnh)
+Mọi  thắc mắc ứng viên phản hồi trong Email hoặc liên hệ qua {{ phone_number }} ({{hr_name}})
 <br/><br/>
 Trân trọng!
 <br/><br/>
@@ -23,7 +23,7 @@ Trân trọng!
         <tr>
             <td>
                 <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
-                    Ms. Quỳnh
+                    {{hr_name}}
                 </p>
                 <p style="font-size: 20px; font-weight: 600; margin: 4px 0px 4px 0px">
                     BỘ PHẬN NHÂN SỰ
@@ -41,14 +41,71 @@ Trân trọng!
             <td>
                 <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
                     <span><img src="" alt="" /></span>
-                    0917.240.819
+                    {{ phone_number }}
                 </p>
                 <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
-                    <span><img src="" alt="" /></span> admin@lutech.ltd
+                    <span><img src="" alt="" /></span> {{ hr_email }}
                 </p>
                 <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
-                    <span><img src="" alt="" /></span> Tầng 4, Tòa nhà Hanvico, 217-219 Lê
-                    Duẩn, Thanh Khê, Đà Nẵng
+                    <span><img src="" alt="" /></span> 
+                    {{ location }}
+                </p>
+            </td>
+        </tr>
+    </tbody>
+</table>`;
+
+export const ONLINE_INTERVIEW_INVITATION_EMAIL = `
+Gửi bạn thân mến, 
+<br/><br/>
+Qua hồ sơ ứng tuyển của bạn với vị trí <span style="font-weight: 600">{{position}}</span> chúng tôi nhận thấy bạn có những tiềm năng rất phù hợp với vị trí này. Hy vọng có thể trao đổi thêm với bạn trong một cuộc phỏng vấn trực tiếp. Đây là một bước cần thiết trong quá trình tuyển dụng để chúng tôi có thể hiểu hơn về bạn cũng như được chia sẻ với bạn nhiều hơn về câu chuyện của chúng tôi.
+<br/><br/>
+Sau đây là cách thức tham gia vào buổi phỏng vấn:
+<br/><br/>
+<span style="font-weight: 600">Thời gian</span>: {{interview_time}}, {{interview_date}}
+<br/><br/>
+<span style="font-weight: 600">Link</span>: {{ meeting_link }}
+<br/><br/>
+<span style="font-weight: 600">Lưu ý</span>:  Ứng viên xác nhận tham gia phỏng vấn trước {{confirmation_before_time}} ngày {{confirmation_before_date}}. 
+<br/><br/>
+(Khi đến ứng viên liên hệ {{hr_name}} - {{phone_number}} để được hướng dẫn)
+<br/><br/>
+Mọi  thắc mắc ứng viên phản hồi trong Email hoặc liên hệ qua {{ phone_number }} ({{hr_name}})
+<br/><br/>
+Trân trọng!
+<br/><br/>
+-------------
+<table>
+    <tbody style="color: #000">
+        <tr>
+            <td>
+                <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
+                    {{hr_name}}
+                </p>
+                <p style="font-size: 20px; font-weight: 600; margin: 4px 0px 4px 0px">
+                    BỘ PHẬN NHÂN SỰ
+                </p>
+                <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
+                    Lutech.ltd
+                </p>
+            </td>
+            <td style="border-right: solid 1px #000">
+                <span style="display: block; width: 20px"></span>
+            </td>
+            <td>
+                <span style="display: block; width: 20px"></span>
+            </td>
+            <td>
+                <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
+                    <span><img src="" alt="" /></span>
+                    {{ phone_number }}
+                </p>
+                <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
+                    <span><img src="" alt="" /></span> {{ hr_email }}
+                </p>
+                <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
+                    <span><img src="" alt="" /></span> 
+                    {{ location }}
                 </p>
             </td>
         </tr>

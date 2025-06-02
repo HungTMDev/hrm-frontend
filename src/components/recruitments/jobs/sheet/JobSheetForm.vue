@@ -148,7 +148,6 @@ watch(
 					:list="listRecruitmentRequest"
 					:model-value="data?.requisition_id"
 					:icon="ChartSqare"
-					:required="true"
 					list-size="md"
 					placeholder="Select requisition" />
 
@@ -227,10 +226,9 @@ watch(
 
 				<FormCalendar
 					name="due_date"
-					label="Expected closing date"
-					:required="true"
+					label="Due date"
 					:icon="Calendar"
-					:model-value="data?.due_date"
+					:model-value="data?.due_date ?? undefined"
 					class="w-full"
 					placeholder="dd/MM/yyyy" />
 

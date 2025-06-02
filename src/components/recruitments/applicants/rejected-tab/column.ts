@@ -8,34 +8,35 @@ import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
 
 export const rejectedColumn = (): ColumnDef<IApplicant>[] => [
-	{
-		id: 'select',
-		header: ({ table }) =>
-			h(
-				Checkbox,
-				{
-					modelValue:
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate'),
-					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
-				},
-				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
-			),
-		cell: ({ row }) =>
-			h(Checkbox, {
-				onClick: (event: any) => event.stopPropagation(),
-				modelValue: row.getIsSelected(),
-				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-				ariaLabel: 'Select row',
-				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-			}),
-		enableSorting: false,
-		enableHiding: false,
-	},
+	// {
+	// 	id: 'select',
+	// 	header: ({ table }) =>
+	// 		h(
+	// 			Checkbox,
+	// 			{
+	// 				modelValue:
+	// 					table.getIsAllPageRowsSelected() ||
+	// 					(table.getIsSomePageRowsSelected() && 'indeterminate'),
+	// 				'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
+	// 				ariaLabel: 'Select all',
+	// 				class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
+	// 			},
+	// 			() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
+	// 		),
+	// 	cell: ({ row }) =>
+	// 		h(Checkbox, {
+	// 			onClick: (event: any) => event.stopPropagation(),
+	// 			modelValue: row.getIsSelected(),
+	// 			'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+	// 			ariaLabel: 'Select row',
+	// 			class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+	// 		}),
+	// 	enableSorting: false,
+	// 	enableHiding: false,
+	// },
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -61,15 +62,18 @@ export const rejectedColumn = (): ColumnDef<IApplicant>[] => [
 	},
 	{
 		accessorKey: 'cv',
-		header: 'CV',
+		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
 		cell: ({ row }) => {
+			if (row.original.resume_url === 'REFER') {
+				return '';
+			}
 			return h(
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
 					href: row.original.resume_url,
 					target: '_blank',
-					class: 'text-blue-500 p-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center',
+					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},
 				[h(IconFromSvg, { icon: File }), 'CV'],
 			);
@@ -77,30 +81,40 @@ export const rejectedColumn = (): ColumnDef<IApplicant>[] => [
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'status',
-		header: 'Status',
-		cell: ({ row }) => row.original.application_status,
+		accessorKey: 'updated_at',
+		header: 'Last update',
+		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.updated_at).date,
 	},
 	{
-		accessorKey: 'action',
-		header: 'Action',
-		cell: ({ row }) => {
-			const actions: IActionGroupType[] = [
-				{
-					label: 'View',
-					icon: Eye,
-					style: '',
-				},
-				{
-					label: 'Send email',
-					icon: Letter,
-					style: '',
-				},
-			];
-
-			return h(ActionGroupCommon, {
-				actions,
-			});
-		},
+		accessorKey: 'created_at',
+		header: 'Created at',
+		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.created_at).date,
 	},
+	// {
+	// 	accessorKey: 'status',
+	// 	header: 'Status',
+	// 	cell: ({ row }) => row.original.application_status,
+	// },
+	// {
+	// 	accessorKey: 'action',
+	// 	header: 'Action',
+	// 	cell: ({ row }) => {
+	// 		const actions: IActionGroupType[] = [
+	// 			{
+	// 				label: 'View',
+	// 				icon: Eye,
+	// 				style: '',
+	// 			},
+	// 			{
+	// 				label: 'Send email',
+	// 				icon: Letter,
+	// 				style: '',
+	// 			},
+	// 		];
+
+	// 		return h(ActionGroupCommon, {
+	// 			actions,
+	// 		});
+	// 	},
+	// },
 ];

@@ -1,10 +1,10 @@
+import { DATA_TIME } from '@/constants';
+import { getJob } from '@/services/recruitment/job';
+import type { IJob, IJobFilter } from '@/types';
+import { useQuery } from '@tanstack/vue-query';
 import type { PaginationState } from '@tanstack/vue-table';
 import type { Ref } from 'vue';
 import { jobKey } from './key';
-import type { IJob, IJobFilter } from '@/types';
-import { useQuery } from '@tanstack/vue-query';
-import { getJob } from '@/services/recruitment/job';
-import { DATA_TIME } from '@/constants';
 
 export const useJob = (pagination: Ref<PaginationState>, filter: Ref<Partial<IJobFilter>>) => {
 	return useQuery({

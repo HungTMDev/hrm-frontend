@@ -19,6 +19,7 @@ export const formatCurrency = (amount: number) => {
 };
 
 export const createISOStringFromDayAndTime = (dateStr: string, timeStr: string) => {
+	if (dateStr === '' || timeStr === '') return '';
 	const dateTimeStr = `${dateStr}T${timeStr}`;
 
 	const dateObj = new Date(dateTimeStr);
@@ -173,7 +174,6 @@ export const parseDateTime = (dateString?: string) => {
 export const convertEnumToComboboxType = (payload: object) => {
 	return Object.values(payload).map((value) => ({
 		label: formatStatus(value),
-		label: formatStatus(value),
 		value,
 	}));
 };
@@ -244,4 +244,16 @@ export const formatStatus = (status: string): string => {
 		.split('_')
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ');
+};
+
+export const createNameByGender = (name: string, gender: string) => {
+	if (gender === '' || gender === '') {
+		return '';
+	}
+
+	if (gender === 'FEMALE') {
+		return `Ms ${name}`;
+	}
+
+	return `Mr ${name}`;
 };

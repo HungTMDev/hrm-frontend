@@ -10,7 +10,7 @@ export const axiosConfig = {
 	key: {
 		accessToken: 'access_token',
 		refreshToken: 'refresh_token',
-		account: 'user',
+		account: 'account',
 	},
 	retryStatusCodes: [401],
 };

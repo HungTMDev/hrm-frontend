@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import type { ComboboxType } from '@/types';
-import { type HTMLAttributes } from 'vue';
+import { onMounted, ref, type HTMLAttributes } from 'vue';
 import SelectTriggerCustom from '../custom/SelectTriggerCustom.vue';
 import IconFromSvg from './IconFromSvg.vue';
 
@@ -29,9 +29,16 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', payload: string | number | string[] | number[]): void;
 }>();
 
+const selectedValue = ref<any>();
+
 const handleSelect = (value: any) => {
+	selectedValue.value = value;
 	emit('update:modelValue', value);
 };
+
+onMounted(() => {
+	selectedValue.value = props.modelValue;
+});
 </script>
 
 <template>
@@ -51,7 +58,9 @@ const handleSelect = (value: any) => {
 			<span class="absolute left-3 text-gray-200">
 				<IconFromSvg :icon="icon" />
 			</span>
-			<SelectValue :placeholder="placeholder ?? 'Select...'" />
+			<SelectValue
+				:placeholder="placeholder ?? 'Select...'"
+				:class="cn('text-gray-200', selectedValue && 'text-black')" />
 		</SelectTriggerCustom>
 		<SelectContent
 			align="center"

@@ -53,7 +53,6 @@ export const deleteJob = async (id: string) => {
 };
 
 export const uploadApplicantForJob = async (job_id: string, file: File) => {
-	console.log(job_id, file);
 	const formData = new FormData();
 	formData.append('file', file);
 

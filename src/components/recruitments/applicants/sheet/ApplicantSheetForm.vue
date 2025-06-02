@@ -28,9 +28,10 @@ import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { applicantSchema } from '../applicant.schema';
+import type { IApplicant } from '@/types';
 
 defineProps<{
-	data: any;
+	data?: IApplicant;
 }>();
 
 const formSchema = toTypedSchema(applicantSchema);

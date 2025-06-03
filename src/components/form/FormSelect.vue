@@ -28,17 +28,20 @@ onUpdated(() => {
 });
 </script>
 <template>
-	<FormField v-slot="{ componentField, errors }" :name="name">
+	<FormField :model-value="modelValue" v-slot="{ componentField, errors }" :name="name">
 		<FormItem class="flex flex-col">
-			<FormLabel class="text-slate-600"
-				>{{ label }} <span v-if="!required">(optional)</span></FormLabel
-			>
+			<FormLabel class="text-slate-600">
+				{{ label }}
+				<span v-if="!required" class="text-slate-400 font-light"> (optional) </span>
+			</FormLabel>
 			<CommonSelect
 				:icon="icon"
 				:list="list"
 				:multiple="multiple"
 				:model-value="componentField.modelValue"
+				:placeholder="placeholder"
 				:class="cn(props.class, errors.length > 0 && 'border-destructive')"
+				:place-holder="placeholder"
 				@update:model-value="componentField.onChange" />
 			<FormErrorCustom />
 		</FormItem>

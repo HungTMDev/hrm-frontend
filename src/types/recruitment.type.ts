@@ -1,16 +1,6 @@
 import type { EmploymentType, JobLevel, JobStatus } from '@/constants';
 import type { IBaseResponse, IBranch, IDepartment, IPosition, IUser } from '.';
 
-export interface Applicant {
-	name: string;
-	email: string;
-	phone: string;
-	cv: string;
-	job: string;
-	stage: string;
-	status?: string;
-}
-
 export interface IRecruitmentRequest extends IBaseResponse {
 	branch_id: string;
 	branch_name: string;
@@ -60,7 +50,7 @@ export interface IJob extends IBaseResponse {
 	status: JobStatus;
 	quantity: number;
 	due_date: string;
-	applicationCount: number;
+	application_count: number;
 	title: string;
 	description: string;
 	requirements: string;
@@ -139,6 +129,7 @@ export interface IApplicantInterview extends IBaseResponse {
 	status: string;
 	participants: IUser[];
 	candidate: ICandidate;
+	score: number | null;
 }
 
 export interface ICandidate extends IBaseResponse {
@@ -209,4 +200,17 @@ export interface IApplicantInterviewFilter {
 	to_date?: string;
 	department_id?: string[];
 	branch_id?: string[];
+	stage?: string;
+}
+
+export interface IInterviewFeedback extends IBaseResponse {
+	interview_id: string;
+	interviewer_id: string;
+	score: number;
+	strengths: string;
+	weaknesses: string;
+	comments: string;
+	recommendation: string;
+	submitted_at: string;
+	interviewer: IUser;
 }

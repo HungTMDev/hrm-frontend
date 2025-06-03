@@ -11,6 +11,7 @@ import FormErrorCustom from './FormErrorCustom.vue';
 interface Prop extends Omit<FormFieldCommon, 'modelValue' | 'defaultValue'> {
 	modelValue?: string[];
 	defaultValue?: string[];
+	type?: 'ordered' | 'bullet';
 }
 
 const props = defineProps<Prop>();
@@ -27,9 +28,17 @@ const modelValue = useVModel(props, 'modelValue', emits, {
 <template>
 	<FormField :model-value="modelValue" v-slot="{ componentField }" :name="name">
 		<FormItem>
-			<FormLabel>{{ label }} <span v-if="!required">(optional)</span></FormLabel>
+			<FormLabel
+				>{{ label }}
+				<span v-if="!required" class="text-slate-400 font-light"
+					>(optional)</span
+				></FormLabel
+			>
 			<FormControl>
-				<QuillEditor v-bind="componentField" :placeholder="placeholder || ''" />
+				<QuillEditor
+					v-bind="componentField"
+					:placeholder="placeholder || ''"
+					:type="type" />
 			</FormControl>
 			<FormErrorCustom />
 		</FormItem>

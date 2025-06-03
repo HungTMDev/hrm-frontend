@@ -77,10 +77,12 @@ const listPosition = computed(
 );
 const listRecruitmentRequest = computed(() => {
 	return (
-		recruitmentRequests.value?.data?.map((item) => ({
-			label: item.title,
-			value: item.id,
-		})) || []
+		recruitmentRequests.value?.data
+			?.filter((item) => item.status === 'APPROVED')
+			.map((item) => ({
+				label: item.title,
+				value: item.id,
+			})) || []
 	);
 });
 const requisitionSelected = ref<IRecruitmentRequest>();
@@ -146,7 +148,6 @@ watch(
 					:list="listRecruitmentRequest"
 					:model-value="data?.requisition_id"
 					:icon="ChartSqare"
-					:required="true"
 					list-size="md"
 					placeholder="Select requisition" />
 
@@ -225,16 +226,16 @@ watch(
 
 				<FormCalendar
 					name="due_date"
-					label="Expected closing date"
-					:required="true"
+					label="Due date"
 					:icon="Calendar"
-					:model-value="data?.due_date"
+					:model-value="data?.due_date ?? undefined"
 					class="w-full"
 					placeholder="dd/MM/yyyy" />
 
 				<FormInput
 					name="location"
 					label="Location"
+					:required="true"
 					class="w-full"
 					:icon="CheckList"
 					placeholder="Enter location" />
@@ -288,6 +289,7 @@ watch(
 				<FormTextarea
 					label="Description"
 					name="description"
+					:required="true"
 					:model-value="requisitionSelected?.description ?? data?.description"
 					placeholder="A detailed job description"
 					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
@@ -295,13 +297,17 @@ watch(
 				<FormTextarea
 					label="Requirements"
 					name="requirements"
+					:required="true"
 					:model-value="data?.requirements"
 					placeholder="Essential skills needed for the job"
 					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
 			</div>
 		</form>
 	</ScrollArea>
-	<div class="text-end mt-4">
+	<div class="flex justify-end gap-2 mt-4">
+		<CallApiButton variant="outline" class="h-auto py-3.5 px-4 rounded-2xl"
+			>Save as draft</CallApiButton
+		>
 		<CallApiButton
 			:isLoading="isPendingCreate || isPendingUpdate"
 			form="form"

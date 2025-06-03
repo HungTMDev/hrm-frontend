@@ -14,26 +14,35 @@ defineProps<{
 	filter: Partial<IRecruitmentRequestFilter>;
 }>();
 
-const emit = defineEmits<{
+const emits = defineEmits<{
 	(e: 'update:open', payload: boolean): void;
-	(e: 'openDialog', payload: boolean): void;
+	(e: 'openDialog'): void;
+	(e: 'edit'): void;
+	(e: 'approve', id: string): void;
+	(e: 'recall'): void;
 }>();
 
 const handleOpen = (isOpen: boolean) => {
-	emit('update:open', isOpen);
+	emits('update:open', isOpen);
 };
 </script>
 
 <template>
 	<Sheet :open="open" @update:open="handleOpen">
 		<SheetContentCustom class="rounded-l-3xl sm:max-w-[880px] p-8 flex flex-col text-slate-600">
-			<RecruitmentRequestSheetView v-if="isView" :data="data" />
+			<RecruitmentRequestSheetView
+				v-if="isView"
+				:data="data"
+				@edit="emits('edit')"
+				@open-dialog="emits('openDialog')"
+				@approve="(id) => emits('approve', id)"
+				@recall="emits('recall')" />
 			<RecruitmentRequestSheetForm
 				v-else
 				:data="data"
 				:pagination="pagination"
 				:filter="filter"
-				@update:open="(open) => emit('update:open', open)" />
+				@update:open="(open) => emits('update:open', open)" />
 		</SheetContentCustom>
 	</Sheet>
 </template>

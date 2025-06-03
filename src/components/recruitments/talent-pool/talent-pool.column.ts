@@ -5,8 +5,10 @@ import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import File from '@/assets/icons/Outline/File.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
 import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 
 export const talentPoolColumns = (
 	handleOpenSheet: (payload?: ICandidate, view?: boolean) => void,
@@ -60,6 +62,24 @@ export const talentPoolColumns = (
 		header: 'Phone',
 		cell: ({ row }) => row.original.phone_number,
 	},
+	{
+		accessorKey: 'cv',
+		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
+		cell: ({ row }) => {
+			if (row.original.resume_url === 'REFER') return '';
+			return h(
+				'a',
+				{
+					onClick: (event: any) => event.stopPropagation(),
+					href: row.original.resume_url,
+					target: '_blank',
+					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
+				},
+				[h(IconFromSvg, { icon: File }), 'CV'],
+			);
+		},
+		enableHiding: false,
+	},
 	// {
 	// 	accessorKey: 'job',
 	// 	header: 'Job',
@@ -71,8 +91,13 @@ export const talentPoolColumns = (
 	// 	cell: ({ row }) => '',
 	// },
 	{
-		accessorKey: 'last_modified',
-		header: 'Last Modified',
+		accessorKey: 'created_by',
+		header: 'Create by',
+		cell: ({ row }) => row.original.created_by_user.name,
+	},
+	{
+		accessorKey: 'updated_at',
+		header: 'Last update',
 		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.updated_at).date,
 	},
 	{

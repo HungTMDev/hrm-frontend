@@ -11,7 +11,7 @@ export const recruitmentRequestSchema = z.object({
 		.number()
 		.min(1, 'Quantity must be at least 1')
 		.max(1000, 'Quantity is too high'),
-	justification: z.string().min(1, 'This field is required'),
+	justification: z.string(),
 	expected_start_date: z.string(),
 	description: z.string(),
 	skills_required: z.array(z.string()),

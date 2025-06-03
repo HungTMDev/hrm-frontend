@@ -26,13 +26,13 @@ export const thanksEmailSchema = z.object({
 	recipient: z.string(),
 });
 
-export const candidateSchema = z.object({
+export const addApplicantSchema = z.object({
 	full_name: z.string().min(1, 'This field is required'),
 	email: ZUtils.email(),
 	phone_number: ZUtils.phoneNumber(),
 	avatar: z.string().optional(),
 	gender: z.string().optional(),
-	date_of_birth: z.string(),
+	date_of_birth: z.string().optional(),
 	job_id: z.string(),
 	applied_at: z.string(),
 	expected_salary: z.number(),
@@ -42,3 +42,5 @@ export const candidateSchema = z.object({
 	resume_url: z.string().default('REFER'),
 	referred_by: z.string().optional(),
 });
+
+export type AddApplicantPayload = z.infer<typeof addApplicantSchema>;

@@ -5,6 +5,7 @@ import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
 import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
 import CheckList from '@/assets/icons/Outline/Checklist Minimalistic.svg';
+import UserCircle from '@/assets/icons/Outline/User Circle.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormCombobox from '@/components/form/FormCombobox.vue';
@@ -26,6 +27,7 @@ import { usePosition } from '@/composables/position/usePosition';
 import {
 	useCreateRecruitmentRequest,
 	useEditRecruitmentRequest,
+	useSubmitRecruitmentRequest,
 } from '@/composables/recruitment/recruitment-request/useUpdateRecruitmentRequest';
 import { listEmploymentType, listJobLevel } from '@/constants';
 import type { IRecruitmentRequest, IRecruitmentRequestFilter } from '@/types';
@@ -33,11 +35,19 @@ import type { PaginationState } from '@tanstack/vue-table';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { computed } from 'vue';
-import { recruitmentRequestSchema } from '../recruitment-request.schema';
+import {
+	recruitmentRequestSchema,
+	type RecruitmentRequestPayload,
+} from '../recruitment-request.schema';
+import { recruitmentRequestKey } from '@/composables/recruitment/recruitment-request/key';
+import { useQueryClient } from '@tanstack/vue-query';
+import { useCustomToast } from '@/lib/customToast';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
 const { data: positions } = usePosition();
+const queryClient = useQueryClient();
+const { showToast } = useCustomToast();
 
 const props = defineProps<{
 	data?: IRecruitmentRequest;
@@ -71,25 +81,79 @@ const pagination = computed(() => props.pagination);
 
 const formSchema = toTypedSchema(recruitmentRequestSchema);
 
-const { handleSubmit } = useForm({
+const { handleSubmit, values } = useForm({
 	validationSchema: formSchema,
 });
 
 const { mutateAsync: createRecruitmentRequest, isPending: isLoadingCreate } =
-	useCreateRecruitmentRequest(pagination, filter);
-const { mutateAsync: editRecruitmentRequest, isPending: isLoadingEdit } = useEditRecruitmentRequest(
-	pagination,
-	filter,
-);
+	useCreateRecruitmentRequest();
+const { mutateAsync: editRecruitmentRequest, isPending: isLoadingEdit } =
+	useEditRecruitmentRequest();
+const { mutate: submitRecruitmentRequest } = useSubmitRecruitmentRequest(pagination, filter);
 
 const onSubmit = handleSubmit(async (values) => {
-	const res = props.data
-		? await editRecruitmentRequest({ id: props.data.id, data: values })
-		: await createRecruitmentRequest(values);
-	if ([200, 201].includes(res.status_code)) {
-		emits('update:open', false);
-	}
+	props.data
+		? await editRecruitmentRequest(
+				{ id: props.data.id, data: values },
+				{
+					onSuccess: (data) => {
+						submitRecruitmentRequest(data.id);
+						emits('update:open', false);
+					},
+				},
+			)
+		: await createRecruitmentRequest(values, {
+				onSuccess: (data) => {
+					submitRecruitmentRequest(data.id);
+					emits('update:open', false);
+				},
+			});
 });
+
+const handleCreateDraft = async () => {
+	const payload: RecruitmentRequestPayload = {
+		branch_id: values.branch_id || '',
+		department_id: values.department_id || '',
+		job_title_id: values.job_title_id || '',
+		level: values.level || '',
+		employment_type: values.employment_type || '',
+		title: values.title || '',
+		description: values.description || '',
+		skills_required: values.skills_required || [],
+		expected_start_date: values.expected_start_date || '',
+		justification: values.justification || '',
+		quantity: values.quantity || 0,
+	};
+
+	props.data
+		? await editRecruitmentRequest(
+				{ id: props.data.id, data: payload },
+				{
+					onSuccess: () => {
+						queryClient.invalidateQueries({
+							queryKey: [recruitmentRequestKey.base, pagination, filter],
+						});
+						showToast({
+							message: 'Success!',
+							type: 'success',
+						});
+						emits('update:open', false);
+					},
+				},
+			)
+		: await createRecruitmentRequest(payload, {
+				onSuccess: () => {
+					queryClient.invalidateQueries({
+						queryKey: [recruitmentRequestKey.base, pagination, filter],
+					});
+					showToast({
+						message: 'Success!',
+						type: 'success',
+					});
+					emits('update:open', false);
+				},
+			});
+};
 </script>
 <template>
 	<ScrollArea class="flex-1 pr-3">
@@ -100,7 +164,7 @@ const onSubmit = handleSubmit(async (values) => {
 						<Input
 							v-bind="componentField"
 							class="focus-visible:ring-0 focus-visible:ring-offset-0 border-none text-[28px] text-black px-0 placeholder:text-gray-200 font-semibold p-2"
-							placeholder="Title" />
+							placeholder="Add new recruitment request" />
 					</FormControl>
 					<FormDescription />
 					<FormErrorCustom />
@@ -133,11 +197,11 @@ const onSubmit = handleSubmit(async (values) => {
 					placeholder="Select department" />
 				<FormCombobox
 					name="job_title_id"
-					label="Job title"
+					label="Role"
 					list-size="md"
 					:list="listPosition"
 					:required="true"
-					:icon="Building"
+					:icon="UserCircle"
 					:modelValue="data?.job_title_id"
 					placeholder="Select department" />
 				<FormCombobox
@@ -169,12 +233,12 @@ const onSubmit = handleSubmit(async (values) => {
 					placeholder="Enter quantity" />
 				<FormInput
 					name="justification"
-					label="Justification"
+					label="Reason"
 					class="w-full"
-					:icon="CheckList"
 					:required="true"
+					:icon="CheckList"
 					:modelValue="data?.justification"
-					placeholder="Enter justification" />
+					placeholder="Enter reason" />
 				<FormCalendar
 					name="expected_start_date"
 					label="Expected start date"
@@ -199,12 +263,19 @@ const onSubmit = handleSubmit(async (values) => {
 			</div>
 		</form>
 	</ScrollArea>
-	<div class="text-end mt-4">
+	<div class="flex justify-end gap-2 mt-4">
+		<CallApiButton
+			variant="outline"
+			class="h-auto py-3.5 px-6 rounded-2xl"
+			:is-loading="isLoadingCreate || isLoadingEdit"
+			@click="handleCreateDraft"
+			>Save as draft</CallApiButton
+		>
 		<CallApiButton
 			form="form"
-			class="bg-blue-500 hover:bg-blue-600 rounded-2xl h-auto py-3.5 px-10 text-white"
+			class="bg-blue-500 hover:bg-blue-600 rounded-2xl h-auto py-3.5 px-8 text-white"
 			:is-loading="isLoadingCreate || isLoadingEdit">
-			Submit
+			Create
 		</CallApiButton>
 	</div>
 </template>

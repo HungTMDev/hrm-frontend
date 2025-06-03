@@ -21,7 +21,7 @@ import Separator from '@/components/ui/separator/Separator.vue';
 import { useBranch } from '@/composables/branch/useBranch';
 import { useDepartment } from '@/composables/department/useDepartment';
 import { useJob } from '@/composables/recruitment/job/useJob';
-import { useDeleteJob } from '@/composables/recruitment/job/useUpdateJob';
+import { useDeleteJob, useUpdateJobStatus } from '@/composables/recruitment/job/useUpdateJob';
 import { DEFAULT_PAGINATION, listEmploymentType, listJobLevel, listJobStatus } from '@/constants';
 import { valueUpdater } from '@/lib/utils';
 import router from '@/routers';
@@ -64,6 +64,10 @@ const pagination = computed<PaginationState>(() => ({
 
 const { data, isLoading } = useJob(pagination, filterPayload);
 const { mutate: deleteJob, isPending } = useDeleteJob(pagination, filterPayload);
+const { mutate: updateStatus, isPending: isUpdatingStatus } = useUpdateJobStatus(
+	pagination,
+	filterPayload,
+);
 
 const jobs = computed<IJob[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -101,8 +105,15 @@ const handleOpenSheet = (payload?: IJob, view?: boolean) => {
 	} else {
 		dataSent.value = payload;
 	}
-	isView.value = view || false;
+	isView.value = view ?? false;
 	isOpenSheet.value = true;
+};
+
+const handleUpdateStatus = (id: string, status: string) => {
+	updateStatus({
+		id,
+		status,
+	});
 };
 
 const table = useVueTable({
@@ -115,7 +126,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: jobColumn(handleOpenSheet, handleOpenAlert),
+	columns: jobColumn(handleOpenSheet, handleOpenAlert, handleUpdateStatus),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -188,6 +199,9 @@ const handleFilter = (payload: FilterData[]) => {
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
+
+	pageIndex.value = 0;
+
 	filterPayload.value = newFilter;
 };
 
@@ -288,6 +302,7 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 	<AlertPopup
 		:open="isOpenAlert"
 		:is-loading="isPending"
+		:description="dataSent?.title"
 		@update:open="handleCloseAlert"
 		@confirm="handleDelete" />
 </template>

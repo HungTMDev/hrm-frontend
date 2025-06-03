@@ -15,6 +15,7 @@ defineProps<{
 	open: boolean;
 	title?: string;
 	description?: string;
+	buttonLabel?: string;
 	isLoading?: boolean;
 }>();
 
@@ -40,11 +41,11 @@ const handleConfirm = () => {
 			</div>
 			<AlertDialogHeader class="flex flex-col gap-1 items-center">
 				<AlertDialogTitle class="text-base text-center">{{
-					title ? title : 'Are you sure you want to delete?'
+					title ?? 'Are you sure you want to delete?'
 				}}</AlertDialogTitle>
 				<AlertDialogDescription class="text-sm text-slate-600">
-					{{ description || '' }}</AlertDialogDescription
-				>
+					"{{ description ?? '' }}"
+				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<AlertDialogFooter class="w-full flex mt-4">
 				<AlertDialogCancel
@@ -56,7 +57,7 @@ const handleConfirm = () => {
 					:is-loading="isLoading"
 					class="w-full rounded-2xl h-auto p-3 bg-red-500 hover:bg-red-600 text-white"
 					@click="handleConfirm"
-					>Delete</CallApiButton
+					>{{ buttonLabel ?? 'Delete' }}</CallApiButton
 				>
 			</AlertDialogFooter>
 		</AlertDialogContent>

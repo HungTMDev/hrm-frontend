@@ -8,4 +8,5 @@ export enum RECRUITMENT_REQUEST_API {
 	APPROVE = '/requisitions/%s/approve',
 	REJECT = '/requisitions/%s/reject',
 	SUBMIT = '/requisitions/%s/submit',
+	RECALL = '/requisitions/%s/draft',
 }

@@ -18,7 +18,12 @@ const props = defineProps<Prop>();
 <template>
 	<FormField :model-value="modelValue" v-slot="{ componentField, errors }" :name="name">
 		<FormItem class="flex flex-col">
-			<FormLabel>{{ label }} <span v-if="!required">(optional)</span></FormLabel>
+			<FormLabel
+				>{{ label }}
+				<span v-if="!required" class="text-slate-400 font-light"
+					>(optional)</span
+				></FormLabel
+			>
 			<CommonCombobox
 				:is-form="true"
 				:is-search="isSearch"

@@ -31,6 +31,8 @@ import { computed, ref } from 'vue';
 import CandidateSheet from '../CandidateSheet.vue';
 import { screeningColumn } from '../columns';
 import PassedTabDialog from './PassedTabDialog.vue';
+import AlertPopup from '@/components/common/AlertPopup.vue';
+import { useUpdateStage } from '@/composables/recruitment/applicant/useUpdateApplicant';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
@@ -40,6 +42,7 @@ const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 
 const isOpenDialog = ref(false);
+const isOpenAlert = ref(false);
 const isOpenSheet = ref(false);
 const isView = ref(false);
 const dataSent = ref<IApplicant>();
@@ -97,6 +100,8 @@ const accordionItems = computed<FilterAccordion[]>(() => [
 	},
 ]);
 
+const { mutate: updateStage, isPending: isRejecting } = useUpdateStage();
+
 const setPageSize = (newSize: number) => (pageSize.value = newSize);
 const setPageIndex = (newIndex: number) => (pageIndex.value = newIndex);
 
@@ -107,7 +112,10 @@ const setPagination = ({ pageIndex, pageSize }: PaginationState): PaginationStat
 	return { pageIndex, pageSize };
 };
 
-const handleOpenAlert = () => {};
+const handleOpenAlert = (payload: IApplicant) => {
+	dataSent.value = payload;
+	isOpenAlert.value = true;
+};
 
 const handleOpenSheet = (payload?: IApplicant, view?: boolean) => {
 	if (payload instanceof PointerEvent) {
@@ -171,7 +179,24 @@ const handleFilter = (payload: FilterData[]) => {
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
+
+	pageIndex.value = 0;
 	filter.value = newFilter;
+};
+
+const handleReject = () => {
+	updateStage(
+		{
+			id: dataSent.value?.id || '',
+			data: { to_stage: RECRUITMENT_STAGE.REJECTED, outcome: 'FAILED' },
+		},
+		{
+			onSuccess: () => {
+				isOpenAlert.value = false;
+				dataSent.value = undefined;
+			},
+		},
+	);
 };
 
 const handleCloseDialog = (open: boolean) => {
@@ -183,6 +208,11 @@ const handleCloseSheet = (open: boolean) => {
 	dataSent.value = undefined;
 	isOpenSheet.value = open;
 };
+
+const handleCloseAlert = (open: boolean) => {
+	dataSent.value = undefined;
+	isOpenAlert.value = open;
+};
 </script>
 <template>
 	<div>
@@ -190,7 +220,7 @@ const handleCloseSheet = (open: boolean) => {
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search applicant"
+				placeholder="Search..."
 				@update:model-value="handleSearch" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
@@ -207,13 +237,20 @@ const handleCloseSheet = (open: boolean) => {
 	<CandidateSheet
 		:open="isOpenSheet"
 		:is-view="isView"
+		:data="dataSent"
+		:pagination="pagination"
+		:filter="filterPayload"
+		@back="isView = true"
 		@edit="isView = false"
 		@update:open="handleCloseSheet"
 		@open-dialog="handleOpenDialog" />
-	<PassedTabDialog
-		:open="isOpenDialog"
-		:id="dataSent?.id"
-		:filters="filterPayload"
-		:pagination="pagination"
-		@update:open="handleCloseDialog" />
+	<PassedTabDialog :open="isOpenDialog" :id="dataSent?.id" @update:open="handleCloseDialog" />
+	<AlertPopup
+		:open="isOpenAlert"
+		:description="dataSent?.candidate.full_name"
+		:is-loading="isRejecting"
+		button-label="Reject"
+		title="Are you sure reject this candidate?"
+		@update:open="handleCloseAlert"
+		@confirm="handleReject" />
 </template>

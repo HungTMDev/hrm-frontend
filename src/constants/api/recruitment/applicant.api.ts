@@ -3,6 +3,7 @@ export enum APPLICANT_API {
 	BY_ID = '/applications/%s',
 	UPDATE_STATUS = '/applications/%s/status',
 	UPDATE_STAGE = '/applications/%s/stage',
+	APPLICANT_INTERVIEW = '/applications/%s/interviews',
 }
 
 export enum CANDIDATE_API {
@@ -22,4 +23,6 @@ export enum INTERVIEW_API {
 	COMPLETE = '/interviews/%s/complete',
 	PARTICIPANTS = '/interviews/%s/participants',
 	DELETE_PARTICIPANT = '/interviews/%s/participants/%s',
+	FEEDBACK = '/interviews/%s/feedback',
+	HANDLE_FEEDBACK = '/interviews-feedback/%s',
 }

@@ -112,12 +112,9 @@ const handleEdit = () => {
 				<div>
 					<Title class="text-base font-semibold text-black">Candidate profile</Title>
 					<div class="grid grid-cols-2 gap-x-6 gap-y-4 mt-4">
-						<InformationItem :icon="Chart2" label="Level" value="Junior" />
-						<InformationItem
-							:icon="Ranking"
-							label="Work experience"
-							value="More than 1 year" />
-						<InformationItem :icon="FileText" label="Attachments" value="Đà Nẵng" />
+						<InformationItem :icon="Chart2" label="Level" />
+						<InformationItem :icon="Ranking" label="Work experience" />
+						<InformationItem :icon="FileText" label="Attachments" />
 					</div>
 				</div>
 
@@ -134,13 +131,7 @@ const handleEdit = () => {
 							</div>
 						</div>
 						<p class="text-black mt-2">
-							The candidate exhibits a keen eye for design and a solid grasp of
-							graphic design principles. Their portfolio showcases a variety of
-							creative projects, demonstrating proficiency in tools like Adobe
-							Illustrator and Photoshop. They have experience collaborating with
-							clients to bring their visions to life, which is essential for our team.
-							Overall, they seem to be a strong contender for the Graphic Designer
-							position.
+							{{ data?.notes }}
 						</p>
 					</div>
 				</div>

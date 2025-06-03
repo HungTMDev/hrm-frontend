@@ -1,6 +1,6 @@
 import { AUTH_API } from '@/constants/api/auth.api';
 import axiosClient from '@/plugins';
-import type { IApiResponseV1, ITokenResponse } from '@/types';
+import type { IApiResponseV1, ITokenResponse, IUser } from '@/types';
 
 export const login = async (payload: { email: string; password: string }) => {
 	const { data, status } = await axiosClient.post<IApiResponseV1<ITokenResponse>>(
@@ -22,4 +22,14 @@ export const logout = async () => {
 	}
 
 	return;
+};
+
+export const getUser = async () => {
+	const { data, status } = await axiosClient.get<IApiResponseV1<IUser>>(AUTH_API.ME);
+
+	if (status >= 400) {
+		throw new Error();
+	}
+
+	return data.data;
 };

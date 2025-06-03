@@ -28,8 +28,8 @@ const hasActiveChild = computed(() => {
 				<RouterLink
 					v-slot="{ isActive }"
 					:to="route.path"
-					class="flex gap-2 p-3 items-center rounded-r-xl text-sm font-medium"
-					active-class="bg-blue-50 text-blue-500 relative before:content-[''] before:absolute before:left-0 before:top-0 before:w-[3px] before:h-full before:bg-blue-500">
+					class="flex gap-2 p-3 items-center rounded-r-xl text-sm font-medium text-slate-600"
+					active-class="bg-blue-50 !text-blue-500 relative before:content-[''] before:absolute before:left-0 before:top-0 before:w-[3px] before:h-full before:bg-blue-500">
 					<component v-if="!isActive" :is="route.icon" fill="currentColor" />
 					<component v-else :is="route.activeIcon" fill="currentColor" />
 					<span v-if="isSmall">{{ route.name }}</span>
@@ -53,7 +53,7 @@ const hasActiveChild = computed(() => {
 					<TooltipTrigger as-child>
 						<AccordionTriggerCustom
 							:is-small="isSmall"
-							class="p-3 justify-start gap-2 hover:no-underline rounded-r-xl"
+							class="p-3 justify-start gap-2 hover:no-underline rounded-r-xl text-slate-600"
 							:class="
 								hasActiveChild &&
 								`relative bg-blue-50 text-blue-500 before:content-[''] before:absolute before:left-0 before:top-0 before:w-[3px] before:h-full before:bg-blue-500`
@@ -78,7 +78,7 @@ const hasActiveChild = computed(() => {
 							:key="item.id"
 							v-slot="{ isActive }"
 							:to="item.path"
-							class="flex gap-4 p-3 items-center rounded-xl text-sm font-medium hover:bg-slate-50 group">
+							class="flex gap-4 p-3 items-center rounded-xl text-sm font-medium hover:bg-slate-50 group text-slate-600">
 							<div
 								class="w-4 h-4 rounded-full border-4 group-hover:border-slate-50"
 								:class="
@@ -100,7 +100,7 @@ const hasActiveChild = computed(() => {
 								<RouterLink
 									v-slot="{ isActive }"
 									:to="item.path"
-									class="flex gap-4 p-3 items-center rounded-r-xl text-sm font-medium">
+									class="flex gap-4 p-3 items-center rounded-r-xl text-sm font-medium text-slate-600">
 									<div
 										class="w-4 h-4 rounded-full border-4"
 										:class="

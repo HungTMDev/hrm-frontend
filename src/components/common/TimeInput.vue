@@ -2,10 +2,12 @@
 import { TimeFieldInput, TimeFieldRoot } from 'reka-ui';
 import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
 import IconFromSvg from './IconFromSvg.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, type HTMLAttributes } from 'vue';
+import { cn } from '@/lib/utils';
 
 const props = defineProps<{
 	modelValue?: string;
+	class?: HTMLAttributes['class'];
 }>();
 
 const emits = defineEmits<{
@@ -21,11 +23,14 @@ const handleInput = (value: any) => {
 onMounted(() => {
 	if (props.modelValue) {
 		const date = new Date(props.modelValue);
+
+		const isDate = !isNaN(date.getTime());
+
 		const time = {
-			hour: date.getHours(),
-			millisecond: date.getMilliseconds(),
-			minute: date.getMinutes(),
-			second: date.getSeconds(),
+			hour: isDate ? date.getHours() : props.modelValue.split(':')[0],
+			millisecond: isDate ? date.getMilliseconds() : '00',
+			minute: isDate ? date.getMinutes() : props.modelValue.split(':')[1],
+			second: isDate ? date.getSeconds() : props.modelValue.split(':')[2],
 		} as any;
 		value.value = time;
 		emits(
@@ -40,7 +45,12 @@ onMounted(() => {
 		v-slot="{ segments }"
 		:hour-cycle="24"
 		:model-value="value"
-		class="flex gap-1 items-end border px-3 py-2.5 rounded-2xl pl-10 relative text-sm text-slate-600"
+		:class="
+			cn(
+				'flex gap-1 items-end border px-3 py-2.5 rounded-2xl pl-10 relative text-sm text-slate-600',
+				props.class,
+			)
+		"
 		@update:model-value="handleInput">
 		<div class="absolute top-3 left-3 text-gray-200">
 			<IconFromSvg :icon="ClockCircle" />

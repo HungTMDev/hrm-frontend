@@ -1,17 +1,17 @@
 <script setup lang="ts">
+import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
+import File from '@/assets/icons/Outline/File.svg';
 import LetterOpened from '@/assets/icons/Outline/Letter Opened.svg';
 import MapPoint from '@/assets/icons/Outline/Map Point Wave.svg';
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
-import File from '@/assets/icons/Outline/File.svg';
 import UserCircle from '@/assets/icons/Outline/User Circle.svg';
 import User from '@/assets/icons/Outline/User.svg';
 import CommonCombobox from '@/components/common/CommonCombobox.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import UploadField from '@/components/common/UploadField.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
-import FormInput from '@/components/form/FormInput.vue';
 import FormCombobox from '@/components/form/FormCombobox.vue';
+import FormInput from '@/components/form/FormInput.vue';
 import FormTime from '@/components/form/FormTime.vue';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
@@ -22,16 +22,14 @@ import Label from '@/components/ui/label/Label.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { EMAIL_TEMPLATE, listEmailTemplates } from '@/constants';
+import { useCandidate } from '@/composables/recruitment/applicant/useCandidate';
+import { useSendEmail } from '@/composables/recruitment/applicant/useUpdateApplicant';
 import { formatCurrency } from '@/lib/utils';
-import type { ComboboxType, ICandidate } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import Handlebars from 'handlebars';
 import { useForm } from 'vee-validate';
 import { computed, ref, watch } from 'vue';
 import { thanksEmailSchema } from '../schema';
-import { useSendEmail } from '@/composables/recruitment/applicant/useUpdateApplicant';
-import { useCandidate } from '@/composables/recruitment/applicant/useCandidate';
 
 const emits = defineEmits<{
 	(e: 'cancel'): void;
@@ -46,7 +44,7 @@ const schema = ref<any>(thanksEmailSchema);
 
 const candidates = computed(() => {
 	return (
-		(candidatesData?.value as ICandidate[])?.map((item) => ({
+		candidatesData.value?.map((item) => ({
 			label: item.full_name,
 			value: item.id,
 		})) || []
@@ -54,9 +52,8 @@ const candidates = computed(() => {
 });
 const formSchema = computed(() => toTypedSchema(schema.value));
 const dataFill = computed(() => ({
-	subject: EMAIL_TEMPLATE[templateSelected.value || '']?.subject,
-	recipient: (candidatesData.value as ICandidate[])?.find((item) => item.id === values.recipient)
-		?.full_name,
+	subject: '',
+	recipient: candidatesData.value?.find((item) => item.id === values.recipient)?.full_name,
 	position: values.position,
 	confirmation_before_date: values.confirmation_before_date,
 	confirmation_before_time: values.confirmation_before_time,
@@ -74,18 +71,22 @@ const { handleSubmit, values, setFieldValue } = useForm({
 });
 
 const onSubmit = handleSubmit(() => {
-	mutate({ email: 'admin@lutech.ltd', html: renderedHtml.value.replace(/"/g, "'") });
+	mutate({
+		email: 'admin@lutech.ltd',
+		content: renderedHtml.value.replace(/"/g, "'"),
+		subject: dataFill.value.subject,
+	});
 });
 
 watch(dataFill, () => {
-	const rawTemplate = EMAIL_TEMPLATE[templateSelected.value || '']?.template || '';
+	const rawTemplate = '';
 	const compiled = Handlebars.compile(rawTemplate);
 	renderedHtml.value = compiled(dataFill.value);
 });
 
 const handleSelectTemplate = (payload: any) => {
 	templateSelected.value = payload as string;
-	schema.value = EMAIL_TEMPLATE[templateSelected.value || '']?.schema;
+	schema.value = '';
 };
 
 const setValue = (payload: { fieldName: any; data: any }) => {
@@ -119,9 +120,10 @@ const handleCancel = () => {
 				<Label>Email template</Label>
 				<CommonCombobox
 					label="Template"
-					:list="listEmailTemplates"
 					class="w-80"
 					list-size="md"
+					:is-search="true"
+					:list="[]"
 					:icon="LetterOpened"
 					@update:model-value="handleSelectTemplate" />
 			</div>

@@ -4,6 +4,8 @@ import Widget from '@/assets/icons/Outline/Widget 5.svg';
 import WidgetBold from '@/assets/icons/Bold/Widget 5.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
 import CaseBold from '@/assets/icons/Bold/Case.svg';
+import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
+import DocumentAddBold from '@/assets/icons/Bold/Document Add.svg';
 import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
 import UserGroupBold from '@/assets/icons/Bold/Users Group Two Rounded.svg';
 import Payroll from '@/assets/icons/Outline/Dollar Minimalistic.svg';
@@ -81,6 +83,40 @@ export const useAppStore = defineStore('app-store', () => {
 					id: '30003',
 					path: '/employees/work-hours-management',
 					name: 'Work hours',
+				},
+			],
+		},
+		{
+			id: '80000',
+			path: '/center-request',
+			name: 'Center request',
+			icon: shallowRef(DocumentAdd),
+			activeIcon: shallowRef(DocumentAddBold),
+			children: [
+				// {
+				// 	id: '30001',
+				// 	path: '/employees/overview',
+				// 	name: 'Overview',
+				// },
+				{
+					id: '80002',
+					path: '/center-request/leave-request',
+					name: 'Leave request',
+				},
+				{
+					id: '80003',
+					path: '/center-request/late-early-request',
+					name: 'Late/Early request',
+				},
+				{
+					id: '80004',
+					path: '/center-request/overtime-request',
+					name: 'Overtime request',
+				},
+				{
+					id: '80005',
+					path: '/center-request/correction-request',
+					name: 'Correction request',
 				},
 			],
 		},

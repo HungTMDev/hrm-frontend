@@ -2,7 +2,6 @@
 import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import CaseRound from '@/assets/icons/Outline/Case Round Minimalistic.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
 import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
 import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
@@ -10,29 +9,44 @@ import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
 import CheckList from '@/assets/icons/Outline/Checklist Minimalistic.svg';
 import Clipboard from '@/assets/icons/Outline/Clipboard List.svg';
 import CupStar from '@/assets/icons/Outline/Cup Star.svg';
+import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import UserCircle from '@/assets/icons/Outline/User Circle.svg';
 import User from '@/assets/icons/Outline/User.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
-import Badge from '@/components/ui/badge/Badge.vue';
 import { Button } from '@/components/ui/button';
 import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 import { SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { RECRUITMENT_REQUEST_STATUS_STYLE } from '@/constants';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import { formatISOStringToLocalDateTime, formatStatus } from '@/lib/utils';
 import type { IRecruitmentRequest } from '@/types';
 
-defineProps<{
+const props = defineProps<{
 	data?: IRecruitmentRequest;
 }>();
 
 const emits = defineEmits<{
 	(e: 'openDialog', payload: boolean): void;
+	(e: 'edit'): void;
+	(e: 'approve', id: string): void;
+	(e: 'recall'): void;
 }>();
 
 const handleReject = () => {
 	emits('openDialog', true);
+};
+
+const handleEdit = () => {
+	emits('edit');
+};
+
+const handleApprove = () => {
+	emits('approve', props.data?.id || '');
+};
+
+const handleRecall = () => {
+	emits('recall');
 };
 </script>
 <template>
@@ -98,14 +112,18 @@ const handleReject = () => {
 					<IconFromSvg :icon="Chart2" />
 					Level
 				</div>
-				<div class="col-span-2 text-black">{{ data?.level }}</div>
+				<div class="col-span-2 text-black">
+					{{ formatStatus((data?.level as string) || '') }}
+				</div>
 			</div>
 			<div class="grid grid-cols-3 gap-6 py-1.5">
 				<div class="flex gap-2 items-center">
 					<IconFromSvg :icon="Case" />
 					Employment type
 				</div>
-				<div class="col-span-2 text-black">Fultime</div>
+				<div class="col-span-2 text-black">
+					{{ formatStatus((data?.employment_type as string) || '') }}
+				</div>
 			</div>
 			<div class="grid grid-cols-3 gap-6 py-1.5">
 				<div class="flex gap-2 items-center">
@@ -126,7 +144,7 @@ const handleReject = () => {
 		</div>
 		<div class="mt-4">
 			<h3 class="flex gap-2 items-center">
-				<IconFromSvg :icon="Clipboard" />Job Description
+				<IconFromSvg :icon="Clipboard" />Job description
 			</h3>
 			<p class="mt-2 text-sm text-black">
 				{{ data?.description }}
@@ -134,30 +152,36 @@ const handleReject = () => {
 		</div>
 		<div class="mt-4">
 			<h3 class="flex gap-2 items-center"><IconFromSvg :icon="CupStar" />Skill required</h3>
-			<div class="mt-2 flex flex-wrap gap-2">
-				<Badge
-					v-for="(item, index) in data?.skills_required"
-					:key="index"
-					class="text-xs font-normal text-blue-500 bg-blue-50 hover:bg-blue-50 py-1.5 px-2.5">
-					{{ item }}
-				</Badge>
-			</div>
+			<ul class="list-disc list-inside mt-2 text-black ml-4">
+				<li v-for="(item, index) in data?.skills_required" :key="index">{{ item }}</li>
+			</ul>
 		</div>
 	</ScrollArea>
-	<SheetFooter v-if="data?.status === 'APPROVED'">
-		<Button class="rounded-2xl h-auto py-3.5 px-6 bg-blue-500 hover:bg-blue-600"
-			><IconFromSvg :icon="CaseRound" />Create new job</Button
-		>
-	</SheetFooter>
-	<SheetFooter v-if="data?.status === 'ON_HOLD'">
+	<SheetFooter>
 		<Button
+			v-if="data?.status === 'DRAFT'"
+			variant="outline"
+			class="font-medium px-8 py-[13px] h-auto rounded-2xl"
+			@click="handleRecall">
+			Recall
+		</Button>
+		<Button
+			v-if="data?.status === 'DRAFT'"
+			class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-blue-50 text-blue-500 hover:bg-blue-50"
+			@click="handleEdit">
+			<IconFromSvg :icon="Pen2" /> Edit
+		</Button>
+		<Button
+			v-if="data?.status === 'TO_DO'"
 			variant="outline"
 			class="font-medium px-8 py-[13px] h-auto rounded-2xl"
 			@click="handleReject"
 			>Reject
 		</Button>
 		<Button
-			class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-blue-500 text-white hover:bg-blue-600">
+			v-if="data?.status === 'TO_DO'"
+			class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-blue-500 text-white hover:bg-blue-600"
+			@click="handleApprove">
 			Approve
 		</Button>
 	</SheetFooter>

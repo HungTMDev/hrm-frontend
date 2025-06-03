@@ -7,9 +7,10 @@ import Letter from '@/assets/icons/Outline/Letter.svg';
 import UserHand from '@/assets/icons/Outline/User Hands.svg';
 import MultipleUploadField from '@/components/common/MultipleUploadField.vue';
 import UploadField from '@/components/common/UploadField.vue';
+import FormCombobox from '@/components/form/FormCombobox.vue';
+import FormCurrency from '@/components/form/FormCurrency.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
-import FormCombobox from '@/components/form/FormCombobox.vue';
 import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
 import FormTextarea from '@/components/form/FormTextarea.vue';
 import Button from '@/components/ui/button/Button.vue';
@@ -25,14 +26,26 @@ import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { useListJob } from '@/composables/recruitment/job/useJob';
 import { genderCombobox } from '@/constants';
 import { useCustomToast } from '@/lib/customToast';
-import type { IApplicant, IJob } from '@/types';
+import type { IApplicant, IApplicantFilter, IJob } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
-import { candidateSchema } from '../schema';
+import { addApplicantSchema, type AddApplicantPayload } from '../schema';
+import {
+	useCreateApplicant,
+	useEditApplicant,
+} from '@/composables/recruitment/applicant/useUpdateApplicant';
+import type { PaginationState } from '@tanstack/vue-table';
 
-defineProps<{
+const props = defineProps<{
 	data?: IApplicant;
+	pagination: PaginationState;
+	filter: Partial<IApplicantFilter>;
+}>();
+
+const emits = defineEmits<{
+	(e: 'back'): void;
+	(e: 'close'): void;
 }>();
 
 const { showToast } = useCustomToast();
@@ -49,29 +62,59 @@ const listJob = computed(() => {
 		})) || []
 	);
 });
+const pagination = computed(() => props.pagination);
+const filter = computed(() => props.filter);
 
-const formSchema = toTypedSchema(candidateSchema);
+const formSchema = toTypedSchema(addApplicantSchema);
 
 const { handleSubmit, setFieldValue } = useForm({
 	validationSchema: formSchema,
 });
 
+const { mutate: createApplicant } = useCreateApplicant(pagination, filter);
+const { mutate: editApplicant } = useEditApplicant(pagination, filter);
+
 const onSubmit = handleSubmit((values) => {
-	if (!attaches.value || attaches.value?.length === 0) {
-		showToast({
-			message: 'Please upload attaches',
-			type: 'error',
-		});
+	// if (!attaches.value || attaches.value?.length === 0) {
+	// 	showToast({
+	// 		message: 'Please upload attaches',
+	// 		type: 'error',
+	// 	});
+	// 	return;
+	// }
+	// if (!avatar.value) {
+	// 	showToast({
+	// 		message: 'Please upload avatar',
+	// 		type: 'error',
+	// 	});
+	// 	return;
+	// }
+	const payload: AddApplicantPayload = {
+		...values,
+		avatar: '',
+		attaches: [],
+	};
+
+	if (props.data) {
+		editApplicant(
+			{
+				id: props.data.id,
+				data: payload,
+			},
+			{
+				onSuccess: () => {
+					emits('close');
+				},
+			},
+		);
 		return;
 	}
-	if (!avatar.value) {
-		showToast({
-			message: 'Please upload avatar',
-			type: 'error',
-		});
-		return;
-	}
-	console.log(values);
+
+	createApplicant(payload, {
+		onSuccess: () => {
+			emits('close');
+		},
+	});
 });
 
 const setValue = (payload: { fieldName: any; data: any }) => {
@@ -81,12 +124,14 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 <template>
 	<ScrollArea class="flex-1 pr-3">
 		<form id="form" @submit="onSubmit" class="flex-1 overflow-y-auto">
-			<FormField name="full_name" v-slot="{ componentField }">
+			<FormField
+				:model-value="data?.candidate.full_name"
+				name="full_name"
+				v-slot="{ componentField }">
 				<FormItem>
 					<FormControl>
 						<Input
 							v-bind="componentField"
-							:model-value="data?.candidate.full_name"
 							class="focus-visible:ring-0 text-black focus-visible:ring-offset-0 border-none text-[28px] px-0 placeholder:text-gray-200 font-semibold p-2"
 							placeholder="Full name" />
 					</FormControl>
@@ -127,7 +172,6 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 				<FormSelectCalendar
 					name="date_of_birth"
 					label="Date of birth"
-					:required="true"
 					:icon="Calendar"
 					class="w-full"
 					@update:value="setValue"
@@ -140,12 +184,10 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 					class="w-full"
 					@update:value="setValue"
 					:model-value="data?.applied_at" />
-				<FormInput
-					type="number"
+				<FormCurrency
 					name="expected_salary"
 					label="Expected salary"
 					:required="true"
-					class="w-full"
 					:icon="Dollar"
 					placeholder="Enter expected salary"
 					:model-value="data?.expected_salary" />
@@ -196,8 +238,15 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 		</form>
 	</ScrollArea>
 	<SheetFooter>
-		<Button form="form" class="rounded-2xl h-auto py-3.5 px-5 bg-blue-500 hover:bg-blue-600"
-			>Submit</Button
-		>
+		<Button
+			v-if="data"
+			variant="outline"
+			@click="emits('back')"
+			class="rounded-2xl h-auto py-3.5 px-5">
+			Back
+		</Button>
+		<Button form="form" class="rounded-2xl h-auto py-3.5 px-5 bg-blue-500 hover:bg-blue-600">
+			Submit
+		</Button>
 	</SheetFooter>
 </template>

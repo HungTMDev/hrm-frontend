@@ -22,6 +22,7 @@ import type { IMeta } from '@/types';
 
 interface DataTablePaginationProps {
 	table: Table<any>;
+	itemName?: string;
 	meta?: IMeta;
 }
 const props = defineProps<DataTablePaginationProps>();
@@ -41,9 +42,9 @@ const rangeItem = computed(() => {
 
 <template>
 	<div class="flex flex-wrap gap-2 items-center justify-between px-2">
-		<div class="flex-1 text-sm text-gray-400 font-normal">
+		<div class="flex-1 text-sm text-slate-400 font-normal">
 			Showing
-			<span class="font-medium text-black">
+			<span class="font-medium text-slate-600">
 				<span v-if="rangeItem.start === rangeItem.end"
 					>{{ rangeItem.start }} of {{ table.getRowCount() }}</span
 				>
@@ -51,7 +52,7 @@ const rangeItem = computed(() => {
 					>{{ rangeItem.start }} to {{ rangeItem.end }} of {{ table.getRowCount() }}</span
 				>
 			</span>
-			item(s)
+			{{ itemName ?? 'item(s)' }}
 		</div>
 		<div class="flex items-center gap-2 flex-wrap space-x-6 lg:space-x-8">
 			<Pagination
@@ -61,6 +62,7 @@ const rangeItem = computed(() => {
 				:sibling-count="1"
 				show-edges
 				:default-page="table.getState().pagination.pageIndex + 1"
+				:page="meta?.current_page ? meta?.current_page : 1"
 				@update:page="handleUpdatePage">
 				<PaginationList v-slot="{ items }" class="flex items-center gap-1">
 					<PaginationFirst class="w-8 h-8 rounded-xl">

@@ -1,19 +1,11 @@
 <script lang="ts" setup>
-import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import Close from '@/assets/icons/Outline/Close.svg';
 import AddCircle from '@/assets/icons/Outline/Add Circle.svg';
-import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
+import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
-import File from '@/assets/icons/Outline/File.svg';
+import Close from '@/assets/icons/Outline/Close.svg';
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
-import LetterOpen from '@/assets/icons/Outline/Letter Opened.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Ranking from '@/assets/icons/Outline/Ranking.svg';
 import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 import User from '@/assets/icons/Outline/User Hand Up.svg';
 import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
@@ -27,44 +19,56 @@ import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
-import { INTERVIEW_STATUS_STYLE } from '@/constants';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
-import type { IApplicantInterview, IApplicantInterviewFilter } from '@/types';
-import type { PaginationState } from '@tanstack/vue-table';
-import { computed, ref } from 'vue';
+import { useGetInterviewFeedback } from '@/composables/recruitment/applicant/useApplicant';
 import {
 	useAddParticipant,
 	useRemoveParticipant,
 } from '@/composables/recruitment/applicant/useUpdateApplicant';
+import { INTERVIEW_STATUS_STYLE } from '@/constants';
+import { formatISOStringToLocalDateTime, formatStatus } from '@/lib/utils';
+import type { IApplicantInterview, IApplicantInterviewFilter } from '@/types';
+import type { PaginationState } from '@tanstack/vue-table';
+import { computed, ref } from 'vue';
 import AddInterviewerDialog from '../AddInterviewerDialog.vue';
 import type { AddInterviewerPayload } from '../schema';
+import CallApiButton from '@/components/common/CallApiButton.vue';
+import { useCustomToast } from '@/lib/customToast';
+import { useQueryClient } from '@tanstack/vue-query';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
 
 const props = defineProps<{
 	data?: IApplicantInterview;
 	pagination: PaginationState;
 	filter: Partial<IApplicantInterviewFilter>;
+	isCompleting?: boolean;
+	isHiring?: boolean;
 }>();
 
 const emits = defineEmits<{
-	(e: 'edit'): void;
+	(e: 'hire'): void;
+	(e: 'cancel'): void;
+	(e: 'reject'): void;
+	(e: 'complete'): void;
 	(e: 'openDialog'): void;
-	(e: 'sendEmail'): void;
-	(e: 'edit'): void;
+	(e: 'createFeedback'): void;
+	(e: 'update:open', payload: boolean): void;
 }>();
+
+const { showToast } = useCustomToast();
+const queryClient = useQueryClient();
 
 const isOpenDialog = ref(false);
 
 const applicantInterview = computed(() => props.data);
-const id = computed(() => props.data?.id);
+const id = computed(() => props.data?.id ?? '');
 const filter = computed(() => props.filter);
 const pagination = computed(() => props.pagination);
 
-const { mutate: addParticipant } = useAddParticipant(id, pagination, filter);
-const { mutate: removeParticipant } = useRemoveParticipant(id, pagination, filter);
+const { data: interviewFeedbacks } = useGetInterviewFeedback(id);
+const { mutate: addParticipant } = useAddParticipant();
+const { mutate: removeParticipant } = useRemoveParticipant();
 
-const handleEdit = () => {
-	emits('edit');
-};
+const feedbacks = computed(() => interviewFeedbacks.value || []);
 
 const handleOpenDialog = () => {
 	isOpenDialog.value = true;
@@ -84,9 +88,23 @@ const handleAddInterviewer = (payload: AddInterviewerPayload) => {
 		{
 			onSuccess: () => {
 				isOpenDialog.value = false;
+				showToast({
+					message: 'Success!',
+					type: 'success',
+				});
+				queryClient.invalidateQueries({
+					queryKey: [applicantKey.base, id],
+				});
+				queryClient.invalidateQueries({
+					queryKey: [applicantKey.base, pagination, filter],
+				});
 			},
 		},
 	);
+};
+
+const handleCompleteInterview = () => {
+	emits('complete');
 };
 </script>
 <template>
@@ -102,27 +120,49 @@ const handleAddInterviewer = (payload: AddInterviewerPayload) => {
 				/></SheetTitle>
 				<SheetDescription class="text-base font-medium text-black"> </SheetDescription>
 				<div class="flex items-center gap-2 text-sm">
-					<IconFromSvg :icon="Iphone" /><span>{{
-						applicantInterview?.candidate.phone_number
-					}}</span>
+					<IconFromSvg :icon="Iphone" />
+					<span>
+						{{ applicantInterview?.candidate.phone_number }}
+					</span>
 				</div>
 				<div class="flex items-center gap-2 text-sm">
-					<IconFromSvg :icon="Letter" /><span>{{
-						applicantInterview?.candidate.email
-					}}</span>
+					<IconFromSvg :icon="Letter" />
+					<span>
+						{{ applicantInterview?.candidate.email }}
+					</span>
 				</div>
 			</div>
 		</div>
 	</SheetHeader>
 	<ScrollArea class="flex-1 pr-3">
-		<div class="flex items-center justify-between">
+		<div class="flex justify-between items-center">
 			<h3 class="text-base text-black font-semibold">Interview</h3>
-			<Button variant="outline" class="rounded-2xl" @click="">
-				<IconFromSvg :icon="Pen2" />Edit
+			<Button
+				v-if="data?.status === 'SCHEDULED'"
+				variant="outline"
+				class="rounded-2xl"
+				@click="emits('createFeedback')">
+				Create feedback
 			</Button>
 		</div>
+
 		<div class="mt-4">
-			<h4 class="text-sm text-black font-medium">Interview 1</h4>
+			<div class="flex justify-between items-center">
+				<h4 class="text-sm text-black font-medium">
+					{{ formatStatus(applicantInterview?.stage || '') }}
+				</h4>
+				<Button
+					v-if="
+						data?.status === 'CANCELED' ||
+						(data?.status === 'COMPLETED' && data.stage === 'INTERVIEW_1')
+					"
+					variant="outline"
+					class="rounded-2xl"
+					@click="emits('openDialog')">
+					<IconFromSvg :icon="Calendar" />Meeting schedule
+				</Button>
+			</div>
+
 			<div class="grid grid-cols-2 text-sm gap-4 mt-4">
 				<InformationItem
 					:icon="Calendar"
@@ -166,6 +206,51 @@ const handleAddInterviewer = (payload: AddInterviewerPayload) => {
 				</div>
 			</div>
 		</div>
+
+		<div v-if="feedbacks.length > 0" class="text-sm">
+			<h3 class="text-base text-black font-semibold">Feedback</h3>
+			<div class="mt-4 grid gap-4">
+				<div v-for="(item, index) in feedbacks" :key="index" class="border rounded-2xl p-4">
+					<div class="flex justify-between items-center">
+						<div class="flex gap-2 items-center">
+							<UserAvatar class="w-[44px] h-[44px]" />
+							<div>
+								<h4 class="text-base font-medium text-black">
+									{{ item.interviewer.name }}
+								</h4>
+								<span class="text-xs">{{
+									formatISOStringToLocalDateTime(item.submitted_at).date
+								}}</span>
+							</div>
+						</div>
+						<div class="text-black">
+							<p><span class="text-slate-600">Score:</span> {{ item.score }}</p>
+							<p>
+								<span class="text-slate-600">Recommend:</span>
+								{{ formatStatus(item.recommendation) }}
+							</p>
+						</div>
+					</div>
+
+					<div class="mt-4">
+						<h3 class="text-base text-black font-medium">Strengths</h3>
+						<ul class="text-black mt-2 list-disc list-inside ml-2">
+							<li v-for="(i, idx) in item.strengths.split('\n')" :key="idx">
+								{{ i }}
+							</li>
+						</ul>
+						<Separator class="my-4" />
+						<h3 class="text-base text-black font-medium">Weaknesses</h3>
+						<ul class="text-black mt-2 list-disc list-inside ml-2">
+							<li v-for="(i, idx) in item.weaknesses.split('\n')" :key="idx">
+								{{ i }}
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<Separator class="my-4" />
 		<h3 class="text-base text-black font-semibold mb-4">General information</h3>
 		<div class="grid grid-cols-2 text-sm gap-4">
@@ -186,10 +271,10 @@ const handleAddInterviewer = (payload: AddInterviewerPayload) => {
 			<InformationItem
 				:icon="SquareAcademic"
 				label="Education level"
-				:value="applicantInterview?.candidate.education || ''" />
+				:value="applicantInterview?.candidate.education?.school || ''" />
 		</div>
 
-		<Separator class="my-4" />
+		<!-- <Separator class="my-4" />
 		<h3 class="text-base text-black font-semibold mb-4">Application details</h3>
 		<div class="grid grid-cols-2 text-sm gap-4">
 			<InformationItem :icon="Ranking" label="Work experience" value="Less than 1 year" />
@@ -214,8 +299,8 @@ const handleAddInterviewer = (payload: AddInterviewerPayload) => {
 					>
 				</div>
 			</div>
-		</div>
-		<div class="mt-8">
+		</div> -->
+		<!-- <div class="mt-8">
 			<div class="flex items-center gap-2 text-sm">
 				<IconFromSvg :icon="LetterOpen" /><span>Cover letter</span>
 			</div>
@@ -234,9 +319,9 @@ const handleAddInterviewer = (payload: AddInterviewerPayload) => {
 					Lê Minh Tâm
 				</p>
 			</div>
-		</div>
+		</div> -->
 
-		<div class="mt-4">
+		<!-- <div class="mt-4">
 			<div class="flex items-center gap-2 text-sm">
 				<IconFromSvg :icon="ChatLine" /><span>Preliminary assessment</span>
 			</div>
@@ -256,9 +341,9 @@ const handleAddInterviewer = (payload: AddInterviewerPayload) => {
 					Overall, they appear to be a promising fit for the Data Analyst role.
 				</p>
 			</div>
-		</div>
+		</div> -->
 
-		<Separator class="my-8" />
+		<!-- <Separator class="my-8" />
 		<h3 class="text-base text-black font-semibold mb-4">Hiring stages</h3>
 		<div class="mt-4 text-sm">
 			<div class="relative z-10 pb-8">
@@ -310,20 +395,36 @@ const handleAddInterviewer = (payload: AddInterviewerPayload) => {
 					</p>
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</ScrollArea>
 
 	<SheetFooter>
 		<Button
-			variant="outline"
-			class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-blue-500 bg-blue-50 text-blue-500 hover:bg-blue-100 border-none"
-			@click="handleEdit">
-			<IconFromSvg :icon="Pen2" />Edit
+			v-if="data?.status === 'SCHEDULED'"
+			class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100"
+			@click="emits('cancel')">
+			Cancel
 		</Button>
+		<CallApiButton
+			v-if="data?.status === 'SCHEDULED'"
+			:is-loading="isCompleting"
+			class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-green-500 bg-green-50 text-green-500 hover:bg-green-100"
+			@click="handleCompleteInterview">
+			Complete
+		</CallApiButton>
 		<Button
-			class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100">
-			<IconFromSvg :icon="Trash" />Delete
+			v-if="data?.status === 'CANCELED' || data?.status === 'COMPLETED'"
+			class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100"
+			@click="emits('reject')">
+			Reject
 		</Button>
+		<CallApiButton
+			v-if="data?.status === 'COMPLETED'"
+			:is-loading="isHiring"
+			class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-green-500 bg-green-50 text-green-500 hover:bg-green-100"
+			@click="emits('hire')">
+			HIRE
+		</CallApiButton>
 	</SheetFooter>
 	<AddInterviewerDialog
 		:open="isOpenDialog"

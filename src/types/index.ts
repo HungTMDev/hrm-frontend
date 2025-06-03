@@ -44,6 +44,11 @@ export interface ComboboxType {
 	value: string;
 }
 
+export interface StepType {
+	current: number;
+	total: number;
+}
+
 export interface FormFieldCommon {
 	name: string;
 	label: string;
@@ -108,7 +113,6 @@ export interface IUser extends IBaseResponse {
 	email: string;
 	personal_email: string | null;
 	phone_number: string | null;
-	full_name: string;
 	avatar: string | null;
 	date_of_birth: string | null;
 	gender: GENDER;
@@ -117,6 +121,7 @@ export interface IUser extends IBaseResponse {
 	is_active: boolean;
 	is_confirmed: boolean;
 	name: string;
+	roles: string[];
 }
 
 export interface IPosition extends IBaseResponse {

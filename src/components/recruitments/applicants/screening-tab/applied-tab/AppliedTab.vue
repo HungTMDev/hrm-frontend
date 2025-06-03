@@ -17,7 +17,6 @@ import { Button } from '@/components/ui/button';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { useBranch } from '@/composables/branch/useBranch';
 import { useDepartment } from '@/composables/department/useDepartment';
-import { applicantKey } from '@/composables/recruitment/applicant/key';
 import { useApplicant } from '@/composables/recruitment/applicant/useApplicant';
 import { useUpdateStage } from '@/composables/recruitment/applicant/useUpdateApplicant';
 import { useDeleteCandidate } from '@/composables/recruitment/applicant/useUpdateCandidate';
@@ -82,7 +81,7 @@ const meta = computed<IMeta | undefined>(() => data.value?.meta);
 const pageCount = computed(() => meta.value?.total_pages);
 
 const { mutate } = useDeleteCandidate(pagination, filterPayload);
-const { mutate: updateStage } = useUpdateStage(applicantKey.base, pagination, filterPayload);
+const { mutate: updateStage } = useUpdateStage();
 
 const accordionItems = computed<FilterAccordion[]>(() => [
 	{
@@ -201,6 +200,9 @@ const handleFilter = (payload: FilterData[]) => {
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
+
+	pageIndex.value = 0;
+
 	filter.value = newFilter;
 };
 
@@ -234,7 +236,7 @@ const handleDeleteCandidate = () => {
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search candidate"
+				placeholder="Search..."
 				@update:model-value="handleSearch" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
@@ -246,7 +248,7 @@ const handleDeleteCandidate = () => {
 			<Button
 				class="bg-blue-500 hover:bg-blue-600 rounded-3xl font-medium"
 				@click="handleOpenSheet">
-				<IconFromSvg :icon="UserPlus" />Add new candidate
+				<IconFromSvg :icon="UserPlus" />Add new
 			</Button>
 		</div>
 		<div class="flex flex-col gap-3">
@@ -262,6 +264,9 @@ const handleDeleteCandidate = () => {
 		:open="isOpenSheet"
 		:is-view="isView"
 		:data="dataSent"
+		:pagination="pagination"
+		:filter="filterPayload"
+		@back="isView = true"
 		@edit="isView = false"
 		@update:open="handleCloseSheet"
 		@open-dialog="handleOpenDialog" />

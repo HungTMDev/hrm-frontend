@@ -2,7 +2,7 @@ import { DATA_TIME } from '@/constants';
 import router from '@/routers';
 import { getUser, login, logout } from '@/services/auth';
 import { useAuthStore } from '@/stores/auth.store';
-import { useMutation, useQuery } from '@tanstack/vue-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { computed, watchEffect } from 'vue';
 
 export const useLogin = (remember?: boolean) => {
@@ -17,10 +17,15 @@ export const useLogin = (remember?: boolean) => {
 };
 
 export const useLogout = () => {
+	const queryClient = useQueryClient();
+	const authStore = useAuthStore();
+
 	return useMutation({
 		mutationFn: async () => await logout(),
 		onSuccess: () => {
-			const authStore = useAuthStore();
+			queryClient.removeQueries({
+				queryKey: ['account'],
+			});
 			authStore.clearStorage();
 			router.push('/auth');
 		},

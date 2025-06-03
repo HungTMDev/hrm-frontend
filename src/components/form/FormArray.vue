@@ -11,6 +11,7 @@ interface Props extends FormFieldCommon {
 	initValue: any;
 	isSeparator?: boolean;
 	labelSize?: 'xs' | 'sm' | 'md' | 'lg';
+	buttonLabel?: string;
 }
 
 defineProps<Props>();
@@ -19,7 +20,7 @@ defineProps<Props>();
 	<FieldArray v-slot="{ fields, push, remove }" :name="name">
 		<div class="space-y-4">
 			<div v-for="(field, index) in fields" :key="`${name}-${field.key}`">
-				<div class="flex justify-between items-center mb-2">
+				<div class="flex justify-between items-center">
 					<h3
 						:class="
 							cn(
@@ -33,6 +34,7 @@ defineProps<Props>();
 						{{ label }} {{ index + 1 }}
 					</h3>
 					<Button
+						v-if="required && index !== 0"
 						type="button"
 						variant="link"
 						class="text-red-500 text-xs h-auto p-0"
@@ -52,7 +54,7 @@ defineProps<Props>();
 				class="text-sm w-full rounded-2xl h-12 mt-2 !text-slate-600"
 				@click="push(initValue)">
 				<IconFromSvg :icon="AddCircle" />
-				{{ `Add ${label.toLowerCase()}` }}
+				{{ buttonLabel ?? `Add ${label.toLowerCase()}` }}
 			</Button>
 		</div>
 	</FieldArray>

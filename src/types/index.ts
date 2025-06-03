@@ -121,6 +121,7 @@ export interface IUser extends IBaseResponse {
 	is_active: boolean;
 	is_confirmed: boolean;
 	name: string;
+	roles: string[];
 }
 
 export interface IPosition extends IBaseResponse {

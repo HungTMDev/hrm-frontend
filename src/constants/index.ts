@@ -303,3 +303,41 @@ export enum RECOMMEND_RECRUITMENT {
 }
 
 export const listRecommendRecruitment = convertEnumToComboboxType(RECOMMEND_RECRUITMENT);
+
+export enum REQUEST_STATUS {
+	TO_DO = 'TO_DO',
+	APPROVED = 'APPROVED',
+	REJECTED = 'REJECTED',
+	CANCELED = 'CANCELED',
+	CANCELING = 'CANCELING',
+	ON_HOLD = 'ON_HOLD',
+	DRAFT = 'DRAFT',
+}
+
+export const listRequestStatus = convertEnumToComboboxType(REQUEST_STATUS);
+
+export const REQUEST_STATUS_STYLE: Record<string, string> = {
+	TO_DO: 'text-yellow-500 hover:text-yellow-500 bg-yellow-50 hover:bg-yellow-50',
+	APPROVED: 'text-green-500 hover:text-green-500 bg-green-50 hover:bg-green-50',
+	REJECTED: 'text-red-500 hover:text-red-500 bg-red-50 hover:bg-red-50',
+	CANCELED: 'text-slate-500 hover:text-slate-500 bg-slate-50 hover:bg-slate-50',
+	ON_HOLD: 'text-emerald-500 hover:text-emerald-500 bg-emerald-50 hover:bg-emerald-50',
+	DRAFT: 'text-purple-500 hover:text-purple-500 bg-purple-50 hover:bg-purple-50',
+	CANCELING: 'text-indigo-500 hover:text-indigo-500 bg-indigo-50 hover:bg-indigo-50',
+};
+
+export enum LEAVE_TIME_TYPE {
+	FULL_DAY = 'FULL_DAY',
+	HALF_DAY = 'HALF_DAY',
+	HOURLY = 'HOURLY',
+	MANY_DAY = 'MANY_DAY',
+}
+
+export const listLeaveTimeType = convertEnumToComboboxType(LEAVE_TIME_TYPE);
+
+export enum LEAVE_SHIFT {
+	MORNING = 'MORNING',
+	AFTERNOON = 'AFTERNOON',
+}
+
+export const listLeaveShift = convertEnumToComboboxType(LEAVE_SHIFT);

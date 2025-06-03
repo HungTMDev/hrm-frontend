@@ -180,6 +180,36 @@ export const webRoutes: RouteType[] = [
 				],
 			},
 			{
+				path: '/center-request',
+				name: 'Center Request',
+				redirect: '/center-request/leave-request',
+				children: [
+					{
+						path: 'leave-request',
+						name: 'Leave Request',
+						component: () => import('@/pages/center-request/leave-request/index.vue'),
+					},
+					{
+						path: 'late-early-request',
+						name: 'Late/Early Request',
+						component: () =>
+							import('@/pages/center-request/late-early-request/index.vue'),
+					},
+					{
+						path: 'overtime-request',
+						name: 'Overtime Request',
+						component: () =>
+							import('@/pages/center-request/overtime-request/index.vue'),
+					},
+					{
+						path: 'correction-request',
+						name: 'Correction Request',
+						component: () =>
+							import('@/pages/center-request/correction-request/index.vue'),
+					},
+				],
+			},
+			{
 				path: '/payroll',
 				name: 'Payroll',
 				children: [

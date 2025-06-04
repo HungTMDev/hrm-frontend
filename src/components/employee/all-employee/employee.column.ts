@@ -1,4 +1,4 @@
-import type { IActionGroupType, Employee } from '@/types';
+import type { IActionGroupType, IEmployee } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
@@ -6,42 +6,39 @@ import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { Check, Minus } from 'lucide-vue-next';
+import { formatStatus } from '@/lib/utils';
 
 export const employeeColumn = (
-	handleOpenSheet: (payload?: Employee) => void,
-	handleOpenAlert: (payload: Employee) => void,
-): ColumnDef<Employee>[] => [
-	{
-		id: 'select',
-		header: ({ table }) =>
-			h(
-				Checkbox,
-				{
-					modelValue:
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate'),
-					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
-				},
-				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
-			),
-		cell: ({ row }) =>
-			h(Checkbox, {
-				onClick: (event: any) => event.stopPropagation(),
-				modelValue: row.getIsSelected(),
-				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-				ariaLabel: 'Select row',
-				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-			}),
-		enableSorting: false,
-		enableHiding: false,
-	},
-	{
-		accessorKey: 'id',
-		header: 'ID',
-		cell: ({ row }) => row.original.id,
-	},
+	handleOpenSheet: (payload?: IEmployee) => void,
+	handleOpenAlert: (payload: IEmployee) => void,
+): ColumnDef<IEmployee>[] => [
+	// {
+	// 	id: 'select',
+	// 	header: ({ table }) =>
+	// 		h(
+	// 			Checkbox,
+	// 			{
+	// 				modelValue:
+	// 					table.getIsAllPageRowsSelected() ||
+	// 					(table.getIsSomePageRowsSelected() && 'indeterminate'),
+	// 				'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
+	// 				ariaLabel: 'Select all',
+	// 				class: 'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
+	// 			},
+	// 			() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
+	// 		),
+	// 	cell: ({ row }) =>
+	// 		h(Checkbox, {
+	// 			onClick: (event: any) => event.stopPropagation(),
+	// 			modelValue: row.getIsSelected(),
+	// 			'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+	// 			ariaLabel: 'Select row',
+	// 			class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+	// 		}),
+	// 	enableSorting: false,
+	// 	enableHiding: false,
+	// },
+
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -55,17 +52,17 @@ export const employeeColumn = (
 	{
 		accessorKey: 'position',
 		header: 'Position',
-		cell: ({ row }) => row.original.position,
+		cell: ({ row }) => row.original.position.title,
 	},
 	{
 		accessorKey: 'department',
 		header: 'Department',
-		cell: ({ row }) => row.original.department,
+		cell: ({ row }) => row.original.department.name,
 	},
 	{
 		accessorKey: 'status',
 		header: 'Status',
-		cell: ({ row }) => row.original.status,
+		cell: ({ row }) => formatStatus(row.original.work_information.work_status),
 	},
 	{
 		accessorKey: 'action',

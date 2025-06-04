@@ -46,8 +46,8 @@ const handleSelect = (value: any) => {
 					:key="index"
 					:value="item.value"
 					:disabled="
-						(!!max && compareQuarters(item.value, max) >= 0) ||
-						(!!min && compareQuarters(item.value, min) <= 0)
+						(!!max && compareQuarters(item.value as string, max) >= 0) ||
+						(!!min && compareQuarters(item.value as string, min) <= 0)
 					">
 					{{ item.label }}
 				</SelectItem>

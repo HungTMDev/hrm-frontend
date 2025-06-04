@@ -2,6 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import type { HTMLAttributes } from 'vue';
+import defaultAvatar from '@/assets/images/default-avatar.png';
 
 interface Prop {
 	url?: string;
@@ -15,7 +16,7 @@ const props = defineProps<Prop>();
 <template>
 	<div :class="cn('relative', props.class)">
 		<Avatar :class="cn('border-2 border-white', props.class)">
-			<AvatarImage :src="url || 'https://github.com/unovue.png'" alt="Img" />
+			<AvatarImage :src="url || defaultAvatar" alt="Img" />
 			<AvatarFallback>CN</AvatarFallback>
 		</Avatar>
 		<span

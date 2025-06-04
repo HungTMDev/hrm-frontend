@@ -41,7 +41,7 @@ export interface RouteType {
 
 export interface ComboboxType {
 	label: string;
-	value: string;
+	value: string | number;
 }
 
 export interface StepType {

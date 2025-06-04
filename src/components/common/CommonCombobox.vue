@@ -58,12 +58,12 @@ const handleSelect = (payload: any) => {
 			emits('update:modelValue', undefined);
 		} else {
 			console.log(data);
-			emits('update:modelValue', data);
+			emits('update:modelValue', data as string[]);
 		}
 		return;
 	}
 
-	emits('update:modelValue', (payload as ComboboxType).value);
+	emits('update:modelValue', (payload as ComboboxType).value as string);
 };
 
 const setValue = (newVal: string | string[] | undefined, newList: ComboboxType[]) => {

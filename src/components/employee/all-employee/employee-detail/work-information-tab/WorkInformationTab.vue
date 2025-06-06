@@ -42,7 +42,7 @@ const listDepartment = computed(
 	() => departments.value?.map((item) => ({ label: item.name, value: item.id })) || [],
 );
 const listPosition = computed(
-	() => positions.value?.map((item) => ({ label: item.title, value: item.id })) || [],
+	() => positions.value?.map((item) => ({ label: item.name, value: item.id })) || [],
 );
 const listUser = computed(
 	() => users.value?.map((item) => ({ label: item.name, value: item.id })) || [],

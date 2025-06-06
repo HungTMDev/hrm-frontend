@@ -29,15 +29,18 @@ import {
 } from '@tanstack/vue-table';
 import { computed, ref } from 'vue';
 import { rejectedColumn } from './column';
+import ApplicantSheet from '../ApplicantSheet.vue';
+import { useListJob } from '@/composables/recruitment/job/useJob';
 
-const { data: branches } = useBranch();
-const { data: departments } = useDepartment();
+const { data: jobs } = useListJob();
 
 let timeout: any;
 const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 const keywords = ref<string>();
 const filter = ref<Record<string, string[]>>();
+const isOpenSheet = ref(false);
+const dataSent = ref<IApplicant>();
 
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
 const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
@@ -60,31 +63,10 @@ const pageCount = computed(() => meta.value?.total_pages);
 
 const accordionItems = computed<FilterAccordion[]>(() => [
 	{
-		value: 'status',
-		title: 'Status',
-		items: listJobStatus,
-		icon: ChartSqare,
-		type: 'list',
-	},
-	{
-		value: 'branch',
-		title: 'Branch',
-		items: branches.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
+		value: 'job_id',
+		title: 'Job',
+		items: jobs.value?.map((item) => ({ label: item.title, value: item.id })) || [],
 		icon: Building3,
-		type: 'list',
-	},
-	{
-		value: 'department',
-		title: 'Department',
-		items: departments.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
-		icon: Building,
-		type: 'list',
-	},
-	{
-		value: 'employment_type',
-		title: 'Employment type',
-		items: listEmploymentType,
-		icon: Case,
 		type: 'list',
 	},
 ]);
@@ -99,12 +81,9 @@ const setPagination = ({ pageIndex, pageSize }: PaginationState): PaginationStat
 	return { pageIndex, pageSize };
 };
 
-const handleOpenAlert = () => {};
-
-const handleOpenSheet = (payload?: IApplicant, view?: boolean) => {
-	if (payload instanceof PointerEvent) {
-	} else {
-	}
+const handleOpenSheet = (payload: IApplicant) => {
+	dataSent.value = payload;
+	isOpenSheet.value = true;
 };
 
 const table = useVueTable({
@@ -117,7 +96,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: rejectedColumn(),
+	columns: rejectedColumn(handleOpenSheet),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -150,11 +129,18 @@ const handleSearch = (payload: string | number) => {
 };
 
 const handleFilter = (payload: FilterData[]) => {
-	const newFilter: Record<string, string[]> = {};
+	const newFilter: Record<string, (string | number)[]> = {};
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
-	filter.value = newFilter;
+
+	pageIndex.value = 0;
+	filter.value = newFilter as Record<string, string[]>;
+};
+
+const handleCloseSheet = (open: boolean) => {
+	dataSent.value = undefined;
+	isOpenSheet.value = open;
 };
 </script>
 <template>
@@ -163,15 +149,23 @@ const handleFilter = (payload: FilterData[]) => {
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search candidate"
+				placeholder="Search..."
 				@update:model-value="handleSearch" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
 		</div>
 		<div class="flex flex-col gap-3">
-			<DataTable :table="table" :is-loading="isLoading" />
+			<DataTable
+				:table="table"
+				:is-loading="isLoading"
+				@row:click="(payload) => handleOpenSheet(payload)" />
 			<Separator />
 			<DataTablePagination :table="table" :meta="meta" />
 		</div>
 	</div>
+
+	<ApplicantSheet
+		:open="isOpenSheet"
+		:applicant-id="dataSent?.id"
+		@update:open="handleCloseSheet" />
 </template>

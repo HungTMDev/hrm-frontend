@@ -11,6 +11,9 @@ import FormErrorCustom from './FormErrorCustom.vue';
 interface Prop extends FormFieldCommon {
 	type?: string;
 	icon?: any;
+	min?: number;
+	max?: number;
+	step?: number;
 }
 
 const props = defineProps<Prop>();
@@ -29,6 +32,9 @@ const props = defineProps<Prop>();
 					:type="type"
 					:placeholder="placeholder"
 					:icon="icon"
+					:min="min"
+					:max="max"
+					:step="step"
 					:class="
 						cn(
 							props.class,

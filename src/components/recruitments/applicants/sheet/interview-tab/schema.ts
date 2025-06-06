@@ -8,10 +8,10 @@ export const meetingScheduleSchema = z
 		confirmation_before_date: z.string(),
 		interview_type: z.string(),
 		interview_name: z.string().min(1, 'This field is required'),
-		interviewer: z.array(z.string().min(1, 'This field is required')),
+		participant_ids: z.array(z.string().min(1, 'This field is required')),
 		location: z.string().optional(),
-		coordinator: z.string(),
-		duration_minutes: z.number().min(30).optional(),
+		coordinator: z.string().optional(),
+		duration_minutes: z.number().min(30),
 		meeting_link: z.string().optional(),
 	})
 	.refine(

@@ -198,7 +198,7 @@ const handleCloseSheet = (open: boolean) => {
 		<ScrollBar orientation="horizontal" />
 	</ScrollArea>
 
-	<ApplicantSheet :open="isOpenSheet" :data="dataSent" @update:open="handleCloseSheet" />
+	<ApplicantSheet :open="isOpenSheet" :applicant-id="dataSent" @update:open="handleCloseSheet" />
 
 	<AppliedDialog :open="isOpenDialog" @update:open="handleCloseDialog" />
 

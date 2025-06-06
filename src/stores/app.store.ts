@@ -62,93 +62,94 @@ export const useAppStore = defineStore('app-store', () => {
 				},
 			],
 		},
-		{
-			id: '30000',
-			path: '/employees',
-			name: 'Employees',
-			icon: shallowRef(UserGroup),
-			activeIcon: shallowRef(UserGroupBold),
-			children: [
-				// {
-				// 	id: '30001',
-				// 	path: '/employees/overview',
-				// 	name: 'Overview',
-				// },
-				{
-					id: '30002',
-					path: '/employees/all-employee',
-					name: 'All employee',
-				},
-				{
-					id: '30003',
-					path: '/employees/work-hours-management',
-					name: 'Work hours',
-				},
-			],
-		},
-		{
-			id: '80000',
-			path: '/center-request',
-			name: 'Center request',
-			icon: shallowRef(DocumentAdd),
-			activeIcon: shallowRef(DocumentAddBold),
-			children: [
-				// {
-				// 	id: '30001',
-				// 	path: '/employees/overview',
-				// 	name: 'Overview',
-				// },
-				{
-					id: '80002',
-					path: '/center-request/leave-request',
-					name: 'Leave request',
-				},
-				{
-					id: '80003',
-					path: '/center-request/late-early-request',
-					name: 'Late/Early request',
-				},
-				{
-					id: '80004',
-					path: '/center-request/overtime-request',
-					name: 'Overtime request',
-				},
-				{
-					id: '80005',
-					path: '/center-request/correction-request',
-					name: 'Correction request',
-				},
-			],
-		},
-		{
-			id: '40000',
-			path: '/payroll',
-			name: 'Payroll',
-			icon: shallowRef(Payroll),
-			activeIcon: shallowRef(PayrollBold),
-		},
-		{
-			id: '50000',
-			path: '/training',
-			name: 'Training',
-			icon: shallowRef(Training),
-			activeIcon: shallowRef(TrainingBold),
-		},
-		{
-			id: '60000',
-			path: '/documents',
-			name: 'Documents',
-			icon: shallowRef(Document),
-			activeIcon: shallowRef(DocumentBold),
-		},
-		{
-			id: '70000',
-			path: '/meeting-schedule',
-			name: 'Meeting Schedule',
-			icon: shallowRef(Calendar),
-			activeIcon: shallowRef(CalendarBold),
-		},
+		// {
+		// 	id: '30000',
+		// 	path: '/employees',
+		// 	name: 'Employees',
+		// 	icon: shallowRef(UserGroup),
+		// 	activeIcon: shallowRef(UserGroupBold),
+		// 	children: [
+		// 		// {
+		// 		// 	id: '30001',
+		// 		// 	path: '/employees/overview',
+		// 		// 	name: 'Overview',
+		// 		// },
+		// 		{
+		// 			id: '30002',
+		// 			path: '/employees/all-employee',
+		// 			name: 'All employee',
+		// 		},
+		// 		{
+		// 			id: '30003',
+		// 			path: '/employees/work-hours-management',
+		// 			name: 'Work hours',
+		// 		},
+		// 	],
+		// },
+		// {
+		// 	id: '80000',
+		// 	path: '/center-request',
+		// 	name: 'Center request',
+		// 	icon: shallowRef(DocumentAdd),
+		// 	activeIcon: shallowRef(DocumentAddBold),
+		// 	children: [
+		// 		// {
+		// 		// 	id: '30001',
+		// 		// 	path: '/employees/overview',
+		// 		// 	name: 'Overview',
+		// 		// },
+		// 		{
+		// 			id: '80002',
+		// 			path: '/center-request/leave-request',
+		// 			name: 'Leave request',
+		// 		},
+		// 		{
+		// 			id: '80003',
+		// 			path: '/center-request/late-early-request',
+		// 			name: 'Late/Early request',
+		// 		},
+		// 		{
+		// 			id: '80004',
+		// 			path: '/center-request/overtime-request',
+		// 			name: 'Overtime request',
+		// 		},
+		// 		{
+		// 			id: '80005',
+		// 			path: '/center-request/correction-request',
+		// 			name: 'Correction request',
+		// 		},
+		// 	],
+		// },
+		// {
+		// 	id: '40000',
+		// 	path: '/payroll',
+		// 	name: 'Payroll',
+		// 	icon: shallowRef(Payroll),
+		// 	activeIcon: shallowRef(PayrollBold),
+		// },
+		// {
+		// 	id: '50000',
+		// 	path: '/training',
+		// 	name: 'Training',
+		// 	icon: shallowRef(Training),
+		// 	activeIcon: shallowRef(TrainingBold),
+		// },
+		// {
+		// 	id: '60000',
+		// 	path: '/documents',
+		// 	name: 'Documents',
+		// 	icon: shallowRef(Document),
+		// 	activeIcon: shallowRef(DocumentBold),
+		// },
+		// {
+		// 	id: '70000',
+		// 	path: '/meeting-schedule',
+		// 	name: 'Meeting Schedule',
+		// 	icon: shallowRef(Calendar),
+		// 	activeIcon: shallowRef(CalendarBold),
+		// },
 	]);
+
 	const isSmallSidebar = ref(
 		localStorage.getItem('smallSidebar')
 			? localStorage.getItem('smallSidebar') === 'true'

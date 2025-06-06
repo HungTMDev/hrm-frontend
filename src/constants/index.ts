@@ -3,7 +3,7 @@ import {
 	invitationEmailSchema,
 	thanksEmailSchema,
 } from '@/components/recruitments/applicants/screening-tab/schema';
-import { convertEnumToComboboxType } from '@/lib/utils';
+import { convertEnumToComboboxType, formatStatus } from '@/lib/utils';
 import { INVITATION_EMAIL, THANKS_EMAIL } from './model';
 
 export const DEFAULT_PAGINATION = {
@@ -104,16 +104,11 @@ export const APPLICANT_STAGE_STYLE: Record<string, string> = {
 export const applicantStages = convertEnumToComboboxType(ApplicantStage);
 
 export enum GENDER {
-	MALE,
-	FEMALE,
+	MALE = 'MALE',
+	FEMALE = 'FEMALE',
 }
 
-export const genderCombobox = Object.keys(GENDER)
-	.filter((key) => isNaN(Number(key)))
-	.map((key) => ({
-		label: key.charAt(0).toUpperCase() + key.slice(1),
-		value: GENDER[key as keyof typeof GENDER].toString(),
-	}));
+export const genderCombobox = convertEnumToComboboxType(GENDER);
 
 export enum JOB_LEVEL {
 	INTERN = 'INTERN',
@@ -220,8 +215,9 @@ export enum INTERVIEW_STATUS {
 	SCHEDULED = 'SCHEDULED',
 	CANCELED = 'CANCELED',
 	COMPLETED = 'COMPLETED',
-	PENDING_FEEDBACK = 'PENDING_FEEDBACK',
 }
+
+export const listInterviewStatus = convertEnumToComboboxType(INTERVIEW_STATUS);
 
 export const INTERVIEW_STATUS_STYLE: Record<string, string> = {
 	SCHEDULED: 'bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-500',

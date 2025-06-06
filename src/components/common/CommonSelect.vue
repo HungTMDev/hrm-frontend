@@ -29,15 +29,15 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', payload: string | number | string[] | number[]): void;
 }>();
 
-const selectedValue = ref<any>();
+const selectedValue = ref<ComboboxType>();
 
 const handleSelect = (value: any) => {
-	selectedValue.value = value;
+	selectedValue.value = props.list.find((item) => item.value === value);
 	emit('update:modelValue', value);
 };
 
 onMounted(() => {
-	selectedValue.value = props.modelValue;
+	selectedValue.value = props.list.find((item) => item.value === props.modelValue);
 });
 </script>
 
@@ -45,8 +45,8 @@ onMounted(() => {
 	<Select
 		:default-value="defaultValue"
 		:model-value="modelValue"
-		@update:model-value="handleSelect"
-		:multiple="multiple">
+		:multiple="multiple"
+		@update:model-value="handleSelect">
 		<SelectTriggerCustom
 			:class="
 				cn(
@@ -58,9 +58,12 @@ onMounted(() => {
 			<span class="absolute left-3 text-gray-200">
 				<IconFromSvg :icon="icon" />
 			</span>
-			<SelectValue
-				:placeholder="placeholder ?? 'Select...'"
-				:class="cn('text-gray-200', selectedValue && 'text-black')" />
+			<SelectValue as-child>
+				<span v-if="selectedValue === undefined" class="text-gray-200">{{
+					placeholder ?? 'Select...'
+				}}</span>
+				<span v-else class="text-black">{{ selectedValue.label }}</span>
+			</SelectValue>
 		</SelectTriggerCustom>
 		<SelectContent
 			align="center"

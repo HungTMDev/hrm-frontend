@@ -9,6 +9,8 @@ import ClipboardText from '@/assets/icons/Outline/Clipboard Text.svg';
 import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
 import Checklist from '@/assets/icons/Outline/Checklist Minimalistic.svg';
 import ChecklistBold from '@/assets/icons/Bold/Checklist Minimalistic.svg';
+import ChatRoundMoney from '@/assets/icons/Outline/Chat Round Money.svg';
+import ChatRoundMoneyBold from '@/assets/icons/Bold/Chat Round Money.svg';
 import Dialog from '@/assets/icons/Outline/Dialog.svg';
 import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
@@ -23,13 +25,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import router from '@/routers';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import OfferingTab from '@/components/recruitments/applicants/offering-tab/OfferingTab.vue';
 
 const route = useRoute();
 
 const query = computed(() => route.query);
 
 const activeTab = ref();
-const view = ref('kanban');
+const view = ref('table');
 
 const handleUpdate = (value: any) => {
 	activeTab.value = value;
@@ -44,7 +47,7 @@ const handleView = (payload: any) => {
 
 onMounted(() => {
 	activeTab.value = query.value.tab ? (query.value.tab as string) : 'screening';
-	view.value = query.value.view ? (query.value.view as string) : 'kanban';
+	view.value = query.value.view ? (query.value.view as string) : 'table';
 });
 </script>
 <template>
@@ -52,7 +55,7 @@ onMounted(() => {
 		<Tabs :model-value="view" @update:model-value="handleView">
 			<div class="flex justify-between items-center">
 				<Title>Applicants</Title>
-				<TabsList class="w-fit rounded-2xl">
+				<TabsList v-show="false" class="w-fit rounded-2xl">
 					<TabsTrigger
 						class="py-2 px-3 text-slate-600 justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
 						value="table">
@@ -110,9 +113,9 @@ onMounted(() => {
 								<div class="flex items-center gap-2">
 									<IconFromSvg
 										v-if="activeTab === 'offering'"
-										:icon="DocumentAddBold"
+										:icon="ChatRoundMoneyBold"
 										class="!w-6 !h-6" />
-									<IconFromSvg v-else :icon="DocumentAdd" class="!w-6 !h-6" />
+									<IconFromSvg v-else :icon="ChatRoundMoney" class="!w-6 !h-6" />
 									Offering
 								</div>
 							</TabsTrigger>
@@ -148,7 +151,9 @@ onMounted(() => {
 							<TabsContent class="mt-0" value="interview">
 								<InterviewTab />
 							</TabsContent>
-							<TabsContent class="mt-0" value="offering"> Offer </TabsContent>
+							<TabsContent class="mt-0" value="offering">
+								<OfferingTab />
+							</TabsContent>
 							<TabsContent class="mt-0" value="hired"> <HiredTab /> </TabsContent>
 							<TabsContent class="mt-0" value="rejected">
 								<RejectedTab />

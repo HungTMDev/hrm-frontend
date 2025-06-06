@@ -5,8 +5,7 @@ import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 
 <template>
 	<Toaster
-		position="top-right"
-		class="!top-[80px]"
+		position="bottom-right"
 		:toast-options="{
 			actionButtonStyle: {
 				backgroundColor: 'inherit',

@@ -28,7 +28,9 @@ import {
 	type VisibilityState,
 } from '@tanstack/vue-table';
 import { computed, ref } from 'vue';
-import { hiredColumn } from './column';
+import { offeringColumn } from './column';
+import { useUpdateStage } from '@/composables/recruitment/applicant/useUpdateApplicant';
+import AlertPopup from '@/components/common/AlertPopup.vue';
 import ApplicantSheet from '../ApplicantSheet.vue';
 import { useListJob } from '@/composables/recruitment/job/useJob';
 
@@ -37,16 +39,16 @@ const { data: jobs } = useListJob();
 let timeout: any;
 const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
-const keywords = ref<string>();
-const filter = ref<Record<string, string[]>>();
+const isOpenAlert = ref(false);
 const isOpenSheet = ref(false);
 const dataSent = ref<IApplicant>();
-const filterData = ref<FilterData[]>([]);
+const keywords = ref<string>();
+const filter = ref<Record<string, string[]>>();
 
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
 const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
 const filterPayload = computed<Partial<IApplicantFilter>>(() => ({
-	stage: [RECRUITMENT_STAGE.HIRED],
+	stage: [RECRUITMENT_STAGE.OFFER],
 	keywords: keywords.value,
 	...filter.value,
 }));
@@ -57,6 +59,7 @@ const pagination = computed<PaginationState>(() => ({
 }));
 
 const { data, isLoading } = useApplicant(pagination, filterPayload);
+const { mutate: updateStage, isPending } = useUpdateStage();
 
 const applicants = computed<IApplicant[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -82,6 +85,21 @@ const setPagination = ({ pageIndex, pageSize }: PaginationState): PaginationStat
 	return { pageIndex, pageSize };
 };
 
+const handleOpenAlert = (payload: IApplicant) => {
+	dataSent.value = payload;
+	isOpenAlert.value = true;
+};
+
+const handleHire = (id: string) => {
+	updateStage({
+		id: id || '',
+		data: {
+			to_stage: RECRUITMENT_STAGE.HIRED,
+			outcome: 'PASSED',
+		},
+	});
+};
+
 const handleOpenSheet = (payload: IApplicant) => {
 	dataSent.value = payload;
 	isOpenSheet.value = true;
@@ -97,7 +115,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: hiredColumn(handleOpenSheet),
+	columns: offeringColumn(handleHire, handleOpenAlert, handleOpenSheet),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -136,13 +154,34 @@ const handleFilter = (payload: FilterData[]) => {
 	});
 	pageIndex.value = 0;
 
-	filterData.value = payload;
 	filter.value = newFilter as Record<string, string[]>;
+};
+
+const handleCloseAlert = (open: boolean) => {
+	isOpenAlert.value = open;
 };
 
 const handleCloseSheet = (open: boolean) => {
 	dataSent.value = undefined;
 	isOpenSheet.value = open;
+};
+
+const handleConfirm = () => {
+	updateStage(
+		{
+			id: dataSent.value!.id || '',
+			data: {
+				to_stage: RECRUITMENT_STAGE.REJECTED,
+				outcome: 'FAILED',
+			},
+		},
+		{
+			onSuccess: () => {
+				isOpenAlert.value = false;
+				dataSent.value = undefined;
+			},
+		},
+	);
 };
 </script>
 <template>
@@ -165,8 +204,18 @@ const handleCloseSheet = (open: boolean) => {
 			<DataTablePagination :table="table" :meta="meta" />
 		</div>
 	</div>
+
 	<ApplicantSheet
 		:open="isOpenSheet"
 		:applicant-id="dataSent?.id"
 		@update:open="handleCloseSheet" />
+
+	<AlertPopup
+		title="Are you sure you want to reject this candidate?"
+		:description="dataSent?.candidate.full_name"
+		:open="isOpenAlert"
+		:is-loading="isPending"
+		button-label="Reject"
+		@update:open="handleCloseAlert"
+		@confirm="handleConfirm" />
 </template>

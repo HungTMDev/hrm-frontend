@@ -11,12 +11,13 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, User } from 'lucide-vue-next';
 import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { useGetAccount, useLogout } from '@/composables/auth/useAuth';
 import { computed } from 'vue';
 import type { IUser } from '@/types';
+import User from '@/assets/icons/Outline/User.svg';
+import Logout2 from '@/assets/icons/Outline/Logout 2.svg';
 
 const { data } = useGetAccount();
 const { mutate } = useLogout();
@@ -47,13 +48,13 @@ const handleLogout = async () => {
 			<DropdownMenuSeparator />
 			<DropdownMenuGroup>
 				<DropdownMenuItem class="rounded-xl py-3">
-					<User class="mr-2 h-4 w-4" />
+					<IconFromSvg :icon="User" />
 					<span>Profile</span>
 				</DropdownMenuItem>
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />
 			<DropdownMenuItem class="rounded-xl py-3" @click="handleLogout">
-				<LogOut class="mr-2 h-4 w-4" />
+				<IconFromSvg :icon="Logout2" />
 				<span>Log out</span>
 			</DropdownMenuItem>
 		</DropdownMenuContent>

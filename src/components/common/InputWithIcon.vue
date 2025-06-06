@@ -13,6 +13,9 @@ const props = defineProps<{
 	placeholder?: string;
 	icon?: any;
 	type?: string;
+	min?: number;
+	max?: number;
+	step?: number;
 }>();
 
 const emits = defineEmits<{
@@ -40,6 +43,9 @@ const handleShowPassword = () => {
 		<input
 			:type="showPassword ? 'text' : type"
 			v-model="modelValue"
+			:min="min"
+			:max="max"
+			:step="step"
 			:placeholder="placeholder"
 			class="focus:outline-none placeholder:text-sm placeholder:text-gray-200 w-full text-sm bg-[--backgorund] text-black"
 			autocomplete="off" />

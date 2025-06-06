@@ -16,8 +16,8 @@ import { h } from 'vue';
 import { cn, formatISOStringToLocalDateTime } from '@/lib/utils';
 
 export const screeningColumn = (payload: {
-	handleOpenSheet?: (payload?: IApplicant, view?: boolean) => void;
-	handleOpenAlert?: (payload: IApplicant) => void;
+	handleOpenSheet?: (payload?: IApplicant, view?: boolean, isCreateSchedule?: boolean) => void;
+	handleOpenAlert?: (payload: IApplicant, action: 'delete' | 'reject') => void;
 	handleStage?: (action: string, payload: IApplicant) => void;
 	handleOpenDialog?: (payload: IApplicant) => void;
 }): ColumnDef<IApplicant>[] => [
@@ -117,6 +117,11 @@ export const screeningColumn = (payload: {
 								icon: CloseCircle,
 								style: 'text-red-500 ',
 							},
+							{
+								label: 'Delete',
+								icon: Trash,
+								style: 'text-red-500 ',
+							},
 						]
 					: [
 							{
@@ -131,7 +136,7 @@ export const screeningColumn = (payload: {
 							},
 							{
 								label: 'Reject',
-								icon: Trash,
+								icon: CloseCircle,
 								style: 'text-red-500',
 							},
 						];
@@ -144,24 +149,24 @@ export const screeningColumn = (payload: {
 				payload.handleStage?.('PASS', row.original);
 			};
 
-			const onFail = () => {
-				payload.handleStage?.('FAIL', row.original);
-			};
-
 			const onEdit = () => {
 				payload.handleOpenSheet?.(row.original);
 			};
 
 			const onDelete = () => {
-				payload.handleOpenAlert?.(row.original);
+				payload.handleOpenAlert?.(row.original, 'delete');
+			};
+
+			const onFail = () => {
+				payload.handleOpenAlert?.(row.original, 'reject');
 			};
 
 			const onReject = () => {
-				payload.handleOpenAlert?.(row.original);
+				payload.handleOpenAlert?.(row.original, 'reject');
 			};
 
 			const onScheduleInterview = () => {
-				payload.handleOpenDialog?.(row.original);
+				payload.handleOpenSheet?.(row.original, true, true);
 			};
 
 			return h(ActionGroupCommon, {
@@ -170,9 +175,9 @@ export const screeningColumn = (payload: {
 				onDelete,
 				onView,
 				onPass,
-				onFail,
 				onScheduleInterview,
 				onReject,
+				onFail,
 				class: cn(row.original.current_stage === 'SCREENING' && 'w-[200px]'),
 			});
 		},

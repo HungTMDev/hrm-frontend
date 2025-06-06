@@ -14,7 +14,7 @@ export const jobSchema = z.object({
 	description: z.string(),
 	requirements: z.string(),
 	location: z.string().optional(),
-	gender: z.number().optional(),
+	gender: z.string().optional(),
 	education_level: z.string().optional(),
 	work_experience: z.string().optional(),
 });

@@ -5,16 +5,17 @@ import DangerCircle from '@/assets/icons/Outline/Danger Circle.svg';
 import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
 import { useCustomToast } from '@/lib/customToast';
 import type { FormFieldCommon } from '@/types';
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import ProgressCircle from '../common/ProgressCircle.vue';
 import UserAvatar from '../common/UserAvatar.vue';
 import Button from '../ui/button/Button.vue';
 import Label from '../ui/label/Label.vue';
 
-interface Prop extends FormFieldCommon {
+interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
 	type?: 'file' | 'photo';
 	allowedTypes?: string[];
+	modelValue?: File[];
 }
 const props = defineProps<Prop>();
 
@@ -196,6 +197,21 @@ onBeforeUnmount(() => {
 		}
 	});
 });
+
+watch(
+	() => props.modelValue,
+	(newVal) => {
+		selectedFiles.value = newVal ?? [];
+		selectedFiles.value.forEach((file, index) => {
+			fileStates.value[index] = {
+				previewUrl: URL.createObjectURL(file),
+				uploadProgress: 100,
+			};
+		});
+
+		emits('update:value', newVal);
+	},
+);
 </script>
 <template>
 	<div class="flex flex-col gap-2">

@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const recruitmentRequestSchema = z.object({
 	branch_id: z.string(),
 	department_id: z.string(),
-	job_title_id: z.string(),
+	position_id: z.string(),
 	title: z.string().min(1, 'This field is required'),
 	level: z.string(),
 	employment_type: z.string(),
@@ -15,6 +15,7 @@ export const recruitmentRequestSchema = z.object({
 	expected_start_date: z.string(),
 	description: z.string(),
 	skills_required: z.array(z.string()),
+	recruiter_id: z.string(),
 });
 
 export type RecruitmentRequestPayload = z.infer<typeof recruitmentRequestSchema>;

@@ -33,6 +33,8 @@ import { screeningColumn } from '../columns';
 import PassedTabDialog from './PassedTabDialog.vue';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import { useUpdateStage } from '@/composables/recruitment/applicant/useUpdateApplicant';
+import ApplicantSheet from '../../ApplicantSheet.vue';
+import { useListJob } from '@/composables/recruitment/job/useJob';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
@@ -44,6 +46,7 @@ const rowSelection = ref({});
 const isOpenDialog = ref(false);
 const isOpenAlert = ref(false);
 const isOpenSheet = ref(false);
+const isCreateSchedule = ref(false);
 const isView = ref(false);
 const dataSent = ref<IApplicant>();
 
@@ -64,6 +67,7 @@ const pagination = computed<PaginationState>(() => ({
 }));
 
 const { data, isLoading } = useApplicant(pagination, filterPayload);
+const { data: jobs } = useListJob();
 
 const applicants = computed<IApplicant[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -71,31 +75,10 @@ const pageCount = computed(() => meta.value?.total_pages);
 
 const accordionItems = computed<FilterAccordion[]>(() => [
 	{
-		value: 'status',
-		title: 'Status',
-		items: listJobStatus,
-		icon: ChartSqare,
-		type: 'list',
-	},
-	{
-		value: 'branch',
-		title: 'Branch',
-		items: branches.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
+		value: 'job_id',
+		title: 'Job',
+		items: jobs.value?.map((item) => ({ label: item.title, value: item.id })) || [],
 		icon: Building3,
-		type: 'list',
-	},
-	{
-		value: 'department',
-		title: 'Department',
-		items: departments.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
-		icon: Building,
-		type: 'list',
-	},
-	{
-		value: 'employment_type',
-		title: 'Employment type',
-		items: listEmploymentType,
-		icon: Case,
 		type: 'list',
 	},
 ]);
@@ -117,12 +100,13 @@ const handleOpenAlert = (payload: IApplicant) => {
 	isOpenAlert.value = true;
 };
 
-const handleOpenSheet = (payload?: IApplicant, view?: boolean) => {
+const handleOpenSheet = (payload?: IApplicant, view?: boolean, createSchedule?: boolean) => {
 	if (payload instanceof PointerEvent) {
 		dataSent.value = undefined;
 	} else {
 		dataSent.value = payload;
 	}
+	isCreateSchedule.value = createSchedule ?? false;
 	isView.value = view ?? false;
 	isOpenSheet.value = true;
 };
@@ -175,13 +159,13 @@ const handleSearch = (payload: string | number) => {
 };
 
 const handleFilter = (payload: FilterData[]) => {
-	const newFilter: Record<string, string[]> = {};
+	const newFilter: Record<string, (string | number)[]> = {};
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
 
 	pageIndex.value = 0;
-	filter.value = newFilter;
+	filter.value = newFilter as Record<string, string[]>;
 };
 
 const handleReject = () => {
@@ -206,6 +190,7 @@ const handleCloseDialog = (open: boolean) => {
 
 const handleCloseSheet = (open: boolean) => {
 	dataSent.value = undefined;
+	isCreateSchedule.value = false;
 	isOpenSheet.value = open;
 };
 
@@ -234,16 +219,13 @@ const handleCloseAlert = (open: boolean) => {
 			<DataTablePagination :table="table" :meta="meta" />
 		</div>
 	</div>
-	<CandidateSheet
+	<ApplicantSheet
 		:open="isOpenSheet"
 		:is-view="isView"
-		:data="dataSent"
-		:pagination="pagination"
-		:filter="filterPayload"
-		@back="isView = true"
+		:applicant-id="dataSent?.id"
+		:is-create-schedule="isCreateSchedule"
 		@edit="isView = false"
-		@update:open="handleCloseSheet"
-		@open-dialog="handleOpenDialog" />
+		@update:open="handleCloseSheet" />
 	<PassedTabDialog :open="isOpenDialog" :id="dataSent?.id" @update:open="handleCloseDialog" />
 	<AlertPopup
 		:open="isOpenAlert"

@@ -4,7 +4,6 @@ import UserPlus from '@/assets/icons/Outline/User Plus.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
-import FilterPopover from '@/components/common/FilterPopover.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
@@ -164,15 +163,14 @@ watch([pageIndex, pageSize, filterPayload], () => {
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search talent"
+				placeholder="Search..."
 				@update:model-value="handleSearch" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
-			<!-- <FilterPopover :list="[]" /> -->
-			<Button
+			<!-- <Button
 				class="bg-blue-500 hover:bg-blue-600 rounded-3xl font-medium"
 				@click="handleOpenSheet">
 				<IconFromSvg :icon="UserPlus" />Add new
-			</Button>
+			</Button> -->
 		</div>
 		<div class="flex flex-col gap-3">
 			<DataTable

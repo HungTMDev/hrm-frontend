@@ -224,7 +224,7 @@ const handleRejectRequest = (reason: string) => {
 };
 
 const handleFilter = (payload: FilterData[]) => {
-	const newFilter: Record<string, string[]> = {};
+	const newFilter: Record<string, (string | number)[]> = {};
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
@@ -232,7 +232,7 @@ const handleFilter = (payload: FilterData[]) => {
 	pageIndex.value = 0;
 
 	filterData.value = payload;
-	filterPayload.value = newFilter;
+	filterPayload.value = newFilter as Record<string, string[]>;
 };
 
 const handleCancelRequest = () => {
@@ -274,7 +274,7 @@ const syncQueryToFilter = () => {
 		if (item) {
 			const selectedItems =
 				item.items?.filter((i) =>
-					(filterPayload.value[key] as string[]).includes(i.value),
+					(filterPayload.value[key] as string[]).includes(i.value as string),
 				) || [];
 
 			if (selectedItems.length) {

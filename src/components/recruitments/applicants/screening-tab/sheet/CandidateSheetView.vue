@@ -29,44 +29,23 @@ import type { IApplicant, IApplicantFilter } from '@/types';
 import { useDeleteApplicant } from '@/composables/recruitment/applicant/useUpdateApplicant';
 import type { PaginationState } from '@tanstack/vue-table';
 import { computed } from 'vue';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
 
 const props = defineProps<{
 	data?: IApplicant;
-	pagination: PaginationState;
-	filter: Partial<IApplicantFilter>;
 }>();
 
 const emits = defineEmits<{
 	(e: 'edit'): void;
-	(e: 'openDialog'): void;
-	(e: 'sendEmail'): void;
-	(e: 'edit'): void;
-	(e: 'close'): void;
+	(e: 'delete'): void;
 }>();
-
-const pagination = computed(() => props.pagination);
-const filter = computed(() => props.filter);
-
-const { mutate: deleteApplicant } = useDeleteApplicant(pagination, filter);
 
 const handleEdit = () => {
 	emits('edit');
 };
 
-const handleOpenDialog = () => {
-	emits('openDialog');
-};
-
-const handleSendEmail = () => {
-	emits('sendEmail');
-};
-
 const handleDeleteApplicant = () => {
-	deleteApplicant(props.data?.id || '', {
-		onSuccess: () => {
-			emits('close');
-		},
-	});
+	emits('delete');
 };
 </script>
 <template>
@@ -79,7 +58,7 @@ const handleDeleteApplicant = () => {
 					<StatusTag class="bg-blue-50 text-blue-500 hover:bg-blue-100" status="Applied"
 				/></SheetTitle>
 				<SheetDescription class="text-base font-medium text-black">
-					{{ data?.position?.title }}
+					{{ data?.position?.name }}
 				</SheetDescription>
 				<div class="flex items-center gap-2 text-sm">
 					<IconFromSvg :icon="Iphone" /><span>{{ data?.candidate?.phone_number }}</span>
@@ -154,6 +133,17 @@ const handleDeleteApplicant = () => {
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
 						><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
 					>
+					<a
+						v-if="data?.attaches && data?.attaches.length > 0"
+						v-for="(item, index) in data?.attaches ?? []"
+						:key="index"
+						:href="item"
+						target="_blank"
+						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
+						><IconFromSvg :icon="File" class="!w-4 !h-4" />{{
+							`Attach ${index + 1}`
+						}}</a
+					>
 					<!-- <a
 						href="#"
 						target="_blank"
@@ -185,16 +175,20 @@ const handleDeleteApplicant = () => {
 			</div>
 		</div>
 
-		<div class="mt-4">
+		<div v-if="data?.notes && data?.notes !== ''" class="mt-4">
 			<div class="flex items-center gap-2 text-sm">
-				<IconFromSvg :icon="ChatLine" /><span>Notes</span>
+				<IconFromSvg :icon="ChatLine" /><span>Note</span>
 			</div>
 			<div class="mt-4 p-4 border rounded-2xl">
 				<div class="flex gap-2 items-center">
 					<UserAvatar class="w-[44px] h-[44px]" />
 					<div>
-						<p class="text-black text-base font-medium">Le Thi Linh Ly</p>
-						<span class="text-xs">March 5, 2025</span>
+						<p class="text-black text-base font-medium">
+							{{ data?.created_by_user?.name }}
+						</p>
+						<span class="text-xs">{{
+							formatISOStringToLocalDateTime(data?.created_at).date
+						}}</span>
 					</div>
 				</div>
 				<p class="text-sm mt-2 text-black">

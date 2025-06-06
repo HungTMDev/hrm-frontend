@@ -164,5 +164,5 @@ const accordionItems = [
 		</div>
 		<!-- <DataTable :table="table" @row:click="handleOpenSheet" /> -->
 	</ContentWrapper>
-	<RecruitmentSheet :open="isOpenSheet" @update:open="handleCloseSheet" />
+	<!-- <RecruitmentSheet :open="isOpenSheet" @update:open="handleCloseSheet" /> -->
 </template>

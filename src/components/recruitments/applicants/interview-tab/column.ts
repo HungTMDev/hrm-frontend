@@ -1,49 +1,19 @@
 import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
 import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
-import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
-import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { INTERVIEW_STATUS_STYLE } from '@/constants';
-import { cn, formatISOStringToLocalDateTime } from '@/lib/utils';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
 import type { IActionGroupType, IApplicantInterview } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 
 export const interviewColumn = (
 	handleOpenAlert?: (payload: IApplicantInterview, action: 'cancel' | 'reject') => void,
 	handleOpenSheet?: (payload: IApplicantInterview) => void,
-	handleOpenDialog?: (payload: IApplicantInterview) => void,
 	handleHire?: (payload: IApplicantInterview) => void,
 ): ColumnDef<IApplicantInterview>[] => [
-	// {
-	// 	id: 'select',
-	// 	header: ({ table }) =>
-	// 		h(
-	// 			Checkbox,
-	// 			{
-	// 				modelValue:
-	// 					table.getIsAllPageRowsSelected() ||
-	// 					(table.getIsSomePageRowsSelected() && 'indeterminate'),
-	// 				'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-	// 				ariaLabel: 'Select all',
-	// 				class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
-	// 			},
-	// 			() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
-	// 		),
-	// 	cell: ({ row }) =>
-	// 		h(Checkbox, {
-	// 			onClick: (event: any) => event.stopPropagation(),
-	// 			modelValue: row.getIsSelected(),
-	// 			'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-	// 			ariaLabel: 'Select row',
-	// 			class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-	// 		}),
-	// 	enableSorting: false,
-	// 	enableHiding: false,
-	// },
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -78,7 +48,7 @@ export const interviewColumn = (
 		cell: ({ row }) =>
 			h(StatusTag, {
 				status: row.original.status,
-				class: [INTERVIEW_STATUS_STYLE[row.original.status]],
+				class: [INTERVIEW_STATUS_STYLE[row.original.status], 'w-fit'],
 			}),
 	},
 	{
@@ -112,11 +82,11 @@ export const interviewColumn = (
 							icon: CloseCircle,
 							style: 'text-red-500',
 						},
-						{
-							label: 'Schedule interview',
-							icon: Calendar,
-							style: 'text-slate-600',
-						},
+						// {
+						// 	label: 'Schedule interview',
+						// 	icon: Calendar,
+						// 	style: 'text-slate-600',
+						// },
 					];
 				}
 				const arr = [
@@ -126,7 +96,7 @@ export const interviewColumn = (
 						style: 'text-slate-600',
 					},
 					{
-						label: 'Hire',
+						label: 'Offer',
 						icon: CheckCircle,
 						style: 'text-green-500',
 					},
@@ -139,11 +109,11 @@ export const interviewColumn = (
 				return row.original.stage === 'INTERVIEW_1'
 					? [
 							...arr,
-							{
-								label: 'Schedule interview',
-								icon: Calendar,
-								style: 'text-slate-600',
-							},
+							// {
+							// 	label: 'Schedule interview',
+							// 	icon: Calendar,
+							// 	style: 'text-slate-600',
+							// },
 						]
 					: arr;
 			};
@@ -160,11 +130,7 @@ export const interviewColumn = (
 				handleOpenAlert?.(row.original, 'reject');
 			};
 
-			const onScheduleInterview = () => {
-				handleOpenDialog?.(row.original);
-			};
-
-			const onHire = () => {
+			const onOffer = () => {
 				handleHire?.(row.original);
 			};
 
@@ -173,12 +139,7 @@ export const interviewColumn = (
 				onCancel,
 				onView,
 				onReject,
-				onHire,
-				onScheduleInterview,
-				class: cn(
-					(row.original.status === 'CANCELED' || row.original.status === 'COMPLETED') &&
-						'w-[200px]',
-				),
+				onOffer,
 			});
 		},
 	},

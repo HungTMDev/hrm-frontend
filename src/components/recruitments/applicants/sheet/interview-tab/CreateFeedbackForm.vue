@@ -1,30 +1,26 @@
 <script lang="ts" setup>
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
-import Title from '@/components/common/Title.vue';
 import FormInput from '@/components/form/FormInput.vue';
+import FormMarkdown from '@/components/form/FormMarkdown.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
 import FormTextarea from '@/components/form/FormTextarea.vue';
-import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { listRecommendRecruitment } from '@/constants';
-import type { IApplicantInterview, IApplicantInterviewFilter } from '@/types';
+import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
+import UserCircle from '@/assets/icons/Outline/User Circle.svg';
 import { toTypedSchema } from '@vee-validate/zod';
+import {
+	interviewFeedbackScheama,
+	type InterviewerFeedbackPayload,
+} from '../../interview-tab/schema';
 import { useForm } from 'vee-validate';
-import { interviewFeedbackScheama, type InterviewerFeedbackPayload } from '../schema';
-import FormMarkdown from '@/components/form/FormMarkdown.vue';
 import { useCreateInterviewFeedback } from '@/composables/recruitment/applicant/useUpdateApplicant';
-import type { PaginationState } from '@tanstack/vue-table';
-import CallApiButton from '@/components/common/CallApiButton.vue';
-import { useQueryClient } from '@tanstack/vue-query';
 import { applicantKey } from '@/composables/recruitment/applicant/key';
-import { computed } from 'vue';
+import { useQueryClient } from '@tanstack/vue-query';
+import Button from '@/components/ui/button/Button.vue';
+import CallApiButton from '@/components/common/CallApiButton.vue';
 
 const props = defineProps<{
-	data?: IApplicantInterview;
-	pagination: PaginationState;
-	filter: Partial<IApplicantInterviewFilter>;
+	interviewId?: string;
 }>();
 
 const emits = defineEmits<{
@@ -33,9 +29,6 @@ const emits = defineEmits<{
 }>();
 
 const queryClient = useQueryClient();
-
-const pagination = computed(() => props.pagination);
-const filter = computed(() => props.filter);
 
 const formSchema = toTypedSchema(interviewFeedbackScheama);
 
@@ -54,7 +47,7 @@ const onSubmit = handleSubmit((values) => {
 
 	createInterviewFeedback(
 		{
-			id: props.data?.id || '',
+			id: props.interviewId || '',
 			data: payload,
 		},
 		{
@@ -62,28 +55,24 @@ const onSubmit = handleSubmit((values) => {
 				emits('cancel');
 
 				queryClient.invalidateQueries({
-					queryKey: [applicantKey.feedback, props.data?.id || ''],
+					queryKey: [applicantKey.feedback, props.interviewId || ''],
 				});
 
 				queryClient.invalidateQueries({
-					queryKey: [applicantKey.base, filter.value.stage, pagination, filter],
+					queryKey: [applicantKey.base],
+				});
+
+				queryClient.invalidateQueries({
+					queryKey: [applicantKey.interview],
 				});
 			},
 		},
 	);
 });
-
-const handleCancel = () => emits('cancel');
 </script>
 <template>
-	<ScrollArea class="flex-1 pr-3">
-		<Title class="text-[28px] text-black">Candidate evaluation</Title>
+	<ScrollArea class="h-[calc(100vh-390px)] pr-3">
 		<form id="form" @submit="onSubmit">
-			<SheetHeader>
-				<SheetTitle></SheetTitle>
-				<SheetDescription> </SheetDescription>
-			</SheetHeader>
-
 			<div class="grid grid-cols-2 gap-6">
 				<FormInput
 					name="score"
@@ -91,6 +80,9 @@ const handleCancel = () => emits('cancel');
 					label="Score"
 					:required="true"
 					:icon="Chart2"
+					:min="0"
+					:max="10"
+					:step="0.0001"
 					class="w-full"
 					placeholder="Enter score" />
 				<FormSelect
@@ -104,13 +96,13 @@ const handleCancel = () => emits('cancel');
 					name="strengths"
 					label="Strengths"
 					:required="true"
-					class="rounded-2xl h-[200px]"
+					class="rounded-2xl h-[150px]"
 					placeholder="Enter strengths" />
 				<FormMarkdown
 					name="weaknesses"
 					label="Weaknesses"
 					:required="true"
-					class="rounded-2xl h-[200px]"
+					class="rounded-2xl h-[150px]"
 					placeholder="Enter weaknesses" />
 			</div>
 
@@ -124,8 +116,8 @@ const handleCancel = () => emits('cancel');
 			</div>
 		</form>
 	</ScrollArea>
-	<SheetFooter>
-		<Button variant="outline" class="rounded-2xl h-auto py-3 px-6" @click="handleCancel">
+	<div class="mt-2 flex justify-end gap-2 mb-4">
+		<Button variant="outline" class="rounded-2xl h-auto py-3 px-6" @click="emits('cancel')">
 			Cancel
 		</Button>
 		<CallApiButton
@@ -134,5 +126,5 @@ const handleCancel = () => emits('cancel');
 			class="rounded-2xl h-auto py-3 px-5 bg-blue-500 hover:bg-blue-600">
 			Create
 		</CallApiButton>
-	</SheetFooter>
+	</div>
 </template>

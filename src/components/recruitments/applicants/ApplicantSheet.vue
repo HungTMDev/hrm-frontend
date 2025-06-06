@@ -34,33 +34,58 @@ import { useGetApplicantById } from '@/composables/recruitment/applicant/useAppl
 import { APPLICANT_STAGE_STYLE } from '@/constants';
 import { computed, ref, watch } from 'vue';
 import InterviewInformationTab from './sheet/interview-tab/InterviewInformationTab.vue';
+import CallApiButton from '@/components/common/CallApiButton.vue';
+import type { IApplicantInterview } from '@/types';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
 
 const props = defineProps<{
 	open: boolean;
-	data?: string;
+	applicantId?: string;
+	applicantInterview?: IApplicantInterview;
 	isView?: boolean;
+	isCreateSchedule?: boolean;
+	isCompleting?: boolean;
+	isHiring?: boolean;
 }>();
 
-const emit = defineEmits<{
+const emits = defineEmits<{
 	(e: 'update:open', payload: boolean): void;
 	(e: 'edit'): void;
+	(e: 'offer'): void;
+	(e: 'cancel', payload: { data: IApplicantInterview; action: 'cancel' | 'reject' }): void;
+	(e: 'reject', payload: { data: IApplicantInterview; action: 'cancel' | 'reject' }): void;
+	(e: 'complete'): void;
 }>();
 
 const activeTab = ref('general');
 const view = ref(true);
-const id = computed(() => props.data);
+const id = computed(() => props.applicantId);
 
 const { data: applicant } = useGetApplicantById(id);
 
 const handleOpen = (isOpen: boolean) => {
 	activeTab.value = 'general';
-	emit('update:open', isOpen);
+	emits('update:open', isOpen);
+};
+
+const handleCancel = () => {
+	emits('cancel', { data: props.applicantInterview as IApplicantInterview, action: 'cancel' });
+};
+const handleReject = () => {
+	emits('reject', { data: props.applicantInterview as IApplicantInterview, action: 'reject' });
 };
 
 watch(
 	() => props.isView,
 	(newVal) => {
 		view.value = newVal !== undefined ? newVal : true;
+	},
+);
+
+watch(
+	() => props.isCreateSchedule,
+	() => {
+		if (props.isCreateSchedule) activeTab.value = 'interview';
 	},
 );
 </script>
@@ -117,7 +142,7 @@ watch(
 
 				<div>
 					<TabsContent value="general" class="h-full flex flex-col gap-2">
-						<ScrollArea class="h-[calc(100vh-380px)] pr-3">
+						<ScrollArea class="h-[calc(100vh-400px)] pr-3">
 							<h3 class="text-base text-black font-semibold mb-4">
 								General information
 							</h3>
@@ -170,18 +195,22 @@ watch(
 								</div>
 							</div>
 
-							<div class="mt-4">
+							<div v-if="applicant?.notes && applicant?.notes !== ''" class="mt-4">
 								<div class="flex items-center gap-2 text-sm">
-									<IconFromSvg :icon="ChatLine" /><span>Notes</span>
+									<IconFromSvg :icon="ChatLine" /><span>Note</span>
 								</div>
 								<div class="mt-4 p-4 border rounded-2xl">
 									<div class="flex gap-2 items-center">
 										<UserAvatar class="w-[44px] h-[44px]" />
 										<div>
 											<p class="text-black text-base font-medium">
-												Le Thi Linh Ly
+												{{ applicant?.created_by_user?.name }}
 											</p>
-											<span class="text-xs">March 5, 2025</span>
+											<span class="text-xs">{{
+												formatISOStringToLocalDateTime(
+													applicant?.created_at,
+												).date
+											}}</span>
 										</div>
 									</div>
 									<p class="text-sm mt-2 text-black">
@@ -190,7 +219,7 @@ watch(
 								</div>
 							</div>
 
-							<Separator class="my-8" />
+							<!-- <Separator class="my-8" />
 							<h3 class="text-base text-black font-semibold mb-4">Hiring stages</h3>
 							<div class="mt-4 text-sm">
 								<div class="relative z-10 pb-8">
@@ -253,10 +282,10 @@ watch(
 										</p>
 									</div>
 								</div>
-							</div>
+							</div> -->
 						</ScrollArea>
 						<SheetFooter>
-							<Button
+							<!-- <Button
 								variant="outline"
 								class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-blue-500 bg-blue-50 text-blue-500 hover:bg-blue-100 border-none">
 								<IconFromSvg :icon="Pen2" />Edit
@@ -264,16 +293,49 @@ watch(
 							<Button
 								class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100">
 								<IconFromSvg :icon="Trash" />Delete
-							</Button>
+							</Button> -->
 						</SheetFooter>
 					</TabsContent>
 					<TabsContent value="interview">
 						<InterviewInformationTab
 							:data="applicant"
+							:view="!isCreateSchedule"
+							@close-sheet="emits('update:open', false)"
 							:stage="applicant?.current_stage" />
 					</TabsContent>
 				</div>
 			</Tabs>
+			<SheetFooter v-if="applicantInterview">
+				<Button
+					v-if="applicantInterview?.status === 'SCHEDULED'"
+					class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100"
+					@click="handleCancel">
+					Cancel
+				</Button>
+				<CallApiButton
+					v-if="applicantInterview?.status === 'SCHEDULED'"
+					:is-loading="isCompleting"
+					class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-green-500 bg-green-50 text-green-500 hover:bg-green-100"
+					@click="emits('complete')">
+					Complete
+				</CallApiButton>
+				<Button
+					v-if="
+						applicantInterview?.status === 'CANCELED' ||
+						applicantInterview?.status === 'COMPLETED'
+					"
+					class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100"
+					@click="handleReject">
+					Reject
+				</Button>
+				<CallApiButton
+					v-if="applicantInterview?.status === 'COMPLETED'"
+					:is-loading="isHiring"
+					class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-green-500 bg-green-50 text-green-500 hover:bg-green-100"
+					@click="emits('offer')">
+					Offer
+				</CallApiButton>
+			</SheetFooter>
 		</SheetContentCustom>
 	</Sheet>
 </template>

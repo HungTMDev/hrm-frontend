@@ -88,7 +88,7 @@ export const useSendEmail = () => {
 			await sendEmail(payload.email, payload.content, payload.subject),
 		onSuccess: () => {
 			showToast({
-				message: 'Success!',
+				message: 'Sent email success!',
 				type: 'success',
 			});
 		},

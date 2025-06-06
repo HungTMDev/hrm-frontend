@@ -22,7 +22,7 @@ const handleCopy = async (e: any) => {
 		});
 	} catch (error: any) {
 		showToast({
-			message: e.message,
+			message: 'Failed to copy!!',
 			type: 'error',
 		});
 	}

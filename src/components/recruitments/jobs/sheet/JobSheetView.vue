@@ -13,7 +13,6 @@ import MagicStick3 from '@/assets/icons/Outline/Magic Stick 3.svg';
 import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
 import Ranking from '@/assets/icons/Outline/Ranking.svg';
 import SqureAcademic from '@/assets/icons/Outline/Square Academic Cap 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 import UserCircle from '@/assets/icons/Outline/User Circle.svg';
 import UserHand from '@/assets/icons/Outline/User Hands.svg';
 import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
@@ -27,7 +26,7 @@ import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { useGetApplicantsByJobId } from '@/composables/recruitment/applicant/useApplicant';
 import { JOB_STATUS_STYLE } from '@/constants';
-import { formatISOStringToLocalDateTime, parseGender } from '@/lib/utils';
+import { formatISOStringToLocalDateTime, formatStatus, parseGender } from '@/lib/utils';
 import type { IApplicant, IJob } from '@/types';
 import { computed } from 'vue';
 
@@ -38,7 +37,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: 'openAlert', payload: any): void;
 	(e: 'edit'): void;
-	(e: 'viewCandidate', payload: any): void;
+	(e: 'viewCandidate', payload: IApplicant): void;
 }>();
 
 const jobId = computed(() => props.data?.id);
@@ -83,12 +82,15 @@ const handleViewCandidate = (payload: IApplicant) => {
 			<InformationItem
 				:icon="UserCircle"
 				label="Position"
-				:value="data?.position.title || ''" />
-			<InformationItem :icon="Chart2" label="Level" :value="data?.level as string" />
+				:value="data?.position.name || ''" />
+			<InformationItem
+				:icon="Chart2"
+				label="Level"
+				:value="formatStatus(data?.level as string)" />
 			<InformationItem
 				:icon="Case"
 				label="Employment type"
-				:value="(data?.employment_type as string) || ''" />
+				:value="formatStatus((data?.employment_type as string) || '')" />
 			<InformationItem
 				:icon="CheckList"
 				label="Quantity"
@@ -111,7 +113,6 @@ const handleViewCandidate = (payload: IApplicant) => {
 				:value="
 					parseGender(data?.gender) === '' ? 'Not required' : parseGender(data?.gender)
 				" />
-			<InformationItem :icon="MagicStick3" label="Appearance" value="Not required" />
 		</div>
 
 		<div class="mt-8">

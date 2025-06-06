@@ -21,24 +21,34 @@ import {
 	createNameByGender,
 	formatISOStringToLocalDateTime,
 } from '@/lib/utils';
-import type { IApplicant } from '@/types';
+import type { IApplicant, IApplicantInterview, InterviewPayload } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import Handlebars from 'handlebars';
 import { useForm } from 'vee-validate';
 import { computed, ref, watch, type Ref } from 'vue';
 import { meetingScheduleSchema, type MeetingSchedulePayload } from './schema';
-import Textarea from '@/components/ui/textarea/Textarea.vue';
+import {
+	useCreateInterview,
+	useSendEmail,
+	useUpdateStage,
+} from '@/composables/recruitment/applicant/useUpdateApplicant';
+import CallApiButton from '@/components/common/CallApiButton.vue';
+import { useQueryClient } from '@tanstack/vue-query';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
 
 const props = defineProps<{
 	applicant?: IApplicant;
+	listInterview?: IApplicantInterview[];
 }>();
 
 const emits = defineEmits<{
 	(e: 'back'): void;
+	(e: 'closeSheet'): void;
 }>();
 
 const formSchema = toTypedSchema(meetingScheduleSchema);
 
+const queryClient = useQueryClient();
 const { data: users } = useListUser();
 const { data: account } = useGetAccount();
 
@@ -46,8 +56,25 @@ const data = ref<MeetingSchedulePayload>();
 const nextStep = ref(false);
 const renderedHtml = ref('');
 
+const toStage = computed(() => {
+	console.log(props.listInterview?.find((item) => item.stage === 'INTERVIEW_1'));
+	if (
+		(props.applicant?.current_stage === 'INTERVIEW_2' &&
+			props.listInterview
+				?.filter((item) => item.stage === 'INTERVIEW_2')
+				?.every((item) => item.status === 'CANCELED')) ||
+		(props.applicant?.current_stage === 'INTERVIEW_1' &&
+			props.listInterview
+				?.filter((item) => item.stage === 'INTERVIEW_1')
+				?.some((item) => item.status === 'COMPLETED'))
+	) {
+		return 'INTERVIEW_2';
+	}
+
+	return 'INTERVIEW_1';
+});
 const hrSelected = computed(() => {
-	return users.value?.find((item) => item.id === data.value?.coordinator);
+	return users.value?.find((item) => item.id === data.value?.coordinator) || account.value;
 });
 const interviewDateTime = computed(() => {
 	const str = createISOStringFromDayAndTime(
@@ -85,14 +112,21 @@ const dataFill: Ref<
 	),
 	hr_email: hrSelected.value?.email,
 	phone_number: hrSelected.value?.phone_number || '',
+	location:
+		data.value?.location?.trim() ||
+		'Tầng 4 - Tòa Hanvico, 217- 219 Lê Duẩn, Thanh Khê, Đà Nẵng',
 }));
 
-const { handleSubmit, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue, values } = useForm({
 	validationSchema: formSchema,
 	initialValues: {
-		interviewer: [''],
+		participant_ids: [''],
 	},
 });
+
+const { mutate: sendEmail } = useSendEmail();
+const { mutate: updateStage } = useUpdateStage();
+const { mutate: createInterview, isPending } = useCreateInterview();
 
 const onSubmit = handleSubmit((values) => {
 	data.value = values;
@@ -105,12 +139,46 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 
 const handleBack = () => {
 	if (nextStep.value) {
-		setFieldValue('interviewer', data.value?.interviewer);
+		setFieldValue('participant_ids', data.value?.participant_ids);
 		nextStep.value = false;
 		return;
 	}
 	data.value = undefined;
 	emits('back');
+};
+
+const handleSend = () => {
+	const payload: InterviewPayload = {
+		...data.value,
+		scheduled_time: createISOStringFromDayAndTime(
+			data.value?.interview_date || '',
+			data.value?.interview_time || '',
+		),
+		interview_type: data.value?.interview_type || '',
+		interview_name: data.value?.interview_name || '',
+		application_id: props.applicant?.id || '',
+		stage: toStage.value,
+	};
+
+	createInterview(payload, {
+		onSuccess: () => {
+			emits('closeSheet');
+
+			updateStage({
+				id: props.applicant?.id || '',
+				data: { to_stage: toStage.value, outcome: 'PASSED' },
+			});
+			queryClient.invalidateQueries({
+				queryKey: [applicantKey.interview],
+			});
+
+			sendEmail({
+				email: 'admin@lutech.ltd',
+				content: renderedHtml.value.replace(/"/g, "'"),
+				subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
+			});
+		},
+	});
 };
 
 watch(dataFill, () => {
@@ -182,6 +250,7 @@ watch(dataFill, () => {
 					name="duration_minutes"
 					type="number"
 					:model-value="data?.duration_minutes"
+					:required="true"
 					label="Duration minutes"
 					placeholder="Enter duration minutes"
 					class="w-full" />
@@ -191,30 +260,33 @@ watch(dataFill, () => {
 					label="Coordinator"
 					:model-value="data?.coordinator ?? account?.id"
 					:icon="UserSpeak"
-					:required="true"
 					:list="users?.map((user) => ({ label: user.name, value: user.id })) || []" />
 				<FormInput
+					v-if="values.interview_type !== 'ONLINE'"
 					name="location"
 					label="Location"
+					:required="true"
 					:model-value="data?.location"
 					:icon="MapPoint"
 					placeholder="Enter location"
 					class="w-full" />
 
 				<FormInput
+					v-else
 					name="meeting_link"
 					label="Meeting link"
 					:model-value="data?.meeting_link"
 					:icon="Link"
+					:required="true"
 					placeholder="Enter meeting link"
 					class="w-full" />
 
 				<div>
 					<FormSelectArray
-						name="interviewer"
+						name="participant_ids"
 						label="Interviewer"
 						class="w-full"
-						:model-value="data?.interviewer"
+						:model-value="data?.participant_ids"
 						:icon="UserSpeak"
 						:required="true"
 						:list="users?.map((user) => ({ label: user.name, value: user.id })) || []"
@@ -223,12 +295,23 @@ watch(dataFill, () => {
 			</div>
 		</form>
 	</ScrollArea>
-	<div class="flex justify-end gap-2">
+	<div class="flex justify-end gap-2 mb-4">
 		<Button variant="outline" class="rounded-2xl h-auto py-3 px-6" @click="handleBack">
 			Back
 		</Button>
-		<Button form="form" class="rounded-2xl h-auto py-3 px-8 bg-blue-500 hover:bg-blue-600">
+		<Button
+			v-if="!nextStep"
+			form="form"
+			class="rounded-2xl h-auto py-3 px-8 bg-blue-500 hover:bg-blue-600">
 			Next
 		</Button>
+		<CallApiButton
+			v-else
+			form="form"
+			:is-loading="isPending"
+			class="rounded-2xl h-auto py-3 px-8 bg-blue-500 hover:bg-blue-600"
+			@click="handleSend">
+			Send
+		</CallApiButton>
 	</div>
 </template>

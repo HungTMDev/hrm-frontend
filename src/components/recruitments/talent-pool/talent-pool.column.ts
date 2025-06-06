@@ -14,39 +14,39 @@ export const talentPoolColumns = (
 	handleOpenSheet: (payload?: ICandidate, view?: boolean) => void,
 	handleOpenAlert: (payload?: ICandidate) => void,
 ): ColumnDef<ICandidate>[] => [
-	{
-		id: 'select',
-		header: ({ table }) =>
-			h(
-				Checkbox,
-				{
-					modelValue:
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate'),
-					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white border-gray-300',
-				},
-				() =>
-					table.getIsSomePageRowsSelected()
-						? h(Minus, { size: 14 })
-						: h(Check, { size: 14 }),
-			),
-		cell: ({ row }) =>
-			h(
-				Checkbox,
-				{
-					onClick: (event: any) => event.stopPropagation(),
-					modelValue: row.getIsSelected(),
-					'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-					ariaLabel: 'Select row',
-					class: ' data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-				},
-				() => h(Check, { size: 14 }),
-			),
-		enableSorting: false,
-		enableHiding: false,
-	},
+	// {
+	// 	id: 'select',
+	// 	header: ({ table }) =>
+	// 		h(
+	// 			Checkbox,
+	// 			{
+	// 				modelValue:
+	// 					table.getIsAllPageRowsSelected() ||
+	// 					(table.getIsSomePageRowsSelected() && 'indeterminate'),
+	// 				'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
+	// 				ariaLabel: 'Select all',
+	// 				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white border-gray-300',
+	// 			},
+	// 			() =>
+	// 				table.getIsSomePageRowsSelected()
+	// 					? h(Minus, { size: 14 })
+	// 					: h(Check, { size: 14 }),
+	// 		),
+	// 	cell: ({ row }) =>
+	// 		h(
+	// 			Checkbox,
+	// 			{
+	// 				onClick: (event: any) => event.stopPropagation(),
+	// 				modelValue: row.getIsSelected(),
+	// 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+	// 				ariaLabel: 'Select row',
+	// 				class: ' data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+	// 			},
+	// 			() => h(Check, { size: 14 }),
+	// 		),
+	// 	enableSorting: false,
+	// 	enableHiding: false,
+	// },
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -92,12 +92,12 @@ export const talentPoolColumns = (
 	// },
 	{
 		accessorKey: 'created_by',
-		header: 'Create by',
-		cell: ({ row }) => row.original.created_by_user.name,
+		header: 'Created by',
+		cell: ({ row }) => row.original.created_by?.name,
 	},
 	{
 		accessorKey: 'updated_at',
-		header: 'Last update',
+		header: 'Last updated',
 		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.updated_at).date,
 	},
 	{
@@ -105,10 +105,10 @@ export const talentPoolColumns = (
 		header: 'Action',
 		cell: ({ row }) => {
 			const actions: IActionGroupType[] = [
-				{
-					label: 'Edit',
-					icon: Pen2,
-				},
+				// {
+				// 	label: 'Edit',
+				// 	icon: Pen2,
+				// },
 				{
 					label: 'Delete',
 					icon: Trash,

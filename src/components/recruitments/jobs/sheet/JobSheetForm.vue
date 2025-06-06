@@ -71,7 +71,7 @@ const listBranch = computed(
 const listPosition = computed(
 	() =>
 		positions.value?.map((item) => ({
-			label: item.title,
+			label: item.name,
 			value: item.id,
 		})) || [],
 );

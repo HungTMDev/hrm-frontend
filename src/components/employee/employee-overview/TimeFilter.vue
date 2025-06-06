@@ -118,7 +118,7 @@ const quarterList: ComboboxType[] = [
 
 const isOpen = ref(false);
 const label = ref('Year');
-const radioValue = ref<string>(radioList[0].value);
+const radioValue = ref<string>(radioList[0].value as string);
 
 const comboboxList = computed(() => {
 	if (radioValue.value === 'quarterly') {
@@ -171,11 +171,11 @@ const handleReset = () => {
 					:key="item.value"
 					class="flex items-center space-x-2">
 					<RadioGroupItem
-						:id="item.value"
+						:id="item.value as string"
 						:value="item.value"
 						class="text-blue-500"
 						:class="item.value === radioValue ? 'border-blue-500' : ''" />
-					<Label :for="item.value" class="text-slate-600 font-normal">{{
+					<Label :for="item.value as string" class="text-slate-600 font-normal">{{
 						item.label
 					}}</Label>
 				</div>

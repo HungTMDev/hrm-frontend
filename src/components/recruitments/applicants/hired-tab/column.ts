@@ -1,6 +1,7 @@
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import File from '@/assets/icons/Outline/File.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
+import UserAdd from '@/assets/icons/Outline/User Plus.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
@@ -10,7 +11,9 @@ import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
 
-export const hiredColumn = (): ColumnDef<IApplicant>[] => [
+export const hiredColumn = (
+	handleOpenSheet: (payload: IApplicant) => void,
+): ColumnDef<IApplicant>[] => [
 	// {
 	// 	id: 'select',
 	// 	header: ({ table }) =>
@@ -56,8 +59,8 @@ export const hiredColumn = (): ColumnDef<IApplicant>[] => [
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'job',
-		header: 'Job',
+		accessorKey: 'position',
+		header: 'Position',
 		cell: ({ row }) => row.original.job.title,
 	},
 	{
@@ -90,31 +93,33 @@ export const hiredColumn = (): ColumnDef<IApplicant>[] => [
 		header: 'Created at',
 		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.created_at).date,
 	},
-	// {
-	// 	accessorKey: 'status',
-	// 	header: 'Status',
-	// 	cell: ({ row }) => row.original.application_status,
-	// },
-	// {
-	// 	accessorKey: 'action',
-	// 	header: 'Action',
-	// 	cell: ({ row }) => {
-	// 		const actions: IActionGroupType[] = [
-	// 			{
-	// 				label: 'View',
-	// 				icon: Eye,
-	// 				style: '',
-	// 			},
-	// 			{
-	// 				label: 'Send email',
-	// 				icon: Letter,
-	// 				style: '',
-	// 			},
-	// 		];
 
-	// 		return h(ActionGroupCommon, {
-	// 			actions,
-	// 		});
-	// 	},
-	// },
+	{
+		accessorKey: 'action',
+		header: 'Action',
+		cell: ({ row }) => {
+			const actions: IActionGroupType[] = [
+				{
+					label: 'View',
+					icon: Eye,
+					style: 'text-slate-600',
+				},
+				// {
+				// 	label: 'Create user',
+				// 	icon: UserAdd,
+				// 	style: 'text-slate-600',
+				// },
+			];
+
+			const onView = () => {
+				handleOpenSheet(row.original);
+			};
+
+			return h(ActionGroupCommon, {
+				actions,
+				onView,
+				class: 'w-[150px]',
+			});
+		},
+	},
 ];

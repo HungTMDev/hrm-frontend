@@ -29,13 +29,18 @@ import { useCustomToast } from '@/lib/customToast';
 import type { IApplicant, IApplicantFilter, IJob } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { addApplicantSchema, type AddApplicantPayload } from '../schema';
 import {
 	useCreateApplicant,
 	useEditApplicant,
 } from '@/composables/recruitment/applicant/useUpdateApplicant';
 import type { PaginationState } from '@tanstack/vue-table';
+import FormSelect from '@/components/form/FormSelect.vue';
+import { useUploadFile } from '@/composables/common';
+import FormUpload from '@/components/form/FormUpload.vue';
+import CallApiButton from '@/components/common/CallApiButton.vue';
+import { fetchFileFromUrl } from '@/lib/utils';
 
 const props = defineProps<{
 	data?: IApplicant;
@@ -48,18 +53,20 @@ const emits = defineEmits<{
 	(e: 'close'): void;
 }>();
 
-const { showToast } = useCustomToast();
 const { data: jobs } = useListJob();
+const { showToast } = useCustomToast();
 
-const attaches = ref<File[]>();
-const avatar = ref<File>();
+const avatarFile = ref<File>();
+const attachesFile = ref<(File | undefined)[]>();
 
 const listJob = computed(() => {
 	return (
-		jobs.value?.map((item: IJob) => ({
-			label: item.title,
-			value: item.id,
-		})) || []
+		jobs.value
+			?.filter((item) => item.status === 'OPENING')
+			.map((item: IJob) => ({
+				label: item.title,
+				value: item.id,
+			})) || []
 	);
 });
 const pagination = computed(() => props.pagination);
@@ -71,28 +78,31 @@ const { handleSubmit, setFieldValue } = useForm({
 	validationSchema: formSchema,
 });
 
-const { mutate: createApplicant } = useCreateApplicant(pagination, filter);
-const { mutate: editApplicant } = useEditApplicant(pagination, filter);
+const { mutate: createApplicant, isPending: creating } = useCreateApplicant(pagination, filter);
+const { mutate: editApplicant, isPending: editing } = useEditApplicant(pagination, filter);
+const { mutateAsync: uploadFile } = useUploadFile();
 
-const onSubmit = handleSubmit((values) => {
-	// if (!attaches.value || attaches.value?.length === 0) {
-	// 	showToast({
-	// 		message: 'Please upload attaches',
-	// 		type: 'error',
-	// 	});
-	// 	return;
-	// }
-	// if (!avatar.value) {
-	// 	showToast({
-	// 		message: 'Please upload avatar',
-	// 		type: 'error',
-	// 	});
-	// 	return;
-	// }
+const onSubmit = handleSubmit(async (values) => {
+	if (!values.attaches || !values.avatar) {
+		showToast({
+			message: 'Please upload avatar and attaches',
+			type: 'warning',
+		});
+		return;
+	}
+
+	const avatarResponse = await uploadFile(values.avatar as File);
+	const avatarUrl = avatarResponse.url;
+
+	const attachesResponse = await Promise.all(
+		values.attaches.map((item) => uploadFile(item as File)),
+	);
+	const attachesUrl = attachesResponse.map((item) => item.url);
+
 	const payload: AddApplicantPayload = {
 		...values,
-		avatar: '',
-		attaches: [],
+		avatar: avatarUrl,
+		attaches: attachesUrl,
 	};
 
 	if (props.data) {
@@ -120,6 +130,17 @@ const onSubmit = handleSubmit((values) => {
 const setValue = (payload: { fieldName: any; data: any }) => {
 	setFieldValue(payload.fieldName, payload.data);
 };
+
+const setAttaches = (payload: File[] | undefined) => {
+	setFieldValue('attaches', payload);
+};
+
+onMounted(async () => {
+	avatarFile.value = await fetchFileFromUrl(props.data?.candidate.avatar);
+	attachesFile.value = await Promise.all(
+		props.data?.attaches?.map((item) => fetchFileFromUrl(item)) || [],
+	);
+});
 </script>
 <template>
 	<ScrollArea class="flex-1 pr-3">
@@ -187,18 +208,16 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 				<FormCurrency
 					name="expected_salary"
 					label="Expected salary"
-					:required="true"
 					:icon="Dollar"
 					placeholder="Enter expected salary"
-					:model-value="data?.expected_salary" />
-				<FormCombobox
+					:model-value="data?.expected_salary ?? undefined" />
+				<FormSelect
 					name="gender"
 					label="Gender"
 					list-size="md"
-					:list="genderCombobox"
 					:icon="UserHand"
-					placeholder="Select gender"
-					@update:model-value="setValue" />
+					:list="genderCombobox"
+					placeholder="Select gender" />
 
 				<FormCombobox
 					name="referred_by"
@@ -208,31 +227,31 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 					:icon="UserHand"
 					placeholder="Select referred" />
 				<MultipleUploadField
+					:model-value="attachesFile as File[]"
 					name="attaches"
 					label="Attaches"
-					@update:value="(payload) => (attaches = payload)" />
-				<UploadField
+					@update:value="setAttaches" />
+				<FormUpload
+					:model-value="avatarFile"
+					:preview-url="data?.candidate?.avatar"
 					name="avatar"
 					label="Avatar"
-					type="photo"
-					@update:value="(payload) => (avatar = payload)" />
+					type="photo" />
 			</div>
 
 			<div class="mt-4 flex flex-col gap-4">
 				<FormTextarea
 					name="cover_letter"
 					label="Cover letter"
-					:required="true"
-					:model-value="data?.cover_letter"
-					class="w-full rounded-2xl h-[300px]"
+					:model-value="data?.cover_letter ?? undefined"
+					class="w-full rounded-2xl h-[150px]"
 					placeholder="Enter cover letter" />
 
 				<FormTextarea
 					name="notes"
 					label="Notes"
-					:required="true"
-					:model-value="data?.notes"
-					class="w-full rounded-2xl h-[300px]"
+					:model-value="data?.notes ?? undefined"
+					class="w-full rounded-2xl h-[150px]"
 					placeholder="Write a note" />
 			</div>
 		</form>
@@ -245,8 +264,11 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 			class="rounded-2xl h-auto py-3.5 px-5">
 			Back
 		</Button>
-		<Button form="form" class="rounded-2xl h-auto py-3.5 px-5 bg-blue-500 hover:bg-blue-600">
+		<CallApiButton
+			:is-loading="creating || editing"
+			form="form"
+			class="rounded-2xl h-auto py-3.5 px-5 bg-blue-500 hover:bg-blue-600">
 			Submit
-		</Button>
+		</CallApiButton>
 	</SheetFooter>
 </template>

@@ -5,9 +5,11 @@ export interface IRecruitmentRequest extends IBaseResponse {
 	branch_id: string;
 	branch_name: string;
 	job_title_id: string;
+	hiring_manager_id: string;
+	department_id: string;
 	title: string;
-	level: JobLevel | JobLevel[];
-	employment_type: EmploymentType | EmploymentType;
+	level: string | string[];
+	employment_type: string | string[];
 	quantity: number;
 	justification: string;
 	expected_start_date: string;
@@ -24,6 +26,8 @@ export interface IRecruitmentRequest extends IBaseResponse {
 	department: IDepartment;
 	job_title: any;
 	hiring_manager: IUser;
+	canceled_by: IUser;
+	recruiter: IUser;
 }
 
 export interface IRecruitmentRequestFilter {
@@ -45,8 +49,8 @@ export interface IJob extends IBaseResponse {
 	position_id: string;
 	hiring_manager_id: string;
 	created_by: string;
-	level: JobLevel | JobLevel[];
-	employment_type: EmploymentType | EmploymentType[];
+	level: string | string[];
+	employment_type: string | string[];
 	status: JobStatus;
 	quantity: number;
 	due_date: string;
@@ -63,6 +67,9 @@ export interface IJob extends IBaseResponse {
 	position: IPosition;
 	hiring_manager: IUser;
 	created_by_user: IUser;
+	recruiter_id: string;
+	applicationCount: number;
+	recruiter: IUser;
 	[key: string]: any;
 }
 
@@ -133,7 +140,6 @@ export interface IApplicantInterview extends IBaseResponse {
 }
 
 export interface ICandidate extends IBaseResponse {
-	created_by: string;
 	full_name: string;
 	email: string;
 	phone_number: string;
@@ -154,7 +160,7 @@ export interface ICandidate extends IBaseResponse {
 	source?: string;
 	attaches?: string[];
 	notes?: string;
-	created_by_user: IUser;
+	created_by: IUser;
 }
 
 export interface ICandidateFilter {

@@ -42,10 +42,12 @@ import {
 import { recruitmentRequestKey } from '@/composables/recruitment/recruitment-request/key';
 import { useQueryClient } from '@tanstack/vue-query';
 import { useCustomToast } from '@/lib/customToast';
+import { useListUser } from '@/composables/user/useUser';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
 const { data: positions } = usePosition();
+const { data: users } = useListUser();
 const queryClient = useQueryClient();
 const { showToast } = useCustomToast();
 
@@ -72,7 +74,14 @@ const listBranch = computed(
 const listPosition = computed(
 	() =>
 		positions.value?.map((item) => ({
-			label: item.title,
+			label: item.name,
+			value: item.id,
+		})) || [],
+);
+const listUser = computed(
+	() =>
+		users.value?.map((item) => ({
+			label: item.name,
 			value: item.id,
 		})) || [],
 );
@@ -114,7 +123,7 @@ const handleCreateDraft = async () => {
 	const payload: RecruitmentRequestPayload = {
 		branch_id: values.branch_id || '',
 		department_id: values.department_id || '',
-		job_title_id: values.job_title_id || '',
+		position_id: values.position_id || '',
 		level: values.level || '',
 		employment_type: values.employment_type || '',
 		title: values.title || '',
@@ -123,6 +132,7 @@ const handleCreateDraft = async () => {
 		expected_start_date: values.expected_start_date || '',
 		justification: values.justification || '',
 		quantity: values.quantity || 0,
+		recruiter_id: values.recruiter_id || '',
 	};
 
 	props.data
@@ -196,14 +206,14 @@ const handleCreateDraft = async () => {
 					:modelValue="data?.department.id"
 					placeholder="Select department" />
 				<FormCombobox
-					name="job_title_id"
+					name="position_id"
 					label="Role"
 					list-size="md"
 					:list="listPosition"
 					:required="true"
 					:icon="UserCircle"
 					:modelValue="data?.job_title_id"
-					placeholder="Select department" />
+					placeholder="Select position" />
 				<FormCombobox
 					name="level"
 					label="Level"
@@ -211,7 +221,7 @@ const handleCreateDraft = async () => {
 					:required="true"
 					:list="listJobLevel"
 					:icon="Chart2"
-					:modelValue="data?.level"
+					:modelValue="data?.level as string"
 					placeholder="Select level" />
 				<FormCombobox
 					name="employment_type"
@@ -246,20 +256,31 @@ const handleCreateDraft = async () => {
 					:required="true"
 					:icon="Calendar"
 					:modelValue="data?.expected_start_date" />
+				<FormCombobox
+					name="recruiter_id"
+					label="Recruiter"
+					list-size="md"
+					:list="listUser"
+					:is-search="true"
+					:required="true"
+					:icon="UserCircle"
+					:modelValue="data?.job_title_id"
+					placeholder="Select recruiter" />
 			</div>
 			<div class="mt-6 grid gap-4">
-				<FormTextarea
-					label="Job description"
-					name="description"
-					:model-value="data?.description"
-					placeholder="A detailed job description"
-					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
 				<FormMarkdown
 					name="skills_required"
 					label="Skill required"
 					:modelValue="data?.skills_required"
 					:required="true"
 					placeholder="Enter skill required" />
+				<FormTextarea
+					label="Job description"
+					name="description"
+					:required="true"
+					:model-value="data?.description"
+					placeholder="A detailed job description"
+					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
 			</div>
 		</form>
 	</ScrollArea>

@@ -40,7 +40,7 @@ const { data: users } = useListUser();
 
 const formSchema = toTypedSchema(interviewSchema);
 
-const { handleSubmit, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue, values } = useForm({
 	validationSchema: formSchema,
 	initialValues: {
 		interviewer: [''],
@@ -137,11 +137,20 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 						placeholder="Enter duration minutes"
 						class="w-full" />
 					<FormInput
+						v-if="values.interview_type === 'ONLINE'"
 						name="meeting_link"
 						label="Meeting link"
 						:icon="Link"
 						:required="true"
 						placeholder="Enter meeting link"
+						class="w-full" />
+					<FormInput
+						v-else
+						name="location"
+						label="Location"
+						:icon="Link"
+						:required="true"
+						placeholder="Enter location"
 						class="w-full" />
 					<FormSelectArray
 						name="interviewer"

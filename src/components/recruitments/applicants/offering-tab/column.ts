@@ -1,44 +1,20 @@
+import {
+	default as CheckCircle,
+	default as CloseCircle,
+} from '@/assets/icons/Outline/Close Circle.svg';
 import File from '@/assets/icons/Outline/File.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
-import Letter from '@/assets/icons/Outline/Letter.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
 
-export const rejectedColumn = (
+export const offeringColumn = (
+	handleHire: (id: string) => void,
+	handleOpenAlert: (payload: IApplicant) => void,
 	handleOpenSheet: (payload: IApplicant) => void,
 ): ColumnDef<IApplicant>[] => [
-	{
-		id: 'select',
-		header: ({ table }) =>
-			h(
-				Checkbox,
-				{
-					modelValue:
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate'),
-					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
-				},
-				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
-			),
-		cell: ({ row }) =>
-			h(Checkbox, {
-				onClick: (event: any) => event.stopPropagation(),
-				modelValue: row.getIsSelected(),
-				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-				ariaLabel: 'Select row',
-				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-			}),
-		enableSorting: false,
-		enableHiding: false,
-	},
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -83,21 +59,6 @@ export const rejectedColumn = (
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'updated_at',
-		header: 'Last updated',
-		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.updated_at).date,
-	},
-	{
-		accessorKey: 'created_at',
-		header: 'Created at',
-		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.created_at).date,
-	},
-	// {
-	// 	accessorKey: 'status',
-	// 	header: 'Status',
-	// 	cell: ({ row }) => row.original.application_status,
-	// },
-	{
 		accessorKey: 'action',
 		header: 'Action',
 		cell: ({ row }) => {
@@ -108,18 +69,33 @@ export const rejectedColumn = (
 					style: 'text-slate-600',
 				},
 				{
-					label: 'Send email',
-					icon: Letter,
-					style: 'text-slate-600',
+					label: 'Hire',
+					icon: CheckCircle,
+					style: 'text-green-500',
+				},
+				{
+					label: 'Reject',
+					icon: CloseCircle,
+					style: 'text-red-500',
 				},
 			];
+
+			const onHire = () => {
+				handleHire(row.original.id);
+			};
 
 			const onView = () => {
 				handleOpenSheet(row.original);
 			};
 
+			const onReject = () => {
+				handleOpenAlert(row.original);
+			};
+
 			return h(ActionGroupCommon, {
 				actions,
+				onHire,
+				onReject,
 				onView,
 			});
 		},

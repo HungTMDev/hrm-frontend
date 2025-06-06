@@ -35,9 +35,12 @@ const handleSelect = (fieldName: string, data: string) => {
 			<FormField :name="`${name}[${index}]`">
 				<FormItem class="flex flex-col flex-1">
 					<div class="flex justify-between items-center h-[14px]">
-						<FormLabel :class="cn(index !== 0 && 'sr-only')">{{ label }}</FormLabel>
+						<FormLabel :class="cn(index !== 0 && 'sr-only ', 'text-slate-600')">{{
+							label
+						}}</FormLabel>
 						<div class="flex-1 text-end">
 							<Button
+								v-if="required && index !== 0"
 								@click="remove(index)"
 								variant="link"
 								class="p-0 h-auto text-red-500 text-xs"

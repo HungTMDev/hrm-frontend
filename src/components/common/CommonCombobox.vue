@@ -57,13 +57,12 @@ const handleSelect = (payload: any) => {
 		if (data.length === 0) {
 			emits('update:modelValue', undefined);
 		} else {
-			console.log(data);
-			emits('update:modelValue', data);
+			emits('update:modelValue', data as string[]);
 		}
 		return;
 	}
 
-	emits('update:modelValue', (payload as ComboboxType).value);
+	emits('update:modelValue', (payload as ComboboxType).value as string);
 };
 
 const setValue = (newVal: string | string[] | undefined, newList: ComboboxType[]) => {
@@ -211,7 +210,7 @@ watch(
 					v-for="item in list"
 					:key="item.value"
 					:value="item"
-					class="hover:bg-muted rounded-xl">
+					class="hover:bg-muted rounded-xl p-2">
 					<p class="truncate">{{ item.label }}</p>
 
 					<ComboboxItemIndicator>

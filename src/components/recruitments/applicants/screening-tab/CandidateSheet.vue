@@ -6,11 +6,11 @@ import SendEmail from './sheet/SendEmail.vue';
 import { ref } from 'vue';
 import CandidateSheetForm from './sheet/CandidateSheetForm.vue';
 import type { PaginationState } from '@tanstack/vue-table';
-import type { IApplicantFilter } from '@/types';
+import type { IApplicant, IApplicantFilter } from '@/types';
 
-defineProps<{
+const props = defineProps<{
 	open: boolean;
-	data?: any;
+	data?: IApplicant;
 	isView?: boolean;
 	pagination: PaginationState;
 	filter: Partial<IApplicantFilter>;
@@ -20,6 +20,7 @@ const emits = defineEmits<{
 	(e: 'update:open', payload: boolean): void;
 	(e: 'edit'): void;
 	(e: 'back'): void;
+	(e: 'delete', payload?: IApplicant): void;
 	(e: 'openDialog'): void;
 }>();
 
@@ -38,6 +39,10 @@ const handleCancle = () => {
 	isSendEmail.value = false;
 };
 
+const handleDelete = () => {
+	emits('delete', props.data);
+};
+
 const handleClose = () => {
 	isSendEmail.value = false;
 	emits('update:open', false);
@@ -51,12 +56,8 @@ const handleClose = () => {
 			<CandidateSheetView
 				v-else-if="isView"
 				:data="data"
-				:filter="filter"
-				:pagination="pagination"
 				@edit="emits('edit')"
-				@close="handleClose"
-				@open-dialog="emits('openDialog')"
-				@send-email="handleSendEmail" />
+				@delete="handleDelete" />
 			<CandidateSheetForm
 				v-else
 				:filter="filter"

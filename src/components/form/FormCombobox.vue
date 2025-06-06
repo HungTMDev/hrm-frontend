@@ -5,8 +5,7 @@ import CommonCombobox from '../common/CommonCombobox.vue';
 import { FormField, FormItem, FormLabel } from '../ui/form';
 import FormErrorCustom from './FormErrorCustom.vue';
 
-interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
-	modelValue?: string | string[];
+interface Prop extends FormFieldCommon {
 	list: ComboboxType[];
 	multiple?: boolean;
 	listSize?: 'sm' | 'md' | 'lg';

@@ -126,8 +126,12 @@ const handleEdit = () => {
 						<div class="flex gap-2 items-center">
 							<UserAvatar class="w-10 h-10" />
 							<div>
-								<h4 class="text-base font-medium text-black">Le Thi Linh Ly</h4>
-								<span class="text-xs">March 5, 2025</span>
+								<h4 class="text-base font-medium text-black">
+									{{ data?.created_by.name }}
+								</h4>
+								<span class="text-xs">{{
+									formatISOStringToLocalDateTime(data?.created_at).date
+								}}</span>
 							</div>
 						</div>
 						<p class="text-black mt-2">
@@ -135,7 +139,7 @@ const handleEdit = () => {
 						</p>
 					</div>
 				</div>
-				<div>
+				<!-- <div>
 					<Title class="text-base font-semibold text-black">Applicant history</Title>
 					<div class="mt-4">
 						<Accordion type="single" class="w-full grid gap-2" collapsible>
@@ -226,18 +230,18 @@ const handleEdit = () => {
 							</AccordionItem>
 						</Accordion>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</ScrollArea>
 	</div>
 
 	<SheetFooter>
-		<Button
+		<!-- <Button
 			variant="outline"
 			class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-blue-500 bg-blue-50 text-blue-500 hover:bg-blue-100 border-none"
 			@click="handleEdit">
 			<IconFromSvg :icon="Pen2" />Edit
-		</Button>
+		</Button> -->
 		<Button
 			class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100">
 			<IconFromSvg :icon="Trash" />Delete

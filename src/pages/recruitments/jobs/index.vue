@@ -195,14 +195,14 @@ const handleDelete = () => {
 };
 
 const handleFilter = (payload: FilterData[]) => {
-	const newFilter: Record<string, string[]> = {};
+	const newFilter: Record<string, (string | number)[]> = {};
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
 
 	pageIndex.value = 0;
 
-	filterPayload.value = newFilter;
+	filterPayload.value = newFilter as Record<string, string[]>;
 };
 
 const syncQueryToFilter = () => {
@@ -230,7 +230,7 @@ const syncQueryToFilter = () => {
 		if (item) {
 			const selectedItems =
 				item.items?.filter((i) =>
-					(filterPayload.value[key] as string[]).includes(i.value),
+					(filterPayload.value[key] as string[]).includes(i.value as string),
 				) || [];
 
 			if (selectedItems.length) {

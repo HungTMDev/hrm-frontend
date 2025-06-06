@@ -1,5 +1,5 @@
 import type { EmploymentType, JobLevel, JobStatus } from '@/constants';
-import type { IBaseResponse, IBranch, IDepartment, IPosition, IUser } from '.';
+import type { IBaseResponse, IBranch, IDepartment, IPosition, IUploadFileResponse, IUser } from '.';
 
 export interface IRecruitmentRequest extends IBaseResponse {
 	branch_id: string;
@@ -109,9 +109,9 @@ export interface IApplicant extends IBaseResponse {
 	applied_at: string;
 	expected_salary: 0;
 	source: string;
-	resume_url: string;
+	resume_url: IUploadFileResponse;
 	cover_letter: string;
-	attaches: [string];
+	attaches: IUploadFileResponse[];
 	notes: string;
 	current_stage: string;
 	application_status: string;

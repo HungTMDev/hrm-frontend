@@ -56,7 +56,7 @@ const emits = defineEmits<{
 const { data: jobs } = useListJob();
 const { showToast } = useCustomToast();
 
-const avatarFile = ref<File>();
+const resumeFile = ref<File>();
 const attachesFile = ref<(File | undefined)[]>();
 
 const listJob = computed(() => {
@@ -83,26 +83,24 @@ const { mutate: editApplicant, isPending: editing } = useEditApplicant(paginatio
 const { mutateAsync: uploadFile } = useUploadFile();
 
 const onSubmit = handleSubmit(async (values) => {
-	if (!values.attaches || !values.avatar) {
+	if (!values.attaches || !values.resume) {
 		showToast({
-			message: 'Please upload avatar and attaches',
+			message: 'Please upload resume and attaches',
 			type: 'warning',
 		});
 		return;
 	}
 
-	const avatarResponse = await uploadFile(values.avatar as File);
-	const avatarUrl = avatarResponse.url;
+	const resumeResponse = await uploadFile(values.resume as File);
 
 	const attachesResponse = await Promise.all(
 		values.attaches.map((item) => uploadFile(item as File)),
 	);
-	const attachesUrl = attachesResponse.map((item) => item.url);
 
 	const payload: AddApplicantPayload = {
 		...values,
-		avatar: avatarUrl,
-		attaches: attachesUrl,
+		resume: resumeResponse,
+		attaches: attachesResponse,
 	};
 
 	if (props.data) {
@@ -136,9 +134,9 @@ const setAttaches = (payload: File[] | undefined) => {
 };
 
 onMounted(async () => {
-	avatarFile.value = await fetchFileFromUrl(props.data?.candidate.avatar);
+	resumeFile.value = await fetchFileFromUrl(props.data?.candidate.resume_url);
 	attachesFile.value = await Promise.all(
-		props.data?.attaches?.map((item) => fetchFileFromUrl(item)) || [],
+		props.data?.attaches?.map((item) => fetchFileFromUrl(item.url)) || [],
 	);
 });
 </script>
@@ -218,7 +216,6 @@ onMounted(async () => {
 					:icon="UserHand"
 					:list="genderCombobox"
 					placeholder="Select gender" />
-
 				<FormCombobox
 					name="referred_by"
 					label="Referred by"
@@ -226,17 +223,18 @@ onMounted(async () => {
 					list-size="md"
 					:icon="UserHand"
 					placeholder="Select referred" />
+				<FormUpload
+					:model-value="resumeFile"
+					:preview-url="data?.resume_url.url"
+					name="resume"
+					label="Resume"
+					:required="true"
+					type="file" />
 				<MultipleUploadField
 					:model-value="attachesFile as File[]"
 					name="attaches"
 					label="Attaches"
 					@update:value="setAttaches" />
-				<FormUpload
-					:model-value="avatarFile"
-					:preview-url="data?.candidate?.avatar"
-					name="avatar"
-					label="Avatar"
-					type="photo" />
 			</div>
 
 			<div class="mt-4 flex flex-col gap-4">

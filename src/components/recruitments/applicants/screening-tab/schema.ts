@@ -30,7 +30,34 @@ export const addApplicantSchema = z.object({
 	full_name: z.string().min(1, 'This field is required'),
 	email: ZUtils.email(),
 	phone_number: ZUtils.phoneNumber(),
-	avatar: z.union([z.string(), z.instanceof(File)]).optional(),
+	avatar: z
+		.union([
+			z.object({
+				original_filename: z.string(),
+				filename: z.string(),
+				format: z.string(),
+				resource_type: z.string(),
+				url: z.string(),
+				path: z.string(),
+				bytes: z.number(),
+			}),
+			z.instanceof(File),
+		])
+		.optional(),
+	resume: z
+		.union([
+			z.object({
+				original_filename: z.string(),
+				filename: z.string(),
+				format: z.string(),
+				resource_type: z.string(),
+				url: z.string(),
+				path: z.string(),
+				bytes: z.number(),
+			}),
+			z.instanceof(File),
+		])
+		.optional(),
 	gender: z.string().optional(),
 	date_of_birth: z.string().optional(),
 	job_id: z.string(),
@@ -39,7 +66,22 @@ export const addApplicantSchema = z.object({
 	cover_letter: z.string().optional(),
 	recruiter_id: z.string().optional(),
 	notes: z.string().optional(),
-	attaches: z.union([z.array(z.string()), z.array(z.instanceof(File))]).optional(),
+	attaches: z
+		.union([
+			z.array(z.instanceof(File)),
+			z.array(
+				z.object({
+					original_filename: z.string(),
+					filename: z.string(),
+					format: z.string(),
+					resource_type: z.string(),
+					url: z.string(),
+					path: z.string(),
+					bytes: z.number(),
+				}),
+			),
+		])
+		.optional(),
 	resume_url: z.string().default('REFER'),
 	referred_by: z.string().optional(),
 });

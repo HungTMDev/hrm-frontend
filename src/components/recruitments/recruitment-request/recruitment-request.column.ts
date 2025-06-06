@@ -135,6 +135,11 @@ export const recruitmentRequestColumn = (
 							icon: CheckCircle,
 							style: 'text-green-500',
 						},
+						{
+							label: 'Reject',
+							icon: CloseCircle,
+							style: 'text-red-500',
+						},
 					];
 				}
 				return [

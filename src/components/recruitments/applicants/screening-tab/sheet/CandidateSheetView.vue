@@ -127,8 +127,8 @@ const handleDeleteApplicant = () => {
 				</div>
 				<div class="flex flex-col gap-1">
 					<a
-						v-if="data?.resume_url !== 'REFER'"
-						:href="data?.resume_url"
+						v-if="data?.resume_url"
+						:href="data?.resume_url.url"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
 						><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
@@ -137,7 +137,7 @@ const handleDeleteApplicant = () => {
 						v-if="data?.attaches && data?.attaches.length > 0"
 						v-for="(item, index) in data?.attaches ?? []"
 						:key="index"
-						:href="item"
+						:href="item.url"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
 						><IconFromSvg :icon="File" class="!w-4 !h-4" />{{

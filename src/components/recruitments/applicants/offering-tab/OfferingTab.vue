@@ -1,24 +1,17 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
-import Building from '@/assets/icons/Outline/Buildings.svg';
-import Case from '@/assets/icons/Outline/Case.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
+import AlertPopup from '@/components/common/AlertPopup.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
-import { useBranch } from '@/composables/branch/useBranch';
-import { useDepartment } from '@/composables/department/useDepartment';
 import { useApplicant } from '@/composables/recruitment/applicant/useApplicant';
-import {
-	DEFAULT_PAGINATION,
-	listEmploymentType,
-	listJobStatus,
-	RECRUITMENT_STAGE,
-} from '@/constants';
+import { useUpdateStage } from '@/composables/recruitment/applicant/useUpdateApplicant';
+import { useListJob } from '@/composables/recruitment/job/useJob';
+import { DEFAULT_PAGINATION, RECRUITMENT_STAGE } from '@/constants';
 import { valueUpdater } from '@/lib/utils';
 import type { FilterAccordion, FilterData, IApplicant, IApplicantFilter, IMeta } from '@/types';
 import {
@@ -28,11 +21,8 @@ import {
 	type VisibilityState,
 } from '@tanstack/vue-table';
 import { computed, ref } from 'vue';
-import { offeringColumn } from './column';
-import { useUpdateStage } from '@/composables/recruitment/applicant/useUpdateApplicant';
-import AlertPopup from '@/components/common/AlertPopup.vue';
 import ApplicantSheet from '../ApplicantSheet.vue';
-import { useListJob } from '@/composables/recruitment/job/useJob';
+import { offeringColumn } from './column';
 
 const { data: jobs } = useListJob();
 

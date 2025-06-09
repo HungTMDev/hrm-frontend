@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
 import File from '@/assets/icons/Outline/File.svg';
-import LetterOpened from '@/assets/icons/Outline/Letter Opened.svg';
-import MapPoint from '@/assets/icons/Outline/Map Point Wave.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
+import LetterOpened from '@/assets/icons/Outline/LetterOpened.svg';
+import MapPoint from '@/assets/icons/Outline/MapPointWave.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
 import User from '@/assets/icons/Outline/User.svg';
 import CommonCombobox from '@/components/common/CommonCombobox.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';

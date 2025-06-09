@@ -1,5 +1,5 @@
-import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
-import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
+import CheckCircle from '@/assets/icons/Outline/CheckCircle.svg';
+import CloseCircle from '@/assets/icons/Outline/CloseCircle.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import StatusTag from '@/components/common/StatusTag.vue';

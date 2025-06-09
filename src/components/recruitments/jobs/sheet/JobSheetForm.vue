@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
-import CheckList from '@/assets/icons/Outline/Checklist Minimalistic.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
+import CheckList from '@/assets/icons/Outline/ChecklistMinimalistic.svg';
 import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import SqureAcademic from '@/assets/icons/Outline/Square Academic Cap 2.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
-import UserHand from '@/assets/icons/Outline/User Hands.svg';
+import SqureAcademic from '@/assets/icons/Outline/SquareAcademicCap2.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
+import UserHand from '@/assets/icons/Outline/UserHands.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormCombobox from '@/components/form/FormCombobox.vue';

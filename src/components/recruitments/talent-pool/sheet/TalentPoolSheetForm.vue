@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import CaseRound from '@/assets/icons/Outline/Case Round Minimalistic.svg';
+import CaseRound from '@/assets/icons/Outline/CaseRoundMinimalistic.svg';
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
-import UserHand from '@/assets/icons/Outline/User Hands.svg';
+import SquareAcademic from '@/assets/icons/Outline/SquareAcademicCap.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
+import UserHand from '@/assets/icons/Outline/UserHands.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import UploadField from '@/components/common/UploadField.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
-import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
+import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { FormField } from '@/components/ui/form';
 import FormControl from '@/components/ui/form/FormControl.vue';
@@ -26,11 +26,10 @@ import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
+import { genderCombobox } from '@/constants';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { talentPoolSchema } from '../talent-pool.schema';
-import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
-import { genderCombobox } from '@/constants';
 
 defineProps<{
 	data?: any;

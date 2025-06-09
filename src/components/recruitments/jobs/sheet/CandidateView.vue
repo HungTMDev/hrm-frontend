@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
 import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
@@ -13,8 +13,8 @@ import File from '@/assets/icons/Outline/File.svg';
 import Separator from '@/components/ui/separator/Separator.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import { Button } from '@/components/ui/button';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinTrash.svg';
 import type { IApplicant } from '@/types';
 
 defineProps<{
@@ -59,7 +59,7 @@ const emits = defineEmits<{
 				</div>
 				<div class="flex flex-col gap-2">
 					<a
-						:href="applicant?.resume_url"
+						:href="applicant?.resume_url.url"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
 						><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a

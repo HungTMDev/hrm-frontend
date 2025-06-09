@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
-import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
-import UserPlus from '@/assets/icons/Outline/User Plus.svg';
+import Upload from '@/assets/icons/Outline/UploadMinimalistic.svg';
+import UserPlus from '@/assets/icons/Outline/UserPlus.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';

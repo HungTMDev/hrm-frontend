@@ -5,7 +5,7 @@ import type { DateValue } from 'reka-ui';
 import { onMounted, ref, type HTMLAttributes } from 'vue';
 import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
 import IconFromSvg from './IconFromSvg.vue';
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
 import SelectCalendar from './SelectCalendar.vue';
 import Button from '../ui/button/Button.vue';
 import { FormControl } from '../ui/form';

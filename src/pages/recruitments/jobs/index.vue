@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
-import CaseRound from '@/assets/icons/Outline/Case Round Minimalistic.svg';
+import CaseRound from '@/assets/icons/Outline/CaseRoundMinimalistic.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';

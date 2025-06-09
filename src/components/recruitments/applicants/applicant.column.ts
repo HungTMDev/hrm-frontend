@@ -1,6 +1,6 @@
 import File from '@/assets/icons/Outline/File.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';

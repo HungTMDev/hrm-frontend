@@ -1,27 +1,27 @@
 <script lang="ts" setup>
-import Title from '@/components/common/Title.vue';
-import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
-import { trainingTabColumn } from './columns';
-import DataTable from '@/components/datatable/DataTable.vue';
-import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
-import { useAppStore } from '@/stores/app.store';
-import ScrollBar from '@/components/ui/scroll-area/ScrollBar.vue';
-import Button from '@/components/ui/button/Button.vue';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
-import Graph from '@/assets/icons/Outline/Presentation Graph.svg';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import HandStar from '@/assets/icons/Outline/Hand Stars.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import Notebook from '@/assets/icons/Outline/Notebook Bookmark.svg';
-import Medal from '@/assets/icons/Outline/Medal Ribbons Star.svg';
-import ShieldUser from '@/assets/icons/Outline/Shield User.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import HandStar from '@/assets/icons/Outline/HandStars.svg';
+import Medal from '@/assets/icons/Outline/MedalRibbonsStar.svg';
+import Notebook from '@/assets/icons/Outline/NotebookBookmark.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Graph from '@/assets/icons/Outline/PresentationGraph.svg';
+import ShieldUser from '@/assets/icons/Outline/ShieldUser.svg';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import { ref } from 'vue';
+import Title from '@/components/common/Title.vue';
+import DataTable from '@/components/datatable/DataTable.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
 import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
+import Button from '@/components/ui/button/Button.vue';
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
+import ScrollBar from '@/components/ui/scroll-area/ScrollBar.vue';
+import { useAppStore } from '@/stores/app.store';
+import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
+import { ref } from 'vue';
+import { trainingTabColumn } from './columns';
 
 const appStore = useAppStore();
 

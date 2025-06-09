@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import Button from '@/components/ui/button/Button.vue';
-import Download from '@/assets/icons/Outline/Download Minimalistic.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import Download from '@/assets/icons/Outline/DownloadMinimalistic.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 
 const emit = defineEmits<{

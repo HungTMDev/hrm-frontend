@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import Down from '@/assets/icons/Bold/Alt Arrow Down.svg';
-import UserCross from '@/assets/icons/Outline/User Cross Rounded.svg';
-import UserPlus from '@/assets/icons/Outline/User Plus Rounded.svg';
-import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
+import Down from '@/assets/icons/Bold/AltArrowDown.svg';
+import UserCross from '@/assets/icons/Outline/UserCrossRounded.svg';
+import UserPlus from '@/assets/icons/Outline/UserPlusRounded.svg';
+import UserGroup from '@/assets/icons/Outline/UsersGroupTwoRounded.svg';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Title from '@/components/common/Title.vue';
 
-import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
+import SquareAcademic from '@/assets/icons/Outline/SquareAcademicCap.svg';
 import DoughnutChart from '@/components/common/chart/DoughnutChart.vue';
 import GaugeChart from '@/components/common/chart/GaugeChart.vue';
 import StackedBarChart from '@/components/common/chart/StackedBarChart.vue';

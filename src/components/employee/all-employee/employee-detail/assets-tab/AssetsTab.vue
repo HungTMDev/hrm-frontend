@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import Clipboard from '@/assets/icons/Outline/Clipboard Text.svg';
-import DocumentText from '@/assets/icons/Outline/Document Text.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import Clipboard from '@/assets/icons/Outline/ClipboardText.svg';
+import DocumentText from '@/assets/icons/Outline/DocumentText.svg';
 import Library from '@/assets/icons/Outline/Library.svg';
 import Notes from '@/assets/icons/Outline/Notes.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';

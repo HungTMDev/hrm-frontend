@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import CheckCircle from '@/assets/icons/Bold/Check Circle.svg';
+import CheckCircle from '@/assets/icons/Bold/CheckCircle.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
-import DangerCircle from '@/assets/icons/Outline/Danger Circle.svg';
-import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
+import DangerCircle from '@/assets/icons/Outline/DangerCircle.svg';
+import Upload from '@/assets/icons/Outline/UploadMinimalistic.svg';
 import { useCustomToast } from '@/lib/customToast';
 import type { FormFieldCommon } from '@/types';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';

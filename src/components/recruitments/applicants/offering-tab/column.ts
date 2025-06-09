@@ -1,7 +1,7 @@
 import {
 	default as CheckCircle,
 	default as CloseCircle,
-} from '@/assets/icons/Outline/Close Circle.svg';
+} from '@/assets/icons/Outline/CloseCircle.svg';
 import File from '@/assets/icons/Outline/File.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
@@ -42,14 +42,14 @@ export const offeringColumn = (
 		accessorKey: 'cv',
 		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
 		cell: ({ row }) => {
-			if (row.original.resume_url === 'REFER') {
+			if (!row.original.resume_url) {
 				return '';
 			}
 			return h(
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url,
+					href: row.original.resume_url.url,
 					target: '_blank',
 					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},

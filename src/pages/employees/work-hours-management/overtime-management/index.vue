@@ -16,11 +16,11 @@ import { useEmployeeStore } from '@/stores/employee.store';
 import type { FilterAccordion, OvertimeManagement } from '@/types';
 import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
 import { onBeforeMount, ref } from 'vue';
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 
 const accordionItems: FilterAccordion[] = [

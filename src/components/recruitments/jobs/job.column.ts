@@ -1,12 +1,10 @@
-import Eye from '@/assets/icons/Outline/Eye.svg';
-import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
+import CopyValue from '@/components/common/CopyValue.vue';
 import { listJobStatus } from '@/constants';
 import { formatISOStringToLocalDateTime, formatStatus } from '@/lib/utils';
-import type { IActionGroupType, IJob } from '@/types';
+import type { IJob } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
 import JobStatusCell from './JobStatusCell.vue';
-import CopyValue from '@/components/common/CopyValue.vue';
 
 export const jobColumn = (
 	handleOpenSheet: (payload?: IJob, view?: boolean) => void,

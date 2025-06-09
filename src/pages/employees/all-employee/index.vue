@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
-import Download from '@/assets/icons/Outline/Download Minimalistic.svg';
 import Buildings from '@/assets/icons/Outline/Buildings.svg';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import Download from '@/assets/icons/Outline/DownloadMinimalistic.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
-import UserHands from '@/assets/icons/Outline/User Hands.svg';
-import UserPlus from '@/assets/icons/Outline/User Plus.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
+import UserHands from '@/assets/icons/Outline/UserHands.svg';
+import UserPlus from '@/assets/icons/Outline/UserPlus.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
@@ -22,10 +22,10 @@ import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ROWS_PER_PAGE } from '@/constants';
 import { exportToExcel, valueUpdater } from '@/lib/utils';
+import router from '@/routers';
 import type { Employee, FilterAccordion } from '@/types';
 import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
 import { ref } from 'vue';
-import router from '@/routers';
 
 const data: Employee[] = [
 	{

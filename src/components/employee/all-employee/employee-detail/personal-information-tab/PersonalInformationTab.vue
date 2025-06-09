@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import Title from '@/components/common/Title.vue';
-import UserRounded from '@/assets/icons/Outline/User Rounded.svg';
+import UserRounded from '@/assets/icons/Outline/UserRounded.svg';
 import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
 import Home from '@/assets/icons/Outline/Home.svg';
-import UserId from '@/assets/icons/Outline/User Id.svg';
-import UserHandUp from '@/assets/icons/Outline/User Hand Up.svg';
+import UserId from '@/assets/icons/Outline/UserId.svg';
+import UserHandUp from '@/assets/icons/Outline/UserHandUp.svg';
 import Globus from '@/assets/icons/Outline/Globus.svg';
-import UserHeart from '@/assets/icons/Outline/User Heart.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import UserHeart from '@/assets/icons/Outline/UserHeart.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import InformationItem from '@/components/common/InformationItem.vue';
 import Button from '@/components/ui/button/Button.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';

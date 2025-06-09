@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
 import Description from '@/components/common/Description.vue';
 import Title from '@/components/common/Title.vue';
 import Button from '@/components/ui/button/Button.vue';

@@ -2,6 +2,10 @@
 import UserAvatar from '@/components/common/UserAvatar.vue';
 import { Button } from '@/components/ui/button';
 
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
+import Logout2 from '@/assets/icons/Outline/Logout2.svg';
+import User from '@/assets/icons/Outline/User.svg';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -11,13 +15,9 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { useGetAccount, useLogout } from '@/composables/auth/useAuth';
-import { computed } from 'vue';
 import type { IUser } from '@/types';
-import User from '@/assets/icons/Outline/User.svg';
-import Logout2 from '@/assets/icons/Outline/Logout 2.svg';
+import { computed } from 'vue';
 
 const { data } = useGetAccount();
 const { mutate } = useLogout();

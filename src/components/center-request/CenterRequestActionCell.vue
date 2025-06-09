@@ -4,11 +4,11 @@ import { computed } from 'vue';
 import ActionGroupCommon from '../common/ActionGroupCommon.vue';
 import type { IActionGroupType } from '@/types';
 import Eye from '@/assets/icons/Outline/Eye.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
-import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
-import Undo from '@/assets/icons/Outline/Undo Left Round.svg';
-import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
+import CheckCircle from '@/assets/icons/Outline/CheckCircle.svg';
+import Undo from '@/assets/icons/Outline/UndoLeftRound.svg';
+import CloseCircle from '@/assets/icons/Outline/CloseCircle.svg';
 import type { LeaveRequest } from '@/types/center-request';
 
 const props = defineProps<{

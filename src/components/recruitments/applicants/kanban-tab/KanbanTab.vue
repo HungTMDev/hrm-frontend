@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
-import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
-import UserPlus from '@/assets/icons/Outline/User Plus.svg';
+import Upload from '@/assets/icons/Outline/UploadMinimalistic.svg';
+import UserPlus from '@/assets/icons/Outline/UserPlus.svg';
 import FilterPopover from '@/components/common/FilterPopover.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';

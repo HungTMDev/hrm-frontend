@@ -1,17 +1,14 @@
 <script lang="ts" setup>
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
-import UserPlus from '@/assets/icons/Outline/User Plus.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
 import { talentPoolColumns } from '@/components/recruitments/talent-pool/talent-pool.column';
 import TalentPoolSheet from '@/components/recruitments/talent-pool/TalentPoolSheet.vue';
-import { Button } from '@/components/ui/button';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { useTalentPool } from '@/composables/recruitment/talent-pool/useTalentPool';
 import { useDeleteTalentPool } from '@/composables/recruitment/talent-pool/useUpdateTalentPool';

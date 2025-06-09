@@ -1,9 +1,9 @@
 import { h, type Component } from 'vue';
 import { toast, type Action } from 'vue-sonner';
-import CheckCircle from '@/assets/icons/Bold/Check Circle.svg';
-import InfoCircle from '@/assets/icons/Bold/Info Circle.svg';
-import CloseCircle from '@/assets/icons/Bold/Close Circle.svg';
-import DangerTriangle from '@/assets/icons/Bold/Danger Triangle.svg';
+import CheckCircle from '@/assets/icons/Bold/CheckCircle.svg';
+import InfoCircle from '@/assets/icons/Bold/InfoCircle.svg';
+import CloseCircle from '@/assets/icons/Bold/CloseCircle.svg';
+import DangerTriangle from '@/assets/icons/Bold/DangerTriangle.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 
 export const useCustomToast = () => {

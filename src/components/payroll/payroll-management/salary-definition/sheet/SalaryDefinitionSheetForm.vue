@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Buildings from '@/assets/icons/Outline/Buildings.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';

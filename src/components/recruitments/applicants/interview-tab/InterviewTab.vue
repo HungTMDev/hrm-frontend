@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
-import UserSpeakBold from '@/assets/icons/Bold/User Speak.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
+import UserSpeakBold from '@/assets/icons/Bold/UserSpeak.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { computed, onMounted, ref } from 'vue';
 import Interview1Tab from './interview-1-tab/Interview1Tab.vue';

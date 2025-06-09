@@ -1,19 +1,19 @@
 import { defineStore } from 'pinia';
 import { ref, shallowRef } from 'vue';
-import Widget from '@/assets/icons/Outline/Widget 5.svg';
-import WidgetBold from '@/assets/icons/Bold/Widget 5.svg';
+import Widget from '@/assets/icons/Outline/Widget5.svg';
+import WidgetBold from '@/assets/icons/Bold/Widget5.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
 import CaseBold from '@/assets/icons/Bold/Case.svg';
-import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
-import DocumentAddBold from '@/assets/icons/Bold/Document Add.svg';
-import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
-import UserGroupBold from '@/assets/icons/Bold/Users Group Two Rounded.svg';
-import Payroll from '@/assets/icons/Outline/Dollar Minimalistic.svg';
-import PayrollBold from '@/assets/icons/Bold/Dollar Minimalistic.svg';
-import Training from '@/assets/icons/Outline/Presentation Graph.svg';
-import TrainingBold from '@/assets/icons/Bold/Presentation Graph.svg';
-import Document from '@/assets/icons/Outline/File Text.svg';
-import DocumentBold from '@/assets/icons/Bold/File Text.svg';
+import DocumentAdd from '@/assets/icons/Outline/DocumentAdd.svg';
+import DocumentAddBold from '@/assets/icons/Bold/DocumentAdd.svg';
+import UserGroup from '@/assets/icons/Outline/UsersGroupTwoRounded.svg';
+import UserGroupBold from '@/assets/icons/Bold/UsersGroupTwoRounded.svg';
+import Payroll from '@/assets/icons/Outline/DollarMinimalistic.svg';
+import PayrollBold from '@/assets/icons/Bold/DollarMinimalistic.svg';
+import Training from '@/assets/icons/Outline/PresentationGraph.svg';
+import TrainingBold from '@/assets/icons/Bold/PresentationGraph.svg';
+import Document from '@/assets/icons/Outline/FileText.svg';
+import DocumentBold from '@/assets/icons/Bold/FileText.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import CalendarBold from '@/assets/icons/Bold/Calendar.svg';
 import type { RouteType } from '@/types';
@@ -62,30 +62,30 @@ export const useAppStore = defineStore('app-store', () => {
 				},
 			],
 		},
-		// {
-		// 	id: '30000',
-		// 	path: '/employees',
-		// 	name: 'Employees',
-		// 	icon: shallowRef(UserGroup),
-		// 	activeIcon: shallowRef(UserGroupBold),
-		// 	children: [
-		// 		// {
-		// 		// 	id: '30001',
-		// 		// 	path: '/employees/overview',
-		// 		// 	name: 'Overview',
-		// 		// },
-		// 		{
-		// 			id: '30002',
-		// 			path: '/employees/all-employee',
-		// 			name: 'All employee',
-		// 		},
-		// 		{
-		// 			id: '30003',
-		// 			path: '/employees/work-hours-management',
-		// 			name: 'Work hours',
-		// 		},
-		// 	],
-		// },
+		{
+			id: '30000',
+			path: '/employees',
+			name: 'Employees',
+			icon: shallowRef(UserGroup),
+			activeIcon: shallowRef(UserGroupBold),
+			children: [
+				// {
+				// 	id: '30001',
+				// 	path: '/employees/overview',
+				// 	name: 'Overview',
+				// },
+				{
+					id: '30002',
+					path: '/employees/all-employee',
+					name: 'All employee',
+				},
+				{
+					id: '30003',
+					path: '/employees/work-hours-management',
+					name: 'Work hours',
+				},
+			],
+		},
 		// {
 		// 	id: '80000',
 		// 	path: '/center-request',

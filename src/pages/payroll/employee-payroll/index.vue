@@ -15,7 +15,7 @@ import { valueUpdater } from '@/lib/utils';
 import { usePayrollStore } from '@/stores/payroll.store';
 import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
 import { onBeforeMount, ref } from 'vue';
-import FileText from '@/assets/icons/Outline/File Text.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import router from '@/routers';
 import type { EmployeePayroll } from '@/types';

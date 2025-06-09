@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import UserRoundedBold from '@/assets/icons/Bold/User Rounded.svg';
-import UserSpeakBold from '@/assets/icons/Bold/User Speak.svg';
+import UserRoundedBold from '@/assets/icons/Bold/UserRounded.svg';
+import UserSpeakBold from '@/assets/icons/Bold/UserSpeak.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
+import ChatLine from '@/assets/icons/Outline/ChatLine.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
 import File from '@/assets/icons/Outline/File.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
-import LetterOpen from '@/assets/icons/Outline/Letter Opened.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import LetterOpen from '@/assets/icons/Outline/LetterOpened.svg';
 import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
-import User from '@/assets/icons/Outline/User Hand Up.svg';
-import UserRounded from '@/assets/icons/Outline/User Rounded.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import SquareAcademic from '@/assets/icons/Outline/SquareAcademicCap.svg';
+import User from '@/assets/icons/Outline/UserHandUp.svg';
+import UserRounded from '@/assets/icons/Outline/UserRounded.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
+import CallApiButton from '@/components/common/CallApiButton.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
@@ -32,11 +31,10 @@ import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGetApplicantById } from '@/composables/recruitment/applicant/useApplicant';
 import { APPLICANT_STAGE_STYLE } from '@/constants';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import type { IApplicantInterview } from '@/types';
 import { computed, ref, watch } from 'vue';
 import InterviewInformationTab from './sheet/interview-tab/InterviewInformationTab.vue';
-import CallApiButton from '@/components/common/CallApiButton.vue';
-import type { IApplicantInterview } from '@/types';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
 
 const props = defineProps<{
 	open: boolean;
@@ -175,8 +173,8 @@ watch(
 									</div>
 									<div class="flex flex-col gap-1">
 										<a
-											v-if="applicant?.resume_url !== 'REFER'"
-											:href="applicant?.resume_url"
+											v-if="applicant?.resume_url"
+											:href="applicant?.resume_url.url"
 											target="_blank"
 											class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
 											><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a

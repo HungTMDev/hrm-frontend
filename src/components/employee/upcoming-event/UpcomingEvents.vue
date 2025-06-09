@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
-import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
-import Confetti from '@/assets/icons/Outline/Confetti Minimalistic.svg';
-import Medal from '@/assets/icons/Outline/Medal Ribbon Star.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
+import Right from '@/assets/icons/Outline/AltArrowRight.svg';
+import Confetti from '@/assets/icons/Outline/ConfettiMinimalistic.svg';
+import Medal from '@/assets/icons/Outline/MedalRibbon Star.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Title from '@/components/common/Title.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';

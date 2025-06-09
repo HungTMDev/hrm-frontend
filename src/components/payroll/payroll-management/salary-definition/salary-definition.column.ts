@@ -5,8 +5,8 @@ import type { IActionGroupType, SalaryDefinition } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 
 export const salaryDefinitionColumn = (
 	handleOpenSheet: (payload?: SalaryDefinition, view?: boolean) => void,

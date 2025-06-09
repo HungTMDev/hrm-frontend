@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import Tuning from '@/assets/icons/Outline/Tuning.svg';
-import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
+import Upload from '@/assets/icons/Outline/UploadMinimalistic.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';

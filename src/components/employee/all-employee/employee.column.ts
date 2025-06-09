@@ -2,8 +2,8 @@ import type { IActionGroupType, Employee } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { Check, Minus } from 'lucide-vue-next';
 

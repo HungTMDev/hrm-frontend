@@ -1,19 +1,15 @@
-import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
-import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
+import CheckCircle from '@/assets/icons/Outline/CheckCircle.svg';
+import CloseCircle from '@/assets/icons/Outline/CloseCircle.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import File from '@/assets/icons/Outline/File.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import StatusTag from '@/components/common/StatusTag.vue';
-import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
-import { APPLICANT_STATUS_STYLE } from '@/constants';
+import { cn, formatISOStringToLocalDateTime } from '@/lib/utils';
 import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import { cn, formatISOStringToLocalDateTime } from '@/lib/utils';
 
 export const screeningColumn = (payload: {
 	handleOpenSheet?: (payload?: IApplicant, view?: boolean, isCreateSchedule?: boolean) => void;
@@ -21,32 +17,6 @@ export const screeningColumn = (payload: {
 	handleStage?: (action: string, payload: IApplicant) => void;
 	handleOpenDialog?: (payload: IApplicant) => void;
 }): ColumnDef<IApplicant>[] => [
-	// {
-	// 	id: 'select',
-	// 	header: ({ table }) =>
-	// 		h(
-	// 			Checkbox,
-	// 			{
-	// 				modelValue:
-	// 					table.getIsAllPageRowsSelected() ||
-	// 					(table.getIsSomePageRowsSelected() && 'indeterminate'),
-	// 				'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-	// 				ariaLabel: 'Select all',
-	// 				class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
-	// 			},
-	// 			() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
-	// 		),
-	// 	cell: ({ row }) =>
-	// 		h(Checkbox, {
-	// 			onClick: (event: any) => event.stopPropagation(),
-	// 			modelValue: row.getIsSelected(),
-	// 			'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-	// 			ariaLabel: 'Select row',
-	// 			class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-	// 		}),
-	// 	enableSorting: false,
-	// 	enableHiding: false,
-	// },
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -74,14 +44,14 @@ export const screeningColumn = (payload: {
 		accessorKey: 'cv',
 		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
 		cell: ({ row }) => {
-			if (row.original.resume_url === 'REFER') {
+			if (!row.original.resume_url) {
 				return '';
 			}
 			return h(
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url,
+					href: row.original.resume_url.url,
 					target: '_blank',
 					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},

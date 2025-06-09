@@ -1,17 +1,14 @@
-import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
-import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
+import CheckCircle from '@/assets/icons/Outline/CheckCircle.svg';
+import CloseCircle from '@/assets/icons/Outline/CloseCircle.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Case from '@/assets/icons/Outline/Case Round Minimalistic.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import { RECRUITMENT_REQUEST_STATUS_STYLE } from '@/constants';
 import { formatISOStringToLocalDateTime, formatStatus } from '@/lib/utils';
 import type { IActionGroupType, IRecruitmentRequest } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import { Checkbox } from '../../ui/checkbox';
 
 export const recruitmentRequestColumn = (
 	handleOpenSheet: (payload?: IRecruitmentRequest, view?: boolean) => void,

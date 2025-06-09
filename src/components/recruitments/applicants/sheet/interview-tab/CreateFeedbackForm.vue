@@ -5,8 +5,8 @@ import FormSelect from '@/components/form/FormSelect.vue';
 import FormTextarea from '@/components/form/FormTextarea.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { listRecommendRecruitment } from '@/constants';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
 import { toTypedSchema } from '@vee-validate/zod';
 import {
 	interviewFeedbackScheama,

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Link from '@/assets/icons/Outline/Link.svg';
-import MapPoint from '@/assets/icons/Outline/Map Point.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import MapPoint from '@/assets/icons/Outline/MapPoint.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
@@ -173,7 +173,7 @@ const handleSend = () => {
 			});
 
 			sendEmail({
-				email: 'admin@lutech.ltd',
+				email: props.applicant?.candidate.email || '',
 				content: renderedHtml.value.replace(/"/g, "'"),
 				subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
 			});

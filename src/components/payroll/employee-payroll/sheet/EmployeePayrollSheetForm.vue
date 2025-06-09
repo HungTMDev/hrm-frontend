@@ -1,28 +1,28 @@
 <script lang="ts" setup>
+import Buildings from '@/assets/icons/Outline/Buildings.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import DocumentAdd from '@/assets/icons/Outline/DocumentAdd.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
+import Letter from '@/assets/icons/Outline/Letter.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
+import UserID from '@/assets/icons/Outline/UserId.svg';
+import UserGroup from '@/assets/icons/Outline/UsersGroupTwoRounded.svg';
+import UploadField from '@/components/common/UploadField.vue';
+import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
+import Button from '@/components/ui/button/Button.vue';
 import { FormControl, FormField, FormItem } from '@/components/ui/form';
 import Input from '@/components/ui/input/Input.vue';
 import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
-import { SheetClose, SheetDescription, SheetFooter, SheetTitle } from '@/components/ui/sheet';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import UploadField from '@/components/common/UploadField.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
+import { SheetClose, SheetDescription, SheetFooter, SheetTitle } from '@/components/ui/sheet';
 import { toTypedSchema } from '@vee-validate/zod';
-import { employeePayrollSchema } from '../employee-payroll.schema';
 import { useForm } from 'vee-validate';
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
-import Buildings from '@/assets/icons/Outline/Buildings.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import Letter from '@/assets/icons/Outline/Letter.svg';
-import UserID from '@/assets/icons/Outline/User Id.svg';
-import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
-import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
-import FormCalendar from '@/components/form/FormCalendar.vue';
-import Button from '@/components/ui/button/Button.vue';
+import { employeePayrollSchema } from '../employee-payroll.schema';
 
 const formSchema = toTypedSchema(employeePayrollSchema);
 

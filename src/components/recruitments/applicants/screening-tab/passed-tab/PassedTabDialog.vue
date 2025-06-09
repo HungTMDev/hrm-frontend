@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Link from '@/assets/icons/Outline/Link.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormInput from '@/components/form/FormInput.vue';

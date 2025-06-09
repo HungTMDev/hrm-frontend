@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
 import Buildings from '@/assets/icons/Outline/Buildings.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';

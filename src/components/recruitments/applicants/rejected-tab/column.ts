@@ -66,14 +66,14 @@ export const rejectedColumn = (
 		accessorKey: 'cv',
 		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
 		cell: ({ row }) => {
-			if (row.original.resume_url === 'REFER') {
+			if (!row.original.resume_url) {
 				return '';
 			}
 			return h(
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url,
+					href: row.original.resume_url.url,
 					target: '_blank',
 					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},

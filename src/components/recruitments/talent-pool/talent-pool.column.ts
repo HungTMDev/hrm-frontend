@@ -1,14 +1,11 @@
+import File from '@/assets/icons/Outline/File.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
-import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
+import { formatISOStringToLocalDateTime } from '@/lib/utils';
 import type { IActionGroupType, ICandidate } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import File from '@/assets/icons/Outline/File.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
 
 export const talentPoolColumns = (
 	handleOpenSheet: (payload?: ICandidate, view?: boolean) => void,

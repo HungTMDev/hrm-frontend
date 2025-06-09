@@ -19,9 +19,9 @@ export interface IRecruitmentRequest extends IBaseResponse {
 	submitted_at: string | null;
 	approved_at: string | null;
 	rejected_at: string | null;
-	cancelled_at: string | null;
-	cancelled_by: string | null;
-	cancelled_reason: null;
+	reject_reason: string | null;
+	canceled_at: string | null;
+	canceled_reason: null;
 	branch: IBranch;
 	department: IDepartment;
 	job_title: any;

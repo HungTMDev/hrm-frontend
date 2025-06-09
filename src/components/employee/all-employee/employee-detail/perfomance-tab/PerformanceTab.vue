@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
 import Chart from '@/assets/icons/Outline/Chart.svg';
-import ChatRound from '@/assets/icons/Outline/Chat Round Line.svg';
-import DocumentText from '@/assets/icons/Outline/Document Text.svg';
+import ChatRound from '@/assets/icons/Outline/ChatRoundLine.svg';
+import DocumentText from '@/assets/icons/Outline/DocumentText.svg';
 import File from '@/assets/icons/Outline/File.svg';
-import ListCheck from '@/assets/icons/Outline/List Check Minimalistic.svg';
-import Medal from '@/assets/icons/Outline/Medal Ribbon Star.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import ListCheck from '@/assets/icons/Outline/ListCheckMinimalistic.svg';
+import Medal from '@/assets/icons/Outline/MedalRibbonStar.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import Title from '@/components/common/Title.vue';

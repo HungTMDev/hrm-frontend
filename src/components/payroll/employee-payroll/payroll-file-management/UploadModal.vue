@@ -11,12 +11,12 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
+import Upload from '@/assets/icons/Outline/UploadMinimalistic.svg';
 import Restart from '@/assets/icons/Outline/Restart.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
-import FileText from '@/assets/icons/Bold/File Text.svg';
-import DangerCircle from '@/assets/icons/Bold/Danger Circle.svg';
-import CheckCircle from '@/assets/icons/Bold/Check Circle.svg';
+import FileText from '@/assets/icons/Bold/FileText.svg';
+import DangerCircle from '@/assets/icons/Bold/DangerCircle.svg';
+import CheckCircle from '@/assets/icons/Bold/CheckCircle.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 import Label from '@/components/ui/label/Label.vue';

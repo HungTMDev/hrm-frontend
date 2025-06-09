@@ -1,29 +1,29 @@
 <script lang="ts" setup>
+import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
+import HandMoney from '@/assets/icons/Outline/HandMoney.svg';
+import Health from '@/assets/icons/Outline/Health.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import WadOfMoney from '@/assets/icons/Outline/WadOfMoney.svg';
+import WalletMoney from '@/assets/icons/Outline/WalletMoney.svg';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import Title from '@/components/common/Title.vue';
-import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
-import WalletMoney from '@/assets/icons/Outline/Wallet Money.svg';
-import HandMoney from '@/assets/icons/Outline/Hand Money.svg';
-import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
-import Health from '@/assets/icons/Outline/Health.svg';
-import WadOfMoney from '@/assets/icons/Outline/Wad Of Money.svg';
-import { formatCurrency } from '@/lib/utils';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import Separator from '@/components/ui/separator/Separator.vue';
-import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
-import { salaryHistoryColumns } from './columns';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import { ref } from 'vue';
-import Button from '@/components/ui/button/Button.vue';
-import { toTypedSchema } from '@vee-validate/zod';
-import { useForm } from 'vee-validate';
-import { z } from 'zod';
 import FormCurrency from '@/components/form/FormCurrency.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
 import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
+import Button from '@/components/ui/button/Button.vue';
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
+import Separator from '@/components/ui/separator/Separator.vue';
+import { formatCurrency } from '@/lib/utils';
+import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+import { ref } from 'vue';
+import { z } from 'zod';
+import { salaryHistoryColumns } from './columns';
 
 const isEdit = ref(false);
 

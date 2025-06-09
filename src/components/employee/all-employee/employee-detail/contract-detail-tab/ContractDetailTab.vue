@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import DocumentAdd from '@/assets/icons/Outline/DocumentAdd.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
 import File from '@/assets/icons/Outline/File.svg';
 import Notes from '@/assets/icons/Outline/Notes.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';

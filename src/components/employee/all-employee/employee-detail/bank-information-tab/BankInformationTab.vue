@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Card from '@/assets/icons/Outline/Card.svg';
-import HomeAdd from '@/assets/icons/Outline/Home Add.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import UserId from '@/assets/icons/Outline/User Id.svg';
+import HomeAdd from '@/assets/icons/Outline/HomeAdd.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import UserId from '@/assets/icons/Outline/UserId.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import Title from '@/components/common/Title.vue';

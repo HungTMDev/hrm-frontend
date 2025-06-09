@@ -2,10 +2,10 @@
 import InformationItem from '@/components/common/InformationItem.vue';
 import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 import { SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import ClockCircle from '@/assets/icons/Outline/ClockCircle.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
 import Weigher from '@/assets/icons/Outline/Weigher.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
@@ -13,9 +13,9 @@ import StatusTag from '@/components/common/StatusTag.vue';
 import { PAYROLL_FILE_STATUS_STYLE } from '@/constants';
 import Button from '@/components/ui/button/Button.vue';
 import type { PayrollFileManagement } from '@/types';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
-import Download from '@/assets/icons/Outline/Download Minimalistic.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
+import Download from '@/assets/icons/Outline/DownloadMinimalistic.svg';
 import Title from '@/components/common/Title.vue';
 
 defineProps<{

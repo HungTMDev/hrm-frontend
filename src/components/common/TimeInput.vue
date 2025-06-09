@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { TimeFieldInput, TimeFieldRoot } from 'reka-ui';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
+import ClockCircle from '@/assets/icons/Outline/ClockCircle.svg';
 import IconFromSvg from './IconFromSvg.vue';
 import { onMounted, ref, type HTMLAttributes } from 'vue';
 import { cn } from '@/lib/utils';

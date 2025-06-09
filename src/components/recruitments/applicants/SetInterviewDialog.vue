@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Link from '@/assets/icons/Outline/Link.svg';
-import MapPoint from '@/assets/icons/Outline/Map Point.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import MapPoint from '@/assets/icons/Outline/MapPoint.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormInput from '@/components/form/FormInput.vue';

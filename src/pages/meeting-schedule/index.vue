@@ -6,8 +6,8 @@ import { getLocalTimeZone, today, type DateValue, CalendarDate } from '@internat
 import { ref, type Ref } from 'vue';
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
-import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
+import Right from '@/assets/icons/Outline/AltArrowRight.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { formatISOStringToLocalDateTime, parseDateTime } from '@/lib/utils';

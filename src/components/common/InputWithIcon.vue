@@ -4,7 +4,7 @@ import { useVModel } from '@vueuse/core';
 import { cn } from '@/lib/utils';
 import IconFromSvg from './IconFromSvg.vue';
 import Eye from '@/assets/icons/Outline/Eye.svg';
-import EyeClosed from '@/assets/icons/Outline/Eye Closed.svg';
+import EyeClosed from '@/assets/icons/Outline/EyeClosed.svg';
 
 const props = defineProps<{
 	defaultValue?: string | number;

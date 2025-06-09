@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AddCircle from '@/assets/icons/Outline/Add Circle.svg';
+import AddCircle from '@/assets/icons/Outline/AddCircle.svg';
 import { cn } from '@/lib/utils';
 import type { ComboboxType, FormFieldCommon } from '@/types';
 import { FieldArray } from 'vee-validate';

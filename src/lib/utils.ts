@@ -257,3 +257,7 @@ export const createNameByGender = (name: string, gender: string) => {
 
 	return `Mr ${name}`;
 };
+
+export const createPathFromServerDomain = (path: string) => {
+	return `${import.meta.env.VITE_SERVER_DOMAIN}/${path}`;
+};

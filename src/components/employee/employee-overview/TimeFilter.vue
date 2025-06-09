@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { computed, ref } from 'vue';
 import Separator from '@/components/ui/separator/Separator.vue';

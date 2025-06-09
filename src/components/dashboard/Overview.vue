@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import Down from '@/assets/icons/Bold/Alt Arrow Down.svg';
-import Up from '@/assets/icons/Bold/Alt Arrow Up.svg';
+import Down from '@/assets/icons/Bold/AltArrowDown.svg';
+import Up from '@/assets/icons/Bold/AltArrowUp.svg';
 import { useCounter } from '@vueuse/core';
 import { onMounted } from 'vue';
 import Description from '../common/Description.vue';

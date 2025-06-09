@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
-import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
+import Right from '@/assets/icons/Outline/AltArrowRight.svg';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { addDays, addWeeks, format, isSameDay, startOfWeek, subWeeks } from 'date-fns';

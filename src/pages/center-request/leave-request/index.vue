@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
+import DocumentAdd from '@/assets/icons/Outline/DocumentAdd.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import { leaveRequestColumns } from '@/components/center-request/leave-request/columns';
 import LeaveRequestSheet from '@/components/center-request/leave-request/LeaveRequestSheet.vue';

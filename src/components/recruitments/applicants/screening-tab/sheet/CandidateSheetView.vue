@@ -1,35 +1,30 @@
 <script lang="ts" setup>
+import Calendar from '@/assets/icons/Outline/Calendar.svg';
+import ChatLine from '@/assets/icons/Outline/ChatLine.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
+import File from '@/assets/icons/Outline/File.svg';
+import Iphone from '@/assets/icons/Outline/iPhone.svg';
+import LetterOpen from '@/assets/icons/Outline/LetterOpened.svg';
+import Letter from '@/assets/icons/Outline/Letter.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Ranking from '@/assets/icons/Outline/Ranking.svg';
+import SquareAcademic from '@/assets/icons/Outline/SquareAcademicCap.svg';
+import Trash from '@/assets/icons/Outline/TrashBinTrash.svg';
+import User from '@/assets/icons/Outline/UserHandUp.svg';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
+import InformationItem from '@/components/common/InformationItem.vue';
+import StatusTag from '@/components/common/StatusTag.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
+import Button from '@/components/ui/button/Button.vue';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import Separator from '@/components/ui/separator/Separator.vue';
 import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
-import Iphone from '@/assets/icons/Outline/iPhone.svg';
-import Letter from '@/assets/icons/Outline/Letter.svg';
-import LetterOpen from '@/assets/icons/Outline/Letter Opened.svg';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
-import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import User from '@/assets/icons/Outline/User Hand Up.svg';
-import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
-import File from '@/assets/icons/Outline/File.svg';
-import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
-import Button from '@/components/ui/button/Button.vue';
-import StatusTag from '@/components/common/StatusTag.vue';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import InformationItem from '@/components/common/InformationItem.vue';
-import Separator from '@/components/ui/separator/Separator.vue';
-import type { IApplicant, IApplicantFilter } from '@/types';
-import { useDeleteApplicant } from '@/composables/recruitment/applicant/useUpdateApplicant';
-import type { PaginationState } from '@tanstack/vue-table';
-import { computed } from 'vue';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import { createPathFromServerDomain, formatISOStringToLocalDateTime } from '@/lib/utils';
+import type { IApplicant } from '@/types';
 
 const props = defineProps<{
 	data?: IApplicant;
@@ -133,16 +128,15 @@ const handleDeleteApplicant = () => {
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
 						><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
 					>
+
 					<a
 						v-if="data?.attaches && data?.attaches.length > 0"
 						v-for="(item, index) in data?.attaches ?? []"
 						:key="index"
-						:href="item.url"
+						:href="createPathFromServerDomain(item.path)"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
-						><IconFromSvg :icon="File" class="!w-4 !h-4" />{{
-							`Attach ${index + 1}`
-						}}</a
+						><IconFromSvg :icon="File" class="!w-4 !h-4" />{{ item.filename }}</a
 					>
 					<!-- <a
 						href="#"

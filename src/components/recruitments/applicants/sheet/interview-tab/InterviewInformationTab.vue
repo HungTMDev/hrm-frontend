@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import AddCircle from '@/assets/icons/Outline/Add Circle.svg';
+import AddCircle from '@/assets/icons/Outline/AddCircle.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
+import ClockCircle from '@/assets/icons/Outline/ClockCircle.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';

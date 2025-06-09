@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
 import Title from '@/components/common/Title.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';

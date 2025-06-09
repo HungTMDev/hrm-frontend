@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import CaseRound from '@/assets/icons/Outline/Case Round Minimalistic.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
+import CaseRound from '@/assets/icons/Outline/CaseRoundMinimalistic.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import UserHand from '@/assets/icons/Outline/User Hands.svg';
+import UserHand from '@/assets/icons/Outline/UserHands.svg';
+import CallApiButton from '@/components/common/CallApiButton.vue';
 import MultipleUploadField from '@/components/common/MultipleUploadField.vue';
-import UploadField from '@/components/common/UploadField.vue';
 import FormCombobox from '@/components/form/FormCombobox.vue';
 import FormCurrency from '@/components/form/FormCurrency.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
+import FormSelect from '@/components/form/FormSelect.vue';
 import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
 import FormTextarea from '@/components/form/FormTextarea.vue';
+import FormUpload from '@/components/form/FormUpload.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { FormField } from '@/components/ui/form';
 import FormControl from '@/components/ui/form/FormControl.vue';
@@ -23,24 +25,21 @@ import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
-import { useListJob } from '@/composables/recruitment/job/useJob';
-import { genderCombobox } from '@/constants';
-import { useCustomToast } from '@/lib/customToast';
-import type { IApplicant, IApplicantFilter, IJob } from '@/types';
-import { toTypedSchema } from '@vee-validate/zod';
-import { useForm } from 'vee-validate';
-import { computed, onMounted, ref } from 'vue';
-import { addApplicantSchema, type AddApplicantPayload } from '../schema';
+import { useUploadFile } from '@/composables/common';
 import {
 	useCreateApplicant,
 	useEditApplicant,
 } from '@/composables/recruitment/applicant/useUpdateApplicant';
-import type { PaginationState } from '@tanstack/vue-table';
-import FormSelect from '@/components/form/FormSelect.vue';
-import { useUploadFile } from '@/composables/common';
-import FormUpload from '@/components/form/FormUpload.vue';
-import CallApiButton from '@/components/common/CallApiButton.vue';
+import { useListJob } from '@/composables/recruitment/job/useJob';
+import { genderCombobox } from '@/constants';
+import { useCustomToast } from '@/lib/customToast';
 import { fetchFileFromUrl } from '@/lib/utils';
+import type { IApplicant, IApplicantFilter, IJob } from '@/types';
+import type { PaginationState } from '@tanstack/vue-table';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+import { computed, onMounted, ref } from 'vue';
+import { addApplicantSchema, type AddApplicantPayload } from '../schema';
 
 const props = defineProps<{
 	data?: IApplicant;

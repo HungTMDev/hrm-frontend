@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
-import FileRight from '@/assets/icons/Outline/File Right.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import ChatLine from '@/assets/icons/Outline/ChatLine.svg';
+import ClockCircle from '@/assets/icons/Outline/ClockCircle.svg';
+import FileRight from '@/assets/icons/Outline/FileRight.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import Title from '@/components/common/Title.vue';

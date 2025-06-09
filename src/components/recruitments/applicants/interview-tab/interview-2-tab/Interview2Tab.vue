@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
@@ -17,8 +17,6 @@ import { useApplicantInterview } from '@/composables/recruitment/applicant/useAp
 import {
 	useCancelInterview,
 	useCompleteInterview,
-	useCreateInterview,
-	useSendEmail,
 	useUpdateStage,
 } from '@/composables/recruitment/applicant/useUpdateApplicant';
 import { useListJob } from '@/composables/recruitment/job/useJob';
@@ -30,7 +28,6 @@ import type {
 	IApplicantInterview,
 	IApplicantInterviewFilter,
 	IMeta,
-	InterviewPayload,
 } from '@/types';
 import { useQueryClient } from '@tanstack/vue-query';
 import {
@@ -41,7 +38,6 @@ import {
 } from '@tanstack/vue-table';
 import { computed, ref } from 'vue';
 import ApplicantSheet from '../../ApplicantSheet.vue';
-import SetInterviewDialog from '../../SetInterviewDialog.vue';
 import { interviewColumn } from '../column';
 
 const { data: branches } = useBranch();

@@ -1,25 +1,25 @@
 <script lang="ts" setup>
-import SheetContentCustom from '@/components/custom/SheetContentCustom.vue';
-import Sheet from '@/components/ui/sheet/Sheet.vue';
-import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
-import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
-import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
-import type { AttendanceManagement } from '@/types';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import User from '@/assets/icons/Outline/User.svg';
-import CalendarAdd from '@/assets/icons/Outline/Calendar Add.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import FileRight from '@/assets/icons/Outline/File Right.svg';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
-import ClipboardList from '@/assets/icons/Outline/Clipboard List.svg';
-import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
-import Button from '@/components/ui/button/Button.vue';
-import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
+import CalendarAdd from '@/assets/icons/Outline/CalendarAdd.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import ClipboardList from '@/assets/icons/Outline/ClipboardList.svg';
+import ClockCircle from '@/assets/icons/Outline/ClockCircle.svg';
+import FileRight from '@/assets/icons/Outline/FileRight.svg';
+import User from '@/assets/icons/Outline/User.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
-import { ATTENDANCE_STYLE, STATUS_STYLE } from '@/constants';
 import UserAvatar from '@/components/common/UserAvatar.vue';
+import SheetContentCustom from '@/components/custom/SheetContentCustom.vue';
+import Button from '@/components/ui/button/Button.vue';
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
+import Sheet from '@/components/ui/sheet/Sheet.vue';
+import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
+import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
+import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
+import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
+import { ATTENDANCE_STYLE, STATUS_STYLE } from '@/constants';
+import type { AttendanceManagement } from '@/types';
 
 defineProps<{
 	open: boolean;

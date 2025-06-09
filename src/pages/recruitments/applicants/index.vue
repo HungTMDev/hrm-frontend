@@ -1,31 +1,31 @@
 <script lang="ts" setup>
-import AlignTopBold from '@/assets/icons/Bold/Align Top.svg';
-import ClipboardTextBold from '@/assets/icons/Bold/Clipboard Text.svg';
-import CloseCircleBold from '@/assets/icons/Bold/Close Circle.svg';
+import AlignTopBold from '@/assets/icons/Bold/AlignTop.svg';
+import ChatRoundMoneyBold from '@/assets/icons/Bold/ChatRoundMoney.svg';
+import ChecklistBold from '@/assets/icons/Bold/ChecklistMinimalistic.svg';
+import ClipboardTextBold from '@/assets/icons/Bold/ClipboardText.svg';
+import CloseCircleBold from '@/assets/icons/Bold/CloseCircle.svg';
 import DialogBold from '@/assets/icons/Bold/Dialog.svg';
-import DocumentAddBold from '@/assets/icons/Bold/Document Add.svg';
-import AlignTop from '@/assets/icons/Outline/Align Top.svg';
-import ClipboardText from '@/assets/icons/Outline/Clipboard Text.svg';
-import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
-import Checklist from '@/assets/icons/Outline/Checklist Minimalistic.svg';
-import ChecklistBold from '@/assets/icons/Bold/Checklist Minimalistic.svg';
-import ChatRoundMoney from '@/assets/icons/Outline/Chat Round Money.svg';
-import ChatRoundMoneyBold from '@/assets/icons/Bold/Chat Round Money.svg';
+import DocumentAddBold from '@/assets/icons/Bold/DocumentAdd.svg';
+import AlignTop from '@/assets/icons/Outline/AlignTop.svg';
+import ChatRoundMoney from '@/assets/icons/Outline/ChatRoundMoney.svg';
+import Checklist from '@/assets/icons/Outline/ChecklistMinimalistic.svg';
+import ClipboardText from '@/assets/icons/Outline/ClipboardText.svg';
+import CloseCircle from '@/assets/icons/Outline/CloseCircle.svg';
 import Dialog from '@/assets/icons/Outline/Dialog.svg';
-import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
+import DocumentAdd from '@/assets/icons/Outline/DocumentAdd.svg';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Title from '@/components/common/Title.vue';
 import HiredTab from '@/components/recruitments/applicants/hired-tab/HiredTab.vue';
 import InterviewTab from '@/components/recruitments/applicants/interview-tab/InterviewTab.vue';
 import KanbanTab from '@/components/recruitments/applicants/kanban-tab/KanbanTab.vue';
+import OfferingTab from '@/components/recruitments/applicants/offering-tab/OfferingTab.vue';
 import RejectedTab from '@/components/recruitments/applicants/rejected-tab/RejectedTab.vue';
 import ScreeningTab from '@/components/recruitments/applicants/screening-tab/ScreeningTab.vue';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import router from '@/routers';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import OfferingTab from '@/components/recruitments/applicants/offering-tab/OfferingTab.vue';
 
 const route = useRoute();
 

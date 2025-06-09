@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import UserCheck from '@/assets/icons/Outline/User Check.svg';
-import UserCross from '@/assets/icons/Outline/User Cross.svg';
-import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
+import UserCheck from '@/assets/icons/Outline/UserCheck.svg';
+import UserCross from '@/assets/icons/Outline/UserCross.svg';
+import UserGroup from '@/assets/icons/Outline/UsersGroupTwoRounded.svg';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import DoughnutChart from '@/components/common/chart/DoughnutChart.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';

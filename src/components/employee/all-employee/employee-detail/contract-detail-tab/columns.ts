@@ -1,10 +1,10 @@
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
-import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
+import Right from '@/assets/icons/Outline/AltArrowRight.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import Eye from '@/assets/icons/Outline/Eye.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import type { IActionGroupType } from '@/types';
 
 export const contractDetailColumns = (

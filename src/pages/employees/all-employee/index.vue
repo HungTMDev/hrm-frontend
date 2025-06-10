@@ -20,158 +20,123 @@ import AllEmployeeSheet from '@/components/employee/all-employee/AllEmployeeShee
 import { employeeColumn } from '@/components/employee/all-employee/employee.column';
 import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
-import { ROWS_PER_PAGE } from '@/constants';
+import {
+	DEFAULT_PAGINATION,
+	listEmploymentType,
+	listJobLevel,
+	listJobStatus,
+	ROWS_PER_PAGE,
+} from '@/constants';
 import { exportToExcel, valueUpdater } from '@/lib/utils';
+import type { IEmployee, FilterAccordion, IMeta, IEmployeeFilter, FilterData } from '@/types';
+import {
+	getCoreRowModel,
+	useVueTable,
+	type PaginationState,
+	type VisibilityState,
+} from '@tanstack/vue-table';
+import { computed, ref, watch } from 'vue';
 import router from '@/routers';
-import type { Employee, FilterAccordion } from '@/types';
-import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
-import { ref } from 'vue';
+import { useEmployee, useListEmployee } from '@/composables/employee/useEmployee';
+import { useRoute } from 'vue-router';
+import { useBranch } from '@/composables/branch/useBranch';
+import { useDepartment } from '@/composables/department/useDepartment';
+import Case from '@/assets/icons/Outline/Case.svg';
+import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
+import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import Building from '@/assets/icons/Outline/Buildings.svg';
+import { useCustomToast } from '@/lib/customToast';
 
-const data: Employee[] = [
-	{
-		id: 351613,
-		name: 'Trần Song Quynh',
-		email: 'songquynh@lutech.ltd',
-		position: 'UI/UX Designer',
-		department: 'Design',
-		status: 'Full-time',
-	},
-	{
-		id: 351614,
-		name: 'Nguyễn Đức Phát',
-		email: 'ducphat@lutech.ltd',
-		position: 'UI/UX Designer',
-		department: 'Design',
-		status: 'Full-time',
-	},
-	{
-		id: 351615,
-		name: 'Trịnh Minh Hưng',
-		email: 'minhhung@lutech.ltd',
-		position: 'Back-end Developer',
-		department: 'Design',
-		status: 'Full-time',
-	},
-	{
-		id: 351616,
-		name: 'Ngô Công Linh',
-		email: 'conglinh@lutech.ltd',
-		position: 'Android Developer',
-		department: 'Design',
-		status: 'Full-time',
-	},
-	{
-		id: 351617,
-		name: 'Huỳnh Minh Huy',
-		email: 'minhhuy@lutech.ltd',
-		position: 'Graphic Designer',
-		department: 'Design',
-		status: 'Full-time',
-	},
-	{
-		id: 351618,
-		name: 'Lê Tất Tuấn',
-		email: 'tattuan@lutech.ltd',
-		position: 'Back-end Developer',
-		department: 'Design',
-		status: 'Full-time',
-	},
-	{
-		id: 351619,
-		name: 'Nguyễn Thanh Long',
-		email: 'thanhlong@lutech.ltd',
-		position: 'Product Owner',
-		department: 'Design',
-		status: 'Full-time',
-	},
-	{
-		id: 351620,
-		name: 'Lê Quang Phúc',
-		email: 'quangphuc@lutech.ltd',
-		position: 'Graphic Designer',
-		department: 'Design',
-		status: 'Full-time',
-	},
-];
+const route = useRoute();
+const { showToast } = useCustomToast();
+const { data: branches } = useBranch();
+const { data: departments } = useDepartment();
 
-const filter: FilterAccordion[] = [
-	{
-		title: 'Status',
-		value: 'status',
-		icon: ChartSquare,
-		items: [
-			{ label: 'Full-time', value: 'full_time' },
-			{ label: 'Part-time', value: 'part_time' },
-			{ label: 'Freelance', value: 'freelance' },
-		],
-		type: 'list',
-	},
-	{
-		title: 'Branch',
-		value: 'branch',
-		icon: Building3,
-		items: [
-			{ label: 'Đà nẵng', value: 'dn' },
-			{ label: 'Hà nội', value: 'hn' },
-		],
-		type: 'list',
-	},
-	{
-		title: 'Department',
-		value: 'department',
-		icon: Buildings,
-		items: [
-			{ label: 'Design', value: 'design' },
-			{ label: 'Marketing', value: 'marketing' },
-			{ label: 'Product', value: 'product' },
-			{ label: 'Development', value: 'Development' },
-			{ label: 'Back Office', value: 'BO' },
-			{ label: 'E-commerce', value: 'ecommerce' },
-		],
-		type: 'list',
-	},
-	{
-		title: 'Gender',
-		value: 'gender',
-		icon: UserHands,
-		items: [
-			{ label: 'Male', value: '0' },
-			{ label: 'Female', value: '1' },
-		],
-		type: 'list',
-	},
-	{
-		title: 'Salary',
-		value: 'salary',
-		icon: UserHands,
-		type: 'numberSlider',
-		min: 0,
-		max: 100000000,
-		step: 1000000,
-	},
-	{
-		title: 'Quarter',
-		value: 'quarter',
-		icon: UserHands,
-		type: 'timeRange',
-	},
-];
-
+const query = computed(() => route.query);
 const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 
 const isOpenSheet = ref(false);
 const isOpenAlert = ref(false);
-const dataSent = ref<Employee>();
+const isGetAllEmployee = ref(false);
+const dataSent = ref<IEmployee>();
 
-const handleOpenSheet = (payload?: Employee) => {
+const pageIndex = ref(
+	query.value.page ? Number(query.value.page) - 1 : DEFAULT_PAGINATION.DEFAULT_PAGE - 1,
+);
+const pageSize = ref(
+	query.value.limit ? Number(query.value.limit) : DEFAULT_PAGINATION.DEFAULT_LIMIT,
+);
+const filterPayload = ref<Partial<IEmployeeFilter>>({});
+const filterData = ref<FilterData[]>([]);
+
+const pagination = computed<PaginationState>(() => ({
+	pageIndex: pageIndex.value,
+	pageSize: pageSize.value,
+}));
+const accordionItems = computed<FilterAccordion[]>(() => [
+	{
+		value: 'status',
+		title: 'Status',
+		items: listJobStatus,
+		icon: ChartSqare,
+		type: 'list',
+	},
+	{
+		value: 'branch',
+		title: 'Branch',
+		items: branches.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
+		icon: Building3,
+		type: 'list',
+	},
+	{
+		value: 'department',
+		title: 'Department',
+		items: departments.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
+		icon: Building,
+		type: 'list',
+	},
+	{
+		value: 'employment_type',
+		title: 'Employment type',
+		items: listEmploymentType,
+		icon: Case,
+		type: 'list',
+	},
+	{
+		value: 'level',
+		title: 'Level',
+		items: listJobLevel,
+		icon: Chart2,
+		type: 'list',
+	},
+]);
+
+const { data, isLoading } = useEmployee(pagination, filterPayload);
+const { data: allEmployee, isSuccess } = useListEmployee(isGetAllEmployee);
+
+const employees = computed<IEmployee[]>(() => data.value?.data || []);
+const meta = computed<IMeta | undefined>(() => data.value?.meta);
+const pageCount = computed(() => meta.value?.total_pages);
+
+const setPageSize = (newSize: number) => (pageSize.value = newSize);
+const setPageIndex = (newIndex: number) => (pageIndex.value = newIndex);
+
+const setPagination = ({ pageIndex, pageSize }: PaginationState): PaginationState => {
+	setPageIndex(pageIndex);
+	setPageSize(pageSize);
+
+	return { pageIndex, pageSize };
+};
+
+const handleOpenSheet = (payload?: IEmployee) => {
 	if (payload instanceof PointerEvent) {
 		dataSent.value = undefined;
 	} else dataSent.value = payload;
 	isOpenSheet.value = true;
 };
 
-const handleOpenAlert = (payload: Employee) => {
+const handleOpenAlert = (payload: IEmployee) => {
 	dataSent.value = payload;
 	isOpenAlert.value = true;
 };
@@ -181,25 +146,38 @@ const handleNavigate = (id: string) => {
 };
 
 const table = useVueTable({
-	data: data,
+	get data() {
+		return employees.value;
+	},
+	get pageCount() {
+		return pageCount.value ?? 0;
+	},
+	get rowCount() {
+		return meta.value?.total_records ?? 0;
+	},
 	columns: employeeColumn(handleOpenSheet, handleOpenAlert),
-	getCoreRowModel: getCoreRowModel(),
-	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
-	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
 	state: {
-		get columnVisibility() {
-			return columnVisibility.value;
-		},
 		get rowSelection() {
 			return rowSelection.value;
 		},
-	},
-	initialState: {
-		pagination: {
-			pageIndex: 0,
-			pageSize: ROWS_PER_PAGE[0],
+		get columnVisibility() {
+			return columnVisibility.value;
 		},
 	},
+	initialState: {
+		pagination: pagination.value,
+	},
+	manualPagination: true,
+	getCoreRowModel: getCoreRowModel(),
+	onPaginationChange: (updater) => {
+		if (typeof updater === 'function') {
+			setPagination(updater(pagination.value));
+		} else {
+			setPagination(updater);
+		}
+	},
+	onRowSelectionChange: (updaterOrValue) => valueUpdater(updaterOrValue, rowSelection),
+	onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
 });
 
 const handleCloseSheet = (open: boolean) => {
@@ -213,8 +191,73 @@ const handleCloseAlert = (open: boolean) => {
 };
 
 const handleExportToExcel = () => {
-	exportToExcel(data, 'employees');
+	isGetAllEmployee.value = true;
+	showToast({
+		message: 'Exporting to excel',
+		type: 'loading',
+	});
+	setTimeout(() => {
+		if (isSuccess) {
+			exportToExcel(allEmployee.value || [], 'employees');
+			isGetAllEmployee.value = false;
+			showToast({
+				message: 'Exported to excel',
+				type: 'dismiss',
+			});
+		}
+	}, 500);
 };
+
+const syncQueryToFilter = () => {
+	const keys = Object.keys(query.value) as (keyof IEmployeeFilter)[];
+
+	for (let key of keys) {
+		if ((key as any) === 'page' || (key as any) === 'limit' || (key as any) === 'archived')
+			continue;
+
+		if (key === 'order') {
+			filterPayload.value[key] = 'DESC';
+			continue;
+		}
+
+		if (key === 'keywords') {
+			filterPayload.value[key] = (query.value[key] as string) ?? undefined;
+			continue;
+		}
+
+		filterPayload.value[key] =
+			typeof query.value[key] === 'string'
+				? [query.value[key] as string]
+				: (query.value[key] as string[]);
+
+		const item = accordionItems.value.find((item) => item.value === key);
+		if (item) {
+			const selectedItems =
+				item.items?.filter((i) =>
+					(filterPayload.value[key] as string[]).includes(i.value as string),
+				) || [];
+
+			if (selectedItems.length) {
+				filterData.value.push({
+					field: key,
+					filters: selectedItems,
+				});
+			}
+		}
+	}
+};
+
+watch([pageIndex, pageSize, filterPayload], () => {
+	router.replace({
+		query: { page: pageIndex.value + 1, limit: pageSize.value, ...filterPayload.value },
+	});
+});
+
+watch([branches, departments], ([newBranches, newDepartments]) => {
+	if (newBranches && newDepartments) {
+		syncQueryToFilter();
+	}
+});
 </script>
 <template>
 	<ContentWrapper>
@@ -239,7 +282,7 @@ const handleExportToExcel = () => {
 				class="py-2 flex-1 rounded-full"
 				placeholder="Search employee" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
-			<FilterPopover :list="filter" />
+			<FilterPopover :list="accordionItems" />
 			<Button class="hover:bg-blue-600 rounded-2xl" @click="handleExportToExcel">
 				<IconFromSvg :icon="Download" />Download
 			</Button>
@@ -250,7 +293,10 @@ const handleExportToExcel = () => {
 			</Button>
 		</div>
 		<div class="flex flex-col gap-2">
-			<DataTable :table="table" @row:click="(payload) => handleNavigate(payload.id)" />
+			<DataTable
+				:table="table"
+				:is-loading="isLoading"
+				@row:click="(payload) => handleNavigate(payload.id)" />
 			<Separator class="mb-2" />
 			<DataTablePagination :table="table" />
 		</div>

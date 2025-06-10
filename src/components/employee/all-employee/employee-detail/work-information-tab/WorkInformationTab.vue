@@ -13,7 +13,6 @@ import UserGroup from '@/assets/icons/Outline/UsersGroupRounded.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import Title from '@/components/common/Title.vue';
-import FormMarkdown from '@/components/form/FormMarkdown.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
 import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
 import Button from '@/components/ui/button/Button.vue';
@@ -21,12 +20,13 @@ import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 import { useBranch } from '@/composables/branch/useBranch';
 import { useDepartment } from '@/composables/department/useDepartment';
 import { usePosition } from '@/composables/position/usePosition';
-import { useListUser } from '@/composables/user/useUser';
 import { listJobLevel, listWorkHour } from '@/constants';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
 import { workInformationSchema } from './schema';
+import { useListUser } from '@/composables/user/useUser';
+import FormMarkdown from '@/components/form/FormMarkdown.vue';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
@@ -34,7 +34,19 @@ const { data: positions } = usePosition();
 const { data: users } = useListUser();
 
 const isEdit = ref(false);
+const isShowSalary = ref(false);
 
+const workHour = computed(() => {
+	const arrStart = workInformation.value?.shift_start.split(':') || [];
+	arrStart.pop();
+	const arrEnd = workInformation.value?.shift_end.split(':') || [];
+	arrEnd.pop();
+
+	const value = `${arrStart.join(':')}-${arrEnd.join(':')}`;
+
+	const workHour = listWorkHour.find((item) => item.value === value);
+	return workHour;
+});
 const listBranch = computed(
 	() => branches.value?.map((item) => ({ label: item.name, value: item.id })) || [],
 );
@@ -54,8 +66,23 @@ const { handleSubmit } = useForm({
 	validationSchema: formSchema,
 });
 
+const { mutate: editWorkInformation } = useEditWorkInformation();
+
 const onSubmit = handleSubmit((values) => {
-	console.log(values);
+	const [start, end] = values.work_hour.split('-');
+
+	const payload: WorkInformationPayload = {
+		...values,
+		job_description: (values.job_description as string[])?.join('\n'),
+		shift_start_time: start,
+		shift_end_time: end,
+	};
+
+	editWorkInformation({
+		employeeId: employeeId.value,
+		id: workInformation.value?.id ?? '',
+		payload,
+	});
 });
 
 const handleEdit = () => {
@@ -64,6 +91,10 @@ const handleEdit = () => {
 
 const handleCancel = () => {
 	isEdit.value = false;
+};
+
+const toggleSalary = () => {
+	isShowSalary.value = !isShowSalary.value;
 };
 </script>
 <template>
@@ -75,70 +106,94 @@ const handleCancel = () => {
 					<FormSelect
 						:required="true"
 						:icon="Building3"
+						:list="listBranch"
+						:model-value="workInformation?.branch.id"
 						name="branch_id"
 						label="Branch"
-						:list="listBranch"
 						placeholder="Select branch" />
 					<FormSelect
 						:required="true"
 						:icon="Buildings"
+						:list="listDepartment"
+						:model-value="workInformation?.department.id"
 						name="department_id"
 						label="Department"
-						:list="listDepartment"
 						placeholder="Select department" />
 					<FormSelect
 						:required="true"
+						:icon="UsersGroup"
+						:model-value="workInformation?.team.id"
+						:list="[]"
+						name="team_id"
+						label="Team"
+						placeholder="Select team" />
+					<FormSelect
+						:required="true"
 						:icon="Buildings"
-						name="position_id"
-						label="Position"
 						:list="listPosition"
+						:model-value="workInformation?.position.id"
+						label="Position"
+						name="position_id"
 						placeholder="Select position" />
 					<FormSelect
 						:icon="Chart2"
+						:required="true"
+						:model-value="workInformation?.level"
+						:list="listJobLevel"
 						name="level"
 						label="Level"
-						:list="listJobLevel"
 						placeholder="Select level" />
 					<FormSelect
 						:required="true"
 						:icon="UserGroup"
-						name="line_manager_id"
-						label="Line manager"
+						:model-value="workInformation?.manager.id"
+						name="manager_id"
+						label="Manager"
 						:list="listUser"
-						placeholder="Select line manager" />
-					<FormSelectCalendar :required="true" name="joining_date" label="Joining date" />
+						placeholder="Select manager" />
+					<FormCurrency
+						:icon="Dollar"
+						:required="true"
+						placeholder="Enter salary"
+						name="salary"
+						label="Salary" />
+					<FormSelectCalendar
+						:required="true"
+						:model-value="workInformation?.start_date"
+						name="start_date"
+						label="Joining date" />
+					<FormSelectCalendar
+						name="end_date"
+						:model-value="workInformation?.end_date ?? undefined"
+						label="End date" />
 					<FormSelect
 						:required="true"
 						:icon="ChartSquare"
+						:model-value="workInformation?.work_status"
+						:list="[]"
 						name="work_status"
 						label="Work status"
-						:list="[]"
 						placeholder="Select work status" />
 					<FormSelect
 						:required="true"
 						:icon="ClockCircle"
-						name="working_hours"
-						label="Working hours"
 						:list="listWorkHour"
-						placeholder="Select working hours" />
-					<FormSelectCalendar
-						:required="true"
-						name="work_status_end_date"
-						label="Work status end date" />
+						:model-value="workHour?.value"
+						name="work_hour"
+						label="Work hour"
+						placeholder="Select work hour" />
 					<FormSelect
 						:required="true"
 						:icon="MapPoint"
+						:model-value="workInformation?.work_location"
+						:list="[]"
 						name="work_location"
 						label="Work location"
-						:list="[]"
 						placeholder="Select work location" />
 				</div>
 				<div class="mt-4">
 					<FormMarkdown
-						:model-value="[
-							'Analyzing data trends to identify patterns and insights.',
-							'Analyzing data trends to identify patterns and insights.',
-						]"
+						:model-value="workInformation?.job_description.split('\n')"
 						name="job_description"
 						label="Job description"
 						type="bullet" />
@@ -146,34 +201,59 @@ const handleCancel = () => {
 			</form>
 			<div v-else>
 				<div class="grid items-start grid-cols-2 gap-6">
-					<InformationItem :icon="Building3" label="Branch" value="Đà Nẵng" />
-					<InformationItem :icon="Buildings" label="Department" value="Data" />
-					<InformationItem :icon="UserCircle" label="Position" value="Data Analyst" />
-					<InformationItem :icon="Chart2" label="Level" value="Junior" />
+					<InformationItem
+						:icon="Building3"
+						label="Branch"
+						:value="workInformation?.branch.name" />
+					<InformationItem
+						:icon="Buildings"
+						label="Department"
+						:value="workInformation?.department.name" />
+					<InformationItem
+						:icon="UserCircle"
+						label="Position"
+						:value="workInformation?.position.title" />
+					<InformationItem
+						:icon="Chart2"
+						label="Level"
+						:value="formatStatus(workInformation?.level || '')" />
 					<InformationItem
 						:icon="UserGroup"
 						label="Line manager"
-						value="Nguyễn Thanh Long" />
+						:value="workInformation?.manager.name" />
 					<InformationItem
 						:icon="CalendarIcon"
 						label="Joining date"
-						value="27 April, 2025" />
-					<InformationItem :icon="ChartSquare" label="Work status" value="Intern" />
+						:value="formatISOStringToLocalDateTime(workInformation?.start_date).date" />
+					<InformationItem
+						:icon="ChartSquare"
+						label="Work status"
+						:value="formatStatus(workInformation?.work_status || '')" />
 					<InformationItem
 						:icon="ClockCircle"
 						label="Working hours"
-						value="8:15 AM - 5:45 PM" />
+						:value="workHour?.label" />
 					<InformationItem
 						:icon="CalendarIcon"
 						label="Work status end date"
-						value="27 April, 2026" />
+						:value="formatISOStringToLocalDateTime(workInformation?.end_date).date" />
+					<div class="grid grid-cols-2 items-start">
+						<div class="flex gap-2 items-center">
+							<IconFromSvg :icon="Dollar" />
+							Salary
+						</div>
+						<div class="hover:cursor-pointer" @click="toggleSalary">
+							<span v-if="!isShowSalary" class="text-black">********</span>
+							<span v-else class="text-black"> 10.000.000 </span>
+						</div>
+					</div>
 					<div class="grid grid-cols-2 items-start">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="MapPoint" />
 							Working location
 						</div>
 						<span class="text-black">
-							Tầng 4, Tòa nhà Hanvico (217 Lê Duẩn, Thanh Khê, Đà Nẵng)
+							{{ workInformation?.work_location }}
 						</span>
 					</div>
 				</div>
@@ -182,10 +262,12 @@ const handleCancel = () => {
 						<IconFromSvg :icon="Clipboard" />Job description
 					</h3>
 					<ul class="list-disc list-inside mt-2 text-black ml-2 grid gap-1">
-						<li>Analyzing data trends to identify patterns and insights.</li>
-						<li>Analyzing data trends to identify patterns and insights.</li>
-						<li>Analyzing data trends to identify patterns and insights.</li>
-						<li>Analyzing data trends to identify patterns and insights.</li>
+						<li
+							v-for="(item, index) in workInformation?.job_description.split('\n') ||
+							[]"
+							:key="index">
+							{{ item }}
+						</li>
 					</ul>
 				</div>
 			</div>

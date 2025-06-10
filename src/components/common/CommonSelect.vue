@@ -6,7 +6,7 @@ import {
 	SelectItem,
 	SelectValue,
 } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { cn, formatStatus } from '@/lib/utils';
 import type { ComboboxType } from '@/types';
 import { onMounted, ref, type HTMLAttributes } from 'vue';
 import SelectTriggerCustom from '../custom/SelectTriggerCustom.vue';
@@ -29,15 +29,19 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', payload: string | number | string[] | number[]): void;
 }>();
 
-const selectedValue = ref<ComboboxType>();
+const selectedValue = ref<string | number | string[] | number[]>();
 
 const handleSelect = (value: any) => {
-	selectedValue.value = props.list.find((item) => item.value === value);
+	selectedValue.value = formatStatus(
+		props.list.find((item) => item.value === value)?.label || '',
+	);
 	emit('update:modelValue', value);
 };
 
 onMounted(() => {
-	selectedValue.value = props.list.find((item) => item.value === props.modelValue);
+	selectedValue.value = formatStatus(
+		props.list.find((item) => item.value === props.modelValue)?.label || '',
+	);
 });
 </script>
 
@@ -59,10 +63,12 @@ onMounted(() => {
 				<IconFromSvg :icon="icon" />
 			</span>
 			<SelectValue as-child>
-				<span v-if="selectedValue === undefined" class="text-gray-200">{{
-					placeholder ?? 'Select...'
-				}}</span>
-				<span v-else class="text-black">{{ selectedValue.label }}</span>
+				<span v-if="!selectedValue">{{ placeholder ?? 'Select...' }}</span>
+				<span
+					v-else
+					:class="cn('text-gray-200', selectedValue !== undefined && 'text-black')">
+					{{ selectedValue }}
+				</span>
 			</SelectValue>
 		</SelectTriggerCustom>
 		<SelectContent

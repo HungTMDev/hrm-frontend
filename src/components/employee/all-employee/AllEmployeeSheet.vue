@@ -41,21 +41,30 @@ import {
 	listJobLevel,
 	listWorkHour,
 } from '@/constants';
-import type { Employee, StepType } from '@/types';
+import type { IEmployee, StepType } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import { Form, type FormMeta, type GenericObject } from 'vee-validate';
-import { computed, ref } from 'vue';
-import { employeeSchema } from './employee.schema';
+import { computed, reactive, ref } from 'vue';
+import {
+	bankInformationKeys,
+	employeeSchema,
+	personalInformationKeys,
+	workInformationKeys,
+	type BankInformationPayload,
+	type PersonalInformationPayload,
+	type WorkInformationPayload,
+} from './employee.schema';
+import FormCurrency from '@/components/form/FormCurrency.vue';
 
 defineProps<{
 	open: boolean;
-	data?: Employee;
+	data?: IEmployee;
 }>();
 
 const emits = defineEmits<{
 	(e: 'update:open', payload: boolean): void;
 	(e: 'edit'): void;
-	(e: 'delete', payload: Employee): void;
+	(e: 'delete', payload: IEmployee): void;
 }>();
 
 const { data: branches } = useBranch();
@@ -64,7 +73,13 @@ const { data: positions } = usePosition();
 const { data: users } = useListUser();
 
 const step = ref(1);
-const totalStep = ref(5);
+const totalStep = ref(3);
+const data = reactive<Record<string, any>>({
+	personal_information: {} as PersonalInformationPayload,
+	work_information: {} as WorkInformationPayload,
+	bank_information: {} as BankInformationPayload,
+});
+const formValues = ref<any>({});
 
 const stepState = computed<StepType>(() => {
 	return {
@@ -106,7 +121,25 @@ const handleOpen = (isOpen: boolean) => {
 };
 
 const onSubmit = (values: any) => {
-	console.log(values);
+	personalInformationKeys.forEach((key) => {
+		data.personal_information[key] = values[key];
+	});
+
+	for (let key of workInformationKeys) {
+		if (key === 'shift_start_time' || key === 'shift_end_time') continue;
+		data.work_information[key] = values[key];
+		if (key === 'work_hour') {
+			const [start, end] = values[key].split('-');
+			data.work_information.shift_start_time = start;
+			data.work_information.shift_end_time = end;
+		}
+	}
+
+	bankInformationKeys.forEach((key) => {
+		data.bank_information[key] = values[key];
+	});
+
+	console.log(data);
 };
 
 const handleSubmit = (
@@ -152,6 +185,9 @@ const handleCancel = () => {
 				keep-values
 				:validation-schema="toTypedSchema(employeeSchema[step - 1])"
 				class="flex-1 flex flex-col">
+				<template>
+					{{ formValues = values }}
+				</template>
 				<ScrollArea class="flex-1 pr-3">
 					<SheetHeader>
 						<SheetTitle></SheetTitle>
@@ -165,30 +201,26 @@ const handleCancel = () => {
 							</h3>
 							<div class="mt-8 grid grid-cols-2 gap-x-12 gap-y-6">
 								<FormInput
-									name="employee_name"
+									name="name"
 									label="Employee name"
 									:icon="UserRounded"
 									:required="true"
 									class="w-full"
 									placeholder="Enter employee name" />
 								<FormInput
-									name="employee_id"
+									name="employee_number"
 									label="Employee ID"
 									:icon="UserID"
 									:required="true"
 									class="w-full"
 									placeholder="Enter employee ID" />
-								<FormSelectCalendar
-									name="date_of_birth"
-									label="Date of birth"
-									:required="true" />
-								<FormSelect
-									name="gender"
-									label="Gender"
-									:list="genderCombobox"
+								<FormInput
+									name="email"
+									label="Employee email"
+									:icon="Letter"
 									:required="true"
-									:icon="UserHands"
-									placeholder="Select gender" />
+									class="w-full"
+									placeholder="Enter employee email" />
 								<FormInput
 									name="personal_email"
 									label="Personal email"
@@ -203,13 +235,17 @@ const handleCancel = () => {
 									:required="true"
 									class="w-full"
 									placeholder="Enter phone number" />
-								<FormInput
-									name="employee_email"
-									label="Employee email"
-									:icon="Letter"
+								<FormSelectCalendar
+									name="date_of_birth"
+									label="Date of birth"
+									:required="true" />
+								<FormSelect
+									name="gender"
+									label="Gender"
+									:list="genderCombobox"
 									:required="true"
-									class="w-full"
-									placeholder="Enter employee email" />
+									:icon="UserHands"
+									placeholder="Select gender" />
 								<FormInput
 									name="address"
 									label="Address"
@@ -217,10 +253,21 @@ const handleCancel = () => {
 									class="w-full"
 									placeholder="Enter address" />
 								<FormInput
+									name="hometown"
+									label="Hometown"
+									:icon="Home"
+									class="w-full"
+									placeholder="Enter hometown" />
+								<FormSelect
+									name="marital_status"
+									label="Marital status"
+									:list="[]"
+									:icon="UserHands"
+									placeholder="Select marital status" />
+								<FormInput
 									name="emergency_contact"
 									label="Emergency contact"
 									:icon="Iphone"
-									:required="true"
 									class="w-full"
 									placeholder="Enter emergency contact" />
 								<FormInput
@@ -229,12 +276,7 @@ const handleCancel = () => {
 									:icon="UserRounded"
 									class="w-full"
 									placeholder="Enter emergency contact name" />
-								<FormInput
-									name="hometown"
-									label="Hometown"
-									:icon="Home"
-									class="w-full"
-									placeholder="Enter hometown" />
+								<FormUpload label="Avatar" name="avatar" type="photo" />
 							</div>
 						</div>
 						<div v-if="step === 2">
@@ -262,30 +304,37 @@ const handleCancel = () => {
 									:icon="UserCircle"
 									placeholder="Select position" />
 								<FormSelect
+									name="team_id"
+									label="Team"
+									:list="listPosition"
+									:required="true"
+									:icon="UsersGroup"
+									placeholder="Select team" />
+								<FormSelect
 									name="level"
 									label="Level"
+									:required="true"
 									:list="listJobLevel"
 									:icon="Chart2"
 									placeholder="Select level" />
 								<FormSelect
-									name="line_manager_id"
-									label="Line manager"
+									name="manager_id"
+									label="Manager"
 									:list="listUser"
 									:required="true"
 									:icon="UserGroup"
-									placeholder="Select line manager" />
-								<FormInput
-									type="number"
+									placeholder="Select manager" />
+								<FormCurrency
 									name="salary"
 									label="Salary"
 									:icon="Dollar"
 									:required="true"
-									class="w-full"
 									placeholder="Enter salary" />
 								<FormSelectCalendar
-									name="joining_date"
+									name="start_date"
 									label="Joining date"
 									:required="true" />
+								<FormSelectCalendar name="end_date" label="End date" />
 								<FormSelect
 									name="work_status"
 									label="Work status"
@@ -293,17 +342,20 @@ const handleCancel = () => {
 									:required="true"
 									:icon="ChartSquare"
 									placeholder="Select work status" />
+								<FormInput
+									name="work_location"
+									label="Work location"
+									:icon="Home"
+									:required="true"
+									class="w-full"
+									placeholder="Enter work location" />
 								<FormSelect
-									name="working_hours"
-									label="Working hours"
+									name="work_hour"
+									label="Work hour"
 									:list="listWorkHour"
 									:required="true"
 									:icon="ClockCircle"
 									placeholder="Select working hours" />
-								<FormSelectCalendar
-									name="work_status_end_date"
-									label="Work status end date"
-									:required="true" />
 							</div>
 							<FormTextarea
 								name="job_description"

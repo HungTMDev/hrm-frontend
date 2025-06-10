@@ -169,7 +169,7 @@ const handleSearch = (payload: string | number) => {
 const handleFilter = (payload: FilterData[]) => {
 	const newFilter: Record<string, (string | number)[]> = {};
 	payload.forEach((item) => {
-		newFilter[item.field] = item.filters.map((i) => i.value);
+		newFilter[item.field] = item.filters.map((i) => i.value as string);
 	});
 
 	pageIndex.value = 0;

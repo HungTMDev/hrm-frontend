@@ -237,23 +237,23 @@ export const listInterviewRole = convertEnumToComboboxType(INTERVIEW_ROLE);
 export const listWorkHour = [
 	{
 		label: '7:45 AM - 5:15 PM',
-		value: '07:45:00-17:15:00',
+		value: '07:45-17:15',
 	},
 	{
 		label: '8:00 AM - 5:30 PM',
-		value: '08:00:00-17:30:00',
+		value: '08:00-17:30',
 	},
 	{
 		label: '8:15 AM - 5:45 PM',
-		value: '08:15:00-17:45:00',
+		value: '08:15-17:45',
 	},
 	{
 		label: '8:30 AM - 6:00 PM',
-		value: '08:30:00-18:00:00',
+		value: '08:30-18:00',
 	},
 	{
 		label: '8:45 AM - 6:15 PM',
-		value: '08:45:00-18:15:00',
+		value: '08:45-18:15',
 	},
 ];
 

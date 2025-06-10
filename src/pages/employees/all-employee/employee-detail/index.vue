@@ -39,7 +39,18 @@ import HistoryTab from '@/components/employee/all-employee/employee-detail/histo
 import InsuranceInformationTab from '@/components/employee/all-employee/employee-detail/insurance-information-tab/InsuranceInformationTab.vue';
 import LeaveHistoryTab from '@/components/employee/all-employee/employee-detail/leave-history-tab/LeaveHistoryTab.vue';
 import PerformanceTab from '@/components/employee/all-employee/employee-detail/perfomance-tab/PerformanceTab.vue';
+import AssetsTab from '@/components/employee/all-employee/employee-detail/assets-tab/AssetsTab.vue';
+import AttendanceHistoryTab from '@/components/employee/all-employee/employee-detail/attendance-history-tab/AttendanceHistoryTab.vue';
+import BankInformationTab from '@/components/employee/all-employee/employee-detail/bank-information-tab/BankInformationTab.vue';
+import ContractDetailTab from '@/components/employee/all-employee/employee-detail/contract-detail-tab/ContractDetailTab.vue';
+import HistoryTab from '@/components/employee/all-employee/employee-detail/history-tab/HistoryTab.vue';
+import InsuranceInformationTab from '@/components/employee/all-employee/employee-detail/insurance-information-tab/InsuranceInformationTab.vue';
+import LeaveHistoryTab from '@/components/employee/all-employee/employee-detail/leave-history-tab/LeaveHistoryTab.vue';
+import PerformanceTab from '@/components/employee/all-employee/employee-detail/perfomance-tab/PerformanceTab.vue';
 import PersonalInformationTab from '@/components/employee/all-employee/employee-detail/personal-information-tab/PersonalInformationTab.vue';
+import SalaryInformationTab from '@/components/employee/all-employee/employee-detail/salary-information-tab/SalaryInformationTab.vue';
+import TrainingTab from '@/components/employee/all-employee/employee-detail/training-tab/TrainingTab.vue';
+import WorkInformationTab from '@/components/employee/all-employee/employee-detail/work-information-tab/WorkInformationTab.vue';
 import SalaryInformationTab from '@/components/employee/all-employee/employee-detail/salary-information-tab/SalaryInformationTab.vue';
 import TrainingTab from '@/components/employee/all-employee/employee-detail/training-tab/TrainingTab.vue';
 import WorkInformationTab from '@/components/employee/all-employee/employee-detail/work-information-tab/WorkInformationTab.vue';
@@ -59,6 +70,10 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const query = computed(() => route.query);
+const employeeId = computed(() => route.params.id as string);
+
+const { data: personalInformation, isError } = useGetPersonalInformation(employeeId);
+const { data: workInformation } = useGetWorkInformation(employeeId);
 
 const activeTab = ref('personnal');
 
@@ -69,6 +84,10 @@ const handleTab = (payload: any) => {
 
 onMounted(() => {
 	activeTab.value = (query.value.tab as string) ?? 'personnal';
+});
+
+watch(isError, (newVal) => {
+	if (newVal) router.push('/employees/all-employees');
 });
 </script>
 <template>
@@ -94,9 +113,11 @@ onMounted(() => {
 					<div>
 						<div class="flex flex-col items-center gap-3">
 							<UserAvatar class="w-[120px] h-[120px]" />
-							<Title>Le Minh Tam</Title>
-							<p>Data Analyst</p>
-							<StatusTag status="Intern" />
+							<Title>{{ personalInformation?.name }}</Title>
+							<p>{{ workInformation?.position.title }}</p>
+							<StatusTag
+								:status="workInformation?.level || ''"
+								class="bg-blue-50 hover:bg-blue-50 text-blue-500" />
 						</div>
 						<Separator class="my-4" />
 						<ScrollArea class="h-[calc(100vh-524px)] pr-1">

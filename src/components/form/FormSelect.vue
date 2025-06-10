@@ -11,7 +11,7 @@ interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
 	list: ComboboxType[];
 	multiple?: boolean;
 	isSearch?: boolean;
-	modelValue?: string | string[];
+	modelValue?: string | number | string[] | number[];
 	list_size?: 'sm' | 'md' | 'lg';
 }
 

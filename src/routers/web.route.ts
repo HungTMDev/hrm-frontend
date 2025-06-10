@@ -67,6 +67,9 @@ export const webRoutes: RouteType[] = [
 			{
 				path: '/recruitments',
 				name: 'Recruitments',
+				meta: {
+					requiresHR: true,
+				},
 				redirect: '/recruitments/overview',
 				children: [
 					// {

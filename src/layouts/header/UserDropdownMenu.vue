@@ -18,6 +18,7 @@ import {
 import { useGetAccount, useLogout } from '@/composables/auth/useAuth';
 import type { IUser } from '@/types';
 import { computed } from 'vue';
+import { formatStatus } from '@/lib/utils';
 
 const { data } = useGetAccount();
 const { mutate } = useLogout();
@@ -38,7 +39,9 @@ const handleLogout = async () => {
 				<UserAvatar class="w-12 h-12" />
 				<div>
 					<p class="text-start text-base font-medium">{{ account?.name }}</p>
-					<p class="text-start text-sm font-normal text-slate-600">HR Manager</p>
+					<p class="text-start text-sm font-normal text-slate-600">
+						{{ formatStatus(account?.roles[0]) }}
+					</p>
 				</div>
 				<IconFromSvg :icon="Down" />
 			</Button>

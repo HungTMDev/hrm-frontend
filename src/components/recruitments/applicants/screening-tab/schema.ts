@@ -44,20 +44,18 @@ export const addApplicantSchema = z.object({
 			z.instanceof(File),
 		])
 		.optional(),
-	resume: z
-		.union([
-			z.object({
-				original_filename: z.string(),
-				filename: z.string(),
-				format: z.string(),
-				resource_type: z.string(),
-				url: z.string(),
-				path: z.string(),
-				bytes: z.number(),
-			}),
-			z.instanceof(File),
-		])
-		.optional(),
+	resume: z.union([
+		z.object({
+			original_filename: z.string(),
+			filename: z.string(),
+			format: z.string(),
+			resource_type: z.string(),
+			url: z.string(),
+			path: z.string(),
+			bytes: z.number(),
+		}),
+		z.instanceof(File),
+	]),
 	gender: z.string().optional(),
 	date_of_birth: z.string().optional(),
 	job_id: z.string(),
@@ -82,7 +80,6 @@ export const addApplicantSchema = z.object({
 			),
 		])
 		.optional(),
-	resume_url: z.string().default('REFER'),
 	referred_by: z.string().optional(),
 });
 

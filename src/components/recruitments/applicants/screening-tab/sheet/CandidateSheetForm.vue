@@ -33,7 +33,7 @@ import {
 import { useListJob } from '@/composables/recruitment/job/useJob';
 import { genderCombobox } from '@/constants';
 import { useCustomToast } from '@/lib/customToast';
-import { fetchFileFromUrl } from '@/lib/utils';
+import { createPathFromServerDomain, fetchFileFromUrl } from '@/lib/utils';
 import type { IApplicant, IApplicantFilter, IJob } from '@/types';
 import type { PaginationState } from '@tanstack/vue-table';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -123,19 +123,20 @@ const onSubmit = handleSubmit(async (values) => {
 		},
 	});
 });
-
-const setValue = (payload: { fieldName: any; data: any }) => {
-	setFieldValue(payload.fieldName, payload.data);
-};
-
 const setAttaches = (payload: File[] | undefined) => {
 	setFieldValue('attaches', payload);
 };
 
 onMounted(async () => {
-	resumeFile.value = await fetchFileFromUrl(props.data?.candidate.resume_url);
+	if (props.data?.resume) {
+		resumeFile.value = await fetchFileFromUrl(
+			createPathFromServerDomain(props.data?.resume?.path),
+		);
+	}
 	attachesFile.value = await Promise.all(
-		props.data?.attaches?.map((item) => fetchFileFromUrl(item.url)) || [],
+		props.data?.attaches?.map((item) =>
+			fetchFileFromUrl(createPathFromServerDomain(item.path)),
+		) || [],
 	);
 });
 </script>
@@ -192,7 +193,6 @@ onMounted(async () => {
 					label="Date of birth"
 					:icon="Calendar"
 					class="w-full"
-					@update:value="setValue"
 					:model-value="data?.candidate.date_of_birth" />
 				<FormSelectCalendar
 					name="applied_at"
@@ -200,7 +200,6 @@ onMounted(async () => {
 					:required="true"
 					:icon="Calendar"
 					class="w-full"
-					@update:value="setValue"
 					:model-value="data?.applied_at" />
 				<FormCurrency
 					name="expected_salary"
@@ -224,13 +223,14 @@ onMounted(async () => {
 					placeholder="Select referred" />
 				<FormUpload
 					:model-value="resumeFile"
-					:preview-url="data?.resume_url.url"
 					name="resume"
 					label="Resume"
 					:required="true"
+					:data-response="data?.resume"
 					type="file" />
 				<MultipleUploadField
 					:model-value="attachesFile as File[]"
+					:list-response="data?.attaches"
 					name="attaches"
 					label="Attaches"
 					@update:value="setAttaches" />

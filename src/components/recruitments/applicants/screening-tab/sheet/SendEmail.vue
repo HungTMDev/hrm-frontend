@@ -30,11 +30,13 @@ import Handlebars from 'handlebars';
 import { useForm } from 'vee-validate';
 import { computed, ref, watch } from 'vue';
 import { thanksEmailSchema } from '../schema';
+import { useCustomToast } from '@/lib/customToast';
 
 const emits = defineEmits<{
 	(e: 'cancel'): void;
 }>();
 
+const { showToast } = useCustomToast();
 const { data: candidatesData } = useCandidate();
 const { mutate } = useSendEmail();
 
@@ -71,11 +73,21 @@ const { handleSubmit, values, setFieldValue } = useForm({
 });
 
 const onSubmit = handleSubmit(() => {
-	mutate({
-		email: 'admin@lutech.ltd',
-		content: renderedHtml.value.replace(/"/g, "'"),
-		subject: dataFill.value.subject,
-	});
+	mutate(
+		{
+			email: 'admin@lutech.ltd',
+			content: renderedHtml.value.replace(/"/g, "'"),
+			subject: dataFill.value.subject,
+		},
+		{
+			onSuccess: () => {
+				showToast({
+					message: 'Sent email success!',
+					type: 'success',
+				});
+			},
+		},
+	);
 });
 
 watch(dataFill, () => {

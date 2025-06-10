@@ -26,6 +26,7 @@ import type { InterviewPayload } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { interviewSchema, type InterviewFormData } from './schema';
+import { useCustomToast } from '@/lib/customToast';
 
 const props = defineProps<{
 	open: boolean;
@@ -37,6 +38,7 @@ const emits = defineEmits<{
 }>();
 
 const { data: users } = useListUser();
+const { showToast } = useCustomToast();
 
 const formSchema = toTypedSchema(interviewSchema);
 
@@ -73,6 +75,10 @@ const onSubmit = handleSubmit((values: InterviewFormData) => {
 					{ id: props.id || '', data: { to_stage: 'INTERVIEW_1', outcome: 'PASSED' } },
 					{
 						onSuccess: () => {
+							showToast({
+								message: 'Success!',
+								type: 'success',
+							});
 							emits('update:open', false);
 						},
 					},

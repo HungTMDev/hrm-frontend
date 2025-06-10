@@ -23,9 +23,7 @@ export const useLogout = () => {
 	return useMutation({
 		mutationFn: async () => await logout(),
 		onSuccess: () => {
-			queryClient.removeQueries({
-				queryKey: ['account'],
-			});
+			queryClient.clear();
 			authStore.clearStorage();
 			router.push('/auth');
 		},

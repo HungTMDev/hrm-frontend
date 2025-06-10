@@ -17,8 +17,10 @@ import DocumentBold from '@/assets/icons/Bold/FileText.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import CalendarBold from '@/assets/icons/Bold/Calendar.svg';
 import type { RouteType } from '@/types';
+import { useAuthStore } from './auth.store';
 
 export const useAppStore = defineStore('app-store', () => {
+	const authStore = useAuthStore();
 	//defineState
 	const routeList = ref<RouteType[]>([
 		{
@@ -32,6 +34,7 @@ export const useAppStore = defineStore('app-store', () => {
 			id: '20000',
 			path: '/recruitments',
 			name: 'Recruitments',
+			hidden: !authStore.isHR,
 			icon: shallowRef(Case),
 			activeIcon: shallowRef(CaseBold),
 			children: [

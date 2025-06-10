@@ -122,8 +122,8 @@ const handleDeleteApplicant = () => {
 				</div>
 				<div class="flex flex-col gap-1">
 					<a
-						v-if="data?.resume_url"
-						:href="data?.resume_url.url"
+						v-if="data?.resume"
+						:href="createPathFromServerDomain(data?.resume.path)"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
 						><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
@@ -136,7 +136,9 @@ const handleDeleteApplicant = () => {
 						:href="createPathFromServerDomain(item.path)"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
-						><IconFromSvg :icon="File" class="!w-4 !h-4" />{{ item.filename }}</a
+						><IconFromSvg :icon="File" class="!w-4 !h-4" />{{
+							item.original_filename
+						}}</a
 					>
 					<!-- <a
 						href="#"
@@ -178,7 +180,7 @@ const handleDeleteApplicant = () => {
 					<UserAvatar class="w-[44px] h-[44px]" />
 					<div>
 						<p class="text-black text-base font-medium">
-							{{ data?.created_by_user?.name }}
+							{{ data?.created_by?.name }}
 						</p>
 						<span class="text-xs">{{
 							formatISOStringToLocalDateTime(data?.created_at).date

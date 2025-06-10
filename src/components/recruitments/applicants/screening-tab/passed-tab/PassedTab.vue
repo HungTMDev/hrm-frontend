@@ -8,12 +8,11 @@ import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
-import { useBranch } from '@/composables/branch/useBranch';
-import { useDepartment } from '@/composables/department/useDepartment';
 import { useApplicant } from '@/composables/recruitment/applicant/useApplicant';
 import { useUpdateStage } from '@/composables/recruitment/applicant/useUpdateApplicant';
 import { useListJob } from '@/composables/recruitment/job/useJob';
 import { DEFAULT_PAGINATION, RECRUITMENT_STAGE } from '@/constants';
+import { useCustomToast } from '@/lib/customToast';
 import { valueUpdater } from '@/lib/utils';
 import type { FilterAccordion, FilterData, IApplicant, IApplicantFilter, IMeta } from '@/types';
 import {
@@ -56,6 +55,7 @@ const pagination = computed<PaginationState>(() => ({
 
 const { data, isLoading } = useApplicant(pagination, filterPayload);
 const { data: jobs } = useListJob();
+const { showToast } = useCustomToast();
 
 const applicants = computed<IApplicant[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -164,6 +164,10 @@ const handleReject = () => {
 		},
 		{
 			onSuccess: () => {
+				showToast({
+					message: 'Success!',
+					type: 'success',
+				});
 				isOpenAlert.value = false;
 				dataSent.value = undefined;
 			},

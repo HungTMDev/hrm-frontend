@@ -7,6 +7,7 @@ import {
 	createApplicant,
 	createInterview,
 	createInterviewFeedback,
+	createUser,
 	deleteApplicant,
 	editApplicant,
 	removeParticipant,
@@ -19,6 +20,7 @@ import type { PaginationState } from '@tanstack/vue-table';
 import type { Ref } from 'vue';
 import { applicantKey } from './key';
 import type { AddApplicantPayload } from '@/components/recruitments/applicants/screening-tab/schema';
+import type { CreateUserPayload } from '@/components/recruitments/applicants/hired-tab/schema';
 
 export const useCreateApplicant = (
 	pagination: Ref<PaginationState>,
@@ -82,30 +84,18 @@ export const useDeleteApplicant = (
 };
 
 export const useSendEmail = () => {
-	const { showToast } = useCustomToast();
 	return useMutation({
 		mutationFn: async (payload: { email: string; content: string; subject: string }) =>
 			await sendEmail(payload.email, payload.content, payload.subject),
-		onSuccess: () => {
-			showToast({
-				message: 'Sent email success!',
-				type: 'success',
-			});
-		},
 	});
 };
 
 export const useUpdateStage = () => {
-	const { showToast } = useCustomToast();
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: async (payload: { id: string; data: { to_stage: string; outcome: string } }) =>
 			await updateStage(payload.id, payload.data),
 		onSuccess: () => {
-			showToast({
-				message: 'Success!',
-				type: 'success',
-			});
 			queryClient.invalidateQueries({
 				queryKey: [applicantKey.base],
 			});
@@ -190,5 +180,11 @@ export const useRemoveParticipant = () => {
 	return useMutation({
 		mutationFn: async (payload: { interview_id: string; participant_id: string }) =>
 			await removeParticipant(payload.interview_id, payload.participant_id),
+	});
+};
+
+export const useCreateUser = () => {
+	return useMutation({
+		mutationFn: async (payload: CreateUserPayload) => await createUser(payload),
 	});
 };

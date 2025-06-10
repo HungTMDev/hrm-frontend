@@ -1,14 +1,16 @@
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import File from '@/assets/icons/Outline/File.svg';
+import UserPlus from '@/assets/icons/Outline/UserPlus.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import { createPathFromServerDomain, formatISOStringToLocalDateTime } from '@/lib/utils';
 import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
 
 export const hiredColumn = (
 	handleOpenSheet: (payload: IApplicant) => void,
+	handleOpenDialog: (payload: IApplicant) => void,
 ): ColumnDef<IApplicant>[] => [
 	{
 		accessorKey: 'name',
@@ -37,14 +39,14 @@ export const hiredColumn = (
 		accessorKey: 'cv',
 		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
 		cell: ({ row }) => {
-			if (row.original.resume_url) {
+			if (!row.original.resume) {
 				return '';
 			}
 			return h(
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url,
+					href: createPathFromServerDomain(row.original.resume.path),
 					target: '_blank',
 					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},
@@ -74,15 +76,25 @@ export const hiredColumn = (
 					icon: Eye,
 					style: 'text-slate-600',
 				},
+				{
+					label: 'Create user',
+					icon: UserPlus,
+					style: 'text-green-500',
+				},
 			];
 
 			const onView = () => {
 				handleOpenSheet(row.original);
 			};
 
+			const onCreateUser = () => {
+				handleOpenDialog(row.original);
+			};
+
 			return h(ActionGroupCommon, {
 				actions,
 				onView,
+				onCreateUser,
 				class: 'w-[150px]',
 			});
 		},

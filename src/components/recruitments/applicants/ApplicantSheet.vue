@@ -173,8 +173,8 @@ watch(
 									</div>
 									<div class="flex flex-col gap-1">
 										<a
-											v-if="applicant?.resume_url"
-											:href="applicant?.resume_url.url"
+											v-if="applicant?.resume"
+											:href="applicant?.resume?.url"
 											target="_blank"
 											class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
 											><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
@@ -202,7 +202,7 @@ watch(
 										<UserAvatar class="w-[44px] h-[44px]" />
 										<div>
 											<p class="text-black text-base font-medium">
-												{{ applicant?.created_by_user?.name }}
+												{{ applicant?.created_by?.name }}
 											</p>
 											<span class="text-xs">{{
 												formatISOStringToLocalDateTime(

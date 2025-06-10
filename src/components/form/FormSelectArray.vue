@@ -50,6 +50,7 @@ const handleSelect = (fieldName: string, data: string) => {
 					</div>
 					<CommonSelect
 						:list="list"
+						:icon="icon"
 						:model-value="modelValue?.[index]"
 						@update:model-value="
 							(payload) => handleSelect(`${name}[${index}]`, payload as string)

@@ -39,7 +39,9 @@ import {
 import { computed, ref } from 'vue';
 import ApplicantSheet from '../../ApplicantSheet.vue';
 import { interviewColumn } from '../column';
+import { useCustomToast } from '@/lib/customToast';
 
+const { showToast } = useCustomToast();
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
 const { data: jobs } = useListJob();
@@ -203,6 +205,10 @@ const handleHire = () => {
 		},
 		{
 			onSuccess: () => {
+				showToast({
+					message: 'Success!',
+					type: 'success',
+				});
 				isOpenSheet.value = false;
 				dataSent.value = undefined;
 			},
@@ -229,6 +235,10 @@ const handleConfirmAlert = () => {
 		},
 		{
 			onSuccess: () => {
+				showToast({
+					message: 'Success!',
+					type: 'success',
+				});
 				queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
 				isOpenAlert.value = false;
 				handleCloseSheet(false);

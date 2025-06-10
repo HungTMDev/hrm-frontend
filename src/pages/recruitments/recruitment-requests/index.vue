@@ -318,7 +318,7 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 			@row:click="(payload) => handleOpenSheet(payload, true)"
 			:is-loading="isLoading" />
 		<Separator class="mb-4" />
-		<DataTablePagination :table="table" :meta="meta" item-name="requests" />
+		<DataTablePagination :table="table" :meta="meta" item-name="request(s)" />
 	</ContentWrapper>
 	<RecruitmentRequestSheet
 		:data="dataSent"

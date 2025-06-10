@@ -23,8 +23,10 @@ import {
 import { computed, ref } from 'vue';
 import ApplicantSheet from '../ApplicantSheet.vue';
 import { offeringColumn } from './column';
+import { useCustomToast } from '@/lib/customToast';
 
 const { data: jobs } = useListJob();
+const { showToast } = useCustomToast();
 
 let timeout: any;
 const columnVisibility = ref<VisibilityState>({});
@@ -81,13 +83,23 @@ const handleOpenAlert = (payload: IApplicant) => {
 };
 
 const handleHire = (id: string) => {
-	updateStage({
-		id: id || '',
-		data: {
-			to_stage: RECRUITMENT_STAGE.HIRED,
-			outcome: 'PASSED',
+	updateStage(
+		{
+			id: id || '',
+			data: {
+				to_stage: RECRUITMENT_STAGE.HIRED,
+				outcome: 'PASSED',
+			},
 		},
-	});
+		{
+			onSuccess: () => {
+				showToast({
+					message: 'Success!',
+					type: 'success',
+				});
+			},
+		},
+	);
 };
 
 const handleOpenSheet = (payload: IApplicant) => {
@@ -167,6 +179,10 @@ const handleConfirm = () => {
 		},
 		{
 			onSuccess: () => {
+				showToast({
+					message: 'Success!',
+					type: 'success',
+				});
 				isOpenAlert.value = false;
 				dataSent.value = undefined;
 			},

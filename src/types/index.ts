@@ -35,6 +35,7 @@ export interface RouteType {
 	path: string;
 	name: string;
 	icon?: any;
+	hidden?: boolean;
 	activeIcon?: any;
 	children?: RouteType[];
 }
@@ -132,6 +133,8 @@ export interface IPosition extends IBaseResponse {
 	level: string;
 	common_skills: string[];
 	code: string;
+	branch_id: string;
+	department_id: string;
 }
 
 export interface IFilterRequest<T = any> {

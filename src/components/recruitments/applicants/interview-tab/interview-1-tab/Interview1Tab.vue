@@ -39,7 +39,9 @@ import {
 import { computed, ref } from 'vue';
 import ApplicantSheet from '../../ApplicantSheet.vue';
 import { interviewColumn } from '../column';
+import { useCustomToast } from '@/lib/customToast';
 
+const { showToast } = useCustomToast();
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
 const queryClient = useQueryClient();
@@ -52,6 +54,7 @@ const dataSent = ref<IApplicantInterview>();
 const filter = ref<Record<string, string[]>>();
 const isOpenAlert = ref(false);
 const isOpenSheet = ref(false);
+const isCreateSchedule = ref(false);
 const action = ref<'cancel' | 'reject'>();
 
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
@@ -128,12 +131,13 @@ const handleOpenAlert = (payload: IApplicantInterview, actionPayload: 'cancel' |
 	isOpenAlert.value = true;
 };
 
-const handleOpenSheet = (payload?: IApplicantInterview) => {
+const handleOpenSheet = (payload?: IApplicantInterview, createSchedule?: boolean) => {
 	if (payload instanceof PointerEvent) {
 		dataSent.value = undefined;
 	} else {
 		dataSent.value = payload;
 	}
+	isCreateSchedule.value = createSchedule ?? false;
 	isOpenSheet.value = true;
 };
 
@@ -205,6 +209,10 @@ const handleHire = () => {
 			onSuccess: () => {
 				isOpenSheet.value = false;
 				dataSent.value = undefined;
+				showToast({
+					message: 'Success!',
+					type: 'success',
+				});
 			},
 		},
 	);
@@ -241,6 +249,10 @@ const handleConfirmAlert = () => {
 			},
 			{
 				onSuccess: () => {
+					showToast({
+						message: 'Success!',
+						type: 'success',
+					});
 					queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
 					isOpenAlert.value = false;
 					handleCloseSheet(false);
@@ -285,6 +297,7 @@ const handleCloseSheet = (open: boolean) => {
 		:applicant-interview="dataSent"
 		:is-completing="isCompleting"
 		:is-hiring="isPendingUpdate"
+		:isCreateSchedule="isCreateSchedule"
 		@offer="handleHire"
 		@reject="(payload) => handleOpenAlert(payload.data, payload.action)"
 		@cancel="(payload) => handleOpenAlert(payload.data, payload.action)"

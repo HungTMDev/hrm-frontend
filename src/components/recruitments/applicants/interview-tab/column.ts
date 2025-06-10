@@ -1,5 +1,6 @@
 import CheckCircle from '@/assets/icons/Outline/CheckCircle.svg';
 import CloseCircle from '@/assets/icons/Outline/CloseCircle.svg';
+import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
@@ -11,7 +12,7 @@ import { h } from 'vue';
 
 export const interviewColumn = (
 	handleOpenAlert?: (payload: IApplicantInterview, action: 'cancel' | 'reject') => void,
-	handleOpenSheet?: (payload: IApplicantInterview) => void,
+	handleOpenSheet?: (payload: IApplicantInterview, isCreateSchedule?: boolean) => void,
 	handleHire?: (payload: IApplicantInterview) => void,
 ): ColumnDef<IApplicantInterview>[] => [
 	{
@@ -82,11 +83,11 @@ export const interviewColumn = (
 							icon: CloseCircle,
 							style: 'text-red-500',
 						},
-						// {
-						// 	label: 'Schedule interview',
-						// 	icon: Calendar,
-						// 	style: 'text-slate-600',
-						// },
+						{
+							label: 'Schedule interview',
+							icon: Calendar,
+							style: 'text-slate-600',
+						},
 					];
 				}
 				const arr = [
@@ -109,17 +110,21 @@ export const interviewColumn = (
 				return row.original.stage === 'INTERVIEW_1'
 					? [
 							...arr,
-							// {
-							// 	label: 'Schedule interview',
-							// 	icon: Calendar,
-							// 	style: 'text-slate-600',
-							// },
+							{
+								label: 'Schedule interview',
+								icon: Calendar,
+								style: 'text-slate-600',
+							},
 						]
 					: arr;
 			};
 
 			const onView = () => {
 				handleOpenSheet?.(row.original);
+			};
+
+			const onScheduleInterview = () => {
+				handleOpenSheet?.(row.original, true);
 			};
 
 			const onCancel = () => {
@@ -140,6 +145,8 @@ export const interviewColumn = (
 				onView,
 				onReject,
 				onOffer,
+				onScheduleInterview,
+				class: row.original.status !== 'SCHEDULED' ? 'w-[200px]' : '',
 			});
 		},
 	},

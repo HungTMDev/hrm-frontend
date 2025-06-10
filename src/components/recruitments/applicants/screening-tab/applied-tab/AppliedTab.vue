@@ -31,6 +31,7 @@ import { computed, ref } from 'vue';
 import CandidateSheet from '../CandidateSheet.vue';
 import { screeningColumn } from '../columns';
 import AppliedDialog from './AppliedDialog.vue';
+import { useCustomToast } from '@/lib/customToast';
 
 let timeout: any;
 const columnVisibility = ref<VisibilityState>({});
@@ -60,6 +61,7 @@ const pagination = computed<PaginationState>(() => ({
 
 const { data, isLoading } = useApplicant(pagination, filterPayload);
 const { data: jobs } = useListJob();
+const { showToast } = useCustomToast();
 
 const applicants = computed<IApplicant[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -106,10 +108,20 @@ const handleOpenSheet = (payload?: IApplicant, view?: boolean) => {
 
 const handleStage = (action: string, payload: IApplicant) => {
 	if (action === 'PASS') {
-		updateStage({
-			id: payload.id,
-			data: { to_stage: RECRUITMENT_STAGE.SCREENING, outcome: 'PASSED' },
-		});
+		updateStage(
+			{
+				id: payload.id,
+				data: { to_stage: RECRUITMENT_STAGE.SCREENING, outcome: 'PASSED' },
+			},
+			{
+				onSuccess: () => {
+					showToast({
+						message: 'Success!',
+						type: 'success',
+					});
+				},
+			},
+		);
 		return;
 	}
 };
@@ -202,6 +214,10 @@ const handleConfirm = () => {
 		},
 		{
 			onSuccess: () => {
+				showToast({
+					message: 'Success!',
+					type: 'success',
+				});
 				isOpenAlert.value = false;
 			},
 		},

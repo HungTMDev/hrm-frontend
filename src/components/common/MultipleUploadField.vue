@@ -4,7 +4,7 @@ import Close from '@/assets/icons/Outline/Close.svg';
 import DangerCircle from '@/assets/icons/Outline/DangerCircle.svg';
 import Upload from '@/assets/icons/Outline/UploadMinimalistic.svg';
 import { useCustomToast } from '@/lib/customToast';
-import type { FormFieldCommon } from '@/types';
+import type { FormFieldCommon, IUploadFileResponse } from '@/types';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import ProgressCircle from '../common/ProgressCircle.vue';
@@ -16,6 +16,7 @@ interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
 	type?: 'file' | 'photo';
 	allowedTypes?: string[];
 	modelValue?: File[];
+	listResponse?: IUploadFileResponse[];
 }
 const props = defineProps<Prop>();
 
@@ -270,7 +271,9 @@ watch(
 					v-if="type === 'photo' && fileStates[index].previewUrl"
 					:url="fileStates[index].previewUrl"
 					class="w-10 h-10 rounded-xl" />
-				<p class="text-sm text-black flex-1 truncate">{{ file.name }}</p>
+				<p class="text-sm text-black flex-1 truncate">
+					{{ listResponse?.[index].original_filename ?? file.name }}
+				</p>
 				<Button
 					type="button"
 					variant="ghost"

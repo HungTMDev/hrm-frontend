@@ -2,7 +2,7 @@ import File from '@/assets/icons/Outline/File.svg';
 import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import { createPathFromServerDomain, formatISOStringToLocalDateTime } from '@/lib/utils';
 import type { IActionGroupType, ICandidate } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
@@ -63,12 +63,12 @@ export const talentPoolColumns = (
 		accessorKey: 'cv',
 		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
 		cell: ({ row }) => {
-			if (row.original.resume_url === 'REFER') return '';
+			if (!row.original) return '';
 			return h(
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url,
+					href: createPathFromServerDomain(row.original.resume.path),
 					target: '_blank',
 					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},

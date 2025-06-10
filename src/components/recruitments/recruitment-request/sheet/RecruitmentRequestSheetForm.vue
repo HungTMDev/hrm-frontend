@@ -71,13 +71,6 @@ const listBranch = computed(
 			value: item.id,
 		})) || [],
 );
-const listPosition = computed(
-	() =>
-		positions.value?.map((item) => ({
-			label: item.name,
-			value: item.id,
-		})) || [],
-);
 const listUser = computed(
 	() =>
 		users.value?.map((item) => ({
@@ -92,6 +85,25 @@ const formSchema = toTypedSchema(recruitmentRequestSchema);
 
 const { handleSubmit, values } = useForm({
 	validationSchema: formSchema,
+});
+
+const listPosition = computed(() => {
+	if (values.department_id) {
+		return (
+			positions.value
+				?.filter((item) => item.department_id === values.department_id)
+				.map((item) => ({
+					label: item.name,
+					value: item.id,
+				})) || []
+		);
+	}
+	return (
+		positions.value?.map((item) => ({
+			label: item.name,
+			value: item.id,
+		})) || []
+	);
 });
 
 const { mutateAsync: createRecruitmentRequest, isPending: isLoadingCreate } =

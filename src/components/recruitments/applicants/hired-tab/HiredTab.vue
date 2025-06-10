@@ -21,8 +21,13 @@ import {
 import { computed, ref } from 'vue';
 import ApplicantSheet from '../ApplicantSheet.vue';
 import { hiredColumn } from './column';
+import HiredDialog from './HiredDialog.vue';
+import { useCreateUser } from '@/composables/recruitment/applicant/useUpdateApplicant';
+import type { CreateUserPayload } from './schema';
+import { useCustomToast } from '@/lib/customToast';
 
 const { data: jobs } = useListJob();
+const { showToast } = useCustomToast();
 
 let timeout: any;
 const columnVisibility = ref<VisibilityState>({});
@@ -30,6 +35,7 @@ const rowSelection = ref({});
 const keywords = ref<string>();
 const filter = ref<Record<string, string[]>>();
 const isOpenSheet = ref(false);
+const isOpenDialog = ref(false);
 const dataSent = ref<IApplicant>();
 const filterData = ref<FilterData[]>([]);
 
@@ -47,6 +53,7 @@ const pagination = computed<PaginationState>(() => ({
 }));
 
 const { data, isLoading } = useApplicant(pagination, filterPayload);
+const { mutate: createUser, isPending: isCreating } = useCreateUser();
 
 const applicants = computed<IApplicant[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -77,6 +84,11 @@ const handleOpenSheet = (payload: IApplicant) => {
 	isOpenSheet.value = true;
 };
 
+const handleOpenDialog = (payload: IApplicant) => {
+	dataSent.value = payload;
+	isOpenDialog.value = true;
+};
+
 const table = useVueTable({
 	get data() {
 		return applicants.value;
@@ -87,7 +99,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: hiredColumn(handleOpenSheet),
+	columns: hiredColumn(handleOpenSheet, handleOpenDialog),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -130,9 +142,29 @@ const handleFilter = (payload: FilterData[]) => {
 	filter.value = newFilter as Record<string, string[]>;
 };
 
+const handleCreateUser = (payload: CreateUserPayload) => {
+	createUser(payload, {
+		onSuccess: () => {
+			showToast({
+				message: 'User created successfully',
+				type: 'success',
+			});
+
+			dataSent.value = undefined;
+			isOpenDialog.value = false;
+			isOpenSheet.value = false;
+		},
+	});
+};
+
 const handleCloseSheet = (open: boolean) => {
 	dataSent.value = undefined;
 	isOpenSheet.value = open;
+};
+
+const handleCloseDialog = (open: boolean) => {
+	dataSent.value = undefined;
+	isOpenDialog.value = open;
 };
 </script>
 <template>
@@ -159,4 +191,10 @@ const handleCloseSheet = (open: boolean) => {
 		:open="isOpenSheet"
 		:applicant-id="dataSent?.id"
 		@update:open="handleCloseSheet" />
+	<HiredDialog
+		:open="isOpenDialog"
+		:is-loading="isCreating"
+		:data="dataSent"
+		@submit="handleCreateUser"
+		@update:open="handleCloseDialog" />
 </template>

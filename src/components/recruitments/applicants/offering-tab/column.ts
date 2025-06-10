@@ -9,6 +9,7 @@ import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue';
+import { createPathFromServerDomain } from '@/lib/utils';
 
 export const offeringColumn = (
 	handleHire: (id: string) => void,
@@ -42,14 +43,14 @@ export const offeringColumn = (
 		accessorKey: 'cv',
 		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
 		cell: ({ row }) => {
-			if (!row.original.resume_url) {
+			if (!row.original.resume) {
 				return '';
 			}
 			return h(
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url.url,
+					href: createPathFromServerDomain(row.original.resume.path),
 					target: '_blank',
 					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},

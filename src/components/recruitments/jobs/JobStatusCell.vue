@@ -16,6 +16,7 @@ interface Prop {
 	modelValue: string;
 	class?: HTMLAttributes['class'];
 	list: ComboboxType[];
+	disabled?: boolean;
 }
 
 defineProps<Prop>();
@@ -33,6 +34,7 @@ const handleUpdate = (payload: any) => {
 		<Select :model-value="modelValue" @update:model-value="handleUpdate">
 			<SelectTrigger
 				class="w-[120px] rounded-2xl py-2 px-3 h-auto border-none focus:ring-0 focus:ring-offset-0"
+				:disabled="disabled"
 				:class="cn(JOB_STATUS_STYLE[modelValue])">
 				<SelectValue placeholder="Select" />
 			</SelectTrigger>

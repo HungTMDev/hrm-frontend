@@ -109,7 +109,7 @@ export interface IApplicant extends IBaseResponse {
 	applied_at: string;
 	expected_salary: 0;
 	source: string;
-	resume_url: IUploadFileResponse;
+	resume: IUploadFileResponse;
 	cover_letter: string;
 	attaches: IUploadFileResponse[];
 	notes: string;
@@ -120,7 +120,7 @@ export interface IApplicant extends IBaseResponse {
 	position: IPosition;
 	department: IDepartment;
 	branch: IBranch;
-	created_by_user: IUser;
+	created_by: IUser;
 	referred_by_user: IUser;
 }
 
@@ -149,7 +149,7 @@ export interface ICandidate extends IBaseResponse {
 	date_of_birth: string;
 	linkedin_profile?: string;
 	portfolio_url?: string;
-	resume_url?: string;
+	resume: IUploadFileResponse;
 	parsed_data?: string;
 	education?: IEducation;
 	work_experience?: IWorkExperience;

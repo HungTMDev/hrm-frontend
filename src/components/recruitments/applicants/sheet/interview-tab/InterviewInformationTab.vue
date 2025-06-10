@@ -217,6 +217,7 @@ onMounted(() => {
 								{{ i.name }}
 							</p>
 							<Button
+								v-if="item.status === 'SCHEDULED'"
 								variant="outline"
 								class="p-0 h-auto text-red-500 hover:text-red-600"
 								@click="handleRemoveInterviewer(item.id, i)">
@@ -224,6 +225,7 @@ onMounted(() => {
 							</Button>
 						</div>
 						<Button
+							v-if="item.status === 'SCHEDULED'"
 							variant="outline"
 							class="h-auto py-1 rounded-xl mt-2 text-sm"
 							@click="handleOpenDialog(item.id)">

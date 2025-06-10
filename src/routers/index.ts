@@ -30,6 +30,7 @@ router.beforeEach(async (to, from, next) => {
 
 	const isLoggedIn = authStore.isLoggedIn;
 	const isAuthRoute = to.matched.some((record) => record.meta.requiresAuth);
+	const isHR = to.matched.some((record) => record.meta.requiresHR);
 	const isAuthForgotPassword = to.matched.some((record) => record.meta.requiresForgotPassword);
 
 	if (isAuthForgotPassword && !authStore.isForgotPassword) {
@@ -45,6 +46,11 @@ router.beforeEach(async (to, from, next) => {
 
 	if (isLoggedIn && !isAuthRoute) {
 		next('/');
+		return;
+	}
+
+	if (isHR && !authStore.isHR) {
+		next('/not-found');
 		return;
 	}
 

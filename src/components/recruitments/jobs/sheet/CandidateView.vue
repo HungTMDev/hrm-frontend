@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import Trash from '@/assets/icons/Outline/TrashBinTrash.svg';
 import type { IApplicant } from '@/types';
+import { createPathFromServerDomain } from '@/lib/utils';
 
 defineProps<{
 	applicant?: IApplicant;
@@ -59,7 +60,7 @@ const emits = defineEmits<{
 				</div>
 				<div class="flex flex-col gap-2">
 					<a
-						:href="applicant?.resume_url.url"
+						:href="createPathFromServerDomain(applicant?.resume.path ?? '')"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
 						><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a

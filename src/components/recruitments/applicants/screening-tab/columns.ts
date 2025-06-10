@@ -3,7 +3,6 @@ import CheckCircle from '@/assets/icons/Outline/CheckCircle.svg';
 import CloseCircle from '@/assets/icons/Outline/CloseCircle.svg';
 import Eye from '@/assets/icons/Outline/Eye.svg';
 import File from '@/assets/icons/Outline/File.svg';
-import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { cn, formatISOStringToLocalDateTime } from '@/lib/utils';
@@ -44,14 +43,14 @@ export const screeningColumn = (payload: {
 		accessorKey: 'cv',
 		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
 		cell: ({ row }) => {
-			if (!row.original.resume_url) {
+			if (!row.original.resume) {
 				return '';
 			}
 			return h(
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url.url,
+					href: row.original.resume.url,
 					target: '_blank',
 					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},
@@ -59,6 +58,11 @@ export const screeningColumn = (payload: {
 			);
 		},
 		enableHiding: false,
+	},
+	{
+		accessorKey: 'created_by',
+		header: 'Created by',
+		cell: ({ row }) => row.original.created_by?.name,
 	},
 	{
 		accessorKey: 'created_at',
@@ -85,11 +89,6 @@ export const screeningColumn = (payload: {
 							{
 								label: 'Fail',
 								icon: CloseCircle,
-								style: 'text-red-500 ',
-							},
-							{
-								label: 'Delete',
-								icon: Trash,
 								style: 'text-red-500 ',
 							},
 						]
@@ -123,10 +122,6 @@ export const screeningColumn = (payload: {
 				payload.handleOpenSheet?.(row.original);
 			};
 
-			const onDelete = () => {
-				payload.handleOpenAlert?.(row.original, 'delete');
-			};
-
 			const onFail = () => {
 				payload.handleOpenAlert?.(row.original, 'reject');
 			};
@@ -142,7 +137,6 @@ export const screeningColumn = (payload: {
 			return h(ActionGroupCommon, {
 				actions,
 				onEdit,
-				onDelete,
 				onView,
 				onPass,
 				onScheduleInterview,

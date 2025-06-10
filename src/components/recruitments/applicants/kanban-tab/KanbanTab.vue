@@ -21,7 +21,9 @@ import type { KanbanApplicantItem } from './type';
 import AppliedDialog from '../screening-tab/applied-tab/AppliedDialog.vue';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import ApplicantSheet from '../ApplicantSheet.vue';
+import { useCustomToast } from '@/lib/customToast';
 
+const { showToast } = useCustomToast();
 const appStore = useAppStore();
 const {
 	data: allApplicant,
@@ -94,6 +96,12 @@ const onAdd = (event: any) => {
 			onError: () => {
 				refetchAllApplicant();
 				refetchAllApplicantInterview();
+			},
+			onSuccess: () => {
+				showToast({
+					message: 'Success!',
+					type: 'success',
+				});
 			},
 		},
 	);

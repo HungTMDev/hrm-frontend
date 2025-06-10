@@ -32,7 +32,6 @@ const startCountdown = () => {
 };
 
 const resendOTP = () => {
-	console.log('Resend OTP...');
 	startCountdown();
 };
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { FormFieldCommon } from '@/types';
+import type { FormFieldCommon, IUploadFileResponse } from '@/types';
 import { FormField } from '../ui/form';
 import FormControl from '../ui/form/FormControl.vue';
 import FormItem from '../ui/form/FormItem.vue';
@@ -12,6 +12,7 @@ interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
 	type: 'file' | 'photo';
 	allowedTypes?: string[];
 	previewUrl?: string;
+	dataResponse?: IUploadFileResponse;
 }
 defineProps<Prop>();
 </script>
@@ -27,6 +28,7 @@ defineProps<Prop>();
 					:type="type"
 					:preview-url="previewUrl"
 					:allowed-types="allowedTypes"
+					:data-response="dataResponse"
 					v-bind="componentField" />
 			</FormControl>
 			<FormErrorCustom />

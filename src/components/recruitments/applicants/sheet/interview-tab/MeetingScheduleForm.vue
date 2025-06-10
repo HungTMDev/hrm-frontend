@@ -2,6 +2,10 @@
 import Link from '@/assets/icons/Outline/Link.svg';
 import MapPoint from '@/assets/icons/Outline/MapPoint.svg';
 import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
+import PenNew from '@/assets/icons/Outline/PenNewRound.svg';
+import ChatDots from '@/assets/icons/Outline/ChatDots.svg';
+import SortByTime from '@/assets/icons/Outline/SortByTime.svg';
+import CallApiButton from '@/components/common/CallApiButton.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
@@ -10,31 +14,31 @@ import FormTime from '@/components/form/FormTime.vue';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useGetAccount } from '@/composables/auth/useAuth';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
+import {
+	useCreateInterview,
+	useSendEmail,
+	useUpdateStage,
+} from '@/composables/recruitment/applicant/useUpdateApplicant';
 import { useListUser } from '@/composables/user/useUser';
 import { listInterviewType } from '@/constants';
 import {
 	OFFLINE_INTERVIEW_INVITATION_EMAIL,
 	ONLINE_INTERVIEW_INVITATION_EMAIL,
 } from '@/constants/model';
+import { useCustomToast } from '@/lib/customToast';
 import {
 	createISOStringFromDayAndTime,
 	createNameByGender,
 	formatISOStringToLocalDateTime,
 } from '@/lib/utils';
 import type { IApplicant, IApplicantInterview, InterviewPayload } from '@/types';
+import { useQueryClient } from '@tanstack/vue-query';
 import { toTypedSchema } from '@vee-validate/zod';
 import Handlebars from 'handlebars';
 import { useForm } from 'vee-validate';
 import { computed, ref, watch, type Ref } from 'vue';
 import { meetingScheduleSchema, type MeetingSchedulePayload } from './schema';
-import {
-	useCreateInterview,
-	useSendEmail,
-	useUpdateStage,
-} from '@/composables/recruitment/applicant/useUpdateApplicant';
-import CallApiButton from '@/components/common/CallApiButton.vue';
-import { useQueryClient } from '@tanstack/vue-query';
-import { applicantKey } from '@/composables/recruitment/applicant/key';
 
 const props = defineProps<{
 	applicant?: IApplicant;
@@ -48,6 +52,7 @@ const emits = defineEmits<{
 
 const formSchema = toTypedSchema(meetingScheduleSchema);
 
+const { showToast } = useCustomToast();
 const queryClient = useQueryClient();
 const { data: users } = useListUser();
 const { data: account } = useGetAccount();
@@ -57,7 +62,6 @@ const nextStep = ref(false);
 const renderedHtml = ref('');
 
 const toStage = computed(() => {
-	console.log(props.listInterview?.find((item) => item.stage === 'INTERVIEW_1'));
 	if (
 		(props.applicant?.current_stage === 'INTERVIEW_2' &&
 			props.listInterview
@@ -172,11 +176,21 @@ const handleSend = () => {
 				queryKey: [applicantKey.interview],
 			});
 
-			sendEmail({
-				email: props.applicant?.candidate.email || '',
-				content: renderedHtml.value.replace(/"/g, "'"),
-				subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
-			});
+			sendEmail(
+				{
+					email: props.applicant?.candidate.email || '',
+					content: renderedHtml.value.replace(/"/g, "'"),
+					subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
+				},
+				{
+					onSuccess: () => {
+						showToast({
+							message: 'Sent email success!',
+							type: 'success',
+						});
+					},
+				},
+			);
 		},
 	});
 };
@@ -202,12 +216,14 @@ watch(dataFill, () => {
 					label="Interview name"
 					:model-value="data?.interview_name"
 					:required="true"
+					:icon="PenNew"
 					placeholder="Enter interview name"
 					class="w-full" />
 
 				<FormSelect
 					name="interview_type"
 					label="Interview type"
+					:icon="ChatDots"
 					:model-value="data?.interview_type"
 					:required="true"
 					:list="listInterviewType" />
@@ -251,6 +267,7 @@ watch(dataFill, () => {
 					type="number"
 					:model-value="data?.duration_minutes"
 					:required="true"
+					:icon="SortByTime"
 					label="Duration minutes"
 					placeholder="Enter duration minutes"
 					class="w-full" />

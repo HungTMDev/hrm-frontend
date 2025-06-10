@@ -1,3 +1,4 @@
+import type { CreateUserPayload } from '@/components/recruitments/applicants/hired-tab/schema';
 import type { InterviewerFeedbackPayload } from '@/components/recruitments/applicants/interview-tab/schema';
 import type { AddApplicantPayload } from '@/components/recruitments/applicants/screening-tab/schema';
 import {
@@ -7,6 +8,7 @@ import {
 	NOTIFICATION_API,
 } from '@/constants/api/recruitment/applicant.api';
 import { JOB_API } from '@/constants/api/recruitment/job.api';
+import { USER_API } from '@/constants/api/user.api';
 import { createApiEndpoint } from '@/lib/utils';
 import axiosClient from '@/plugins';
 import type {
@@ -79,11 +81,14 @@ export const getApplicantById = async (id: string) => {
 };
 
 export const sendEmail = async (email: string, content: string, subject: string) => {
-	const { data, status } = await axiosClient.post(NOTIFICATION_API.SEND_EMAIL, {
-		email,
-		content,
-		subject,
-	});
+	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(
+		NOTIFICATION_API.SEND_EMAIL,
+		{
+			email,
+			content,
+			subject,
+		},
+	);
 	if (status >= 400) {
 		throw new Error();
 	}
@@ -236,6 +241,14 @@ export const getFeedback = async (interviewId: string) => {
 	const { data, status } = await axiosClient.get<IApiResponseV1<IInterviewFeedback[]>>(
 		createApiEndpoint(INTERVIEW_API.FEEDBACK, interviewId),
 	);
+	if (status >= 400) {
+		throw new Error();
+	}
+	return data.data;
+};
+
+export const createUser = async (payload: CreateUserPayload) => {
+	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(USER_API.BASE, payload);
 	if (status >= 400) {
 		throw new Error();
 	}

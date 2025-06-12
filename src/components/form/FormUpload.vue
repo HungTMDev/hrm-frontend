@@ -13,6 +13,7 @@ interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
 	allowedTypes?: string[];
 	previewUrl?: string;
 	dataResponse?: IUploadFileResponse;
+	fileName?: string;
 }
 defineProps<Prop>();
 </script>
@@ -28,6 +29,7 @@ defineProps<Prop>();
 					:type="type"
 					:preview-url="previewUrl"
 					:allowed-types="allowedTypes"
+					:file-name="fileName"
 					:data-response="dataResponse"
 					v-bind="componentField" />
 			</FormControl>

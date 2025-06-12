@@ -48,9 +48,7 @@ const handleEdit = () => {
 		<SheetHeader class="flex-row items-center gap-4">
 			<SheetTitle class="text-black font-semibold text-[28px]">Leave request</SheetTitle>
 			<SheetDescription>
-				<StatusTag
-					:status="data?.status || ''"
-					:class="REQUEST_STATUS_STYLE[data?.status || '']" />
+				<StatusTag :status="data?.status || ''" :class="REQUEST_STATUS_STYLE[data?.status || '']" />
 			</SheetDescription>
 		</SheetHeader>
 
@@ -71,11 +69,10 @@ const handleEdit = () => {
 				Leave reason
 			</div>
 			<p class="text-black mt-2">
-				I am writing to formally request a leave of absence for a duration of two days, as I
-				am currently experiencing some health issues that require my attention. I appreciate
-				your understanding and support during this time, and I assure you that I will do my
-				best to catch up on any missed work upon my return. Thank you for considering my
-				request.
+				I am writing to formally request a leave of absence for a duration of two days, as I am
+				currently experiencing some health issues that require my attention. I appreciate your
+				understanding and support during this time, and I assure you that I will do my best to catch
+				up on any missed work upon my return. Thank you for considering my request.
 			</p>
 		</div>
 
@@ -105,9 +102,7 @@ const handleEdit = () => {
 			@click="emits('recall')">
 			Recall
 		</Button>
-		<Button
-			v-if="data?.status === 'DRAFT'"
-			class="h-auto rounded-2xl p-3 px-8 hover:bg-blue-500"
+		<Button v-if="data?.status === 'DRAFT'" class="h-auto rounded-2xl p-3 px-8 hover:bg-blue-500"
 			>Send</Button
 		>
 	</div>

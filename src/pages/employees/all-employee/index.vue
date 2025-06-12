@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import Buildings from '@/assets/icons/Outline/Buildings.svg';
+import Building from '@/assets/icons/Outline/Buildings.svg';
 import Building3 from '@/assets/icons/Outline/Buildings3.svg';
-import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import Case from '@/assets/icons/Outline/Case.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
 import Download from '@/assets/icons/Outline/DownloadMinimalistic.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
-import UserHands from '@/assets/icons/Outline/UserHands.svg';
 import UserPlus from '@/assets/icons/Outline/UserPlus.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
@@ -20,15 +21,17 @@ import AllEmployeeSheet from '@/components/employee/all-employee/AllEmployeeShee
 import { employeeColumn } from '@/components/employee/all-employee/employee.column';
 import Button from '@/components/ui/button/Button.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
-import {
-	DEFAULT_PAGINATION,
-	listEmploymentType,
-	listJobLevel,
-	listJobStatus,
-	ROWS_PER_PAGE,
-} from '@/constants';
+import { useBranch } from '@/composables/branch/useBranch';
+import { useDepartment } from '@/composables/department/useDepartment';
+import { employeeKey } from '@/composables/employee/key';
+import { useEmployee, useListEmployee } from '@/composables/employee/useEmployee';
+import { useDeleteEmployee } from '@/composables/employee/useUpdateEmployee';
+import { DEFAULT_PAGINATION, listEmploymentType, listJobLevel, listJobStatus } from '@/constants';
+import { useCustomToast } from '@/lib/customToast';
 import { exportToExcel, valueUpdater } from '@/lib/utils';
-import type { IEmployee, FilterAccordion, IMeta, IEmployeeFilter, FilterData } from '@/types';
+import router from '@/routers';
+import type { FilterAccordion, FilterData, IEmployee, IEmployeeFilter, IMeta } from '@/types';
+import { useQueryClient } from '@tanstack/vue-query';
 import {
 	getCoreRowModel,
 	useVueTable,
@@ -36,25 +39,19 @@ import {
 	type VisibilityState,
 } from '@tanstack/vue-table';
 import { computed, ref, watch } from 'vue';
-import router from '@/routers';
-import { useEmployee, useListEmployee } from '@/composables/employee/useEmployee';
 import { useRoute } from 'vue-router';
-import { useBranch } from '@/composables/branch/useBranch';
-import { useDepartment } from '@/composables/department/useDepartment';
-import Case from '@/assets/icons/Outline/Case.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
-import Building from '@/assets/icons/Outline/Buildings.svg';
-import { useCustomToast } from '@/lib/customToast';
 
 const route = useRoute();
+const queryClient = useQueryClient();
 const { showToast } = useCustomToast();
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
 
+let timeout: any;
 const query = computed(() => route.query);
 const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
+const keywords = ref<string>();
 
 const isOpenSheet = ref(false);
 const isOpenAlert = ref(false);
@@ -141,8 +138,8 @@ const handleOpenAlert = (payload: IEmployee) => {
 	isOpenAlert.value = true;
 };
 
-const handleNavigate = (id: string) => {
-	router.push(`/employees/all-employee/${id}`);
+const handleNavigate = (payload: IEmployee) => {
+	router.push(`/employees/all-employee/${payload.id}`);
 };
 
 const table = useVueTable({
@@ -155,7 +152,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: employeeColumn(handleOpenSheet, handleOpenAlert),
+	columns: employeeColumn(handleOpenSheet, handleOpenAlert, handleNavigate),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -188,6 +185,14 @@ const handleCloseSheet = (open: boolean) => {
 const handleCloseAlert = (open: boolean) => {
 	dataSent.value = undefined;
 	isOpenAlert.value = open;
+};
+
+const handleSearch = (payload: string | number) => {
+	clearTimeout(timeout);
+	timeout = setTimeout(() => {
+		keywords.value = payload === '' ? undefined : (payload as string);
+		filterPayload.value.keywords = keywords.value;
+	}, 500);
 };
 
 const handleExportToExcel = () => {
@@ -247,6 +252,22 @@ const syncQueryToFilter = () => {
 	}
 };
 
+const { mutate: deleteEmployee, isPending: deleting } = useDeleteEmployee();
+
+const handleConfirm = () => {
+	deleteEmployee(dataSent.value?.id || '', {
+		onSuccess: () => {
+			showToast({
+				message: 'Deleted successfully',
+				type: 'success',
+			});
+			isOpenAlert.value = false;
+			dataSent.value = undefined;
+			queryClient.invalidateQueries({ queryKey: [employeeKey.base] });
+		},
+	});
+};
+
 watch([pageIndex, pageSize, filterPayload], () => {
 	router.replace({
 		query: { page: pageIndex.value + 1, limit: pageSize.value, ...filterPayload.value },
@@ -280,7 +301,8 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search employee" />
+				placeholder="Search employee"
+				@update:model-value="handleSearch" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="accordionItems" />
 			<Button class="hover:bg-blue-600 rounded-2xl" @click="handleExportToExcel">
@@ -293,18 +315,16 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 			</Button>
 		</div>
 		<div class="flex flex-col gap-2">
-			<DataTable
-				:table="table"
-				:is-loading="isLoading"
-				@row:click="(payload) => handleNavigate(payload.id)" />
+			<DataTable :table="table" :is-loading="isLoading" @row:click="handleNavigate" />
 			<Separator class="mb-2" />
-			<DataTablePagination :table="table" />
+			<DataTablePagination :table="table" :meta="meta" />
 		</div>
 	</ContentWrapper>
-	<AllEmployeeSheet
-		:data="dataSent"
-		:open="isOpenSheet"
-		@update:open="handleCloseSheet"
-		@delete="handleOpenAlert" />
-	<AlertPopup :open="isOpenAlert" @update:open="handleCloseAlert" />
+	<AllEmployeeSheet :open="isOpenSheet" @update:open="handleCloseSheet" @delete="handleOpenAlert" />
+	<AlertPopup
+		:open="isOpenAlert"
+		:description="dataSent?.name"
+		:is-loading="deleting"
+		@confirm="handleConfirm"
+		@update:open="handleCloseAlert" />
 </template>

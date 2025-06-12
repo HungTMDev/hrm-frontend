@@ -8,7 +8,7 @@ export const personalInformationSchema = z.object({
 	name: z.string().min(1, 'This field is required'),
 	avatar: z.union([z.string(), z.instanceof(File)]).optional(),
 	date_of_birth: z.string().min(1, 'This field is required'),
-	gender: z.number(),
+	gender: z.string(),
 	employee_number: z.string().min(1, 'This field is required'),
 	address: z.string().min(1, 'This field is required').optional(),
 	hometown: z.string().min(1, 'This field is required').optional(),
@@ -28,14 +28,14 @@ export const workInformationSchema = z.object({
 	branch_id: z.string().min(1, 'This field is required'),
 	department_id: z.string().min(1, 'This field is required'),
 	position_id: z.string().min(1, 'This field is required'),
-	team_id: z.string().min(1, 'This field is required'),
-	level: z.string(),
+	team_id: z.string().min(1, 'This field is required').optional(),
+	level: z.string().optional(),
 	manager_id: z.string().min(1, 'This field is required'),
 	salary: z.number(),
 	start_date: z.string().min(1, 'This field is required'),
 	end_date: z.string().min(1, 'This field is required').optional(),
 	work_status: z.string().min(1, 'This field is required'),
-	work_location: z.string().min(1, 'This field is required'),
+	work_location: z.string().min(1, 'This field is required').optional(),
 	work_hour: z.string().min(1, 'This field is required'),
 	shift_start_time: z.string().min(1, 'This field is required').optional(),
 	shift_end_time: z.string().min(1, 'This field is required').optional(),
@@ -64,38 +64,58 @@ export const bankInformationKeys = Object.keys(
 
 export const contractInformationSchema = z.object({
 	contract_type: z.string().min(1, 'This field is required'),
-	start_date: z.string().min(1, 'This field is required'),
-	end_date: z.string().min(1, 'This field is required'),
+	start_date: z.string().min(1, 'This field is required').optional(),
+	end_date: z.string().min(1, 'This field is required').optional(),
+	contract_start_date: z.string().min(1, 'This field is required'),
+	contract_end_date: z.string().min(1, 'This field is required').optional(),
 	status: z.string().min(1, 'This field is required'),
 	contract_detail: z.object({
 		user_id: z.string().optional(),
 		document_name: z.string().min(1, 'This field is required'),
-		document_type: z.string().min(1, 'This field is required'),
-		file_name: z.string().min(1, 'This field is required'),
-		file_type: z.string().min(1, 'This field is required'),
-		file_size: z.number(),
-		storage_path: z.string().min(1, 'This field is required'),
+		document_type: z.string().min(1, 'This field is required').default('EMPLOYEE_CONTRACT'),
+		file_name: z.string().min(1, 'This field is required').optional(),
+		file_type: z.string().min(1, 'This field is required').optional(),
+		file_size: z.number().optional(),
+		storage_path: z.string().min(1, 'This field is required').optional(),
 		description: z.string().min(1, 'This field is required').optional(),
+		file: z.instanceof(File),
 	}),
 });
+
+export type ContractInformationPayload = z.infer<typeof contractInformationSchema>;
+export const contractInformationKeys = Object.keys(
+	contractInformationSchema.shape,
+) as (keyof ContractInformationPayload)[];
 
 export const documentSchema = z.array(
 	z.object({
 		user_id: z.string().optional(),
 		document_name: z.string().min(1, 'This field is required'),
 		document_type: z.string().min(1, 'This field is required'),
-		file_name: z.string().min(1, 'This field is required'),
-		file_type: z.string().min(1, 'This field is required'),
-		file_size: z.number(),
-		storage_path: z.string().min(1, 'This field is required'),
+		file_name: z.string().min(1, 'This field is required').optional(),
+		file_type: z.string().min(1, 'This field is required').optional(),
+		file_size: z.number().optional(),
+		storage_path: z.string().min(1, 'This field is required').optional(),
 		description: z.string().min(1, 'This field is required').optional(),
+		file: z.instanceof(File).optional(),
 	}),
 );
+export type DocumentPayload = z.infer<typeof documentSchema>;
 
 export const employeeSchema = [
 	personalInformationSchema,
 	workInformationSchema,
 	bankInformationSchema,
-	// contractInformationSchema,
-	// documentSchema,
+	contractInformationSchema,
+	z.object({
+		documents: documentSchema,
+	}),
 ];
+
+export type CreateEmployeePayload = {
+	personal_information: PersonalInformationPayload;
+	work_information: WorkInformationPayload;
+	bank_information: BankInformationPayload;
+	contract_information: ContractInformationPayload;
+	documents: z.infer<typeof documentSchema>;
+};

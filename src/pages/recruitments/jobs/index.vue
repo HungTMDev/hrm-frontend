@@ -274,9 +274,7 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 		<div v-else class="my-4 flex gap-2 justify-end">
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
-			<Button
-				class="bg-blue-500 hover:bg-blue-600 text-white rounded-2xl"
-				@click="handleOpenSheet">
+			<Button class="bg-blue-500 hover:bg-blue-600 text-white rounded-2xl" @click="handleOpenSheet">
 				<IconFromSvg :icon="CaseRound" />
 				Add new job
 			</Button>

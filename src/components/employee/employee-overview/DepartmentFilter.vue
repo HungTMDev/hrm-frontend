@@ -64,9 +64,7 @@ const handleReset = () => {
 
 		<ComboboxList align="end" :side-offset="-42" class="rounded-2xl border-none w-80 p-4">
 			<div class="flex justify-between items-center">
-				<div class="flex items-center gap-2">
-					<IconFromSvg :icon="Buildings" /> Department
-				</div>
+				<div class="flex items-center gap-2"><IconFromSvg :icon="Buildings" /> Department</div>
 				<Button class="h-auto p-0" variant="ghost" @click="handleClose"
 					><IconFromSvg :icon="Close"
 				/></Button>
@@ -86,10 +84,7 @@ const handleReset = () => {
 			</ScrollArea>
 			<Separator class="my-4" />
 			<div class="flex justify-center gap-2 items-center">
-				<Button
-					class="rounded-2xl h-auto py-3.5 px-6"
-					variant="outline"
-					@click="handleReset"
+				<Button class="rounded-2xl h-auto py-3.5 px-6" variant="outline" @click="handleReset"
 					>Reset</Button
 				>
 				<Button

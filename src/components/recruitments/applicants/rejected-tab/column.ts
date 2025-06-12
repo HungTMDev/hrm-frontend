@@ -8,15 +8,19 @@ import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import { createPathFromServerDomain, formatISOStringToLocalDateTime } from '@/lib/utils';
-import { useGetAccount } from '@/composables/auth/useAuth';
+import {
+	createPathFromServerDomain,
+	formatISOStringToLocalDateTime,
+	formatStatus,
+} from '@/lib/utils';
+import StatusTag from '@/components/common/StatusTag.vue';
+import { APPLICANT_STAGE_STYLE } from '@/constants';
 
 export const rejectedColumn = (
 	handleOpenSheet: (payload: IApplicant) => void,
 	handleOpenAlert: (payload: IApplicant) => void,
+	handleUndo: (id: string) => void,
 ): ColumnDef<IApplicant>[] => {
-	const { data: account } = useGetAccount();
-
 	return [
 		{
 			id: 'select',
@@ -29,7 +33,8 @@ export const rejectedColumn = (
 							(table.getIsSomePageRowsSelected() && 'indeterminate'),
 						'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
 						ariaLabel: 'Select all',
-						class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
+						class:
+							'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
 					},
 					() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
 				),
@@ -39,7 +44,8 @@ export const rejectedColumn = (
 					modelValue: row.getIsSelected(),
 					'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 					ariaLabel: 'Select row',
-					class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+					class:
+						'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
 				}),
 			enableSorting: false,
 			enableHiding: false,
@@ -78,9 +84,10 @@ export const rejectedColumn = (
 					'a',
 					{
 						onClick: (event: any) => event.stopPropagation(),
-						href: createPathFromServerDomain(row.original.resume.path),
+						href: createPathFromServerDomain(row.original.resume.path ?? ''),
 						target: '_blank',
-						class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
+						class:
+							'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 					},
 					[h(IconFromSvg, { icon: File }), 'CV'],
 				);
@@ -88,9 +95,13 @@ export const rejectedColumn = (
 			enableHiding: false,
 		},
 		{
-			accessorKey: 'updated_at',
-			header: 'Last updated',
-			cell: ({ row }) => formatISOStringToLocalDateTime(row.original.updated_at).date,
+			accessorKey: 'rejected_at_stage',
+			header: 'Rejected at stage',
+			cell: ({ row }) =>
+				h(StatusTag, {
+					status: row.original.rejected_at_stage,
+					class: APPLICANT_STAGE_STYLE[row.original.rejected_at_stage],
+				}),
 		},
 		{
 			accessorKey: 'created_at',
@@ -112,18 +123,19 @@ export const rejectedColumn = (
 						icon: Eye,
 						style: 'text-slate-600',
 					},
-				];
-
-				if (
-					account.value?.roles.includes('ADMIN') ||
-					account.value?.roles.includes('HR_LEADER')
-				) {
-					actions.push({
+					{
+						label: 'undo',
+						icon: Letter,
+						style: 'text-slate-600',
+					},
+					{
 						label: 'Send email',
 						icon: Letter,
 						style: 'text-red-500',
-					});
-				}
+					},
+				];
+
+				const onUndo = () => handleUndo(row.original.id);
 
 				const onView = () => {
 					handleOpenSheet(row.original);
@@ -136,6 +148,7 @@ export const rejectedColumn = (
 				return h(ActionGroupCommon, {
 					actions,
 					onView,
+					onUndo,
 					onSendEmail,
 				});
 			},

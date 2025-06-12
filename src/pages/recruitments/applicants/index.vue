@@ -81,8 +81,7 @@ onMounted(() => {
 						@update:model-value="handleUpdate"
 						class="flex gap-4 mt-4"
 						orientation="vertical">
-						<TabsList
-							class="grid grid-cols-1 gap-4 p-4 border rounded-2xl bg-white h-fit">
+						<TabsList class="grid grid-cols-1 gap-4 p-4 border rounded-2xl bg-white h-fit">
 							<TabsTrigger
 								class="py-2 px-3 text-slate-600 w-40 justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
 								value="screening">

@@ -61,21 +61,6 @@ const listFeedbackResponse = useGetListFeedback(listInterview);
 
 const listFeedback = computed(() => listFeedbackResponse.value.map((item) => item.data));
 
-const isShowMeetingSchedule = computed(() => {
-	if (props.stage === 'SCREENING') {
-		return true;
-	}
-
-	if (props.stage === 'INTERVIEW_1' || props.stage === 'INTERVIEW_2') {
-		return (
-			listInterview.value.some((item) => item.status === 'COMPLETED') ||
-			listInterview.value.every((item) => item.status === 'CANCELED')
-		);
-	}
-
-	return false;
-});
-
 const { mutate: removeParticipant } = useRemoveParticipant();
 const { mutate: addParticipant } = useAddParticipant();
 
@@ -160,12 +145,12 @@ onMounted(() => {
 	<ScrollArea v-if="isView" class="h-[calc(100vh-400px)] pr-3">
 		<div class="flex justify-between items-center">
 			<h3 class="text-base text-black font-semibold">Interview</h3>
-			<Button
-				v-if="isShowMeetingSchedule"
-				variant="outline"
-				class="rounded-2xl"
-				@click="handleNavigate">
-				<IconFromSvg :icon="Calendar" />Meeting schedule
+			<Button variant="outline" class="rounded-2xl" @click="handleNavigate">
+				<IconFromSvg :icon="Calendar" />{{
+					listInterview.some((item) => item.status === 'SCHEDULED')
+						? 'Re-schedule'
+						: 'Meeting schedule'
+				}}
 			</Button>
 		</div>
 

@@ -52,7 +52,8 @@ export const screeningColumn = (payload: {
 					onClick: (event: any) => event.stopPropagation(),
 					href: row.original.resume.url,
 					target: '_blank',
-					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
+					class:
+						'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},
 				[h(IconFromSvg, { icon: File }), 'CV'],
 			);

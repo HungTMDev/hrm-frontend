@@ -20,6 +20,7 @@ interface Prop {
 	type: 'file' | 'photo';
 	allowedTypes?: string[];
 	dataResponse?: IUploadFileResponse;
+	fileName?: string;
 }
 const props = defineProps<Prop>();
 
@@ -159,13 +160,9 @@ watch(
 			<IconFromSvg :icon="CheckCircle" class="text-green-500" />
 			<UserAvatar v-if="type === 'photo'" :url="previewUrl" class="w-10 h-10 rounded-xl" />
 			<p class="text-sm text-black flex-1 truncate">
-				{{ props.dataResponse?.original_filename ?? selectedFile?.name }}
+				{{ props.fileName ?? props.dataResponse?.original_filename ?? selectedFile?.name }}
 			</p>
-			<Button
-				type="button"
-				variant="ghost"
-				class="p-0 hover:bg-white"
-				@click="handleRemoveFile"
+			<Button type="button" variant="ghost" class="p-0 hover:bg-white" @click="handleRemoveFile"
 				><IconFromSvg :icon="Close"
 			/></Button>
 		</div>

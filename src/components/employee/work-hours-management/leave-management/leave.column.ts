@@ -24,7 +24,8 @@ export const leaveColumns = (
 						(table.getIsSomePageRowsSelected() && 'indeterminate'),
 					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
 					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white border-gray-300 data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
+					class:
+						'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white border-gray-300 data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
 				},
 				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
 			),
@@ -34,7 +35,8 @@ export const leaveColumns = (
 				modelValue: row.getIsSelected(),
 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 				ariaLabel: 'Select row',
-				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+				class:
+					'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
 			}),
 		enableSorting: false,
 		enableHiding: false,
@@ -62,8 +64,7 @@ export const leaveColumns = (
 	{
 		accessorKey: 'totalDays',
 		header: 'Total',
-		cell: ({ row }) =>
-			`${row.original.totalDays} ${row.original.totalDays > 1 ? 'Days' : 'Day'}`,
+		cell: ({ row }) => `${row.original.totalDays} ${row.original.totalDays > 1 ? 'Days' : 'Day'}`,
 	},
 	{
 		accessorKey: 'status',

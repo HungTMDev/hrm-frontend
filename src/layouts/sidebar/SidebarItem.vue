@@ -63,11 +63,7 @@ const hasActiveChild = computed(() => {
 								:is="route.icon"
 								fill="currentColor"
 								class="!rotate-0" />
-							<component
-								v-else
-								:is="route.activeIcon"
-								fill="currentColor"
-								class="!rotate-0" />
+							<component v-else :is="route.activeIcon" fill="currentColor" class="!rotate-0" />
 							<span v-if="isSmall" class="flex-1 text-start">{{ route.name }}</span>
 						</AccordionTriggerCustom>
 					</TooltipTrigger>
@@ -82,9 +78,7 @@ const hasActiveChild = computed(() => {
 							<div
 								class="w-4 h-4 rounded-full border-4 group-hover:border-slate-50"
 								:class="
-									isActive
-										? 'bg-blue-500 !border-blue-50'
-										: 'bg-slate-200 border-white'
+									isActive ? 'bg-blue-500 !border-blue-50' : 'bg-slate-200 border-white'
 								"></div>
 							<span>{{ item.name }}</span>
 						</RouterLink>
@@ -104,9 +98,7 @@ const hasActiveChild = computed(() => {
 									<div
 										class="w-4 h-4 rounded-full border-4"
 										:class="
-											isActive
-												? 'bg-blue-500 border-blue-50'
-												: 'bg-slate-200 border-white'
+											isActive ? 'bg-blue-500 border-blue-50' : 'bg-slate-200 border-white'
 										"></div>
 									<span v-if="isSmall">{{ item.name }}</span>
 								</RouterLink>

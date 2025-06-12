@@ -105,9 +105,7 @@ onBeforeMount(() => {
 				:icon="Magnifer" />
 			<DisplayColumn :list="[]" />
 			<FilterPopover :list="[]" />
-			<Button
-				class="rounded-2xl bg-blue-500 hover:bg-blue-600 font-normal"
-				@click="handleNavigate">
+			<Button class="rounded-2xl bg-blue-500 hover:bg-blue-600 font-normal" @click="handleNavigate">
 				<IconFromSvg :icon="FileText" /> Payroll files
 			</Button>
 		</div>

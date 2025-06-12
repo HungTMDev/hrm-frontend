@@ -88,10 +88,7 @@ const handleReset = () => {
 				</ComboboxItem>
 			</ScrollArea>
 			<div class="flex justify-center gap-2 items-center mt-4">
-				<Button
-					class="rounded-2xl h-auto py-3.5 px-6"
-					variant="outline"
-					@click="handleReset"
+				<Button class="rounded-2xl h-auto py-3.5 px-6" variant="outline" @click="handleReset"
 					>Reset</Button
 				>
 				<Button

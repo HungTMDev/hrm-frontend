@@ -28,7 +28,7 @@ defineProps<Props>();
 								labelSize === 'sm' && 'text-base',
 								labelSize === 'md' && 'text-xl',
 								labelSize === 'lg' && 'text-[22px]',
-								labelSize === 'xs' && 'text-sm',
+								labelSize === 'xs' && 'text-sm leading-[14px]',
 							)
 						">
 						{{ label }} {{ index + 1 }}

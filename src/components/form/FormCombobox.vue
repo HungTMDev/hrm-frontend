@@ -19,9 +19,7 @@ const props = defineProps<Prop>();
 		<FormItem class="flex flex-col">
 			<FormLabel
 				>{{ label }}
-				<span v-if="!required" class="text-slate-400 font-light"
-					>(optional)</span
-				></FormLabel
+				<span v-if="!required" class="text-slate-400 font-light">(optional)</span></FormLabel
 			>
 			<CommonCombobox
 				:is-form="true"

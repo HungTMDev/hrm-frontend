@@ -13,10 +13,7 @@ const props = defineProps<Prop>();
 		<svg
 			aria-hidden="true"
 			:class="
-				cn(
-					'w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600',
-					props.class,
-				)
+				cn('w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600', props.class)
 			"
 			viewBox="0 0 100 101"
 			fill="none"

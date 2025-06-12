@@ -78,9 +78,7 @@ onMounted(() => {
 					value ? formatDateValueToLocalDate(value) : 'dd/mm/yyyy'
 				}}</span>
 				<span>
-					<IconFromSvg
-						:icon="Down"
-						:class="[isOpen ? 'rotate-180' : 'rotate-0', 'duration-200']" />
+					<IconFromSvg :icon="Down" :class="[isOpen ? 'rotate-180' : 'rotate-0', 'duration-200']" />
 				</span>
 			</Button>
 		</PopoverTrigger>

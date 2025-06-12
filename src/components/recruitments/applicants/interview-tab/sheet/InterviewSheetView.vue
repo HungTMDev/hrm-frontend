@@ -167,15 +167,11 @@ const handleCompleteInterview = () => {
 				<InformationItem
 					:icon="Calendar"
 					label="interview date"
-					:value="
-						formatISOStringToLocalDateTime(applicantInterview?.scheduled_time).date
-					" />
+					:value="formatISOStringToLocalDateTime(applicantInterview?.scheduled_time).date" />
 				<InformationItem
 					:icon="ClockCircle"
 					label="Interview time"
-					:value="
-						formatISOStringToLocalDateTime(applicantInterview?.scheduled_time).time
-					" />
+					:value="formatISOStringToLocalDateTime(applicantInterview?.scheduled_time).time" />
 				<div class="grid grid-cols-2 items-start">
 					<div class="flex gap-2 items-center py-1.5">
 						<IconFromSvg :icon="UserSpeak" />
@@ -259,9 +255,7 @@ const handleCompleteInterview = () => {
 				label="Date of birth"
 				:value="
 					applicantInterview?.candidate.date_of_birth
-						? formatISOStringToLocalDateTime(
-								applicantInterview?.candidate.date_of_birth,
-							).date
+						? formatISOStringToLocalDateTime(applicantInterview?.candidate.date_of_birth).date
 						: ''
 				" />
 			<InformationItem

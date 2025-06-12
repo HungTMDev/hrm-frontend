@@ -163,9 +163,7 @@ onMounted(() => {
 					class="sticky top-0 w-full bg-white z-20">
 					<p class="text-slate-600">Selected filters</p>
 					<div class="flex gap-1 flex-wrap mt-2">
-						<template
-							v-for="([key, item], index) in Object.entries(selectedFilter)"
-							:key="index">
+						<template v-for="([key, item], index) in Object.entries(selectedFilter)" :key="index">
 							<Badge
 								v-for="(item1, index1) in item"
 								:key="index1"
@@ -194,18 +192,14 @@ onMounted(() => {
 							</div>
 						</AccordionTrigger>
 						<AccordionContent>
-							<div
-								v-if="item.type === 'list' && item.items"
-								class="flex flex-wrap gap-2">
+							<div v-if="item.type === 'list' && item.items" class="flex flex-wrap gap-2">
 								<Badge
 									v-for="(i, index) in item.items"
 									:key="index"
 									variant="outline"
 									class="text-xs font-normal hover:cursor-pointer py-1"
 									:class="[
-										selectedFilter[item.value]?.some(
-											(filter) => filter.value === i.value,
-										)
+										selectedFilter[item.value]?.some((filter) => filter.value === i.value)
 											? 'bg-blue-500 hover:bg-blue-500 text-white'
 											: '',
 									]"
@@ -220,9 +214,7 @@ onMounted(() => {
 									:max="item.max"
 									:step="item.step"
 									class=""
-									@update:model-value="
-										(values) => handleChangeNumberRange(item.value, values)
-									" />
+									@update:model-value="(values) => handleChangeNumberRange(item.value, values)" />
 								<div class="flex gap-1 items-center justify-center mt-2">
 									<span>{{ sliderList[item.value][0] }}</span> -
 									<span>{{ sliderList[item.value][1] }}</span>

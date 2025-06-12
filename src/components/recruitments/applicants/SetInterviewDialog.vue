@@ -103,8 +103,7 @@ const dataFill: Ref<
 	hr_email: hrSelected.value?.email,
 	phone_number: hrSelected.value?.phone_number || '',
 	location:
-		data.value?.location?.trim() ||
-		'Tầng 4 - Tòa Hanvico, 217- 219 Lê Duẩn, Thanh Khê, Đà Nẵng',
+		data.value?.location?.trim() || 'Tầng 4 - Tòa Hanvico, 217- 219 Lê Duẩn, Thanh Khê, Đà Nẵng',
 }));
 
 const formSchema = toTypedSchema(meetingScheduleSchema);

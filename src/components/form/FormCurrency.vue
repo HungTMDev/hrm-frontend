@@ -20,9 +20,7 @@ const props = defineProps<Prop>();
 		<FormItem class="flex flex-col">
 			<FormLabel class="text-slate-600"
 				>{{ label }}
-				<span v-if="!required" class="text-slate-400 font-light"
-					>(optional)</span
-				></FormLabel
+				<span v-if="!required" class="text-slate-400 font-light">(optional)</span></FormLabel
 			>
 			<FormControl>
 				<CurrencyInput
@@ -32,7 +30,7 @@ const props = defineProps<Prop>();
 					:class="
 						cn(
 							props.class,
-							errors.length
+							errors.length > 0
 								? 'border-destructive focus-within:border-destructive'
 								: 'focus-within:border-blue-100 ',
 						)

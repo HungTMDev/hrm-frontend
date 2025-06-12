@@ -6,4 +6,5 @@ export const employeeKey = {
 	contract: 'contract-detail',
 	insurance: 'insurance-information',
 	salary: 'salary-information',
+	salary_history: 'salary-history',
 };

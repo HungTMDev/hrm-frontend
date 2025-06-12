@@ -122,6 +122,7 @@ export interface IApplicant extends IBaseResponse {
 	branch: IBranch;
 	created_by: IUser;
 	referred_by_user: IUser;
+	rejected_at_stage: string;
 }
 
 export interface IApplicantInterview extends IBaseResponse {

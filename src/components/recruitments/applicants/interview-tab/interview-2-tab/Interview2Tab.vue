@@ -55,6 +55,7 @@ const filter = ref<Record<string, string[]>>();
 const dataSent = ref<IApplicantInterview>();
 const isOpenAlert = ref(false);
 const isOpenSheet = ref(false);
+const isCreateSchedule = ref(false);
 const action = ref<'cancel' | 'reject'>();
 
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
@@ -130,12 +131,13 @@ const handleOpenAlert = (payload: IApplicantInterview, actionPayload: 'cancel' |
 	isOpenAlert.value = true;
 };
 
-const handleOpenSheet = (payload?: IApplicantInterview) => {
+const handleOpenSheet = (payload?: IApplicantInterview, createSchedule?: boolean) => {
 	if (payload instanceof PointerEvent) {
 		dataSent.value = undefined;
 	} else {
 		dataSent.value = payload;
 	}
+	isCreateSchedule.value = createSchedule ?? false;
 	isOpenSheet.value = true;
 };
 
@@ -291,6 +293,7 @@ const handleCloseSheet = (open: boolean) => {
 		:applicant-interview="dataSent"
 		:is-completing="isCompleting"
 		:is-hiring="isPendingUpdate"
+		:is-create-schedule="isCreateSchedule"
 		@offer="handleHire"
 		@reject="(payload) => handleOpenAlert(payload.data, payload.action)"
 		@cancel="(payload) => handleOpenAlert(payload.data, payload.action)"

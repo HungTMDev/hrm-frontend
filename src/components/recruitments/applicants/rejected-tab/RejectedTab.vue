@@ -1,15 +1,27 @@
 <script lang="ts" setup>
 import Building3 from '@/assets/icons/Outline/Buildings3.svg';
+import Letter from '@/assets/icons/Outline/Letter.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
+import AlertPopup from '@/components/common/AlertPopup.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
+import { Button } from '@/components/ui/button';
 import Separator from '@/components/ui/separator/Separator.vue';
+import { useGetAccount } from '@/composables/auth/useAuth';
 import { useApplicant } from '@/composables/recruitment/applicant/useApplicant';
+import {
+	useRejectManyApplicant,
+	useSendEmail,
+	useUndoApplicant,
+} from '@/composables/recruitment/applicant/useUpdateApplicant';
 import { useListJob } from '@/composables/recruitment/job/useJob';
 import { DEFAULT_PAGINATION, RECRUITMENT_STAGE } from '@/constants';
+import { THANKS_EMAIL } from '@/constants/model';
+import { useCustomToast } from '@/lib/customToast';
 import { createNameByGender, valueUpdater } from '@/lib/utils';
 import type { FilterAccordion, FilterData, IApplicant, IApplicantFilter, IMeta } from '@/types';
 import {
@@ -18,19 +30,14 @@ import {
 	type PaginationState,
 	type VisibilityState,
 } from '@tanstack/vue-table';
+import Handlebars from 'handlebars';
 import { computed, ref, watch, type Ref } from 'vue';
 import ApplicantSheet from '../ApplicantSheet.vue';
 import { rejectedColumn } from './column';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import Letter from '@/assets/icons/Outline/Letter.svg';
-import { Button } from '@/components/ui/button';
-import AlertPopup from '@/components/common/AlertPopup.vue';
-import { useSendEmail } from '@/composables/recruitment/applicant/useUpdateApplicant';
-import { THANKS_EMAIL } from '@/constants/model';
-import { useCustomToast } from '@/lib/customToast';
-import { useGetAccount } from '@/composables/auth/useAuth';
-import Handlebars from 'handlebars';
+import { useQueryClient } from '@tanstack/vue-query';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
 
+const queryClient = useQueryClient();
 const { data: jobs } = useListJob();
 const { showToast } = useCustomToast();
 const { data: user } = useGetAccount();
@@ -74,7 +81,8 @@ const dataFill: Ref<{
 }));
 
 const { data, isLoading } = useApplicant(pagination, filterPayload);
-const { mutateAsync: sendEmail, isPending: isSending } = useSendEmail();
+const { mutate: rejectManyApplicant, isPending: rejecting } = useRejectManyApplicant();
+const { mutate: undoApplicant } = useUndoApplicant();
 
 const alertDetail = computed(() => {
 	if (Array.isArray(dataSent.value)) {
@@ -124,6 +132,18 @@ const handleOpenAlert = (payload?: IApplicant) => {
 	isOpenAlert.value = true;
 };
 
+const handleUndo = (id: string) => {
+	undoApplicant(id, {
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
+			showToast({
+				message: 'Success!',
+				type: 'success',
+			});
+		},
+	});
+};
+
 const table = useVueTable({
 	get data() {
 		return applicants.value;
@@ -134,7 +154,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: rejectedColumn(handleOpenSheet, handleOpenAlert),
+	columns: rejectedColumn(handleOpenSheet, handleOpenAlert, handleUndo),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -177,62 +197,28 @@ const handleFilter = (payload: FilterData[]) => {
 };
 
 const handleConfirm = async () => {
+	let ids: string[];
+
 	if (Array.isArray(dataSent.value)) {
-		const states = dataSent.value.map(() => false);
-
-		await Promise.all(
-			dataSent.value.map(async (item, index) => {
-				const res = await sendEmail({
-					email: item.candidate.email,
-					content: renderedHtml.value.replace(/"/g, "'"),
-					subject: '[THƯ CẢM ƠN ỨNG TUYỂN - LUTECH.LTD]',
-				});
-				if (res.status_code === 200) states[index] = true;
-			}),
-		);
-
-		const countSuccess = states.filter((item) => item === true).length;
-
-		if (countSuccess === dataSent.value.length) {
-			showToast({
-				message: `Sent email to ${countSuccess} candidate(s) success!`,
-				type: 'success',
-			});
-		} else {
-			showToast({
-				message: `Sent email to ${dataSent.value.length - countSuccess} candidate(s) error!`,
-				type: 'error',
-			});
-			showToast({
-				message: `Sent email to ${countSuccess} candidate(s) success!`,
-				type: 'success',
-			});
-		}
-
-		isOpenSheet.value = false;
-		isOpenAlert.value = false;
-		dataSent.value = undefined;
-		return;
+		ids = dataSent.value.map((item) => item.id);
+	} else {
+		ids = [dataSent.value?.id ?? ''];
 	}
 
-	sendEmail(
-		{
-			email: dataSent.value?.candidate.email ?? '',
-			content: renderedHtml.value.replace(/"/g, "'"),
-			subject: '[THƯ CẢM ƠN ỨNG TUYỂN - LUTECH.LTD]',
+	rejectManyApplicant(ids, {
+		onSuccess: () => {
+			table.reset();
+			queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
+
+			isOpenSheet.value = false;
+			isOpenAlert.value = false;
+			dataSent.value = undefined;
+			showToast({
+				message: 'Rejected success!',
+				type: 'success',
+			});
 		},
-		{
-			onSuccess: () => {
-				isOpenSheet.value = false;
-				isOpenAlert.value = false;
-				dataSent.value = undefined;
-				showToast({
-					message: 'Sent email success!',
-					type: 'success',
-				});
-			},
-		},
-	);
+	});
 };
 
 const handleCloseSheet = (open: boolean) => {
@@ -295,7 +281,7 @@ watch(dataFill, () => {
 		:open="isOpenAlert"
 		:description="alertDetail.description"
 		:title="alertDetail.title"
-		:is-loading="isSending"
+		:is-loading="rejecting"
 		button-label="Confirm"
 		@confirm="handleConfirm"
 		@update:open="handleCloseAlert" />

@@ -98,14 +98,8 @@ const handleBack = () => {
 							:list="[]"
 							:icon="FileRight"
 							placeholder="Select leave type" />
-						<FormCalendar
-							:required="true"
-							name="leave_start_date"
-							label="Leave start date" />
-						<FormCalendar
-							:required="true"
-							name="leave_end_date"
-							label="Leave end date" />
+						<FormCalendar :required="true" name="leave_start_date" label="Leave start date" />
+						<FormCalendar :required="true" name="leave_end_date" label="Leave end date" />
 					</div>
 					<div class="mt-4">
 						<FormTextarea
@@ -121,14 +115,8 @@ const handleBack = () => {
 				<div class="grid items-start grid-cols-2 gap-6 mt-4">
 					<InformationItem :icon="FileRight" label="Leave type" value="Sick leave" />
 					<InformationItem :icon="ChartSquare" label="Status" value="Rejected" />
-					<InformationItem
-						:icon="CalendarIcon"
-						label="Leave start date"
-						value="May 14, 2025" />
-					<InformationItem
-						:icon="CalendarIcon"
-						label="Leave end date"
-						value="May 17, 2025" />
+					<InformationItem :icon="CalendarIcon" label="Leave start date" value="May 14, 2025" />
+					<InformationItem :icon="CalendarIcon" label="Leave end date" value="May 17, 2025" />
 					<InformationItem :icon="ClockCircle" label="Duration" value="3 Days" />
 				</div>
 				<div class="mt-6">
@@ -137,11 +125,10 @@ const handleBack = () => {
 						Reason
 					</div>
 					<p class="mt-2 text-black">
-						I am writing to formally request a leave of absence for a duration of two
-						days, as I am currently experiencing some health issues that require my
-						attention. I appreciate your understanding and support during this time, and
-						I assure you that I will do my best to catch up on any missed work upon my
-						return. Thank you for considering my request.
+						I am writing to formally request a leave of absence for a duration of two days, as I am
+						currently experiencing some health issues that require my attention. I appreciate your
+						understanding and support during this time, and I assure you that I will do my best to
+						catch up on any missed work upon my return. Thank you for considering my request.
 					</p>
 				</div>
 			</div>
@@ -172,10 +159,7 @@ const handleBack = () => {
 				@click="handleCancel">
 				Cancel
 			</Button>
-			<Button
-				form="form"
-				v-if="isEdit"
-				class="h-auto py-3 px-6 hover:bg-blue-600 rounded-2xl">
+			<Button form="form" v-if="isEdit" class="h-auto py-3 px-6 hover:bg-blue-600 rounded-2xl">
 				Save
 			</Button>
 		</div>

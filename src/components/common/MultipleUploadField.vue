@@ -250,8 +250,8 @@ watch(
 					<div class="flex flex-col">
 						<p class="text-sm text-black truncate">{{ file.name }}</p>
 						<p class="text-gray-200 text-xs">
-							{{ Math.floor(file.size / 1024) }} KB -
-							{{ fileStates[index].uploadProgress }}% completed
+							{{ Math.floor(file.size / 1024) }} KB - {{ fileStates[index].uploadProgress }}%
+							completed
 						</p>
 					</div>
 				</div>

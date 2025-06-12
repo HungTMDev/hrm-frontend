@@ -68,7 +68,7 @@ const meta = computed<IMeta | undefined>(() => data.value?.meta);
 const pageCount = computed(() => meta.value?.total_pages);
 
 const { mutate: deleteApplicant } = useDeleteApplicant(pagination, filterPayload);
-const { mutate: updateStage } = useUpdateStage();
+const { mutate: updateStage, isPending: isUpdating } = useUpdateStage();
 
 const accordionItems = computed<FilterAccordion[]>(() => [
 	{
@@ -275,6 +275,7 @@ const handleConfirm = () => {
 		:title="`Are you sure you want to ${action} this candidate?`"
 		:description="dataSent?.candidate.full_name"
 		:button-label="formatStatus(action ?? '')"
+		:is-loading="isUpdating"
 		@update:open="handleCloseAlert"
 		@confirm="handleConfirm" />
 </template>

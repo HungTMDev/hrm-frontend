@@ -23,7 +23,11 @@ import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
-import { createPathFromServerDomain, formatISOStringToLocalDateTime } from '@/lib/utils';
+import {
+	createPathFromServerDomain,
+	formatISOStringToLocalDateTime,
+	formatStatus,
+} from '@/lib/utils';
 import type { IApplicant } from '@/types';
 
 const props = defineProps<{
@@ -100,7 +104,10 @@ const handleDeleteApplicant = () => {
 				:icon="Calendar"
 				label="Date of birth"
 				:value="data?.candidate.date_of_birth" />
-			<InformationItem :icon="User" label="Gender" :value="data?.candidate.gender" />
+			<InformationItem
+				:icon="User"
+				label="Gender"
+				:value="formatStatus(data?.candidate.gender ?? '')" />
 			<InformationItem
 				:icon="SquareAcademic"
 				label="Education level"
@@ -123,11 +130,14 @@ const handleDeleteApplicant = () => {
 				<div class="flex flex-col gap-1">
 					<a
 						v-if="data?.resume"
-						:href="createPathFromServerDomain(data?.resume.path)"
+						:href="
+							data?.resume.path ? createPathFromServerDomain(data?.resume.path) : data.resume.url
+						"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
-						><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
-					>
+						><IconFromSvg :icon="File" class="!w-4 !h-4" />
+						<p class="max-w-20 truncate">{{ data?.resume?.original_filename ?? 'CV' }}</p>
+					</a>
 
 					<a
 						v-if="data?.attaches && data?.attaches.length > 0"
@@ -136,10 +146,9 @@ const handleDeleteApplicant = () => {
 						:href="createPathFromServerDomain(item.path)"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
-						><IconFromSvg :icon="File" class="!w-4 !h-4" />{{
-							item.original_filename
-						}}</a
-					>
+						><IconFromSvg :icon="File" class="!w-4 !h-4" />
+						<p class="max-w-20 truncate">{{ item.original_filename }}</p>
+					</a>
 					<!-- <a
 						href="#"
 						target="_blank"
@@ -182,9 +191,7 @@ const handleDeleteApplicant = () => {
 						<p class="text-black text-base font-medium">
 							{{ data?.created_by?.name }}
 						</p>
-						<span class="text-xs">{{
-							formatISOStringToLocalDateTime(data?.created_at).date
-						}}</span>
+						<span class="text-xs">{{ formatISOStringToLocalDateTime(data?.created_at).date }}</span>
 					</div>
 				</div>
 				<p class="text-sm mt-2 text-black">

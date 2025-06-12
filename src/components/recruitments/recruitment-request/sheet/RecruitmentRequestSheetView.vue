@@ -143,9 +143,7 @@ const handleRecall = () => {
 			</div>
 		</div>
 		<div class="mt-4">
-			<h3 class="flex gap-2 items-center">
-				<IconFromSvg :icon="Clipboard" />Job description
-			</h3>
+			<h3 class="flex gap-2 items-center"><IconFromSvg :icon="Clipboard" />Job description</h3>
 			<p class="mt-2 text-sm text-black">
 				{{ data?.description }}
 			</p>

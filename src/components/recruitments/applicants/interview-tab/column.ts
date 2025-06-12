@@ -65,6 +65,11 @@ export const interviewColumn = (
 							style: 'text-slate-600',
 						},
 						{
+							label: 'Re-schedule',
+							icon: Calendar,
+							style: 'text-slate-600',
+						},
+						{
 							label: 'Cancel',
 							icon: CloseCircle,
 							style: 'text-red-500',
@@ -139,6 +144,10 @@ export const interviewColumn = (
 				handleHire?.(row.original);
 			};
 
+			const onReSchedule = () => {
+				handleOpenSheet?.(row.original, true);
+			};
+
 			return h(ActionGroupCommon, {
 				actions: actions(),
 				onCancel,
@@ -146,7 +155,8 @@ export const interviewColumn = (
 				onReject,
 				onOffer,
 				onScheduleInterview,
-				class: row.original.status !== 'SCHEDULED' ? 'w-[200px]' : '',
+				onReSchedule,
+				class: 'w-[200px]',
 			});
 		},
 	},

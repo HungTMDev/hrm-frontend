@@ -66,11 +66,6 @@ export const PAYROLL_FILE_STATUS_STYLE: Record<string, string> = {
 	'Waiting to Send': 'bg-yellow-50 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-500',
 };
 
-export const CANDIDATE_STATUS_STYLE: Record<string, string> = {
-	Passed: '',
-	Failed: '',
-};
-
 export enum ApplicantStage {
 	Applied = 'Applied',
 	Screening = 'Screening',
@@ -258,11 +253,11 @@ export const listWorkHour = [
 ];
 
 export enum CONTRACT_TYPE {
-	TRAINEE_CONTRACT = 'TRAINEE_CONTRACT',
-	PROBATIONARY_CONTRACT = 'PROBATIONARY_CONTRACT',
-	DEFINITE_CONTRACT_ONE_YEAR = 'DEFINITE_CONTRACT_ONE_YEAR',
-	DEFINITE_CONTRACT_TWO_YEAR = 'DEFINITE_CONTRACT_TWO_YEAR',
-	INDEFINITE_CONTRACT = 'INDEFINITE_CONTRACT',
+	TRAINEE = 'TRAINEE',
+	PROBATIONARY = 'PROBATIONARY',
+	DEFINE_CONTRACT_ONE_YEAR = 'DEFINE_CONTRACT_ONE_YEAR',
+	DEFINE_CONTRACT_TWO_YEAR = 'DEFINE_CONTRACT_TWO_YEAR',
+	INDEFINITE = 'INDEFINITE',
 }
 
 export const listContractType = convertEnumToComboboxType(CONTRACT_TYPE);
@@ -337,3 +332,67 @@ export enum LEAVE_SHIFT {
 }
 
 export const listLeaveShift = convertEnumToComboboxType(LEAVE_SHIFT);
+
+export enum DOCUMENT_TYPE {
+	ID_PROOF = 'ID_PROOF',
+	PASSPORT = 'PASSPORT',
+	DRIVING_LICENSE = 'DRIVING_LICENSE',
+	VISA = 'VISA',
+	WORK_PERMIT = 'WORK_PERMIT',
+	EMPLOYMENT_CONTRACT = 'EMPLOYMENT_CONTRACT',
+	SALARY_SLIP = 'SALARY_SLIP',
+	APPRAISAL = 'APPRAISAL',
+	WARNING_LETTER = 'WARNING_LETTER',
+	BANK_STATEMENT = 'BANK_STATEMENT',
+	TAX_FORM = 'TAX_FORM',
+	INVOICE = 'INVOICE',
+	RECEIPT = 'RECEIPT',
+	COMPANY_POLICY = 'COMPANY_POLICY',
+	HANDBOOK = 'HANDBOOK',
+	CERTIFICATE = 'CERTIFICATE',
+	LICENSE = 'LICENSE',
+	DEGREE = 'DEGREE',
+	TRANSCRIPT = 'TRANSCRIPT',
+	TRAINING_CERTIFICATE = 'TRAINING_CERTIFICATE',
+	HEALTH_INSURANCE = 'HEALTH_INSURANCE',
+	MEDICAL_REPORT = 'MEDICAL_REPORT',
+	PHOTO = 'PHOTO',
+	SIGNATURE = 'SIGNATURE',
+	OTHER = 'OTHER',
+}
+
+export const listDocumentType = convertEnumToComboboxType(DOCUMENT_TYPE);
+
+export enum WORK_STATUS {
+	OFFICIAL = 'OFFICIAL',
+	PROBATION = 'PROBATION',
+	FRESHER = 'FRESHER',
+	INTERNSHIP = 'INTERNSHIP',
+}
+
+export const listWorkStatus = convertEnumToComboboxType(WORK_STATUS);
+
+export enum SALARY_TYPE {
+	WEEKLY = 'WEEKLY',
+	HOURLY = 'HOURLY',
+	DAILY = 'DAILY',
+	YEARLY = 'YEARLY',
+	MONTHLY = 'MONTHLY',
+}
+
+export const listSalaryType = convertEnumToComboboxType(SALARY_TYPE);
+
+export enum INSURANCE {
+	HEALTH_INSURANCE = 'HEALTH_INSURANCE',
+	SOCIAL_INSURANCE = 'SOCIAL_INSURANCE',
+	UNEMPLOYMENT_INSURANCE = 'UNEMPLOYMENT_INSURANCE',
+}
+
+export const listInsurance = convertEnumToComboboxType(INSURANCE);
+
+export enum MARITAL_STATUS {
+	SINGLE = 'SINGLE',
+	MARRIED = 'MARRIED',
+}
+
+export const listMaritalStatus = convertEnumToComboboxType(MARITAL_STATUS);

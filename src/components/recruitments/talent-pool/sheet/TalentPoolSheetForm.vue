@@ -148,11 +148,10 @@ const onSubmit = handleSubmit(() => {});
 				</div>
 				<p class="text-black mt-2">
 					The candidate exhibits a keen eye for design and a solid grasp of graphic design
-					principles. Their portfolio showcases a variety of creative projects,
-					demonstrating proficiency in tools like Adobe Illustrator and Photoshop. They
-					have experience collaborating with clients to bring their visions to life, which
-					is essential for our team. Overall, they seem to be a strong contender for the
-					Graphic Designer position.
+					principles. Their portfolio showcases a variety of creative projects, demonstrating
+					proficiency in tools like Adobe Illustrator and Photoshop. They have experience
+					collaborating with clients to bring their visions to life, which is essential for our
+					team. Overall, they seem to be a strong contender for the Graphic Designer position.
 				</p>
 			</div>
 		</div>

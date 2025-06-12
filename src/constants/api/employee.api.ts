@@ -10,6 +10,10 @@ export enum EMPLOYEE_API {
 	WORK_INFORMATION_HISTORY = '/employees/%s/work-information/history',
 	WORK_INFORMATION_BY_ID = '/employees/%s/work-information/%s',
 
+	SALARY = '/employees/%s/salary',
+	SALARY_BY_ID = '/employees/%s/salary/%s',
+	SALARY_HISTORY = '/employees/%s/salary/histories',
+
 	BANK_INFORMATION = '/employees/%s/bank-information',
 	BANK_INFORMATION_BY_ID = '/employees/%s/bank-information/%s',
 

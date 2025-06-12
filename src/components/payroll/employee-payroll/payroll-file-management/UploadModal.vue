@@ -114,23 +114,15 @@ const handleUpload = async () => {
 						<div
 							class="w-full h-full border border-dashed group-hover:border-blue-500 rounded-2xl grid place-items-center">
 							<div class="flex flex-col items-center gap-2">
-								<div
-									class="w-10 h-10 bg-gray-50 rounded-xl grid place-items-center">
+								<div class="w-10 h-10 bg-gray-50 rounded-xl grid place-items-center">
 									<IconFromSvg :icon="Upload" class="!w-6 !h-6" />
 								</div>
-								<p>
-									<span class="text-blue-500">Choose file</span>, or drag and drop
-								</p>
+								<p><span class="text-blue-500">Choose file</span>, or drag and drop</p>
 								<p class="text-gray-200 font-normal">Max file size 10MB</p>
 							</div>
 						</div>
 					</Label>
-					<input
-						id="multipleUpload"
-						type="file"
-						multiple
-						class="hidden"
-						@change="handleChange" />
+					<input id="multipleUpload" type="file" multiple class="hidden" @change="handleChange" />
 				</div>
 				<div v-if="files.length > 0" class="h-60">
 					<ScrollArea class="h-full pr-3">
@@ -139,20 +131,12 @@ const handleUpload = async () => {
 								v-for="(file, index) in fileStates"
 								:key="index"
 								class="flex items-center gap-4 py-2 px-4 border rounded-2xl h-14">
-								<IconFromSvg
-									v-if="file.success"
-									:icon="CheckCircle"
-									class="text-green-500" />
-								<IconFromSvg
-									v-else-if="file.error"
-									:icon="DangerCircle"
-									class="text-red-500" />
+								<IconFromSvg v-if="file.success" :icon="CheckCircle" class="text-green-500" />
+								<IconFromSvg v-else-if="file.error" :icon="DangerCircle" class="text-red-500" />
 								<IconFromSvg v-else :icon="FileText" class="text-blue-500" />
 								<div class="flex-1">
 									<p class="text-sm font-medium truncate">{{ file.name }}</p>
-									<span v-if="file.error" class="text-xs font-normal text-red-500"
-										>Failed</span
-									>
+									<span v-if="file.error" class="text-xs font-normal text-red-500">Failed</span>
 									<span
 										v-if="!file.success && !file.error"
 										class="text-xs font-normal text-gray-200"

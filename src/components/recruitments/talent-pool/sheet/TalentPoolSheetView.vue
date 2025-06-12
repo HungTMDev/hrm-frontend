@@ -63,9 +63,7 @@ const handleEdit = () => {
 				<div class="flex flex-col gap-2">
 					<SheetTitle class="text-[28px] font-semibold flex items-center gap-2"
 						>{{ data?.full_name }}
-						<StatusTag
-							class="bg-blue-50 text-blue-500 hover:bg-blue-100"
-							status="Applied"
+						<StatusTag class="bg-blue-50 text-blue-500 hover:bg-blue-100" status="Applied"
 					/></SheetTitle>
 					<SheetDescription class="text-base font-medium text-black"> </SheetDescription>
 					<div class="flex items-center gap-2 text-sm">
@@ -87,10 +85,7 @@ const handleEdit = () => {
 							:icon="Calendar"
 							label="Date of birth"
 							:value="formatISOStringToLocalDateTime(data?.date_of_birth).date" />
-						<InformationItem
-							:icon="UserHand"
-							label="Gender"
-							:value="data?.gender || ''" />
+						<InformationItem :icon="UserHand" label="Gender" :value="data?.gender || ''" />
 						<InformationItem :icon="Building3" label="City" value="" />
 						<InformationItem
 							:icon="SquareAcademic"

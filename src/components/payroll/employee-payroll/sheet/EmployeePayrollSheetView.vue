@@ -55,9 +55,7 @@ const handleDelete = () => {
 				<div class="flex flex-col gap-2">
 					<SheetTitle class="text-[28px] font-semibold flex items-center gap-2"
 						>{{ data?.name }}
-						<StatusTag
-							class="bg-blue-50 text-blue-500 hover:bg-blue-50 text-xs"
-							status="Full-time"
+						<StatusTag class="bg-blue-50 text-blue-500 hover:bg-blue-50 text-xs" status="Full-time"
 					/></SheetTitle>
 					<SheetDescription class="text-base font-medium text-black">
 						{{ data?.role }}

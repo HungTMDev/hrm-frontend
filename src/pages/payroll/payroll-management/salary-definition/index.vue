@@ -138,10 +138,7 @@ onBeforeMount(() => {
 	<ContentWrapper>
 		<Title>Salary Definition</Title>
 		<div class="flex gap-4 items-center my-4">
-			<InputWithIcon
-				:icon="Magnifer"
-				class="py-2 flex-1 rounded-full"
-				placeholder="Search " />
+			<InputWithIcon :icon="Magnifer" class="py-2 flex-1 rounded-full" placeholder="Search " />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="filter" />
 			<Button

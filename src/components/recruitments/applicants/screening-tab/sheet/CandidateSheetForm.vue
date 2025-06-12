@@ -130,13 +130,14 @@ const setAttaches = (payload: File[] | undefined) => {
 onMounted(async () => {
 	if (props.data?.resume) {
 		resumeFile.value = await fetchFileFromUrl(
-			createPathFromServerDomain(props.data?.resume?.path),
+			props.data?.resume?.path
+				? createPathFromServerDomain(props.data?.resume?.path)
+				: props.data.resume.url,
 		);
 	}
 	attachesFile.value = await Promise.all(
-		props.data?.attaches?.map((item) =>
-			fetchFileFromUrl(createPathFromServerDomain(item.path)),
-		) || [],
+		props.data?.attaches?.map((item) => fetchFileFromUrl(createPathFromServerDomain(item.path))) ||
+			[],
 	);
 });
 </script>
@@ -211,6 +212,7 @@ onMounted(async () => {
 					name="gender"
 					label="Gender"
 					list-size="md"
+					:model-value="data?.candidate.gender"
 					:icon="UserHand"
 					:list="genderCombobox"
 					placeholder="Select gender" />

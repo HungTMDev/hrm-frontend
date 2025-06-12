@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 import { FormField, FormItem, FormLabel } from '@/components/ui/form';
 import type { ComboboxType, FormFieldCommon } from '@/types';
-import { onMounted, onUpdated, ref } from 'vue';
+import { onMounted, onUpdated, ref, watch } from 'vue';
 import CommonSelect from '../common/CommonSelect.vue';
 import FormErrorCustom from './FormErrorCustom.vue';
 

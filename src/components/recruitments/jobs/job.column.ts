@@ -90,8 +90,7 @@ export const jobColumn = (
 					list: listJobStatus,
 					modelValue: row.original.status,
 					disabled: !(
-						account.value?.roles.includes('ADMIN') ||
-						account.value?.roles.includes('HR_LEADER')
+						account.value?.roles.includes('ADMIN') || account.value?.roles.includes('HR_LEADER')
 					),
 					onUpdate,
 				});

@@ -1,24 +1,22 @@
 import { ZUtils } from '@/lib/validation.utils';
 import { z } from 'zod';
 
-export const createUserSchema = z.object({
-	name: z.string(),
+export const createEmployeeFromApplicantSchema = z.object({
 	email: ZUtils.email(),
-	password: ZUtils.password(),
-	avatar: z
-		.union([
-			z.object({
-				original_filename: z.string(),
-				filename: z.string(),
-				format: z.string(),
-				resource_type: z.string(),
-				url: z.string(),
-				path: z.string(),
-				bytes: z.number(),
-			}),
-			z.instanceof(File),
-		])
-		.optional(),
+	personal_email: ZUtils.email(),
+	phone_number: ZUtils.phoneNumber(),
+	name: z.string().min(1, 'This field is required'),
+	avatar: z.union([z.string(), z.instanceof(File)]).optional(),
+	date_of_birth: z.string().optional(),
+	gender: z.string(),
+	employee_number: z.string(),
+	address: z.string().optional(),
+	hometown: z.string().optional(),
+	permanent_residence: z.string().optional(),
+	nationality: z.string().optional(),
+	emergency_contact_name: z.string().optional(),
+	emergency_contact: z.string().optional(),
+	marital_status: z.string().optional(),
 });
 
-export type CreateUserPayload = z.infer<typeof createUserSchema>;
+export type CreateEmployeeFromApplicantPayload = z.infer<typeof createEmployeeFromApplicantSchema>;

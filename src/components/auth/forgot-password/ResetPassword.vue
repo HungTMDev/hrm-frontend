@@ -51,9 +51,7 @@ const navigateEnterOTP = () => {
 	</div>
 	<form class="flex flex-col items-center gap-4 mt-4" @submit="onSubmit">
 		<Title class="font-semibold">Reset your password</Title>
-		<Description>
-			Your new password must be different from previously used passwords
-		</Description>
+		<Description> Your new password must be different from previously used passwords </Description>
 
 		<div class="w-full">
 			<FormInput

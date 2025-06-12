@@ -186,9 +186,7 @@ watch(
 						name="hiring_manager_id"
 						:required="true"
 						label="Hiring manager"
-						:modelValue="
-							requisitionSelected?.hiring_manager.id ?? data?.hiring_manager_id
-						"
+						:modelValue="requisitionSelected?.hiring_manager.id ?? data?.hiring_manager_id"
 						:icon="UserCircle"
 						class="w-full"
 						placeholder="Enter hiring manager id" />

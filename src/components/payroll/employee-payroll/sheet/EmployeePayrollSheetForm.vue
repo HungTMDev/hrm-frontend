@@ -127,11 +127,7 @@ const onSubmit = handleSubmit((values: any) => {
 					:icon="ChartSquare"
 					:required="true"
 					placeholder="Select work type" />
-				<FormCalendar
-					name="joiningDate"
-					label="Joining date"
-					:required="true"
-					class="w-full" />
+				<FormCalendar name="joiningDate" label="Joining date" :required="true" class="w-full" />
 				<FormInput
 					name="lineManager"
 					label="Line manager"

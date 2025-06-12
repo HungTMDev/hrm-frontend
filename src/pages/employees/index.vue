@@ -69,16 +69,11 @@ const handleNavigate = () => {
 						<IconFromSvg :icon="UserGroup" />
 					</div>
 					<h3 class="flex-1">Total Employee</h3>
-					<Button variant="link" class="text-blue-500" @click="handleNavigate"
-						>View more</Button
-					>
+					<Button variant="link" class="text-blue-500" @click="handleNavigate">View more</Button>
 				</div>
 				<div class="mt-4 flex 2xl:gap-20 gap-4 items-center px-10">
 					<div class="w-[180px] h-[180px] 2xl:w-[250px] 2xl:h-[250px]">
-						<DoughnutChart
-							:data="data"
-							:options="chartOptions"
-							:plugins="[centerTextPlugin]" />
+						<DoughnutChart :data="data" :options="chartOptions" :plugins="[centerTextPlugin]" />
 					</div>
 					<div class="flex flex-col gap-4 2xl:flex-1">
 						<div class="flex items-center gap-2 text-sm 2xl:w-4/5">
@@ -103,11 +98,7 @@ const handleNavigate = () => {
 				<Overview title="New Employee" :percentage="32" :quantity="16" :icon="UserCheck" />
 			</ContentWrapper>
 			<ContentWrapper>
-				<Overview
-					title="Resigned Employee"
-					:percentage="-3"
-					:quantity="3"
-					:icon="UserCross" />
+				<Overview title="Resigned Employee" :percentage="-3" :quantity="3" :icon="UserCross" />
 			</ContentWrapper>
 		</div>
 		<ContentWrapper class="row-span-3"><UpcomingEvents /></ContentWrapper>
@@ -115,8 +106,7 @@ const handleNavigate = () => {
 		<ContentWrapper class="row-span-3">
 			<div class="flex justify-between items-center">
 				<Title>Contract Signing Reminder</Title>
-				<span
-					class="w-5 h-5 rounded-full bg-red-500 text-white grid place-items-center text-sm">
+				<span class="w-5 h-5 rounded-full bg-red-500 text-white grid place-items-center text-sm">
 					4
 				</span>
 			</div>
@@ -127,63 +117,49 @@ const handleNavigate = () => {
 						<h4>Le Quang Phuc</h4>
 						<p class="text-sm text-gray-400">Graphic Designer</p>
 					</div>
-					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100"
-						>Expired</Badge
-					>
+					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100">Expired</Badge>
 				</div>
 				<div class="flex justify-between items-center">
 					<div>
 						<h4>Le Quang Phuc</h4>
 						<p class="text-sm text-gray-400">Graphic Designer</p>
 					</div>
-					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100"
-						>Expired</Badge
-					>
+					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100">Expired</Badge>
 				</div>
 				<div class="flex justify-between items-center">
 					<div>
 						<h4>Le Quang Phuc</h4>
 						<p class="text-sm text-gray-400">Graphic Designer</p>
 					</div>
-					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100"
-						>Expired</Badge
-					>
+					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100">Expired</Badge>
 				</div>
 				<div class="flex justify-between items-center">
 					<div>
 						<h4>Le Quang Phuc</h4>
 						<p class="text-sm text-gray-400">Graphic Designer</p>
 					</div>
-					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100"
-						>Expired</Badge
-					>
+					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100">Expired</Badge>
 				</div>
 				<div class="flex justify-between items-center">
 					<div>
 						<h4>Le Quang Phuc</h4>
 						<p class="text-sm text-gray-400">Graphic Designer</p>
 					</div>
-					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100"
-						>Expired</Badge
-					>
+					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100">Expired</Badge>
 				</div>
 				<div class="flex justify-between items-center">
 					<div>
 						<h4>Le Quang Phuc</h4>
 						<p class="text-sm text-gray-400">Graphic Designer</p>
 					</div>
-					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100"
-						>Expired</Badge
-					>
+					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100">Expired</Badge>
 				</div>
 				<div class="flex justify-between items-center">
 					<div>
 						<h4>Le Quang Phuc</h4>
 						<p class="text-sm text-gray-400">Graphic Designer</p>
 					</div>
-					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100"
-						>Expired</Badge
-					>
+					<Badge class="py-1 font-normal text-red-500 bg-red-100 hover:bg-red-100">Expired</Badge>
 				</div>
 			</div>
 		</ContentWrapper>

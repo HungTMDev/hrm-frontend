@@ -7,7 +7,6 @@ import type { IUser } from '@/types';
 
 export const useAuthStore = defineStore('auth-store', () => {
 	//defineState
-	const isLoading = ref(false);
 	const access_token = ref<string>(
 		sessionStorage.getItem(axiosConfig.key.accessToken) ||
 			localStorage.getItem(axiosConfig.key.accessToken) ||
@@ -30,10 +29,11 @@ export const useAuthStore = defineStore('auth-store', () => {
 	//defineGetters
 	const isLoggedIn = computed(() => access_token.value !== '' && refresh_token.value !== '');
 	const isForgotPassword = computed(() => forgot_password_token.value !== undefined);
-	const isHR = computed(() =>
-		account.value?.roles.some(
-			(role) => role === 'ADMIN' || role === 'HR_LEADER' || role === 'HR' || role === 'TA',
-		),
+	const isHR = computed(
+		() =>
+			account.value?.roles?.some(
+				(role) => role === 'ADMIN' || role === 'HR_LEADER' || role === 'HR' || role === 'CEO',
+			) ?? false,
 	);
 
 	const clearLocalStorage = () => {
@@ -106,7 +106,6 @@ export const useAuthStore = defineStore('auth-store', () => {
 	};
 
 	return {
-		isLoading,
 		isLoggedIn,
 		access_token,
 		refresh_token,

@@ -18,10 +18,7 @@ const handleNavigateToPayrollManagement = () => {
 		<ContentWrapper class="col-span-2 row-span-2">
 			<div class="flex justify-between items-center">
 				<Title>Salary by Department</Title>
-				<Button
-					variant="link"
-					class="text-blue-500"
-					@click="handleNavigateToPayrollManagement"
+				<Button variant="link" class="text-blue-500" @click="handleNavigateToPayrollManagement"
 					>More insights</Button
 				>
 			</div>

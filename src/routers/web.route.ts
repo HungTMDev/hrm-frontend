@@ -26,8 +26,7 @@ export const webRoutes: RouteType[] = [
 					{
 						path: '',
 						name: 'Enter email',
-						component: () =>
-							import('@/components/auth/forgot-password/ForgotPassword.vue'),
+						component: () => import('@/components/auth/forgot-password/ForgotPassword.vue'),
 					},
 					{
 						path: 'enter-otp',
@@ -43,8 +42,7 @@ export const webRoutes: RouteType[] = [
 						meta: {
 							requiresForgotPassword: true,
 						},
-						component: () =>
-							import('@/components/auth/forgot-password/ResetPassword.vue'),
+						component: () => import('@/components/auth/forgot-password/ResetPassword.vue'),
 					},
 				],
 			},
@@ -85,8 +83,7 @@ export const webRoutes: RouteType[] = [
 					{
 						path: 'requests',
 						name: 'Recruitment Requests',
-						component: () =>
-							import('@/pages/recruitments/recruitment-requests/index.vue'),
+						component: () => import('@/pages/recruitments/recruitment-requests/index.vue'),
 					},
 					{
 						path: 'jobs',
@@ -122,25 +119,22 @@ export const webRoutes: RouteType[] = [
 					},
 					{
 						path: 'employee-overview',
-						name: 'Employee Overview',
+						name: 'Employee overview',
 						component: () => import('@/pages/employees/employee-overview/index.vue'),
 					},
 					{
 						path: 'all-employee',
-						name: 'All Employee',
+						name: 'All employees',
 						children: [
 							{
 								path: '',
-								name: 'List Employee',
+								name: 'List employee',
 								component: () => import('@/pages/employees/all-employee/index.vue'),
 							},
 							{
 								path: ':id',
-								name: 'Employee Detail',
-								component: () =>
-									import(
-										'@/pages/employees/all-employee/employee-detail/index.vue'
-									),
+								name: 'Employee detail',
+								component: () => import('@/pages/employees/all-employee/employee-detail/index.vue'),
 							},
 						],
 					},
@@ -151,32 +145,25 @@ export const webRoutes: RouteType[] = [
 							{
 								path: '',
 								name: 'Work hours overview',
-								component: () =>
-									import('@/pages/employees/work-hours-management/index.vue'),
+								component: () => import('@/pages/employees/work-hours-management/index.vue'),
 							},
 							{
 								path: 'attendance-management',
 								name: 'Attendance Management',
 								component: () =>
-									import(
-										'@/pages/employees/work-hours-management/attendance-management/index.vue'
-									),
+									import('@/pages/employees/work-hours-management/attendance-management/index.vue'),
 							},
 							{
 								path: 'leave-management',
 								name: 'Leave Management',
 								component: () =>
-									import(
-										'@/pages/employees/work-hours-management/leave-management/index.vue'
-									),
+									import('@/pages/employees/work-hours-management/leave-management/index.vue'),
 							},
 							{
 								path: 'overtime-management',
 								name: 'Overtime Management',
 								component: () =>
-									import(
-										'@/pages/employees/work-hours-management/overtime-management/index.vue'
-									),
+									import('@/pages/employees/work-hours-management/overtime-management/index.vue'),
 							},
 						],
 					},
@@ -195,20 +182,17 @@ export const webRoutes: RouteType[] = [
 					{
 						path: 'late-early-request',
 						name: 'Late/Early Request',
-						component: () =>
-							import('@/pages/center-request/late-early-request/index.vue'),
+						component: () => import('@/pages/center-request/late-early-request/index.vue'),
 					},
 					{
 						path: 'overtime-request',
 						name: 'Overtime Request',
-						component: () =>
-							import('@/pages/center-request/overtime-request/index.vue'),
+						component: () => import('@/pages/center-request/overtime-request/index.vue'),
 					},
 					{
 						path: 'correction-request',
 						name: 'Correction Request',
-						component: () =>
-							import('@/pages/center-request/correction-request/index.vue'),
+						component: () => import('@/pages/center-request/correction-request/index.vue'),
 					},
 				],
 			},
@@ -228,16 +212,13 @@ export const webRoutes: RouteType[] = [
 							{
 								path: '',
 								name: 'List Employee Payroll',
-								component: () =>
-									import('@/pages/payroll/employee-payroll/index.vue'),
+								component: () => import('@/pages/payroll/employee-payroll/index.vue'),
 							},
 							{
 								path: 'payroll-file-management',
 								name: 'Payroll File Management',
 								component: () =>
-									import(
-										'@/pages/payroll/employee-payroll/payroll-file-management/index.vue'
-									),
+									import('@/pages/payroll/employee-payroll/payroll-file-management/index.vue'),
 							},
 						],
 					},
@@ -248,16 +229,13 @@ export const webRoutes: RouteType[] = [
 							{
 								path: '',
 								name: 'Payroll Management Overview',
-								component: () =>
-									import('@/pages/payroll/payroll-management/index.vue'),
+								component: () => import('@/pages/payroll/payroll-management/index.vue'),
 							},
 							{
 								path: 'salary-definition',
 								name: 'Salary Definition',
 								component: () =>
-									import(
-										'@/pages/payroll/payroll-management/salary-definition/index.vue'
-									),
+									import('@/pages/payroll/payroll-management/salary-definition/index.vue'),
 							},
 						],
 					},

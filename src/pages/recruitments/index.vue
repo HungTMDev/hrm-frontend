@@ -28,8 +28,7 @@ const handleNavigateToJobs = () => {
 			<Separator class="my-2" />
 			<div class="flex flex-col gap-4">
 				<div v-for="item in 5" :key="item" class="flex items-center gap-4">
-					<div
-						class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 grid place-items-center">
+					<div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 grid place-items-center">
 						<IconFromSvg :icon="Case" />
 					</div>
 					<div class="w-3/4 flex flex-col">

@@ -58,10 +58,7 @@ const onSubmit = handleSubmit((values: InterviewFormData) => {
 			interview_name: values.interview_name,
 			interview_type: values.interview_type,
 			participant_ids: values.interviewer,
-			scheduled_time: createISOStringFromDayAndTime(
-				values.interview_date,
-				values.interview_time,
-			),
+			scheduled_time: createISOStringFromDayAndTime(values.interview_date, values.interview_time),
 			application_id: props.id || '',
 			duration_minutes: values.duration_minutes,
 			location: values.location,
@@ -128,10 +125,7 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 								:required="true" />
 						</div>
 						<div class="w-2/5">
-							<FormTime
-								name="interview_time"
-								label="Interview time"
-								:required="true" />
+							<FormTime name="interview_time" label="Interview time" :required="true" />
 						</div>
 					</div>
 

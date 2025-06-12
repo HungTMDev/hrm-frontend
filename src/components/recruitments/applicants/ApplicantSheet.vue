@@ -31,7 +31,7 @@ import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGetApplicantById } from '@/composables/recruitment/applicant/useApplicant';
 import { APPLICANT_STAGE_STYLE } from '@/constants';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
+import { createPathFromServerDomain, formatISOStringToLocalDateTime } from '@/lib/utils';
 import type { IApplicantInterview } from '@/types';
 import { computed, ref, watch } from 'vue';
 import InterviewInformationTab from './sheet/interview-tab/InterviewInformationTab.vue';
@@ -105,14 +105,10 @@ watch(
 							{{ applicant?.job.title }}
 						</SheetDescription>
 						<div class="flex items-center gap-2 text-sm">
-							<IconFromSvg :icon="Iphone" /><span>{{
-								applicant?.candidate.phone_number
-							}}</span>
+							<IconFromSvg :icon="Iphone" /><span>{{ applicant?.candidate.phone_number }}</span>
 						</div>
 						<div class="flex items-center gap-2 text-sm">
-							<IconFromSvg :icon="Letter" /><span>{{
-								applicant?.candidate.email
-							}}</span>
+							<IconFromSvg :icon="Letter" /><span>{{ applicant?.candidate.email }}</span>
 						</div>
 					</div>
 				</div>
@@ -141,18 +137,13 @@ watch(
 				<div>
 					<TabsContent value="general" class="h-full flex flex-col gap-2">
 						<ScrollArea class="h-[calc(100vh-400px)] pr-3">
-							<h3 class="text-base text-black font-semibold mb-4">
-								General information
-							</h3>
+							<h3 class="text-base text-black font-semibold mb-4">General information</h3>
 							<div class="grid grid-cols-2 text-sm gap-4">
 								<InformationItem
 									:icon="Calendar"
 									label="Date of birth"
 									:value="applicant?.candidate.date_of_birth" />
-								<InformationItem
-									:icon="User"
-									label="Gender"
-									:value="applicant?.candidate.gender" />
+								<InformationItem :icon="User" label="Gender" :value="applicant?.candidate.gender" />
 								<InformationItem
 									:icon="SquareAcademic"
 									label="Education level"
@@ -160,9 +151,7 @@ watch(
 							</div>
 
 							<Separator class="my-4" />
-							<h3 class="text-base text-black font-semibold mb-4">
-								Application details
-							</h3>
+							<h3 class="text-base text-black font-semibold mb-4">Application details</h3>
 							<div class="grid grid-cols-2 text-sm gap-4">
 								<InformationItem :icon="Ranking" label="Work experience" />
 								<InformationItem :icon="Dollar" label="Expected salary" />
@@ -174,11 +163,18 @@ watch(
 									<div class="flex flex-col gap-1">
 										<a
 											v-if="applicant?.resume"
-											:href="applicant?.resume?.url"
+											:href="
+												applicant?.resume?.path
+													? createPathFromServerDomain(applicant?.resume?.path)
+													: applicant?.resume?.url
+											"
 											target="_blank"
-											class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
-											><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
-										>
+											class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs">
+											<IconFromSvg :icon="File" class="!w-4 !h-4" />
+											<p class="max-w-20 truncate">
+												{{ applicant?.resume?.original_filename ?? 'CV' }}
+											</p>
+										</a>
 									</div>
 								</div>
 							</div>
@@ -205,9 +201,7 @@ watch(
 												{{ applicant?.created_by?.name }}
 											</p>
 											<span class="text-xs">{{
-												formatISOStringToLocalDateTime(
-													applicant?.created_at,
-												).date
+												formatISOStringToLocalDateTime(applicant?.created_at).date
 											}}</span>
 										</div>
 									</div>
@@ -319,8 +313,7 @@ watch(
 				</CallApiButton>
 				<Button
 					v-if="
-						applicantInterview?.status === 'CANCELED' ||
-						applicantInterview?.status === 'COMPLETED'
+						applicantInterview?.status === 'CANCELED' || applicantInterview?.status === 'COMPLETED'
 					"
 					class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100"
 					@click="handleReject">

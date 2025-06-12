@@ -25,7 +25,8 @@ export const attendanceColumns = (
 						(table.getIsSomePageRowsSelected() && 'indeterminate'),
 					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
 					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white border-gray-300 data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
+					class:
+						'data-[state=checked]:bg-blue-500 overflow-hidden data-[state=checked]:text-white border-gray-300 data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
 				},
 				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
 			),
@@ -35,7 +36,8 @@ export const attendanceColumns = (
 				modelValue: row.getIsSelected(),
 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 				ariaLabel: 'Select row',
-				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+				class:
+					'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
 			}),
 		enableSorting: false,
 		enableHiding: false,
@@ -57,10 +59,7 @@ export const attendanceColumns = (
 			h(
 				Badge,
 				{
-					class: [
-						ATTENDANCE_STYLE[row.original.attendance],
-						'py-1 px-2 text-sm font-normal',
-					],
+					class: [ATTENDANCE_STYLE[row.original.attendance], 'py-1 px-2 text-sm font-normal'],
 				},
 				() => row.original.attendance,
 			),

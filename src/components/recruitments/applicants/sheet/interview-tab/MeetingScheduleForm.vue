@@ -1,15 +1,15 @@
 <script lang="ts" setup>
+import ChatDots from '@/assets/icons/Outline/ChatDots.svg';
 import Link from '@/assets/icons/Outline/Link.svg';
 import MapPoint from '@/assets/icons/Outline/MapPoint.svg';
-import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
 import PenNew from '@/assets/icons/Outline/PenNewRound.svg';
-import ChatDots from '@/assets/icons/Outline/ChatDots.svg';
 import SortByTime from '@/assets/icons/Outline/SortByTime.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
+import FormArray from '@/components/form/FormArray.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
-import FormSelectArray from '@/components/form/FormSelectArray.vue';
 import FormTime from '@/components/form/FormTime.vue';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -18,6 +18,7 @@ import { applicantKey } from '@/composables/recruitment/applicant/key';
 import {
 	useCreateInterview,
 	useSendEmail,
+	useUpdateInterview,
 	useUpdateStage,
 } from '@/composables/recruitment/applicant/useUpdateApplicant';
 import { useListUser } from '@/composables/user/useUser';
@@ -80,6 +81,9 @@ const toStage = computed(() => {
 const hrSelected = computed(() => {
 	return users.value?.find((item) => item.id === data.value?.coordinator) || account.value;
 });
+const oldInterview = computed(() => {
+	return props.listInterview?.find((item) => item.status === 'SCHEDULED');
+});
 const interviewDateTime = computed(() => {
 	const str = createISOStringFromDayAndTime(
 		data.value?.interview_date || '',
@@ -117,33 +121,32 @@ const dataFill: Ref<
 	hr_email: hrSelected.value?.email,
 	phone_number: hrSelected.value?.phone_number || '',
 	location:
-		data.value?.location?.trim() ||
-		'Tầng 4 - Tòa Hanvico, 217- 219 Lê Duẩn, Thanh Khê, Đà Nẵng',
+		data.value?.location?.trim() || 'Tầng 4 - Tòa Hanvico, 217- 219 Lê Duẩn, Thanh Khê, Đà Nẵng',
 }));
+const initParticipants = computed(() => {
+	return oldInterview.value?.participants.map((item) => item.id) ?? [''];
+});
 
-const { handleSubmit, setFieldValue, values } = useForm({
+const { handleSubmit, values, resetForm } = useForm({
 	validationSchema: formSchema,
 	initialValues: {
-		participant_ids: [''],
+		participant_ids: initParticipants.value,
 	},
 });
 
 const { mutate: sendEmail } = useSendEmail();
 const { mutate: updateStage } = useUpdateStage();
 const { mutate: createInterview, isPending } = useCreateInterview();
+const { mutate: updateInterview, isPending: updating } = useUpdateInterview();
 
 const onSubmit = handleSubmit((values) => {
 	data.value = values;
 	nextStep.value = true;
 });
 
-const setValue = (payload: { fieldName: any; data: any }) => {
-	setFieldValue(payload.fieldName, payload.data);
-};
-
 const handleBack = () => {
 	if (nextStep.value) {
-		setFieldValue('participant_ids', data.value?.participant_ids);
+		resetForm();
 		nextStep.value = false;
 		return;
 	}
@@ -163,6 +166,45 @@ const handleSend = () => {
 		application_id: props.applicant?.id || '',
 		stage: toStage.value,
 	};
+
+	if (oldInterview.value) {
+		updateInterview(
+			{
+				id: oldInterview.value.id,
+				data: payload,
+			},
+			{
+				onSuccess: () => {
+					emits('back');
+					queryClient.invalidateQueries({
+						queryKey: [applicantKey.interview],
+					});
+
+					showToast({
+						message: 'Re-schedule success!',
+						type: 'success',
+					});
+
+					sendEmail(
+						{
+							email: props.applicant?.candidate.email || '',
+							content: renderedHtml.value.replace(/"/g, "'"),
+							subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
+						},
+						{
+							onSuccess: () => {
+								showToast({
+									message: 'Sent email success!',
+									type: 'success',
+								});
+							},
+						},
+					);
+				},
+			},
+		);
+		return;
+	}
 
 	createInterview(payload, {
 		onSuccess: () => {
@@ -214,7 +256,7 @@ watch(dataFill, () => {
 				<FormInput
 					name="interview_name"
 					label="Interview name"
-					:model-value="data?.interview_name"
+					:model-value="data?.interview_name ?? oldInterview?.interview_name"
 					:required="true"
 					:icon="PenNew"
 					placeholder="Enter interview name"
@@ -224,7 +266,7 @@ watch(dataFill, () => {
 					name="interview_type"
 					label="Interview type"
 					:icon="ChatDots"
-					:model-value="data?.interview_type"
+					:model-value="data?.interview_type ?? oldInterview?.interview_type"
 					:required="true"
 					:list="listInterviewType" />
 
@@ -233,7 +275,7 @@ watch(dataFill, () => {
 						<FormCalendar
 							name="interview_date"
 							label="Interview date"
-							:model-value="data?.interview_date"
+							:model-value="data?.interview_date ?? oldInterview?.scheduled_time"
 							class="w-full"
 							:required="true" />
 					</div>
@@ -241,7 +283,7 @@ watch(dataFill, () => {
 						<FormTime
 							name="interview_time"
 							label="Interview time"
-							:model-value="data?.interview_time"
+							:model-value="data?.interview_time ?? oldInterview?.scheduled_time"
 							:required="true" />
 					</div>
 				</div>
@@ -265,7 +307,7 @@ watch(dataFill, () => {
 				<FormInput
 					name="duration_minutes"
 					type="number"
-					:model-value="data?.duration_minutes"
+					:model-value="data?.duration_minutes ?? oldInterview?.duration_minutes"
 					:required="true"
 					:icon="SortByTime"
 					label="Duration minutes"
@@ -278,12 +320,13 @@ watch(dataFill, () => {
 					:model-value="data?.coordinator ?? account?.id"
 					:icon="UserSpeak"
 					:list="users?.map((user) => ({ label: user.name, value: user.id })) || []" />
+
 				<FormInput
 					v-if="values.interview_type !== 'ONLINE'"
 					name="location"
 					label="Location"
 					:required="true"
-					:model-value="data?.location"
+					:model-value="data?.location ?? oldInterview?.location ?? undefined"
 					:icon="MapPoint"
 					placeholder="Enter location"
 					class="w-full" />
@@ -292,22 +335,31 @@ watch(dataFill, () => {
 					v-else
 					name="meeting_link"
 					label="Meeting link"
-					:model-value="data?.meeting_link"
+					:model-value="data?.meeting_link ?? oldInterview?.meeting_link ?? undefined"
 					:icon="Link"
 					:required="true"
 					placeholder="Enter meeting link"
 					class="w-full" />
 
 				<div>
-					<FormSelectArray
+					<FormArray
 						name="participant_ids"
 						label="Interviewer"
-						class="w-full"
-						:model-value="data?.participant_ids"
-						:icon="UserSpeak"
+						label-size="xs"
 						:required="true"
-						:list="users?.map((user) => ({ label: user.name, value: user.id })) || []"
-						@update:select="setValue" />
+						:init-value="''">
+						<template #default="{ baseName, index }">
+							<FormSelect
+								:name="baseName"
+								:model-value="
+									data?.participant_ids?.[index] ?? oldInterview?.participants?.[index]?.id
+								"
+								:icon="UserSpeak"
+								label=""
+								:list="users?.map((user) => ({ label: user.name, value: user.id })) || []"
+								:required="true" />
+						</template>
+					</FormArray>
 				</div>
 			</div>
 		</form>
@@ -325,7 +377,7 @@ watch(dataFill, () => {
 		<CallApiButton
 			v-else
 			form="form"
-			:is-loading="isPending"
+			:is-loading="isPending || updating"
 			class="rounded-2xl h-auto py-3 px-8 bg-blue-500 hover:bg-blue-600"
 			@click="handleSend">
 			Send

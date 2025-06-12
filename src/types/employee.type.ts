@@ -67,6 +67,73 @@ export interface IWorkInformation extends IBaseResponse {
 	manager: IUser;
 }
 
+export interface ISalaryInformation extends IBaseResponse {
+	user_id: string;
+	base_salary: number;
+	commission: number;
+	salary_type: string;
+	allowance: {
+		amount: number;
+	};
+	deduction: {
+		amount: number;
+	};
+	effective_date: string;
+	end_date: string;
+	approver_id: string;
+	reason: string;
+	note: string;
+	insurance: string[];
+	benefits: {
+		amount: number;
+	};
+	created_by_user_id: string;
+	approver: IUser;
+	created_by: IUser;
+}
+
+export interface IContractDetails extends IBaseResponse {
+	user_id: string;
+	created_by: IUser;
+	contract_type: string;
+	start_date: string;
+	end_date: string | null;
+	termination_date: string | null;
+	status: string;
+	contract_detail: IDocument;
+	appendix: any[] | null;
+	notes: string;
+}
+
+export interface IInsuranceInformation extends IBaseResponse {
+	user_id: string;
+	insurance_number: string;
+	insurance_provider: string | null;
+	start_date: string;
+	end_date: string;
+	insurance_type: string;
+	insurance_contribution: number;
+}
+
+export interface IBankInformation extends IBaseResponse {
+	bank_name: string;
+	account_number: string;
+	account_holder_name: string;
+	bank_branch: string;
+	user_id: string;
+}
+
+export interface IDocument {
+	user_id: string | null;
+	document_name: string;
+	document_type: string;
+	file_name: string;
+	file_type: string;
+	file_size: number;
+	storage_path: string;
+	description: string | null;
+}
+
 export interface EmployeePayroll {
 	name: string;
 	role: string;

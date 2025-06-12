@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, shallowRef } from 'vue';
+import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import Widget from '@/assets/icons/Outline/Widget5.svg';
 import WidgetBold from '@/assets/icons/Bold/Widget5.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
@@ -20,9 +20,11 @@ import type { RouteType } from '@/types';
 import { useAuthStore } from './auth.store';
 
 export const useAppStore = defineStore('app-store', () => {
+	const isHR = ref(true);
 	const authStore = useAuthStore();
+
 	//defineState
-	const routeList = ref<RouteType[]>([
+	const routeList = reactive<RouteType[]>([
 		{
 			id: '10000',
 			path: '/dashboard',
@@ -80,13 +82,13 @@ export const useAppStore = defineStore('app-store', () => {
 				{
 					id: '30002',
 					path: '/employees/all-employee',
-					name: 'All employee',
+					name: 'All employees',
 				},
-				{
-					id: '30003',
-					path: '/employees/work-hours-management',
-					name: 'Work hours',
-				},
+				// {
+				// 	id: '30003',
+				// 	path: '/employees/work-hours-management',
+				// 	name: 'Work hours',
+				// },
 			],
 		},
 		// {
@@ -154,9 +156,7 @@ export const useAppStore = defineStore('app-store', () => {
 	]);
 
 	const isSmallSidebar = ref(
-		localStorage.getItem('smallSidebar')
-			? localStorage.getItem('smallSidebar') === 'true'
-			: false,
+		localStorage.getItem('smallSidebar') ? localStorage.getItem('smallSidebar') === 'true' : false,
 	);
 
 	//defineActions
@@ -167,6 +167,7 @@ export const useAppStore = defineStore('app-store', () => {
 
 	return {
 		routeList,
+		isHR,
 		isSmallSidebar,
 		toggleSidebar,
 	};

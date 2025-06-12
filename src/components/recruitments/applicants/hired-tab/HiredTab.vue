@@ -8,8 +8,10 @@ import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { useApplicant } from '@/composables/recruitment/applicant/useApplicant';
+import { useCreateEmployeeFromApplicant } from '@/composables/recruitment/applicant/useUpdateApplicant';
 import { useListJob } from '@/composables/recruitment/job/useJob';
 import { DEFAULT_PAGINATION, RECRUITMENT_STAGE } from '@/constants';
+import { useCustomToast } from '@/lib/customToast';
 import { valueUpdater } from '@/lib/utils';
 import type { FilterAccordion, FilterData, IApplicant, IApplicantFilter, IMeta } from '@/types';
 import {
@@ -22,10 +24,11 @@ import { computed, ref } from 'vue';
 import ApplicantSheet from '../ApplicantSheet.vue';
 import { hiredColumn } from './column';
 import HiredDialog from './HiredDialog.vue';
-import { useCreateUser } from '@/composables/recruitment/applicant/useUpdateApplicant';
-import type { CreateUserPayload } from './schema';
-import { useCustomToast } from '@/lib/customToast';
+import type { CreateEmployeeFromApplicantPayload } from './schema';
+import { useQueryClient } from '@tanstack/vue-query';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
 
+const queryClient = useQueryClient();
 const { data: jobs } = useListJob();
 const { showToast } = useCustomToast();
 
@@ -53,7 +56,7 @@ const pagination = computed<PaginationState>(() => ({
 }));
 
 const { data, isLoading } = useApplicant(pagination, filterPayload);
-const { mutate: createUser, isPending: isCreating } = useCreateUser();
+const { mutate: createUser, isPending: isCreating } = useCreateEmployeeFromApplicant();
 
 const applicants = computed<IApplicant[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -142,19 +145,26 @@ const handleFilter = (payload: FilterData[]) => {
 	filter.value = newFilter as Record<string, string[]>;
 };
 
-const handleCreateUser = (payload: CreateUserPayload) => {
-	createUser(payload, {
-		onSuccess: () => {
-			showToast({
-				message: 'User created successfully',
-				type: 'success',
-			});
-
-			dataSent.value = undefined;
-			isOpenDialog.value = false;
-			isOpenSheet.value = false;
+const handleCreateUser = (payload: CreateEmployeeFromApplicantPayload) => {
+	createUser(
+		{
+			id: dataSent.value?.id ?? '',
+			data: payload,
 		},
-	});
+		{
+			onSuccess: () => {
+				showToast({
+					message: 'User created successfully',
+					type: 'success',
+				});
+
+				queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
+				dataSent.value = undefined;
+				isOpenDialog.value = false;
+				isOpenSheet.value = false;
+			},
+		},
+	);
 };
 
 const handleCloseSheet = (open: boolean) => {

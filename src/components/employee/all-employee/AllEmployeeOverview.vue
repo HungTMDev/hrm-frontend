@@ -9,12 +9,10 @@ import Title from '@/components/common/Title.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import Button from '@/components/ui/button/Button.vue';
 import router from '@/routers';
-import type { Employee } from '@/types';
 import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { ref } from 'vue';
-import { employeeColumn } from './employee.column';
 
-const data: Employee[] = [
+const data = [
 	{
 		id: 351613,
 		name: 'Trần Song Quynh',
@@ -98,7 +96,7 @@ const handleCloseAlert = (open: boolean) => {
 
 const table = useVueTable({
 	data,
-	columns: employeeColumn(handleEdit, handleDelete),
+	columns: [],
 	getCoreRowModel: getCoreRowModel(),
 });
 

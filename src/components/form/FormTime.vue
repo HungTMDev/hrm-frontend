@@ -16,9 +16,7 @@ defineProps<Prop>();
 				>{{ label }} <span v-if="!required">(optional)</span></FormLabel
 			>
 			<FormControl>
-				<TimeInput
-					v-bind="componentField"
-					:class="cn(errors.length > 0 && 'border-destructive')" />
+				<TimeInput v-bind="componentField" :class="cn(errors.length > 0 && 'border-destructive')" />
 			</FormControl>
 			<FormErrorCustom />
 		</FormItem>

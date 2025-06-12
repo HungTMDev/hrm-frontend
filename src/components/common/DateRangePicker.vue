@@ -142,10 +142,7 @@ watch(secondMonthPlaceholder, (_secondMonthPlaceholder) => {
 						<RangeCalendarGrid>
 							<RangeCalendarGridHead>
 								<RangeCalendarGridRow>
-									<RangeCalendarHeadCell
-										v-for="day in weekDays"
-										:key="day"
-										class="w-full">
+									<RangeCalendarHeadCell v-for="day in weekDays" :key="day" class="w-full">
 										{{ day }}
 									</RangeCalendarHeadCell>
 								</RangeCalendarGridRow>
@@ -199,10 +196,7 @@ watch(secondMonthPlaceholder, (_secondMonthPlaceholder) => {
 						<RangeCalendarGrid>
 							<RangeCalendarGridHead>
 								<RangeCalendarGridRow>
-									<RangeCalendarHeadCell
-										v-for="day in weekDays"
-										:key="day"
-										class="w-full">
+									<RangeCalendarHeadCell v-for="day in weekDays" :key="day" class="w-full">
 										{{ day }}
 									</RangeCalendarHeadCell>
 								</RangeCalendarGridRow>

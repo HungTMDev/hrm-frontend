@@ -46,9 +46,10 @@ export const hiredColumn = (
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: createPathFromServerDomain(row.original.resume.path),
+					href: createPathFromServerDomain(row.original.resume.path ?? ''),
 					target: '_blank',
-					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
+					class:
+						'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},
 				[h(IconFromSvg, { icon: File }), 'CV'],
 			);
@@ -57,7 +58,7 @@ export const hiredColumn = (
 	},
 	{
 		accessorKey: 'updated_at',
-		header: 'Last update',
+		header: 'Last updated',
 		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.updated_at).date,
 	},
 	{
@@ -77,7 +78,7 @@ export const hiredColumn = (
 					style: 'text-slate-600',
 				},
 				{
-					label: 'Create user',
+					label: 'New employee',
 					icon: UserPlus,
 					style: 'text-green-500',
 				},
@@ -87,15 +88,15 @@ export const hiredColumn = (
 				handleOpenSheet(row.original);
 			};
 
-			const onCreateUser = () => {
+			const onNewEmployee = () => {
 				handleOpenDialog(row.original);
 			};
 
 			return h(ActionGroupCommon, {
 				actions,
 				onView,
-				onCreateUser,
-				class: 'w-[150px]',
+				onNewEmployee,
+				class: 'w-[160px]',
 			});
 		},
 	},

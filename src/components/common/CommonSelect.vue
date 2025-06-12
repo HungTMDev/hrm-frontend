@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/select';
 import { cn, formatStatus } from '@/lib/utils';
 import type { ComboboxType } from '@/types';
-import { onMounted, ref, type HTMLAttributes } from 'vue';
+import { onMounted, onUpdated, ref, type HTMLAttributes } from 'vue';
 import SelectTriggerCustom from '../custom/SelectTriggerCustom.vue';
 import IconFromSvg from './IconFromSvg.vue';
 
@@ -32,13 +32,36 @@ const emit = defineEmits<{
 const selectedValue = ref<string | number | string[] | number[]>();
 
 const handleSelect = (value: any) => {
-	selectedValue.value = formatStatus(
-		props.list.find((item) => item.value === value)?.label || '',
-	);
+	if (Array.isArray(value)) {
+		selectedValue.value = value.map((item) => formatStatus(item)).join(', ');
+		emit('update:modelValue', value);
+		return;
+	}
+	selectedValue.value = formatStatus(props.list.find((item) => item.value === value)?.label || '');
 	emit('update:modelValue', value);
 };
 
 onMounted(() => {
+	if (Array.isArray(props.modelValue)) {
+		selectedValue.value = props.modelValue
+			.map((item) => formatStatus(props.list.find((i) => i.value === item)?.label || ''))
+			.join(', ');
+		return;
+	}
+
+	selectedValue.value = formatStatus(
+		props.list.find((item) => item.value === props.modelValue)?.label || '',
+	);
+});
+
+onUpdated(() => {
+	if (Array.isArray(props.modelValue)) {
+		selectedValue.value = props.modelValue
+			.map((item) => formatStatus(props.list.find((i) => i.value === item)?.label || ''))
+			.join(', ');
+		return;
+	}
+
 	selectedValue.value = formatStatus(
 		props.list.find((item) => item.value === props.modelValue)?.label || '',
 	);
@@ -54,7 +77,7 @@ onMounted(() => {
 		<SelectTriggerCustom
 			:class="
 				cn(
-					'w-full h-auto p-3 focus:ring-0 focus:ring-offset-0 rounded-2xl relative',
+					'w-full h-auto p-3 focus:ring-0 focus:ring-offset-0 rounded-2xl relative text-gray-200',
 					icon && 'pl-10',
 					props.class,
 				)
@@ -63,10 +86,8 @@ onMounted(() => {
 				<IconFromSvg :icon="icon" />
 			</span>
 			<SelectValue as-child>
-				<span v-if="!selectedValue">{{ placeholder ?? 'Select...' }}</span>
-				<span
-					v-else
-					:class="cn('text-gray-200', selectedValue !== undefined && 'text-black')">
+				<span v-if="!selectedValue" class="text-gray-200">{{ placeholder ?? 'Select...' }}</span>
+				<span v-else :class="cn(selectedValue !== undefined && 'text-black')">
 					{{ selectedValue }}
 				</span>
 			</SelectValue>
@@ -81,9 +102,7 @@ onMounted(() => {
 					list_size === 'lg' && 'w-[400px]',
 				)
 			">
-			<SelectGroup v-if="list.length === 0" class="text-sm text-center py-6"
-				>No data</SelectGroup
-			>
+			<SelectGroup v-if="list.length === 0" class="text-sm text-center py-6">No data</SelectGroup>
 			<SelectGroup v-else>
 				<SelectItem
 					v-for="(item, index) in list"

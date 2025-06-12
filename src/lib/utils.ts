@@ -259,5 +259,8 @@ export const createNameByGender = (name: string, gender: string) => {
 };
 
 export const createPathFromServerDomain = (path: string) => {
+	if (path.split('')[0] === '/') {
+		return `${import.meta.env.VITE_SERVER_DOMAIN}${path}`;
+	}
 	return `${import.meta.env.VITE_SERVER_DOMAIN}/${path}`;
 };

@@ -70,8 +70,7 @@ export const recruitmentRequestColumn = (
 		{
 			accessorKey: 'expected_date',
 			header: 'Expected date',
-			cell: ({ row }) =>
-				formatISOStringToLocalDateTime(row.original.expected_start_date).date,
+			cell: ({ row }) => formatISOStringToLocalDateTime(row.original.expected_start_date).date,
 		},
 		{
 			accessorKey: 'status',
@@ -127,8 +126,7 @@ export const recruitmentRequestColumn = (
 					}
 					if (
 						row.original.status === 'ON_HOLD' &&
-						(account.value?.roles.includes('ADMIN') ||
-							account.value?.roles.includes('CEO'))
+						(account.value?.roles.includes('ADMIN') || account.value?.roles.includes('CEO'))
 					) {
 						return [
 							{

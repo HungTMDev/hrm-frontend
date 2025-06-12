@@ -166,10 +166,7 @@ const handleReset = () => {
 			</div>
 			<Separator class="my-4" />
 			<RadioGroup :model-value="radioValue" @update:model-value="handleRadio" class="gap-4">
-				<div
-					v-for="item in radioList"
-					:key="item.value"
-					class="flex items-center space-x-2">
+				<div v-for="item in radioList" :key="item.value" class="flex items-center space-x-2">
 					<RadioGroupItem
 						:id="item.value as string"
 						:value="item.value"
@@ -189,14 +186,10 @@ const handleReset = () => {
 					class="w-full rounded-2xl py-3 h-auto mt-2" />
 			</div>
 			<div class="mt-4 flex justify-end gap-2">
-				<Button
-					class="h-auto px-6 py-3.5 rounded-2xl"
-					variant="outline"
-					@click="handleReset"
+				<Button class="h-auto px-6 py-3.5 rounded-2xl" variant="outline" @click="handleReset"
 					>Reset</Button
 				>
-				<Button
-					class="h-auto px-6 py-3.5 rounded-2xl bg-blue-500 text-white hover:bg-blue-600"
+				<Button class="h-auto px-6 py-3.5 rounded-2xl bg-blue-500 text-white hover:bg-blue-600"
 					>Apply</Button
 				>
 			</div>

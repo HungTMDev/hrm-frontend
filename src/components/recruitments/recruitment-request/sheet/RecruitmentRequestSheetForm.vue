@@ -83,7 +83,7 @@ const pagination = computed(() => props.pagination);
 
 const formSchema = toTypedSchema(recruitmentRequestSchema);
 
-const { handleSubmit, values } = useForm({
+const { handleSubmit, values, meta } = useForm({
 	validationSchema: formSchema,
 });
 
@@ -300,6 +300,7 @@ const handleCreateDraft = async () => {
 		<CallApiButton
 			variant="outline"
 			class="h-auto py-3.5 px-6 rounded-2xl"
+			:disabled="!meta.valid"
 			:is-loading="isLoadingCreate || isLoadingEdit"
 			@click="handleCreateDraft"
 			>Save as draft</CallApiButton

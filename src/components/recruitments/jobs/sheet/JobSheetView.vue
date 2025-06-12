@@ -67,25 +67,14 @@ const handleViewCandidate = (payload: IApplicant) => {
 					<span>Status</span>
 				</div>
 				<div class="my-[2px]">
-					<StatusTag
-						:status="data?.status || ''"
-						:class="JOB_STATUS_STYLE[data?.status || '']" />
+					<StatusTag :status="data?.status || ''" :class="JOB_STATUS_STYLE[data?.status || '']" />
 				</div>
 			</div>
 
 			<InformationItem :icon="Building3" label="Branch" :value="data?.branch.name || ''" />
-			<InformationItem
-				:icon="Building"
-				label="Department"
-				:value="data?.department.name || ''" />
-			<InformationItem
-				:icon="UserCircle"
-				label="Position"
-				:value="data?.position.name || ''" />
-			<InformationItem
-				:icon="Chart2"
-				label="Level"
-				:value="formatStatus(data?.level as string)" />
+			<InformationItem :icon="Building" label="Department" :value="data?.department.name || ''" />
+			<InformationItem :icon="UserCircle" label="Position" :value="data?.position.name || ''" />
+			<InformationItem :icon="Chart2" label="Level" :value="formatStatus(data?.level as string)" />
 			<InformationItem
 				:icon="Case"
 				label="Employment type"
@@ -109,9 +98,7 @@ const handleViewCandidate = (payload: IApplicant) => {
 			<InformationItem
 				:icon="UserHand"
 				label="Gender"
-				:value="
-					parseGender(data?.gender) === '' ? 'Not required' : parseGender(data?.gender)
-				" />
+				:value="parseGender(data?.gender) === '' ? 'Not required' : parseGender(data?.gender)" />
 		</div>
 
 		<div class="mt-8">

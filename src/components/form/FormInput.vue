@@ -23,9 +23,7 @@ const props = defineProps<Prop>();
 		<FormItem class="flex flex-col">
 			<FormLabel class="text-slate-600"
 				>{{ label }}
-				<span v-if="!required" class="text-slate-400 font-light"
-					>(optional)</span
-				></FormLabel
+				<span v-if="!required" class="text-slate-400 font-light">(optional)</span></FormLabel
 			>
 			<FormControl>
 				<InputWithIcon

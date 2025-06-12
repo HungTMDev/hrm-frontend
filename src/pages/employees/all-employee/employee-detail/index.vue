@@ -34,23 +34,13 @@ import UserAvatar from '@/components/common/UserAvatar.vue';
 import AssetsTab from '@/components/employee/all-employee/employee-detail/assets-tab/AssetsTab.vue';
 import AttendanceHistoryTab from '@/components/employee/all-employee/employee-detail/attendance-history-tab/AttendanceHistoryTab.vue';
 import BankInformationTab from '@/components/employee/all-employee/employee-detail/bank-information-tab/BankInformationTab.vue';
-import ContractDetailTab from '@/components/employee/all-employee/employee-detail/contract-detail-tab/ContractDetailTab.vue';
-import HistoryTab from '@/components/employee/all-employee/employee-detail/history-tab/HistoryTab.vue';
-import InsuranceInformationTab from '@/components/employee/all-employee/employee-detail/insurance-information-tab/InsuranceInformationTab.vue';
-import LeaveHistoryTab from '@/components/employee/all-employee/employee-detail/leave-history-tab/LeaveHistoryTab.vue';
-import PerformanceTab from '@/components/employee/all-employee/employee-detail/perfomance-tab/PerformanceTab.vue';
-import AssetsTab from '@/components/employee/all-employee/employee-detail/assets-tab/AssetsTab.vue';
-import AttendanceHistoryTab from '@/components/employee/all-employee/employee-detail/attendance-history-tab/AttendanceHistoryTab.vue';
-import BankInformationTab from '@/components/employee/all-employee/employee-detail/bank-information-tab/BankInformationTab.vue';
+import { EMPLOYEE_DETAIL_TAB } from '@/components/employee/all-employee/employee-detail/constant';
 import ContractDetailTab from '@/components/employee/all-employee/employee-detail/contract-detail-tab/ContractDetailTab.vue';
 import HistoryTab from '@/components/employee/all-employee/employee-detail/history-tab/HistoryTab.vue';
 import InsuranceInformationTab from '@/components/employee/all-employee/employee-detail/insurance-information-tab/InsuranceInformationTab.vue';
 import LeaveHistoryTab from '@/components/employee/all-employee/employee-detail/leave-history-tab/LeaveHistoryTab.vue';
 import PerformanceTab from '@/components/employee/all-employee/employee-detail/perfomance-tab/PerformanceTab.vue';
 import PersonalInformationTab from '@/components/employee/all-employee/employee-detail/personal-information-tab/PersonalInformationTab.vue';
-import SalaryInformationTab from '@/components/employee/all-employee/employee-detail/salary-information-tab/SalaryInformationTab.vue';
-import TrainingTab from '@/components/employee/all-employee/employee-detail/training-tab/TrainingTab.vue';
-import WorkInformationTab from '@/components/employee/all-employee/employee-detail/work-information-tab/WorkInformationTab.vue';
 import SalaryInformationTab from '@/components/employee/all-employee/employee-detail/salary-information-tab/SalaryInformationTab.vue';
 import TrainingTab from '@/components/employee/all-employee/employee-detail/training-tab/TrainingTab.vue';
 import WorkInformationTab from '@/components/employee/all-employee/employee-detail/work-information-tab/WorkInformationTab.vue';
@@ -63,8 +53,12 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+	useGetPersonalInformation,
+	useGetWorkInformation,
+} from '@/composables/employee/useEmployee';
 import router from '@/routers';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -75,7 +69,7 @@ const employeeId = computed(() => route.params.id as string);
 const { data: personalInformation, isError } = useGetPersonalInformation(employeeId);
 const { data: workInformation } = useGetWorkInformation(employeeId);
 
-const activeTab = ref('personnal');
+const activeTab = ref<string>(EMPLOYEE_DETAIL_TAB.PERSONAL_INFORMATION);
 
 const handleTab = (payload: any) => {
 	activeTab.value = payload as string;
@@ -83,7 +77,7 @@ const handleTab = (payload: any) => {
 };
 
 onMounted(() => {
-	activeTab.value = (query.value.tab as string) ?? 'personnal';
+	activeTab.value = (query.value.tab as string) ?? EMPLOYEE_DETAIL_TAB.PERSONAL_INFORMATION;
 });
 
 watch(isError, (newVal) => {
@@ -104,8 +98,7 @@ watch(isError, (newVal) => {
 							<DropdownMenuItem class="rounded-xl pr-4 py-3">
 								<IconFromSvg :icon="AchiveDown" />Archive</DropdownMenuItem
 							>
-							<DropdownMenuItem
-								class="rounded-xl text-red-500 focus:text-red-500 pr-4 py-3">
+							<DropdownMenuItem class="rounded-xl text-red-500 focus:text-red-500 pr-4 py-3">
 								<IconFromSvg :icon="Trash" />Delete</DropdownMenuItem
 							>
 						</DropdownMenuContent>
@@ -114,9 +107,10 @@ watch(isError, (newVal) => {
 						<div class="flex flex-col items-center gap-3">
 							<UserAvatar class="w-[120px] h-[120px]" />
 							<Title>{{ personalInformation?.name }}</Title>
-							<p>{{ workInformation?.position.title }}</p>
+							<p>{{ workInformation?.position.name }}</p>
 							<StatusTag
-								:status="workInformation?.level || ''"
+								v-if="workInformation?.work_status"
+								:status="workInformation?.work_status"
 								class="bg-blue-50 hover:bg-blue-50 text-blue-500" />
 						</div>
 						<Separator class="my-4" />
@@ -124,22 +118,22 @@ watch(isError, (newVal) => {
 							<TabsList class="flex flex-col gap-2 w-full bg-white">
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="personnal">
+									:value="EMPLOYEE_DETAIL_TAB.PERSONAL_INFORMATION">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'personnal'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.PERSONAL_INFORMATION"
 											:icon="UserRoundedBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="UserRounded" class="!w-6 !h-6" />
-										Personnal information
+										Personal information
 									</div>
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="work">
+									:value="EMPLOYEE_DETAIL_TAB.WORK_INFORMATION">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'work'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.WORK_INFORMATION"
 											:icon="CaseRoundBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="CaseRound" class="!w-6 !h-6" />
@@ -148,10 +142,10 @@ watch(isError, (newVal) => {
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="salary">
+									:value="EMPLOYEE_DETAIL_TAB.SALARY_INFORMATION">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'salary'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.SALARY_INFORMATION"
 											:icon="DollarBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="Dollar" class="!w-6 !h-6" />
@@ -160,10 +154,10 @@ watch(isError, (newVal) => {
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="contract">
+									:value="EMPLOYEE_DETAIL_TAB.CONTRACT_INFORMATION">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'contract'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.CONTRACT_INFORMATION"
 											:icon="DocumentAddBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="DocumentAdd" class="!w-6 !h-6" />
@@ -172,10 +166,10 @@ watch(isError, (newVal) => {
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="insurance">
+									:value="EMPLOYEE_DETAIL_TAB.INSURANCE_INFORMATION">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'insurance'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.INSURANCE_INFORMATION"
 											:icon="HealthBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="Health" class="!w-6 !h-6" />
@@ -184,22 +178,22 @@ watch(isError, (newVal) => {
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="bank">
+									:value="EMPLOYEE_DETAIL_TAB.BANK_INFORMATION">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'bank'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.BANK_INFORMATION"
 											:icon="MoneyBagBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="MoneyBag" class="!w-6 !h-6" />
 										Bank information
 									</div>
 								</TabsTrigger>
-								<TabsTrigger
+								<!-- <TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="attendance">
+									:value="EMPLOYEE_DETAIL_TAB.ATTENDANCE_HISTORY">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'attendance'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.ATTENDANCE_HISTORY"
 											:icon="Chair2Bold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="Chair2" class="!w-6 !h-6" />
@@ -208,10 +202,10 @@ watch(isError, (newVal) => {
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="leave">
+									:value="EMPLOYEE_DETAIL_TAB.LEAVE_HISTORY">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'leave'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.LEAVE_HISTORY"
 											:icon="ExitBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="Exit" class="!w-6 !h-6" />
@@ -220,10 +214,10 @@ watch(isError, (newVal) => {
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="performance">
+									:value="EMPLOYEE_DETAIL_TAB.PERFORMANCE">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'performance'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.PERFORMANCE"
 											:icon="ChartBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="Chart" class="!w-6 !h-6" />
@@ -232,10 +226,10 @@ watch(isError, (newVal) => {
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="assets">
+									:value="EMPLOYEE_DETAIL_TAB.ASSET">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'assets'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.ASSET"
 											:icon="LibraryBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="Library" class="!w-6 !h-6" />
@@ -244,68 +238,67 @@ watch(isError, (newVal) => {
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="training">
+									:value="EMPLOYEE_DETAIL_TAB.TRAINING">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'training'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.TRAINING"
 											:icon="PresentationBold"
 											class="!w-6 !h-6" />
-										<IconFromSvg
-											v-else
-											:icon="Presentation"
-											class="!w-6 !h-6" />
+										<IconFromSvg v-else :icon="Presentation" class="!w-6 !h-6" />
 										Training
 									</div>
 								</TabsTrigger>
 								<TabsTrigger
 									class="py-2 px-3 text-slate-600 w-full justify-start rounded-xl data-[state=active]:shadow-none data-[state=active]:bg-blue-50 data-[state=active]:text-blue-500"
-									value="history">
+									:value="EMPLOYEE_DETAIL_TAB.HISTORY">
 									<div class="flex items-center gap-2">
 										<IconFromSvg
-											v-if="activeTab === 'history'"
+											v-if="activeTab === EMPLOYEE_DETAIL_TAB.HISTORY"
 											:icon="ClockCircleBold"
 											class="!w-6 !h-6" />
 										<IconFromSvg v-else :icon="ClockCircle" class="!w-6 !h-6" />
 										History
 									</div>
-								</TabsTrigger>
+								</TabsTrigger> -->
 							</TabsList>
 						</ScrollArea>
 					</div>
 				</div>
 				<div class="border flex-1 rounded-2xl p-4">
-					<TabsContent class="mt-0 h-full" value="personnal">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.PERSONAL_INFORMATION">
 						<PersonalInformationTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="work">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.WORK_INFORMATION">
 						<WorkInformationTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="salary">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.SALARY_INFORMATION">
 						<SalaryInformationTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="contract">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.CONTRACT_INFORMATION">
 						<ContractDetailTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="insurance">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.INSURANCE_INFORMATION">
 						<InsuranceInformationTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="bank">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.BANK_INFORMATION">
 						<BankInformationTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="attendance">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.ATTENDANCE_HISTORY">
 						<AttendanceHistoryTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="leave">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.LEAVE_HISTORY">
 						<LeaveHistoryTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="performance">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.PERFORMANCE">
 						<PerformanceTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="assets"> <AssetsTab /> </TabsContent>
-					<TabsContent class="mt-0 h-full" value="training">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.ASSET">
+						<AssetsTab />
+					</TabsContent>
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.TRAINING">
 						<TrainingTab />
 					</TabsContent>
-					<TabsContent class="mt-0 h-full" value="history">
+					<TabsContent class="mt-0 h-full" :value="EMPLOYEE_DETAIL_TAB.HISTORY">
 						<HistoryTab />
 					</TabsContent>
 				</div>

@@ -20,10 +20,7 @@ const handleSidebar = () => {
 			<button class="p-2 border rounded-full" @click="handleSidebar">
 				<IconFromSvg :icon="Siderbar" />
 			</button>
-			<InputWithIcon
-				:icon="Magnifer"
-				placeholder="Search..."
-				class="rounded-full w-[450px]" />
+			<InputWithIcon :icon="Magnifer" placeholder="Search..." class="rounded-full w-[450px]" />
 		</div>
 
 		<div class="flex gap-4 items-center">

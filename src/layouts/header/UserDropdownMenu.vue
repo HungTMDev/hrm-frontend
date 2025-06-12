@@ -40,7 +40,7 @@ const handleLogout = async () => {
 				<div>
 					<p class="text-start text-base font-medium">{{ account?.name }}</p>
 					<p class="text-start text-sm font-normal text-slate-600">
-						{{ formatStatus(account?.roles[0]) }}
+						{{ formatStatus(account?.roles?.[0] ?? '') }}
 					</p>
 				</div>
 				<IconFromSvg :icon="Down" />

@@ -31,7 +31,7 @@ onMounted(() => {
 });
 </script>
 <template>
-	<div :class="cn('border border-input p-2.5 rounded-2xl relative', icon && 'pl-10')">
+	<div :class="cn('border border-input p-2.5 rounded-2xl relative', icon && 'pl-10', props.class)">
 		<span class="absolute left-3 top-3 text-gray-200">
 			<IconFromSvg :icon="icon" />
 		</span>

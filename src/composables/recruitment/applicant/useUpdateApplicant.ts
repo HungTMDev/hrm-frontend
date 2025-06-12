@@ -1,17 +1,22 @@
+import type { CreateEmployeeFromApplicantPayload } from '@/components/recruitments/applicants/hired-tab/schema';
 import type { InterviewerFeedbackPayload } from '@/components/recruitments/applicants/interview-tab/schema';
+import type { AddApplicantPayload } from '@/components/recruitments/applicants/screening-tab/schema';
 import { useCustomToast } from '@/lib/customToast';
 import {
 	addParticipant,
 	cancelApplicantInterview,
 	completeApplicantInterview,
 	createApplicant,
+	createEmployeeFromApplicant,
 	createInterview,
 	createInterviewFeedback,
-	createUser,
 	deleteApplicant,
 	editApplicant,
+	rejectManyApplicant,
 	removeParticipant,
 	sendEmail,
+	undoApplicant,
+	updateInterview,
 	updateStage,
 } from '@/services/recruitment/applicant';
 import type { IApplicantFilter, IApplicantInterviewFilter, InterviewPayload } from '@/types';
@@ -19,8 +24,6 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import type { PaginationState } from '@tanstack/vue-table';
 import type { Ref } from 'vue';
 import { applicantKey } from './key';
-import type { AddApplicantPayload } from '@/components/recruitments/applicants/screening-tab/schema';
-import type { CreateUserPayload } from '@/components/recruitments/applicants/hired-tab/schema';
 
 export const useCreateApplicant = (
 	pagination: Ref<PaginationState>,
@@ -165,11 +168,7 @@ export const useCancelInterview = (
 
 export const useAddParticipant = () => {
 	return useMutation({
-		mutationFn: async (payload: {
-			interview_id: string;
-			participant_id: string;
-			role: string;
-		}) => {
+		mutationFn: async (payload: { interview_id: string; participant_id: string; role: string }) => {
 			const { interview_id, ...data } = payload;
 			return await addParticipant(interview_id, data);
 		},
@@ -183,8 +182,28 @@ export const useRemoveParticipant = () => {
 	});
 };
 
-export const useCreateUser = () => {
+export const useCreateEmployeeFromApplicant = () => {
 	return useMutation({
-		mutationFn: async (payload: CreateUserPayload) => await createUser(payload),
+		mutationFn: async (payload: { id: string; data: CreateEmployeeFromApplicantPayload }) =>
+			await createEmployeeFromApplicant(payload.id, payload.data),
+	});
+};
+
+export const useRejectManyApplicant = () => {
+	return useMutation({
+		mutationFn: async (payload: string[]) => await rejectManyApplicant(payload),
+	});
+};
+
+export const useUpdateInterview = () => {
+	return useMutation({
+		mutationFn: async (payload: { id: string; data: InterviewPayload }) =>
+			await updateInterview(payload.id, payload.data),
+	});
+};
+
+export const useUndoApplicant = () => {
+	return useMutation({
+		mutationFn: async (id: string) => await undoApplicant(id),
 	});
 };

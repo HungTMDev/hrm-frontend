@@ -173,6 +173,8 @@ export const useGetListFeedback = (listInterview: Ref<IApplicantInterview[]>) =>
 			return {
 				queryKey: [applicantKey.feedback, item.id],
 				queryFn: () => getFeedback(item.id),
+				staleTime: DATA_TIME.LESS_CHANGE,
+				gcTime: DATA_TIME.DELETE,
 			};
 		}),
 	);

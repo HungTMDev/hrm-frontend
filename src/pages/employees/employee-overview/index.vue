@@ -365,10 +365,7 @@ const barChartOptions = ref({
 					<h3 class="flex-1 text-xl font-semibold">Resigned Employee</h3>
 				</div>
 				<div class="relative w-full">
-					<GaugeChart
-						:chart-data="gaugeChartData"
-						:chart-options="chartOptions"
-						:value="3.2" />
+					<GaugeChart :chart-data="gaugeChartData" :chart-options="chartOptions" :value="3.2" />
 
 					<span
 						class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[32px] font-semibold flex items-center gap-2 justify-center">
@@ -384,9 +381,7 @@ const barChartOptions = ref({
 					<h3 class="flex-1 text-xl font-semibold">New Employee - Resigned Employee</h3>
 				</div>
 				<div class="h-[300px]">
-					<StackedBarChart
-						:chart-data="stackChartData"
-						:chart-options="barChartOptions" />
+					<StackedBarChart :chart-data="stackChartData" :chart-options="barChartOptions" />
 				</div>
 			</div>
 		</div>

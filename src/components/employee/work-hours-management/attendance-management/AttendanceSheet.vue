@@ -38,9 +38,7 @@ const handleOpen = (isOpen: boolean) => {
 	<Sheet :open="open" @update:open="handleOpen">
 		<SheetContentCustom class="rounded-l-3xl sm:max-w-[660px] p-8 flex flex-col text-slate-600">
 			<SheetHeader>
-				<SheetTitle class="text-[28px] font-semibold"
-					>{{ data?.attendance }} Request
-				</SheetTitle>
+				<SheetTitle class="text-[28px] font-semibold">{{ data?.attendance }} Request </SheetTitle>
 				<SheetDescription> </SheetDescription>
 			</SheetHeader>
 			<ScrollArea class="flex-1 pr-3 text-sm">
@@ -50,9 +48,7 @@ const handleOpen = (isOpen: boolean) => {
 							<IconFromSvg :icon="ChartSquare" />
 							Status
 						</div>
-						<StatusTag
-							:status="data?.status || ''"
-							:class="STATUS_STYLE[data?.status || '']" />
+						<StatusTag :status="data?.status || ''" :class="STATUS_STYLE[data?.status || '']" />
 					</div>
 					<div class="grid grid-cols-2 items-center">
 						<div class="flex gap-2 items-center">
@@ -65,10 +61,7 @@ const handleOpen = (isOpen: boolean) => {
 						</div>
 					</div>
 
-					<InformationItem
-						:icon="CalendarAdd"
-						label="Request date"
-						value="April 10, 2025" />
+					<InformationItem :icon="CalendarAdd" label="Request date" value="April 10, 2025" />
 					<div class="grid grid-cols-2 items-center">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="FileRight" />
@@ -82,13 +75,10 @@ const handleOpen = (isOpen: boolean) => {
 					<InformationItem :icon="ClockCircle" label="Time" :value="data?.time || ''" />
 				</div>
 				<div class="mt-8">
-					<div class="flex items-center gap-2">
-						<IconFromSvg :icon="ClipboardList" /> Reason
-					</div>
+					<div class="flex items-center gap-2"><IconFromSvg :icon="ClipboardList" /> Reason</div>
 					<p class="text-black mt-2">
-						I am writing to request an early leave today due to a personal matter that
-						requires my immediate attention. I appreciate your understanding and
-						support.
+						I am writing to request an early leave today due to a personal matter that requires my
+						immediate attention. I appreciate your understanding and support.
 					</p>
 				</div>
 			</ScrollArea>

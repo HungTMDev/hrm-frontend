@@ -107,10 +107,7 @@ const handleBackToView = () => {
 						:list="[]"
 						:required="true"
 						placeholder="Select status" />
-					<FormSelectCalendar
-						name="assigned_date"
-						:required="true"
-						label="Assigned date" />
+					<FormSelectCalendar name="assigned_date" :required="true" label="Assigned date" />
 					<div>
 						<FormArray name="details" label="Details" :init-value="''" label-size="xs">
 							<template #default="{ baseName, index }">
@@ -134,10 +131,7 @@ const handleBackToView = () => {
 			</div>
 
 			<div class="flex justify-end gap-2">
-				<Button
-					variant="outline"
-					class="py-3 px-6 h-auto rounded-2xl"
-					@click="handleBackToView">
+				<Button variant="outline" class="py-3 px-6 h-auto rounded-2xl" @click="handleBackToView">
 					Back
 				</Button>
 				<Button class="py-3 px-6 h-auto rounded-2xl hover:bg-blue-600"> Save </Button>
@@ -155,10 +149,7 @@ const handleBackToView = () => {
 					<InformationItem :icon="Clipboard" label="Asset ID" value="MH-166" />
 					<InformationItem :icon="Library" label="Assets type" value="Computer display" />
 					<InformationItem :icon="ChartSquare" label="Status" value="Good" />
-					<InformationItem
-						:icon="Calendar"
-						label="Assigned date"
-						value="27 April, 2025" />
+					<InformationItem :icon="Calendar" label="Assigned date" value="27 April, 2025" />
 					<div class="grid grid-cols-2 items-start">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="DocumentText" />

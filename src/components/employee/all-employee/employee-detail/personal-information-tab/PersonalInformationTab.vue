@@ -17,7 +17,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { computed, ref } from 'vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
-import { genderCombobox } from '@/constants';
+import { genderCombobox, listMaritalStatus } from '@/constants';
 import FormSelect from '@/components/form/FormSelect.vue';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
@@ -30,6 +30,7 @@ import { useEditPersonalInformation } from '@/composables/employee/useUpdateEmpl
 import { useQueryClient } from '@tanstack/vue-query';
 import { employeeKey } from '@/composables/employee/key';
 import { useCustomToast } from '@/lib/customToast';
+import CallApiButton from '@/components/common/CallApiButton.vue';
 
 const route = useRoute();
 const queryClient = useQueryClient();
@@ -40,7 +41,7 @@ const isEdit = ref(false);
 const employeeId = computed(() => route.params.id as string);
 
 const { data: personalInformation } = useGetPersonalInformation(employeeId);
-const { mutate: editPersonalInformation } = useEditPersonalInformation();
+const { mutate: editPersonalInformation, isPending: editing } = useEditPersonalInformation();
 
 const formSchema = toTypedSchema(personalInformationSchema);
 
@@ -81,15 +82,11 @@ const handleCancel = () => {
 	<div class="flex flex-col gap-6 h-full">
 		<Title class="text-xl">Personal information</Title>
 		<ScrollArea class="text-slate-600 pr-3 h-[calc(100vh-400px)]">
-			<form
-				id="form"
-				v-if="isEdit"
-				class="grid grid-cols-2 gap-y-4 gap-x-6"
-				@submit="onSubmit">
+			<form id="form" v-if="isEdit" class="grid grid-cols-2 gap-y-4 gap-x-6" @submit="onSubmit">
 				<FormInput
 					:required="true"
 					:icon="UserRounded"
-					:model-value="personalInformation?.name"
+					:model-value="personalInformation?.name ?? undefined"
 					name="name"
 					label="Employee name"
 					class="w-full"
@@ -97,36 +94,36 @@ const handleCancel = () => {
 				<FormInput
 					:required="true"
 					:icon="UserId"
-					:model-value="personalInformation?.personal_information?.employee_number"
+					:model-value="personalInformation?.personal_information?.employee_number ?? undefined"
 					name="employee_number"
 					label="Employee ID"
 					class="w-full"
 					placeholder="Enter employee id" />
 				<FormSelectCalendar
 					:required="true"
-					:model-value="personalInformation?.date_of_birth"
+					:model-value="personalInformation?.date_of_birth ?? undefined"
 					name="date_of_birth"
 					label="Date of birth" />
 				<FormSelect
 					:required="true"
 					:icon="UserHandUp"
-					:model-value="
-						personalInformation?.gender.toLocaleLowerCase() === 'male' ? 0 : 1
-					"
+					:model-value="personalInformation?.gender.toUpperCase() ?? undefined"
 					name="gender"
 					label="Gender"
 					:list="genderCombobox"
 					placeholder="Select gender" />
 				<FormInput
 					:icon="Iphone"
-					:model-value="personalInformation?.personal_information.emergency_contact"
+					:model-value="personalInformation?.personal_information.emergency_contact ?? undefined"
 					name="emergency_contact"
 					label="Emergency contact"
 					class="w-full"
 					placeholder="Enter emergency contact" />
 				<FormInput
 					:icon="UserId"
-					:model-value="personalInformation?.personal_information.emergency_contact_name"
+					:model-value="
+						personalInformation?.personal_information.emergency_contact_name ?? undefined
+					"
 					name="emergency_contact_name"
 					label="Emergency contact name"
 					class="w-full"
@@ -134,7 +131,7 @@ const handleCancel = () => {
 				<FormInput
 					:required="true"
 					:icon="Letter"
-					:model-value="personalInformation?.personal_email"
+					:model-value="personalInformation?.personal_email ?? undefined"
 					name="personal_email"
 					label="Personal email"
 					class="w-full"
@@ -142,7 +139,7 @@ const handleCancel = () => {
 				<FormInput
 					:required="true"
 					:icon="Iphone"
-					:model-value="personalInformation?.phone_number"
+					:model-value="personalInformation?.phone_number ?? undefined"
 					name="phone_number"
 					label="Phone number"
 					class="w-full"
@@ -150,45 +147,45 @@ const handleCancel = () => {
 				<FormInput
 					:required="true"
 					:icon="Letter"
-					:model-value="personalInformation?.email"
+					:model-value="personalInformation?.email ?? undefined"
 					name="email"
 					label="Employee email"
 					class="w-full"
 					placeholder="Enter employee email" />
 				<FormSelect
 					:icon="Globus"
-					:model-value="personalInformation?.personal_information.nationality"
+					:model-value="personalInformation?.personal_information.nationality ?? undefined"
 					name="nationality"
 					label="Nationality"
 					:list="[]"
 					placeholder="Select nationality" />
 				<FormInput
 					:icon="Home"
-					:model-value="personalInformation?.personal_information.address"
+					:model-value="personalInformation?.personal_information.address ?? undefined"
 					name="address"
 					label="Address"
 					class="w-full"
 					placeholder="Enter address" />
 				<FormInput
 					:icon="Home"
-					:model-value="personalInformation?.personal_information.hometown"
+					:model-value="personalInformation?.personal_information.hometown ?? undefined"
 					name="hometown"
 					label="Hometown"
 					class="w-full"
 					placeholder="Enter hometown" />
 				<FormInput
 					:icon="Home"
-					:model-value="personalInformation?.personal_information.permanent_residence"
+					:model-value="personalInformation?.personal_information.permanent_residence ?? undefined"
 					name="permanent_residence"
 					label="Permanent residence"
 					class="w-full"
 					placeholder="Enter permanent residence" />
 				<FormSelect
 					:icon="UserHeart"
-					:model-value="personalInformation?.personal_information.marital_status"
+					:model-value="personalInformation?.personal_information.marital_status ?? undefined"
 					name="marital_status"
 					label="Marital status"
-					:list="[]"
+					:list="listMaritalStatus"
 					placeholder="Select marital status" />
 				<FormUpload label="Avatar" name="avatar" type="photo" />
 			</form>
@@ -204,13 +201,8 @@ const handleCancel = () => {
 				<InformationItem
 					:icon="CalendarIcon"
 					label="Date of birth"
-					:value="
-						formatISOStringToLocalDateTime(personalInformation?.date_of_birth).date
-					" />
-				<InformationItem
-					:icon="UserHandUp"
-					label="Gender"
-					:value="personalInformation?.gender" />
+					:value="formatISOStringToLocalDateTime(personalInformation?.date_of_birth).date" />
+				<InformationItem :icon="UserHandUp" label="Gender" :value="personalInformation?.gender" />
 				<InformationItem
 					:icon="Iphone"
 					label="Phone number"
@@ -240,18 +232,12 @@ const handleCancel = () => {
 						<IconFromSvg :icon="Home" />
 						Address
 					</div>
-					<span class="text-black">{{
-						personalInformation?.personal_information?.address
-					}}</span>
+					<span class="text-black">{{ personalInformation?.personal_information?.address }}</span>
 				</div>
 				<InformationItem
 					:icon="UserHeart"
 					label="Marital status"
-					:value="
-						formatStatus(
-							personalInformation?.personal_information?.marital_status || '',
-						)
-					" />
+					:value="formatStatus(personalInformation?.personal_information?.marital_status || '')" />
 			</div>
 		</ScrollArea>
 		<div class="flex justify-end gap-3">
@@ -268,12 +254,13 @@ const handleCancel = () => {
 				@click="handleCancel">
 				Cancel
 			</Button>
-			<Button
+			<CallApiButton
 				form="form"
 				v-if="isEdit"
+				:is-loading="editing"
 				class="h-auto py-3 px-6 hover:bg-blue-600 rounded-2xl">
 				Save
-			</Button>
+			</CallApiButton>
 		</div>
 	</div>
 </template>

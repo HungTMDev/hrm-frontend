@@ -49,9 +49,7 @@ const handleOpen = (isOpen: boolean) => {
 							<IconFromSvg :icon="ChartSquare" />
 							Status
 						</div>
-						<StatusTag
-							:status="data?.status || ''"
-							:class="STATUS_STYLE[data?.status || '']" />
+						<StatusTag :status="data?.status || ''" :class="STATUS_STYLE[data?.status || '']" />
 					</div>
 					<div class="grid grid-cols-2 items-center">
 						<div class="flex gap-2 items-center">
@@ -64,10 +62,7 @@ const handleOpen = (isOpen: boolean) => {
 						</div>
 					</div>
 
-					<InformationItem
-						:icon="CalendarAdd"
-						label="Request date"
-						value="April 10, 2025" />
+					<InformationItem :icon="CalendarAdd" label="Request date" value="April 10, 2025" />
 					<div class="grid grid-cols-2 items-center">
 						<div class="flex gap-2 items-center">
 							<IconFromSvg :icon="FileRight" />
@@ -92,13 +87,10 @@ const handleOpen = (isOpen: boolean) => {
 						:value="`${data?.totalDays} ${data && data?.totalDays > 1 ? 'Days' : 'Day'}`" />
 				</div>
 				<div class="mt-8">
-					<div class="flex items-center gap-2">
-						<IconFromSvg :icon="ClipboardList" /> Reason
-					</div>
+					<div class="flex items-center gap-2"><IconFromSvg :icon="ClipboardList" /> Reason</div>
 					<p class="text-black mt-2">
-						I am writing to request an early leave today due to a personal matter that
-						requires my immediate attention. I appreciate your understanding and
-						support.
+						I am writing to request an early leave today due to a personal matter that requires my
+						immediate attention. I appreciate your understanding and support.
 					</p>
 				</div>
 			</ScrollArea>

@@ -38,9 +38,7 @@ const emits = defineEmits<{
 					{{ applicant?.position?.name }}
 				</SheetDescription>
 				<div class="flex items-center gap-2 text-sm">
-					<IconFromSvg :icon="Iphone" /><span>{{
-						applicant?.candidate?.phone_number
-					}}</span>
+					<IconFromSvg :icon="Iphone" /><span>{{ applicant?.candidate?.phone_number }}</span>
 				</div>
 				<div class="flex items-center gap-2 text-sm">
 					<IconFromSvg :icon="Letter" /><span>{{ applicant?.candidate?.email }}</span>

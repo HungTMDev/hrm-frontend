@@ -2,7 +2,7 @@
 import { TimeFieldInput, TimeFieldRoot } from 'reka-ui';
 import ClockCircle from '@/assets/icons/Outline/ClockCircle.svg';
 import IconFromSvg from './IconFromSvg.vue';
-import { onMounted, ref, type HTMLAttributes } from 'vue';
+import { onMounted, ref, watch, type HTMLAttributes } from 'vue';
 import { cn } from '@/lib/utils';
 
 const props = defineProps<{
@@ -39,6 +39,26 @@ onMounted(() => {
 		);
 	}
 });
+watch(
+	() => props.modelValue,
+	(newVal) => {
+		if (newVal) {
+			const date = new Date(newVal);
+			const isDate = !isNaN(date.getTime());
+			const time = {
+				hour: isDate ? date.getHours() : newVal.split(':')[0],
+				millisecond: isDate ? date.getMilliseconds() : '00',
+				minute: isDate ? date.getMinutes() : newVal.split(':')[1],
+				second: isDate ? date.getSeconds() : newVal.split(':')[2],
+			} as any;
+			value.value = time;
+			emits(
+				'update:modelValue',
+				`${String(value.value.hour).padStart(2, '0')}:${String(value.value.minute).padStart(2, '0')}:${String(value.value.second).padStart(2, '0')}`,
+			);
+		}
+	},
+);
 </script>
 <template>
 	<TimeFieldRoot

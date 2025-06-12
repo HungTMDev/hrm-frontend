@@ -57,9 +57,7 @@ const navigateEnterOTP = () => {
 				:required="true"
 				placeholder="Enter your email address" />
 		</form>
-		<CallApiButton
-			form="form"
-			class="w-full rounded-xl bg-blue-500 hover:bg-blue-600 h-auto p-3">
+		<CallApiButton form="form" class="w-full rounded-xl bg-blue-500 hover:bg-blue-600 h-auto p-3">
 			Send OTP
 		</CallApiButton>
 	</div>

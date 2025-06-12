@@ -7,10 +7,13 @@ import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import { Check, Minus } from 'lucide-vue-next';
 import { formatStatus } from '@/lib/utils';
+import Eye from '@/assets/icons/Outline/Eye.svg';
+import StatusTag from '@/components/common/StatusTag.vue';
 
 export const employeeColumn = (
 	handleOpenSheet: (payload?: IEmployee) => void,
 	handleOpenAlert: (payload: IEmployee) => void,
+	handleView: (payload: IEmployee) => void,
 ): ColumnDef<IEmployee>[] => [
 	// {
 	// 	id: 'select',
@@ -38,7 +41,11 @@ export const employeeColumn = (
 	// 	enableSorting: false,
 	// 	enableHiding: false,
 	// },
-
+	{
+		accessorKey: 'employee_id',
+		header: 'ID',
+		cell: ({ row }) => row.original.employee_number,
+	},
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -50,19 +57,57 @@ export const employeeColumn = (
 		cell: ({ row }) => row.original.email,
 	},
 	{
+		accessorKey: 'phone_number',
+		header: 'Phone number',
+		cell: ({ row }) =>
+			h(
+				'p',
+				{ class: row.original.phone_number ? '' : 'italic text-gray-200' },
+				row.original.phone_number ?? 'No data',
+			),
+	},
+	{
 		accessorKey: 'position',
 		header: 'Position',
-		cell: ({ row }) => row.original.position.title,
+		cell: ({ row }) =>
+			h(
+				'p',
+				{ class: row.original.position.name ? '' : 'italic text-gray-200' },
+				formatStatus(row.original.position.name ?? 'No data'),
+			),
 	},
 	{
 		accessorKey: 'department',
 		header: 'Department',
-		cell: ({ row }) => row.original.department.name,
+		cell: ({ row }) =>
+			h(
+				'p',
+				{ class: row.original.department.name ? '' : 'italic text-gray-200' },
+				formatStatus(row.original.department.name ?? 'No data'),
+			),
 	},
 	{
 		accessorKey: 'status',
 		header: 'Status',
-		cell: ({ row }) => formatStatus(row.original.work_information.work_status),
+		cell: ({ row }) => {
+			if (!row.original.work_information.work_status) {
+				return h('p', { class: 'italic text-gray-200' }, 'No data');
+			}
+			return h(StatusTag, {
+				status: row.original.work_information.work_status,
+				class: 'text-blue-500 bg-blue-50 hover:bg-blue-50',
+			});
+		},
+	},
+	{
+		accessorKey: 'branch',
+		header: 'Branch',
+		cell: ({ row }) =>
+			h(
+				'p',
+				{ class: row.original.branch.name ? '' : 'italic text-gray-200' },
+				row.original.branch.name ?? 'No data',
+			),
 	},
 	{
 		accessorKey: 'action',
@@ -70,16 +115,25 @@ export const employeeColumn = (
 		cell: ({ row }) => {
 			const actions: IActionGroupType[] = [
 				{
-					label: 'Edit',
-					icon: Pen2,
-					style: '',
+					label: 'View',
+					icon: Eye,
+					style: 'text-slate-600',
 				},
+				// {
+				// 	label: 'Edit',
+				// 	icon: Pen2,
+				// 	style: '',
+				// },
 				{
 					label: 'Delete',
 					icon: Trash,
 					style: 'text-red-500 ',
 				},
 			];
+
+			const onView = () => {
+				handleView(row.original);
+			};
 
 			const onEdit = () => {
 				handleOpenSheet(row.original);
@@ -92,6 +146,7 @@ export const employeeColumn = (
 				actions,
 				onEdit,
 				onDelete,
+				onView,
 			});
 		},
 	},

@@ -75,9 +75,7 @@ const handleBackToView = () => {
 </script>
 <template>
 	<div class="h-full">
-		<Title v-if="!isView && !isEdit" class="text-xl">
-			Training and development information
-		</Title>
+		<Title v-if="!isView && !isEdit" class="text-xl"> Training and development information </Title>
 
 		<div v-if="isEdit" class="flex flex-col gap-2 h-full">
 			<Title class="text-xl">Management program</Title>
@@ -116,10 +114,7 @@ const handleBackToView = () => {
 			</div>
 
 			<div class="flex justify-end gap-2">
-				<Button
-					variant="outline"
-					class="py-3 px-6 h-auto rounded-2xl"
-					@click="handleBackToView">
+				<Button variant="outline" class="py-3 px-6 h-auto rounded-2xl" @click="handleBackToView">
 					Back
 				</Button>
 				<Button class="py-3 px-6 h-auto rounded-2xl hover:bg-blue-600"> Save </Button>
@@ -135,18 +130,12 @@ const handleBackToView = () => {
 			<Title class="text-xl">Management program</Title>
 			<div class="flex-1">
 				<div class="grid grid-cols-2 gap-6 mt-4 items-start">
-					<InformationItem
-						:icon="Graph"
-						label="Training program"
-						value="Management program" />
+					<InformationItem :icon="Graph" label="Training program" value="Management program" />
 					<InformationItem :icon="Calendar" label="Start date" value="May 22, 2025" />
 					<InformationItem :icon="Calendar" label="End date" value="May 24, 2025" />
 					<InformationItem :icon="Notebook" label="Training type" value="Online course" />
 					<InformationItem :icon="ChartSquare" label="Status" value="Incomplete" />
-					<InformationItem
-						:icon="HandStar"
-						label="Skills acquired"
-						value="Management skills" />
+					<InformationItem :icon="HandStar" label="Skills acquired" value="Management skills" />
 					<InformationItem :icon="Medal" label="Certification" value="-" />
 					<InformationItem :icon="ShieldUser" label="Mentorship / Coaching" value="-" />
 				</div>

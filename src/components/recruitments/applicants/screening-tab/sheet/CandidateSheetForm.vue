@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import CaseRound from '@/assets/icons/Outline/Case Round Minimalistic.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
+import CaseRound from '@/assets/icons/Outline/CaseRoundMinimalistic.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import UserHand from '@/assets/icons/Outline/User Hands.svg';
+import UserHand from '@/assets/icons/Outline/UserHands.svg';
+import CallApiButton from '@/components/common/CallApiButton.vue';
 import MultipleUploadField from '@/components/common/MultipleUploadField.vue';
-import UploadField from '@/components/common/UploadField.vue';
 import FormCombobox from '@/components/form/FormCombobox.vue';
 import FormCurrency from '@/components/form/FormCurrency.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';
 import FormInput from '@/components/form/FormInput.vue';
+import FormSelect from '@/components/form/FormSelect.vue';
 import FormSelectCalendar from '@/components/form/FormSelectCalendar.vue';
 import FormTextarea from '@/components/form/FormTextarea.vue';
+import FormUpload from '@/components/form/FormUpload.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { FormField } from '@/components/ui/form';
 import FormControl from '@/components/ui/form/FormControl.vue';
@@ -23,19 +25,21 @@ import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
-import { useListJob } from '@/composables/recruitment/job/useJob';
-import { genderCombobox } from '@/constants';
-import { useCustomToast } from '@/lib/customToast';
-import type { IApplicant, IApplicantFilter, IJob } from '@/types';
-import { toTypedSchema } from '@vee-validate/zod';
-import { useForm } from 'vee-validate';
-import { computed, ref } from 'vue';
-import { addApplicantSchema, type AddApplicantPayload } from '../schema';
+import { useUploadFile } from '@/composables/common';
 import {
 	useCreateApplicant,
 	useEditApplicant,
 } from '@/composables/recruitment/applicant/useUpdateApplicant';
+import { useListJob } from '@/composables/recruitment/job/useJob';
+import { genderCombobox } from '@/constants';
+import { useCustomToast } from '@/lib/customToast';
+import { createPathFromServerDomain, fetchFileFromUrl } from '@/lib/utils';
+import type { IApplicant, IApplicantFilter, IJob } from '@/types';
 import type { PaginationState } from '@tanstack/vue-table';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+import { computed, onMounted, ref } from 'vue';
+import { addApplicantSchema, type AddApplicantPayload } from '../schema';
 
 const props = defineProps<{
 	data?: IApplicant;
@@ -48,18 +52,20 @@ const emits = defineEmits<{
 	(e: 'close'): void;
 }>();
 
-const { showToast } = useCustomToast();
 const { data: jobs } = useListJob();
+const { showToast } = useCustomToast();
 
-const attaches = ref<File[]>();
-const avatar = ref<File>();
+const resumeFile = ref<File>();
+const attachesFile = ref<(File | undefined)[]>();
 
 const listJob = computed(() => {
 	return (
-		jobs.value?.map((item: IJob) => ({
-			label: item.title,
-			value: item.id,
-		})) || []
+		jobs.value
+			?.filter((item) => item.status === 'OPENING')
+			.map((item: IJob) => ({
+				label: item.title,
+				value: item.id,
+			})) || []
 	);
 });
 const pagination = computed(() => props.pagination);
@@ -71,28 +77,29 @@ const { handleSubmit, setFieldValue } = useForm({
 	validationSchema: formSchema,
 });
 
-const { mutate: createApplicant } = useCreateApplicant(pagination, filter);
-const { mutate: editApplicant } = useEditApplicant(pagination, filter);
+const { mutate: createApplicant, isPending: creating } = useCreateApplicant(pagination, filter);
+const { mutate: editApplicant, isPending: editing } = useEditApplicant(pagination, filter);
+const { mutateAsync: uploadFile } = useUploadFile();
 
-const onSubmit = handleSubmit((values) => {
-	// if (!attaches.value || attaches.value?.length === 0) {
-	// 	showToast({
-	// 		message: 'Please upload attaches',
-	// 		type: 'error',
-	// 	});
-	// 	return;
-	// }
-	// if (!avatar.value) {
-	// 	showToast({
-	// 		message: 'Please upload avatar',
-	// 		type: 'error',
-	// 	});
-	// 	return;
-	// }
+const onSubmit = handleSubmit(async (values) => {
+	if (!values.attaches || !values.resume) {
+		showToast({
+			message: 'Please upload resume and attaches',
+			type: 'warning',
+		});
+		return;
+	}
+
+	const resumeResponse = await uploadFile(values.resume as File);
+
+	const attachesResponse = await Promise.all(
+		values.attaches.map((item) => uploadFile(item as File)),
+	);
+
 	const payload: AddApplicantPayload = {
 		...values,
-		avatar: '',
-		attaches: [],
+		resume: resumeResponse,
+		attaches: attachesResponse,
 	};
 
 	if (props.data) {
@@ -116,10 +123,23 @@ const onSubmit = handleSubmit((values) => {
 		},
 	});
 });
-
-const setValue = (payload: { fieldName: any; data: any }) => {
-	setFieldValue(payload.fieldName, payload.data);
+const setAttaches = (payload: File[] | undefined) => {
+	setFieldValue('attaches', payload);
 };
+
+onMounted(async () => {
+	if (props.data?.resume) {
+		resumeFile.value = await fetchFileFromUrl(
+			props.data?.resume?.path
+				? createPathFromServerDomain(props.data?.resume?.path)
+				: props.data.resume.url,
+		);
+	}
+	attachesFile.value = await Promise.all(
+		props.data?.attaches?.map((item) => fetchFileFromUrl(createPathFromServerDomain(item.path))) ||
+			[],
+	);
+});
 </script>
 <template>
 	<ScrollArea class="flex-1 pr-3">
@@ -174,7 +194,6 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 					label="Date of birth"
 					:icon="Calendar"
 					class="w-full"
-					@update:value="setValue"
 					:model-value="data?.candidate.date_of_birth" />
 				<FormSelectCalendar
 					name="applied_at"
@@ -182,24 +201,21 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 					:required="true"
 					:icon="Calendar"
 					class="w-full"
-					@update:value="setValue"
 					:model-value="data?.applied_at" />
 				<FormCurrency
 					name="expected_salary"
 					label="Expected salary"
-					:required="true"
 					:icon="Dollar"
 					placeholder="Enter expected salary"
-					:model-value="data?.expected_salary" />
-				<FormCombobox
+					:model-value="data?.expected_salary ?? undefined" />
+				<FormSelect
 					name="gender"
 					label="Gender"
 					list-size="md"
-					:list="genderCombobox"
+					:model-value="data?.candidate.gender"
 					:icon="UserHand"
-					placeholder="Select gender"
-					@update:model-value="setValue" />
-
+					:list="genderCombobox"
+					placeholder="Select gender" />
 				<FormCombobox
 					name="referred_by"
 					label="Referred by"
@@ -207,32 +223,34 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 					list-size="md"
 					:icon="UserHand"
 					placeholder="Select referred" />
+				<FormUpload
+					:model-value="resumeFile"
+					name="resume"
+					label="Resume"
+					:required="true"
+					:data-response="data?.resume"
+					type="file" />
 				<MultipleUploadField
+					:model-value="attachesFile as File[]"
+					:list-response="data?.attaches"
 					name="attaches"
 					label="Attaches"
-					@update:value="(payload) => (attaches = payload)" />
-				<UploadField
-					name="avatar"
-					label="Avatar"
-					type="photo"
-					@update:value="(payload) => (avatar = payload)" />
+					@update:value="setAttaches" />
 			</div>
 
 			<div class="mt-4 flex flex-col gap-4">
 				<FormTextarea
 					name="cover_letter"
 					label="Cover letter"
-					:required="true"
-					:model-value="data?.cover_letter"
-					class="w-full rounded-2xl h-[300px]"
+					:model-value="data?.cover_letter ?? undefined"
+					class="w-full rounded-2xl h-[150px]"
 					placeholder="Enter cover letter" />
 
 				<FormTextarea
 					name="notes"
 					label="Notes"
-					:required="true"
-					:model-value="data?.notes"
-					class="w-full rounded-2xl h-[300px]"
+					:model-value="data?.notes ?? undefined"
+					class="w-full rounded-2xl h-[150px]"
 					placeholder="Write a note" />
 			</div>
 		</form>
@@ -245,8 +263,11 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 			class="rounded-2xl h-auto py-3.5 px-5">
 			Back
 		</Button>
-		<Button form="form" class="rounded-2xl h-auto py-3.5 px-5 bg-blue-500 hover:bg-blue-600">
+		<CallApiButton
+			:is-loading="creating || editing"
+			form="form"
+			class="rounded-2xl h-auto py-3.5 px-5 bg-blue-500 hover:bg-blue-600">
 			Submit
-		</Button>
+		</CallApiButton>
 	</SheetFooter>
 </template>

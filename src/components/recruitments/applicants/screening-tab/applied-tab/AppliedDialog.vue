@@ -90,9 +90,7 @@ const handleUpload = () => {
 				<UploadField
 					name="file"
 					label="File"
-					:allowed-types="[
-						'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-					]"
+					:allowed-types="['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']"
 					@update:value="handleSelectFile" />
 			</div>
 			<DialogFooter>

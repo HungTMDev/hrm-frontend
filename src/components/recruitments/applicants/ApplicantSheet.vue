@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import UserRoundedBold from '@/assets/icons/Bold/User Rounded.svg';
-import UserSpeakBold from '@/assets/icons/Bold/User Speak.svg';
+import UserRoundedBold from '@/assets/icons/Bold/UserRounded.svg';
+import UserSpeakBold from '@/assets/icons/Bold/UserSpeak.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
+import ChatLine from '@/assets/icons/Outline/ChatLine.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
 import File from '@/assets/icons/Outline/File.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
-import LetterOpen from '@/assets/icons/Outline/Letter Opened.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import LetterOpen from '@/assets/icons/Outline/LetterOpened.svg';
 import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
-import User from '@/assets/icons/Outline/User Hand Up.svg';
-import UserRounded from '@/assets/icons/Outline/User Rounded.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import SquareAcademic from '@/assets/icons/Outline/SquareAcademicCap.svg';
+import User from '@/assets/icons/Outline/UserHandUp.svg';
+import UserRounded from '@/assets/icons/Outline/UserRounded.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
+import CallApiButton from '@/components/common/CallApiButton.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
@@ -32,35 +31,59 @@ import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGetApplicantById } from '@/composables/recruitment/applicant/useApplicant';
 import { APPLICANT_STAGE_STYLE } from '@/constants';
+import { createPathFromServerDomain, formatISOStringToLocalDateTime } from '@/lib/utils';
+import type { IApplicantInterview } from '@/types';
 import { computed, ref, watch } from 'vue';
 import InterviewInformationTab from './sheet/interview-tab/InterviewInformationTab.vue';
 
 const props = defineProps<{
 	open: boolean;
-	data?: string;
+	applicantId?: string;
+	applicantInterview?: IApplicantInterview;
 	isView?: boolean;
+	isCreateSchedule?: boolean;
+	isCompleting?: boolean;
+	isHiring?: boolean;
 }>();
 
-const emit = defineEmits<{
+const emits = defineEmits<{
 	(e: 'update:open', payload: boolean): void;
 	(e: 'edit'): void;
+	(e: 'offer'): void;
+	(e: 'cancel', payload: { data: IApplicantInterview; action: 'cancel' | 'reject' }): void;
+	(e: 'reject', payload: { data: IApplicantInterview; action: 'cancel' | 'reject' }): void;
+	(e: 'complete'): void;
 }>();
 
 const activeTab = ref('general');
 const view = ref(true);
-const id = computed(() => props.data);
+const id = computed(() => props.applicantId);
 
 const { data: applicant } = useGetApplicantById(id);
 
 const handleOpen = (isOpen: boolean) => {
 	activeTab.value = 'general';
-	emit('update:open', isOpen);
+	emits('update:open', isOpen);
+};
+
+const handleCancel = () => {
+	emits('cancel', { data: props.applicantInterview as IApplicantInterview, action: 'cancel' });
+};
+const handleReject = () => {
+	emits('reject', { data: props.applicantInterview as IApplicantInterview, action: 'reject' });
 };
 
 watch(
 	() => props.isView,
 	(newVal) => {
 		view.value = newVal !== undefined ? newVal : true;
+	},
+);
+
+watch(
+	() => props.isCreateSchedule,
+	() => {
+		if (props.isCreateSchedule) activeTab.value = 'interview';
 	},
 );
 </script>
@@ -82,14 +105,10 @@ watch(
 							{{ applicant?.job.title }}
 						</SheetDescription>
 						<div class="flex items-center gap-2 text-sm">
-							<IconFromSvg :icon="Iphone" /><span>{{
-								applicant?.candidate.phone_number
-							}}</span>
+							<IconFromSvg :icon="Iphone" /><span>{{ applicant?.candidate.phone_number }}</span>
 						</div>
 						<div class="flex items-center gap-2 text-sm">
-							<IconFromSvg :icon="Letter" /><span>{{
-								applicant?.candidate.email
-							}}</span>
+							<IconFromSvg :icon="Letter" /><span>{{ applicant?.candidate.email }}</span>
 						</div>
 					</div>
 				</div>
@@ -117,19 +136,14 @@ watch(
 
 				<div>
 					<TabsContent value="general" class="h-full flex flex-col gap-2">
-						<ScrollArea class="h-[calc(100vh-380px)] pr-3">
-							<h3 class="text-base text-black font-semibold mb-4">
-								General information
-							</h3>
+						<ScrollArea class="h-[calc(100vh-400px)] pr-3">
+							<h3 class="text-base text-black font-semibold mb-4">General information</h3>
 							<div class="grid grid-cols-2 text-sm gap-4">
 								<InformationItem
 									:icon="Calendar"
 									label="Date of birth"
 									:value="applicant?.candidate.date_of_birth" />
-								<InformationItem
-									:icon="User"
-									label="Gender"
-									:value="applicant?.candidate.gender" />
+								<InformationItem :icon="User" label="Gender" :value="applicant?.candidate.gender" />
 								<InformationItem
 									:icon="SquareAcademic"
 									label="Education level"
@@ -137,9 +151,7 @@ watch(
 							</div>
 
 							<Separator class="my-4" />
-							<h3 class="text-base text-black font-semibold mb-4">
-								Application details
-							</h3>
+							<h3 class="text-base text-black font-semibold mb-4">Application details</h3>
 							<div class="grid grid-cols-2 text-sm gap-4">
 								<InformationItem :icon="Ranking" label="Work experience" />
 								<InformationItem :icon="Dollar" label="Expected salary" />
@@ -150,12 +162,19 @@ watch(
 									</div>
 									<div class="flex flex-col gap-1">
 										<a
-											v-if="applicant?.resume_url !== 'REFER'"
-											:href="applicant?.resume_url"
+											v-if="applicant?.resume"
+											:href="
+												applicant?.resume?.path
+													? createPathFromServerDomain(applicant?.resume?.path)
+													: applicant?.resume?.url
+											"
 											target="_blank"
-											class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
-											><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
-										>
+											class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs">
+											<IconFromSvg :icon="File" class="!w-4 !h-4" />
+											<p class="max-w-20 truncate">
+												{{ applicant?.resume?.original_filename ?? 'CV' }}
+											</p>
+										</a>
 									</div>
 								</div>
 							</div>
@@ -170,18 +189,20 @@ watch(
 								</div>
 							</div>
 
-							<div class="mt-4">
+							<div v-if="applicant?.notes && applicant?.notes !== ''" class="mt-4">
 								<div class="flex items-center gap-2 text-sm">
-									<IconFromSvg :icon="ChatLine" /><span>Notes</span>
+									<IconFromSvg :icon="ChatLine" /><span>Note</span>
 								</div>
 								<div class="mt-4 p-4 border rounded-2xl">
 									<div class="flex gap-2 items-center">
 										<UserAvatar class="w-[44px] h-[44px]" />
 										<div>
 											<p class="text-black text-base font-medium">
-												Le Thi Linh Ly
+												{{ applicant?.created_by?.name }}
 											</p>
-											<span class="text-xs">March 5, 2025</span>
+											<span class="text-xs">{{
+												formatISOStringToLocalDateTime(applicant?.created_at).date
+											}}</span>
 										</div>
 									</div>
 									<p class="text-sm mt-2 text-black">
@@ -190,7 +211,7 @@ watch(
 								</div>
 							</div>
 
-							<Separator class="my-8" />
+							<!-- <Separator class="my-8" />
 							<h3 class="text-base text-black font-semibold mb-4">Hiring stages</h3>
 							<div class="mt-4 text-sm">
 								<div class="relative z-10 pb-8">
@@ -253,10 +274,10 @@ watch(
 										</p>
 									</div>
 								</div>
-							</div>
+							</div> -->
 						</ScrollArea>
 						<SheetFooter>
-							<Button
+							<!-- <Button
 								variant="outline"
 								class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-blue-500 bg-blue-50 text-blue-500 hover:bg-blue-100 border-none">
 								<IconFromSvg :icon="Pen2" />Edit
@@ -264,16 +285,48 @@ watch(
 							<Button
 								class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100">
 								<IconFromSvg :icon="Trash" />Delete
-							</Button>
+							</Button> -->
 						</SheetFooter>
 					</TabsContent>
 					<TabsContent value="interview">
 						<InterviewInformationTab
 							:data="applicant"
+							:view="!isCreateSchedule"
+							@close-sheet="emits('update:open', false)"
 							:stage="applicant?.current_stage" />
 					</TabsContent>
 				</div>
 			</Tabs>
+			<SheetFooter v-if="applicantInterview">
+				<Button
+					v-if="applicantInterview?.status === 'SCHEDULED'"
+					class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100"
+					@click="handleCancel">
+					Cancel
+				</Button>
+				<CallApiButton
+					v-if="applicantInterview?.status === 'SCHEDULED'"
+					:is-loading="isCompleting"
+					class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-green-500 bg-green-50 text-green-500 hover:bg-green-100"
+					@click="emits('complete')">
+					Complete
+				</CallApiButton>
+				<Button
+					v-if="
+						applicantInterview?.status === 'CANCELED' || applicantInterview?.status === 'COMPLETED'
+					"
+					class="font-medium px-8 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100"
+					@click="handleReject">
+					Reject
+				</Button>
+				<CallApiButton
+					v-if="applicantInterview?.status === 'COMPLETED'"
+					:is-loading="isHiring"
+					class="font-medium px-8 py-[13px] h-auto rounded-2xl hover:text-green-500 bg-green-50 text-green-500 hover:bg-green-100"
+					@click="emits('offer')">
+					Offer
+				</CallApiButton>
+			</SheetFooter>
 		</SheetContentCustom>
 	</Sheet>
 </template>

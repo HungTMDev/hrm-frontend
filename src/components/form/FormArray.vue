@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AddCircle from '@/assets/icons/Outline/Add Circle.svg';
+import AddCircle from '@/assets/icons/Outline/AddCircle.svg';
 import type { FormFieldCommon } from '@/types';
 import { FieldArray } from 'vee-validate';
 import IconFromSvg from '../common/IconFromSvg.vue';
@@ -28,7 +28,7 @@ defineProps<Props>();
 								labelSize === 'sm' && 'text-base',
 								labelSize === 'md' && 'text-xl',
 								labelSize === 'lg' && 'text-[22px]',
-								labelSize === 'xs' && 'text-sm',
+								labelSize === 'xs' && 'text-sm leading-[14px]',
 							)
 						">
 						{{ label }} {{ index + 1 }}

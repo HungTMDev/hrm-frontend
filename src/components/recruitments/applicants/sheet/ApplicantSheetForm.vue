@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import CaseRound from '@/assets/icons/Outline/Case Round Minimalistic.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
+import CaseRound from '@/assets/icons/Outline/CaseRoundMinimalistic.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
 import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import Routing3 from '@/assets/icons/Outline/Routing 3.svg';
-import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
-import UserHand from '@/assets/icons/Outline/User Hands.svg';
+import Routing3 from '@/assets/icons/Outline/Routing3.svg';
+import SquareAcademic from '@/assets/icons/Outline/SquareAcademicCap.svg';
+import UserHand from '@/assets/icons/Outline/UserHands.svg';
 import UploadField from '@/components/common/UploadField.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormErrorCustom from '@/components/form/FormErrorCustom.vue';

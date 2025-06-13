@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AddCircle from '@/assets/icons/Outline/Add Circle.svg';
+import AddCircle from '@/assets/icons/Outline/AddCircle.svg';
 import { cn } from '@/lib/utils';
 import type { ComboboxType, FormFieldCommon } from '@/types';
 import { FieldArray } from 'vee-validate';
@@ -35,9 +35,12 @@ const handleSelect = (fieldName: string, data: string) => {
 			<FormField :name="`${name}[${index}]`">
 				<FormItem class="flex flex-col flex-1">
 					<div class="flex justify-between items-center h-[14px]">
-						<FormLabel :class="cn(index !== 0 && 'sr-only')">{{ label }}</FormLabel>
+						<FormLabel :class="cn(index !== 0 && 'sr-only ', 'text-slate-600')">{{
+							label
+						}}</FormLabel>
 						<div class="flex-1 text-end">
 							<Button
+								v-if="required && index !== 0"
 								@click="remove(index)"
 								variant="link"
 								class="p-0 h-auto text-red-500 text-xs"
@@ -47,6 +50,7 @@ const handleSelect = (fieldName: string, data: string) => {
 					</div>
 					<CommonSelect
 						:list="list"
+						:icon="icon"
 						:model-value="modelValue?.[index]"
 						@update:model-value="
 							(payload) => handleSelect(`${name}[${index}]`, payload as string)

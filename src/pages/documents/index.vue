@@ -78,10 +78,6 @@ const table = useVueTable({
 		pagination: { pageIndex: 0, pageSize: ROWS_PER_PAGE[0] },
 	},
 });
-
-onBeforeMount(() => {
-	console.log('Mounted');
-});
 </script>
 <template>
 	<ContentWrapper>
@@ -91,12 +87,8 @@ onBeforeMount(() => {
 				class="py-2 flex-1 rounded-full"
 				:icon="Magnifer"
 				placeholder="Search document..." />
-			<Button variant="outline" class="w-fit rounded-full">
-				<SlidersHorizontal /> Filter
-			</Button>
-			<Button class="bg-blue-500 hover:bg-blue-600 rounded-3xl">
-				<Upload />Upload document</Button
-			>
+			<Button variant="outline" class="w-fit rounded-full"> <SlidersHorizontal /> Filter </Button>
+			<Button class="bg-blue-500 hover:bg-blue-600 rounded-3xl"> <Upload />Upload document</Button>
 		</div>
 		<div class="flex flex-col gap-4">
 			<DataTable :table="table" />

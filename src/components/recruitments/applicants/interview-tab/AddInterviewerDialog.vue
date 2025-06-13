@@ -14,8 +14,8 @@ import { listInterviewRole } from '@/constants';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { addInterviewerSchema, type AddInterviewerPayload } from './schema';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
 
 defineProps<{
 	open: boolean;

@@ -5,8 +5,7 @@ import CommonCombobox from '../common/CommonCombobox.vue';
 import { FormField, FormItem, FormLabel } from '../ui/form';
 import FormErrorCustom from './FormErrorCustom.vue';
 
-interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
-	modelValue?: string | string[];
+interface Prop extends FormFieldCommon {
 	list: ComboboxType[];
 	multiple?: boolean;
 	listSize?: 'sm' | 'md' | 'lg';
@@ -20,9 +19,7 @@ const props = defineProps<Prop>();
 		<FormItem class="flex flex-col">
 			<FormLabel
 				>{{ label }}
-				<span v-if="!required" class="text-slate-400 font-light"
-					>(optional)</span
-				></FormLabel
+				<span v-if="!required" class="text-slate-400 font-light">(optional)</span></FormLabel
 			>
 			<CommonCombobox
 				:is-form="true"

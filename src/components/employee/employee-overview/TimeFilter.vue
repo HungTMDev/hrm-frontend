@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { computed, ref } from 'vue';
 import Separator from '@/components/ui/separator/Separator.vue';
@@ -118,7 +118,7 @@ const quarterList: ComboboxType[] = [
 
 const isOpen = ref(false);
 const label = ref('Year');
-const radioValue = ref<string>(radioList[0].value);
+const radioValue = ref<string>(radioList[0].value as string);
 
 const comboboxList = computed(() => {
 	if (radioValue.value === 'quarterly') {
@@ -166,16 +166,13 @@ const handleReset = () => {
 			</div>
 			<Separator class="my-4" />
 			<RadioGroup :model-value="radioValue" @update:model-value="handleRadio" class="gap-4">
-				<div
-					v-for="item in radioList"
-					:key="item.value"
-					class="flex items-center space-x-2">
+				<div v-for="item in radioList" :key="item.value" class="flex items-center space-x-2">
 					<RadioGroupItem
-						:id="item.value"
+						:id="item.value as string"
 						:value="item.value"
 						class="text-blue-500"
 						:class="item.value === radioValue ? 'border-blue-500' : ''" />
-					<Label :for="item.value" class="text-slate-600 font-normal">{{
+					<Label :for="item.value as string" class="text-slate-600 font-normal">{{
 						item.label
 					}}</Label>
 				</div>
@@ -189,14 +186,10 @@ const handleReset = () => {
 					class="w-full rounded-2xl py-3 h-auto mt-2" />
 			</div>
 			<div class="mt-4 flex justify-end gap-2">
-				<Button
-					class="h-auto px-6 py-3.5 rounded-2xl"
-					variant="outline"
-					@click="handleReset"
+				<Button class="h-auto px-6 py-3.5 rounded-2xl" variant="outline" @click="handleReset"
 					>Reset</Button
 				>
-				<Button
-					class="h-auto px-6 py-3.5 rounded-2xl bg-blue-500 text-white hover:bg-blue-600"
+				<Button class="h-auto px-6 py-3.5 rounded-2xl bg-blue-500 text-white hover:bg-blue-600"
 					>Apply</Button
 				>
 			</div>

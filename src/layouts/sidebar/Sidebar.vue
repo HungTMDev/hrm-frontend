@@ -24,7 +24,9 @@ const appStore = useAppStore();
 		<ScrollArea class="flex-1 p-4 pr-1">
 			<nav class="flex flex-col gap-4 duration-300 transition-all pr-3">
 				<template v-for="item in appStore.routeList" :key="item.id">
-					<SidebarItem :route="item" :is-small="!appStore.isSmallSidebar" />
+					<template v-if="!item.hidden">
+						<SidebarItem :route="item" :is-small="!appStore.isSmallSidebar" />
+					</template>
 				</template>
 			</nav>
 		</ScrollArea>

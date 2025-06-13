@@ -8,7 +8,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import MenuDots from '@/assets/icons/Bold/Menu Dots.svg';
+import MenuDots from '@/assets/icons/Bold/MenuDots.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import type { IActionGroupType } from '@/types';
 import type { HTMLAttributes } from 'vue';

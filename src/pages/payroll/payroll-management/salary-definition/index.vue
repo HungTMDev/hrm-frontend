@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Buildings from '@/assets/icons/Outline/Buildings.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import ChartSquare from '@/assets/icons/Outline/Chart Square.svg';
-import ClipboardAdd from '@/assets/icons/Outline/Clipboard Add.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
+import ChartSquare from '@/assets/icons/Outline/ChartSquare.svg';
+import ClipboardAdd from '@/assets/icons/Outline/ClipboardAdd.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
@@ -138,10 +138,7 @@ onBeforeMount(() => {
 	<ContentWrapper>
 		<Title>Salary Definition</Title>
 		<div class="flex gap-4 items-center my-4">
-			<InputWithIcon
-				:icon="Magnifer"
-				class="py-2 flex-1 rounded-full"
-				placeholder="Search " />
+			<InputWithIcon :icon="Magnifer" class="py-2 flex-1 rounded-full" placeholder="Search " />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="filter" />
 			<Button

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
-import DocumentAdd from '@/assets/icons/Outline/Document Add.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
+import DocumentAdd from '@/assets/icons/Outline/DocumentAdd.svg';
 import AlertPopup from '@/components/common/AlertPopup.vue';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';
@@ -224,7 +224,7 @@ const handleRejectRequest = (reason: string) => {
 };
 
 const handleFilter = (payload: FilterData[]) => {
-	const newFilter: Record<string, string[]> = {};
+	const newFilter: Record<string, (string | number)[]> = {};
 	payload.forEach((item) => {
 		newFilter[item.field] = item.filters.map((i) => i.value);
 	});
@@ -232,7 +232,7 @@ const handleFilter = (payload: FilterData[]) => {
 	pageIndex.value = 0;
 
 	filterData.value = payload;
-	filterPayload.value = newFilter;
+	filterPayload.value = newFilter as Record<string, string[]>;
 };
 
 const handleCancelRequest = () => {
@@ -274,7 +274,7 @@ const syncQueryToFilter = () => {
 		if (item) {
 			const selectedItems =
 				item.items?.filter((i) =>
-					(filterPayload.value[key] as string[]).includes(i.value),
+					(filterPayload.value[key] as string[]).includes(i.value as string),
 				) || [];
 
 			if (selectedItems.length) {
@@ -318,7 +318,7 @@ watch([branches, departments], ([newBranches, newDepartments]) => {
 			@row:click="(payload) => handleOpenSheet(payload, true)"
 			:is-loading="isLoading" />
 		<Separator class="mb-4" />
-		<DataTablePagination :table="table" :meta="meta" item-name="requests" />
+		<DataTablePagination :table="table" :meta="meta" item-name="request(s)" />
 	</ContentWrapper>
 	<RecruitmentRequestSheet
 		:data="dataSent"

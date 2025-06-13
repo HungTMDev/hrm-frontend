@@ -1,25 +1,28 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
-import Building from '@/assets/icons/Outline/Buildings.svg';
-import Case from '@/assets/icons/Outline/Case.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
+import Letter from '@/assets/icons/Outline/Letter.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
+import AlertPopup from '@/components/common/AlertPopup.vue';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
+import { Button } from '@/components/ui/button';
 import Separator from '@/components/ui/separator/Separator.vue';
-import { useBranch } from '@/composables/branch/useBranch';
-import { useDepartment } from '@/composables/department/useDepartment';
+import { useGetAccount } from '@/composables/auth/useAuth';
 import { useApplicant } from '@/composables/recruitment/applicant/useApplicant';
 import {
-	DEFAULT_PAGINATION,
-	listEmploymentType,
-	listJobStatus,
-	RECRUITMENT_STAGE,
-} from '@/constants';
-import { valueUpdater } from '@/lib/utils';
+	useRejectManyApplicant,
+	useSendEmail,
+	useUndoApplicant,
+} from '@/composables/recruitment/applicant/useUpdateApplicant';
+import { useListJob } from '@/composables/recruitment/job/useJob';
+import { DEFAULT_PAGINATION, RECRUITMENT_STAGE } from '@/constants';
+import { THANKS_EMAIL } from '@/constants/model';
+import { useCustomToast } from '@/lib/customToast';
+import { createNameByGender, valueUpdater } from '@/lib/utils';
 import type { FilterAccordion, FilterData, IApplicant, IApplicantFilter, IMeta } from '@/types';
 import {
 	getCoreRowModel,
@@ -27,17 +30,27 @@ import {
 	type PaginationState,
 	type VisibilityState,
 } from '@tanstack/vue-table';
-import { computed, ref } from 'vue';
+import Handlebars from 'handlebars';
+import { computed, ref, watch, type Ref } from 'vue';
+import ApplicantSheet from '../ApplicantSheet.vue';
 import { rejectedColumn } from './column';
+import { useQueryClient } from '@tanstack/vue-query';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
 
-const { data: branches } = useBranch();
-const { data: departments } = useDepartment();
+const queryClient = useQueryClient();
+const { data: jobs } = useListJob();
+const { showToast } = useCustomToast();
+const { data: user } = useGetAccount();
 
 let timeout: any;
 const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 const keywords = ref<string>();
 const filter = ref<Record<string, string[]>>();
+const isOpenSheet = ref(false);
+const isOpenAlert = ref(false);
+const renderedHtml = ref('');
+const dataSent = ref<IApplicant | IApplicant[]>();
 
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
 const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
@@ -52,39 +65,46 @@ const pagination = computed<PaginationState>(() => ({
 	pageSize: pageSize.value,
 }));
 
-const { data, isLoading } = useApplicant(pagination, filterPayload);
+const dataFill: Ref<{
+	location: string;
+	hr_name: string;
+	hr_email: string;
+	phone_number: string;
+}> = computed(() => ({
+	hr_name: createNameByGender(
+		user.value?.name?.split(' ').slice(-1)[0] || '',
+		(user.value?.gender as unknown as string) || '',
+	),
+	hr_email: user.value?.email || '',
+	phone_number: user.value?.phone_number || '',
+	location: 'Tầng 4 - Tòa Hanvico, 217- 219 Lê Duẩn, Thanh Khê, Đà Nẵng',
+}));
 
+const { data, isLoading } = useApplicant(pagination, filterPayload);
+const { mutate: rejectManyApplicant, isPending: rejecting } = useRejectManyApplicant();
+const { mutate: undoApplicant } = useUndoApplicant();
+
+const alertDetail = computed(() => {
+	if (Array.isArray(dataSent.value)) {
+		return {
+			title: 'Are you sure you want to reject all selected candidates?',
+			description: 'All',
+		};
+	}
+	return {
+		title: 'Are you sure you want to reject this candidate?',
+		description: dataSent.value?.candidate.full_name,
+	};
+});
 const applicants = computed<IApplicant[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
 const pageCount = computed(() => meta.value?.total_pages);
-
 const accordionItems = computed<FilterAccordion[]>(() => [
 	{
-		value: 'status',
-		title: 'Status',
-		items: listJobStatus,
-		icon: ChartSqare,
-		type: 'list',
-	},
-	{
-		value: 'branch',
-		title: 'Branch',
-		items: branches.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
+		value: 'job_id',
+		title: 'Job',
+		items: jobs.value?.map((item) => ({ label: item.title, value: item.id })) || [],
 		icon: Building3,
-		type: 'list',
-	},
-	{
-		value: 'department',
-		title: 'Department',
-		items: departments.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
-		icon: Building,
-		type: 'list',
-	},
-	{
-		value: 'employment_type',
-		title: 'Employment type',
-		items: listEmploymentType,
-		icon: Case,
 		type: 'list',
 	},
 ]);
@@ -99,12 +119,29 @@ const setPagination = ({ pageIndex, pageSize }: PaginationState): PaginationStat
 	return { pageIndex, pageSize };
 };
 
-const handleOpenAlert = () => {};
+const handleOpenSheet = (payload: IApplicant) => {
+	dataSent.value = payload;
+	isOpenSheet.value = true;
+};
 
-const handleOpenSheet = (payload?: IApplicant, view?: boolean) => {
+const handleOpenAlert = (payload?: IApplicant) => {
 	if (payload instanceof PointerEvent) {
-	} else {
-	}
+		dataSent.value = table.getSelectedRowModel().rows.map((item) => item.original);
+	} else dataSent.value = payload;
+
+	isOpenAlert.value = true;
+};
+
+const handleUndo = (id: string) => {
+	undoApplicant(id, {
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
+			showToast({
+				message: 'Success!',
+				type: 'success',
+			});
+		},
+	});
 };
 
 const table = useVueTable({
@@ -117,7 +154,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: rejectedColumn(),
+	columns: rejectedColumn(handleOpenSheet, handleOpenAlert, handleUndo),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -150,28 +187,102 @@ const handleSearch = (payload: string | number) => {
 };
 
 const handleFilter = (payload: FilterData[]) => {
-	const newFilter: Record<string, string[]> = {};
+	const newFilter: Record<string, (string | number)[]> = {};
 	payload.forEach((item) => {
-		newFilter[item.field] = item.filters.map((i) => i.value);
+		newFilter[item.field] = item.filters.map((i) => i.value as string);
 	});
-	filter.value = newFilter;
+
+	pageIndex.value = 0;
+	filter.value = newFilter as Record<string, string[]>;
 };
+
+const handleConfirm = async () => {
+	let ids: string[];
+
+	if (Array.isArray(dataSent.value)) {
+		ids = dataSent.value.map((item) => item.id);
+	} else {
+		ids = [dataSent.value?.id ?? ''];
+	}
+
+	rejectManyApplicant(ids, {
+		onSuccess: () => {
+			table.reset();
+			queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
+
+			isOpenSheet.value = false;
+			isOpenAlert.value = false;
+			dataSent.value = undefined;
+			showToast({
+				message: 'Rejected success!',
+				type: 'success',
+			});
+		},
+	});
+};
+
+const handleCloseSheet = (open: boolean) => {
+	dataSent.value = undefined;
+	isOpenSheet.value = open;
+};
+
+const handleCloseAlert = (open: boolean) => {
+	isOpenAlert.value = open;
+	dataSent.value = undefined;
+};
+
+watch(dataFill, () => {
+	const rawTemplate = THANKS_EMAIL;
+	const compiled = Handlebars.compile(rawTemplate);
+	renderedHtml.value = compiled(dataFill.value);
+});
 </script>
 <template>
 	<div>
-		<div class="flex gap-4 items-center my-4">
+		<div
+			v-if="table.getIsSomePageRowsSelected() || table.getIsAllPageRowsSelected()"
+			class="my-4 flex justify-between items-center">
+			<p class="text-slate-600">
+				{{ table.getFilteredSelectedRowModel().rows.length }} item(s) selected
+			</p>
+			<Button
+				variant="ghost"
+				class="bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-500 rounded-2xl"
+				@click="handleOpenAlert">
+				<IconFromSvg :icon="Letter" />
+				Send email
+			</Button>
+		</div>
+		<div v-else class="flex gap-4 items-center my-4">
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search candidate"
+				placeholder="Search..."
 				@update:model-value="handleSearch" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
 		</div>
 		<div class="flex flex-col gap-3">
-			<DataTable :table="table" :is-loading="isLoading" />
+			<DataTable
+				:table="table"
+				:is-loading="isLoading"
+				@row:click="(payload) => handleOpenSheet(payload)" />
 			<Separator />
 			<DataTablePagination :table="table" :meta="meta" />
 		</div>
 	</div>
+
+	<ApplicantSheet
+		:open="isOpenSheet"
+		:applicant-id="(dataSent as IApplicant)?.id"
+		@update:open="handleCloseSheet" />
+
+	<AlertPopup
+		:open="isOpenAlert"
+		:description="alertDetail.description"
+		:title="alertDetail.title"
+		:is-loading="rejecting"
+		button-label="Confirm"
+		@confirm="handleConfirm"
+		@update:open="handleCloseAlert" />
 </template>

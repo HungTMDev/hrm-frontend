@@ -6,10 +6,10 @@ import CalendarOnlyWeek from '@/components/dashboard/CalendarOnlyWeek.vue';
 import NotificationOverview from '@/components/dashboard/NotificationOverview.vue';
 import Overview from '@/components/dashboard/Overview.vue';
 import { onMounted, ref } from 'vue';
-import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
-import UserCheck from '@/assets/icons/Outline/User Check.svg';
+import UserGroup from '@/assets/icons/Outline/UsersGroupTwoRounded.svg';
+import UserCheck from '@/assets/icons/Outline/UserCheck.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
-import CalendarSearch from '@/assets/icons/Outline/Calendar Search.svg';
+import CalendarSearch from '@/assets/icons/Outline/CalendarSearch.svg';
 
 const isLoading = ref(true);
 

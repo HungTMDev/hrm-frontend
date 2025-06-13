@@ -129,7 +129,7 @@ Trân trọng!
         <tr>
             <td>
                 <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
-                    Ms. Quỳnh
+                    {{hr_name}}
                 </p>
                 <p style="font-size: 20px; font-weight: 600; margin: 4px 0px 4px 0px">
                     BỘ PHẬN NHÂN SỰ
@@ -147,14 +147,13 @@ Trân trọng!
             <td>
                 <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
                     <span><img src="" alt="" /></span>
-                    0917.240.819
+                    {{hr_phone}}
                 </p>
                 <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
-                    <span><img src="" alt="" /></span> admin@lutech.ltd
+                    <span><img src="" alt="" /></span> {{hr_email}}
                 </p>
                 <p style="font-size: 14px; font-weight: 400; margin: 4px 0px 4px 0px">
-                    <span><img src="" alt="" /></span> Tầng 4, Tòa nhà Hanvico, 217-219 Lê
-                    Duẩn, Thanh Khê, Đà Nẵng
+                    <span><img src="" alt="" /></span> {{location}}
                 </p>
             </td>
         </tr>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import SheetContentCustom from '@/components/custom/SheetContentCustom.vue';
 import { Sheet } from '@/components/ui/sheet';
-import type { IJob, IJobFilter } from '@/types';
+import type { IApplicant, IJob, IJobFilter } from '@/types';
 import { ref } from 'vue';
 import CandidateView from './sheet/CandidateView.vue';
 import JobSheetForm from './sheet/JobSheetForm.vue';
@@ -23,23 +23,26 @@ const emit = defineEmits<{
 }>();
 
 const isCandidateView = ref(false);
-const candidateData = ref<any>();
+const candidateData = ref<IApplicant>();
 
 const handleOpen = (isOpen: boolean) => {
 	isCandidateView.value = false;
 	emit('update:open', isOpen);
 };
 
-const handleViewCandidate = (payload: any) => {
-	isCandidateView.value = true;
+const handleViewCandidate = (payload: IApplicant) => {
 	candidateData.value = payload;
+	isCandidateView.value = true;
 };
 </script>
 
 <template>
 	<Sheet :open="open" @update:open="handleOpen">
 		<SheetContentCustom class="rounded-l-3xl sm:max-w-[880px] p-8 flex flex-col text-slate-600">
-			<CandidateView v-if="isCandidateView" />
+			<CandidateView
+				:applicant="candidateData"
+				v-if="isCandidateView"
+				@back="isCandidateView = false" />
 			<JobSheetView
 				v-else-if="isView"
 				:data="data"

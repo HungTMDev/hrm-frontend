@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import Tuning from '@/assets/icons/Outline/Tuning.svg';
-import UserPlus from '@/assets/icons/Outline/User Plus.svg';
+import UserPlus from '@/assets/icons/Outline/UserPlus.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import Title from '@/components/common/Title.vue';
@@ -9,53 +9,9 @@ import DataTable from '@/components/datatable/DataTable.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { valueUpdater } from '@/lib/utils';
 import router from '@/routers';
-import type { Applicant } from '@/types';
 import { getCoreRowModel, useVueTable, type VisibilityState } from '@tanstack/vue-table';
 import { onMounted, ref } from 'vue';
 import { applicantColumn } from './applicant.column';
-
-const data: Applicant[] = [
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-	{
-		name: 'John Doe',
-		email: 'john.doe@example.com',
-		phone: '+1 123 456 7890',
-		cv: 'https://www.google.com',
-		job: 'Mobile App Marketer',
-		stage: 'Applied',
-	},
-];
 
 const columnVisibility = ref<VisibilityState>({});
 

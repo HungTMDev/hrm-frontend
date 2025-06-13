@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
+import Right from '@/assets/icons/Outline/AltArrowRight.svg';
 import { cn } from '@/lib/utils';
 import type { StepType } from '@/types';
 import {

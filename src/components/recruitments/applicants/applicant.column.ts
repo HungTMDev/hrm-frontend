@@ -1,9 +1,10 @@
 import File from '@/assets/icons/Outline/File.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
+import { createPathFromServerDomain } from '@/lib/utils';
 import type { IActionGroupType, IApplicant } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
@@ -24,7 +25,8 @@ export const applicantColumn = (
 						(table.getIsSomePageRowsSelected() && 'indeterminate'),
 					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
 					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
+					class:
+						'data-[state=checked]:bg-blue-500 border-gray-300 overflow-hidden data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
 				},
 				() => (table.getIsSomePageRowsSelected() ? h(Minus) : h(Check)),
 			),
@@ -34,7 +36,8 @@ export const applicantColumn = (
 				modelValue: row.getIsSelected(),
 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 				ariaLabel: 'Select row',
-				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+				class:
+					'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
 			}),
 		enableSorting: false,
 		enableHiding: false,
@@ -70,7 +73,7 @@ export const applicantColumn = (
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url,
+					href: createPathFromServerDomain(row.original.resume.url),
 					target: '_blank',
 					class: 'text-blue-500 p-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center',
 				},

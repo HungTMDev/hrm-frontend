@@ -6,9 +6,9 @@ import {
 	SelectItem,
 	SelectValue,
 } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { cn, formatStatus } from '@/lib/utils';
 import type { ComboboxType } from '@/types';
-import { onMounted, ref, type HTMLAttributes } from 'vue';
+import { onMounted, onUpdated, ref, type HTMLAttributes } from 'vue';
 import SelectTriggerCustom from '../custom/SelectTriggerCustom.vue';
 import IconFromSvg from './IconFromSvg.vue';
 
@@ -29,15 +29,42 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', payload: string | number | string[] | number[]): void;
 }>();
 
-const selectedValue = ref<any>();
+const selectedValue = ref<string | number | string[] | number[]>();
 
 const handleSelect = (value: any) => {
-	selectedValue.value = value;
+	if (Array.isArray(value)) {
+		selectedValue.value = value.map((item) => formatStatus(item)).join(', ');
+		emit('update:modelValue', value);
+		return;
+	}
+	selectedValue.value = formatStatus(props.list.find((item) => item.value === value)?.label || '');
 	emit('update:modelValue', value);
 };
 
 onMounted(() => {
-	selectedValue.value = props.modelValue;
+	if (Array.isArray(props.modelValue)) {
+		selectedValue.value = props.modelValue
+			.map((item) => formatStatus(props.list.find((i) => i.value === item)?.label || ''))
+			.join(', ');
+		return;
+	}
+
+	selectedValue.value = formatStatus(
+		props.list.find((item) => item.value === props.modelValue)?.label || '',
+	);
+});
+
+onUpdated(() => {
+	if (Array.isArray(props.modelValue)) {
+		selectedValue.value = props.modelValue
+			.map((item) => formatStatus(props.list.find((i) => i.value === item)?.label || ''))
+			.join(', ');
+		return;
+	}
+
+	selectedValue.value = formatStatus(
+		props.list.find((item) => item.value === props.modelValue)?.label || '',
+	);
 });
 </script>
 
@@ -45,12 +72,12 @@ onMounted(() => {
 	<Select
 		:default-value="defaultValue"
 		:model-value="modelValue"
-		@update:model-value="handleSelect"
-		:multiple="multiple">
+		:multiple="multiple"
+		@update:model-value="handleSelect">
 		<SelectTriggerCustom
 			:class="
 				cn(
-					'w-full h-auto p-3 focus:ring-0 focus:ring-offset-0 rounded-2xl relative',
+					'w-full h-auto p-3 focus:ring-0 focus:ring-offset-0 rounded-2xl relative text-gray-200',
 					icon && 'pl-10',
 					props.class,
 				)
@@ -58,9 +85,12 @@ onMounted(() => {
 			<span class="absolute left-3 text-gray-200">
 				<IconFromSvg :icon="icon" />
 			</span>
-			<SelectValue
-				:placeholder="placeholder ?? 'Select...'"
-				:class="cn('text-gray-200', selectedValue && 'text-black')" />
+			<SelectValue as-child>
+				<span v-if="!selectedValue" class="text-gray-200">{{ placeholder ?? 'Select...' }}</span>
+				<span v-else :class="cn(selectedValue !== undefined && 'text-black')">
+					{{ selectedValue }}
+				</span>
+			</SelectValue>
 		</SelectTriggerCustom>
 		<SelectContent
 			align="center"
@@ -72,9 +102,7 @@ onMounted(() => {
 					list_size === 'lg' && 'w-[400px]',
 				)
 			">
-			<SelectGroup v-if="list.length === 0" class="text-sm text-center py-6"
-				>No data</SelectGroup
-			>
+			<SelectGroup v-if="list.length === 0" class="text-sm text-center py-6">No data</SelectGroup>
 			<SelectGroup v-else>
 				<SelectItem
 					v-for="(item, index) in list"

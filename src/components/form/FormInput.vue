@@ -11,6 +11,9 @@ import FormErrorCustom from './FormErrorCustom.vue';
 interface Prop extends FormFieldCommon {
 	type?: string;
 	icon?: any;
+	min?: number;
+	max?: number;
+	step?: number;
 }
 
 const props = defineProps<Prop>();
@@ -20,15 +23,16 @@ const props = defineProps<Prop>();
 		<FormItem class="flex flex-col">
 			<FormLabel class="text-slate-600"
 				>{{ label }}
-				<span v-if="!required" class="text-slate-400 font-light"
-					>(optional)</span
-				></FormLabel
+				<span v-if="!required" class="text-slate-400 font-light">(optional)</span></FormLabel
 			>
 			<FormControl>
 				<InputWithIcon
 					:type="type"
 					:placeholder="placeholder"
 					:icon="icon"
+					:min="min"
+					:max="max"
+					:step="step"
 					:class="
 						cn(
 							props.class,

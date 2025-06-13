@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
 import File from '@/assets/icons/Outline/File.svg';
-import LetterOpened from '@/assets/icons/Outline/Letter Opened.svg';
-import MapPoint from '@/assets/icons/Outline/Map Point Wave.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
+import LetterOpened from '@/assets/icons/Outline/LetterOpened.svg';
+import MapPoint from '@/assets/icons/Outline/MapPointWave.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
 import User from '@/assets/icons/Outline/User.svg';
 import CommonCombobox from '@/components/common/CommonCombobox.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
@@ -30,11 +30,13 @@ import Handlebars from 'handlebars';
 import { useForm } from 'vee-validate';
 import { computed, ref, watch } from 'vue';
 import { thanksEmailSchema } from '../schema';
+import { useCustomToast } from '@/lib/customToast';
 
 const emits = defineEmits<{
 	(e: 'cancel'): void;
 }>();
 
+const { showToast } = useCustomToast();
 const { data: candidatesData } = useCandidate();
 const { mutate } = useSendEmail();
 
@@ -71,11 +73,21 @@ const { handleSubmit, values, setFieldValue } = useForm({
 });
 
 const onSubmit = handleSubmit(() => {
-	mutate({
-		email: 'admin@lutech.ltd',
-		content: renderedHtml.value.replace(/"/g, "'"),
-		subject: dataFill.value.subject,
-	});
+	mutate(
+		{
+			email: 'admin@lutech.ltd',
+			content: renderedHtml.value.replace(/"/g, "'"),
+			subject: dataFill.value.subject,
+		},
+		{
+			onSuccess: () => {
+				showToast({
+					message: 'Sent email success!',
+					type: 'success',
+				});
+			},
+		},
+	);
 });
 
 watch(dataFill, () => {

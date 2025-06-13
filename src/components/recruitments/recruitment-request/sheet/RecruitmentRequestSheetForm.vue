@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import CheckList from '@/assets/icons/Outline/Checklist Minimalistic.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import CheckList from '@/assets/icons/Outline/ChecklistMinimalistic.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormCombobox from '@/components/form/FormCombobox.vue';
@@ -42,10 +42,12 @@ import {
 import { recruitmentRequestKey } from '@/composables/recruitment/recruitment-request/key';
 import { useQueryClient } from '@tanstack/vue-query';
 import { useCustomToast } from '@/lib/customToast';
+import { useListUser } from '@/composables/user/useUser';
 
 const { data: branches } = useBranch();
 const { data: departments } = useDepartment();
 const { data: positions } = usePosition();
+const { data: users } = useListUser();
 const queryClient = useQueryClient();
 const { showToast } = useCustomToast();
 
@@ -69,10 +71,10 @@ const listBranch = computed(
 			value: item.id,
 		})) || [],
 );
-const listPosition = computed(
+const listUser = computed(
 	() =>
-		positions.value?.map((item) => ({
-			label: item.title,
+		users.value?.map((item) => ({
+			label: item.name,
 			value: item.id,
 		})) || [],
 );
@@ -81,8 +83,27 @@ const pagination = computed(() => props.pagination);
 
 const formSchema = toTypedSchema(recruitmentRequestSchema);
 
-const { handleSubmit, values } = useForm({
+const { handleSubmit, values, meta } = useForm({
 	validationSchema: formSchema,
+});
+
+const listPosition = computed(() => {
+	if (values.department_id) {
+		return (
+			positions.value
+				?.filter((item) => item.department_id === values.department_id)
+				.map((item) => ({
+					label: item.name,
+					value: item.id,
+				})) || []
+		);
+	}
+	return (
+		positions.value?.map((item) => ({
+			label: item.name,
+			value: item.id,
+		})) || []
+	);
 });
 
 const { mutateAsync: createRecruitmentRequest, isPending: isLoadingCreate } =
@@ -114,7 +135,7 @@ const handleCreateDraft = async () => {
 	const payload: RecruitmentRequestPayload = {
 		branch_id: values.branch_id || '',
 		department_id: values.department_id || '',
-		job_title_id: values.job_title_id || '',
+		position_id: values.position_id || '',
 		level: values.level || '',
 		employment_type: values.employment_type || '',
 		title: values.title || '',
@@ -123,6 +144,7 @@ const handleCreateDraft = async () => {
 		expected_start_date: values.expected_start_date || '',
 		justification: values.justification || '',
 		quantity: values.quantity || 0,
+		recruiter_id: values.recruiter_id || '',
 	};
 
 	props.data
@@ -196,14 +218,14 @@ const handleCreateDraft = async () => {
 					:modelValue="data?.department.id"
 					placeholder="Select department" />
 				<FormCombobox
-					name="job_title_id"
+					name="position_id"
 					label="Role"
 					list-size="md"
 					:list="listPosition"
 					:required="true"
 					:icon="UserCircle"
 					:modelValue="data?.job_title_id"
-					placeholder="Select department" />
+					placeholder="Select position" />
 				<FormCombobox
 					name="level"
 					label="Level"
@@ -211,7 +233,7 @@ const handleCreateDraft = async () => {
 					:required="true"
 					:list="listJobLevel"
 					:icon="Chart2"
-					:modelValue="data?.level"
+					:modelValue="data?.level as string"
 					placeholder="Select level" />
 				<FormCombobox
 					name="employment_type"
@@ -246,20 +268,31 @@ const handleCreateDraft = async () => {
 					:required="true"
 					:icon="Calendar"
 					:modelValue="data?.expected_start_date" />
+				<FormCombobox
+					name="recruiter_id"
+					label="Recruiter"
+					list-size="md"
+					:list="listUser"
+					:is-search="true"
+					:required="true"
+					:icon="UserCircle"
+					:modelValue="data?.job_title_id"
+					placeholder="Select recruiter" />
 			</div>
 			<div class="mt-6 grid gap-4">
-				<FormTextarea
-					label="Job description"
-					name="description"
-					:model-value="data?.description"
-					placeholder="A detailed job description"
-					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
 				<FormMarkdown
 					name="skills_required"
 					label="Skill required"
 					:modelValue="data?.skills_required"
 					:required="true"
 					placeholder="Enter skill required" />
+				<FormTextarea
+					label="Job description"
+					name="description"
+					:required="true"
+					:model-value="data?.description"
+					placeholder="A detailed job description"
+					class="rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-200 h-72" />
 			</div>
 		</form>
 	</ScrollArea>
@@ -267,6 +300,7 @@ const handleCreateDraft = async () => {
 		<CallApiButton
 			variant="outline"
 			class="h-auto py-3.5 px-6 rounded-2xl"
+			:disabled="!meta.valid"
 			:is-loading="isLoadingCreate || isLoadingEdit"
 			@click="handleCreateDraft"
 			>Save as draft</CallApiButton

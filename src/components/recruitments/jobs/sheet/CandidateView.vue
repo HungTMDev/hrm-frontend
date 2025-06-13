@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
 import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
@@ -13,25 +13,35 @@ import File from '@/assets/icons/Outline/File.svg';
 import Separator from '@/components/ui/separator/Separator.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
 import { Button } from '@/components/ui/button';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinTrash.svg';
+import type { IApplicant } from '@/types';
+import { createPathFromServerDomain } from '@/lib/utils';
+
+defineProps<{
+	applicant?: IApplicant;
+}>();
+
+const emits = defineEmits<{
+	(e: 'back'): void;
+}>();
 </script>
 <template>
 	<SheetHeader>
 		<div class="flex gap-8 items-center">
 			<UserAvatar class="w-36 h-36" />
 			<div class="flex flex-col gap-2">
-				<SheetTitle class="text-[28px] font-semibold flex items-center gap-2"
-					>Le Minh Tam</SheetTitle
-				>
+				<SheetTitle class="text-[28px] font-semibold flex items-center gap-2">{{
+					applicant?.candidate?.full_name
+				}}</SheetTitle>
 				<SheetDescription class="text-base font-medium text-black">
-					Data Analyst
+					{{ applicant?.position?.name }}
 				</SheetDescription>
 				<div class="flex items-center gap-2 text-sm">
-					<IconFromSvg :icon="Iphone" /><span>0971234567</span>
+					<IconFromSvg :icon="Iphone" /><span>{{ applicant?.candidate?.phone_number }}</span>
 				</div>
 				<div class="flex items-center gap-2 text-sm">
-					<IconFromSvg :icon="Letter" /><span>tamle@gmail.com</span>
+					<IconFromSvg :icon="Letter" /><span>{{ applicant?.candidate?.email }}</span>
 				</div>
 			</div>
 		</div>
@@ -39,8 +49,8 @@ import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 
 	<ScrollArea class="flex-1 text-sm pr-3">
 		<div class="grid grid-cols-2 text-sm gap-6 mt-4">
-			<InformationItem :icon="Chart2" label="Level" value="Junior" />
-			<InformationItem :icon="Ranking" label="Work experience" value="More than 1 year" />
+			<InformationItem :icon="Chart2" label="Level" />
+			<InformationItem :icon="Ranking" label="Work experience" />
 			<div class="grid grid-cols-2 items-start">
 				<div class="flex gap-2 items-center py-1.5">
 					<IconFromSvg :icon="FileText" />
@@ -48,22 +58,16 @@ import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 				</div>
 				<div class="flex flex-col gap-2">
 					<a
-						href="#"
+						:href="createPathFromServerDomain(applicant?.resume.path ?? '')"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
-						><IconFromSvg :icon="File" class="!w-4 !h-4" />leminhtam_cv.pdf</a
-					>
-					<a
-						href="#"
-						target="_blank"
-						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
-						><IconFromSvg :icon="File" class="!w-4 !h-4" />leminhtam_cv.pdf</a
+						><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
 					>
 				</div>
 			</div>
 		</div>
 
-		<Separator class="my-8" />
+		<!-- <Separator class="my-8" />
 
 		<h4 class="text-base font-semibold text-black">Hiring stages</h4>
 
@@ -117,10 +121,13 @@ import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 					</p>
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</ScrollArea>
 	<SheetFooter>
-		<Button
+		<Button variant="outline" class="h-auto p-3 px-8 rounded-2xl" @click="emits('back')"
+			>Back</Button
+		>
+		<!-- <Button
 			variant="outline"
 			class="font-medium px-6 py-[13px] h-auto rounded-2xl hover:text-blue-500 bg-blue-50 text-blue-500 hover:bg-blue-100 border-none">
 			<IconFromSvg :icon="Pen2" />Edit
@@ -128,6 +135,6 @@ import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
 		<Button
 			class="font-medium px-6 py-[13px] h-auto rounded-2xl bg-red-50 text-red-500 hover:bg-red-100">
 			<IconFromSvg :icon="Trash" />Delete
-		</Button></SheetFooter
-	>
+		</Button> -->
+	</SheetFooter>
 </template>

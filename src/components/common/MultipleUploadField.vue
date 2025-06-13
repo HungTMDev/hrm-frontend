@@ -1,20 +1,22 @@
 <script lang="ts" setup>
-import CheckCircle from '@/assets/icons/Bold/Check Circle.svg';
+import CheckCircle from '@/assets/icons/Bold/CheckCircle.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
-import DangerCircle from '@/assets/icons/Outline/Danger Circle.svg';
-import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
+import DangerCircle from '@/assets/icons/Outline/DangerCircle.svg';
+import Upload from '@/assets/icons/Outline/UploadMinimalistic.svg';
 import { useCustomToast } from '@/lib/customToast';
-import type { FormFieldCommon } from '@/types';
-import { computed, onBeforeUnmount, ref } from 'vue';
+import type { FormFieldCommon, IUploadFileResponse } from '@/types';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import ProgressCircle from '../common/ProgressCircle.vue';
 import UserAvatar from '../common/UserAvatar.vue';
 import Button from '../ui/button/Button.vue';
 import Label from '../ui/label/Label.vue';
 
-interface Prop extends FormFieldCommon {
+interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
 	type?: 'file' | 'photo';
 	allowedTypes?: string[];
+	modelValue?: File[];
+	listResponse?: IUploadFileResponse[];
 }
 const props = defineProps<Prop>();
 
@@ -196,6 +198,21 @@ onBeforeUnmount(() => {
 		}
 	});
 });
+
+watch(
+	() => props.modelValue,
+	(newVal) => {
+		selectedFiles.value = newVal ?? [];
+		selectedFiles.value.forEach((file, index) => {
+			fileStates.value[index] = {
+				previewUrl: URL.createObjectURL(file),
+				uploadProgress: 100,
+			};
+		});
+
+		emits('update:value', newVal);
+	},
+);
 </script>
 <template>
 	<div class="flex flex-col gap-2">
@@ -233,8 +250,8 @@ onBeforeUnmount(() => {
 					<div class="flex flex-col">
 						<p class="text-sm text-black truncate">{{ file.name }}</p>
 						<p class="text-gray-200 text-xs">
-							{{ Math.floor(file.size / 1024) }} KB -
-							{{ fileStates[index].uploadProgress }}% completed
+							{{ Math.floor(file.size / 1024) }} KB - {{ fileStates[index].uploadProgress }}%
+							completed
 						</p>
 					</div>
 				</div>
@@ -254,7 +271,9 @@ onBeforeUnmount(() => {
 					v-if="type === 'photo' && fileStates[index].previewUrl"
 					:url="fileStates[index].previewUrl"
 					class="w-10 h-10 rounded-xl" />
-				<p class="text-sm text-black flex-1 truncate">{{ file.name }}</p>
+				<p class="text-sm text-black flex-1 truncate">
+					{{ listResponse?.[index].original_filename ?? file.name }}
+				</p>
 				<Button
 					type="button"
 					variant="ghost"

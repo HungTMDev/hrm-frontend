@@ -30,15 +30,10 @@ const modelValue = useVModel(props, 'modelValue', emits, {
 		<FormItem>
 			<FormLabel
 				>{{ label }}
-				<span v-if="!required" class="text-slate-400 font-light"
-					>(optional)</span
-				></FormLabel
+				<span v-if="!required" class="text-slate-400 font-light">(optional)</span></FormLabel
 			>
 			<FormControl>
-				<QuillEditor
-					v-bind="componentField"
-					:placeholder="placeholder || ''"
-					:type="type" />
+				<QuillEditor v-bind="componentField" :placeholder="placeholder || ''" :type="type" />
 			</FormControl>
 			<FormErrorCustom />
 		</FormItem>

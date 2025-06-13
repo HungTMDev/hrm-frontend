@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
 import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn, formatDateValueToLocalDate, formatISOStringToDateValue } from '@/lib/utils';
 import { type DateValue } from '@internationalized/date';
-import { onMounted, ref, type HTMLAttributes } from 'vue';
+import { onMounted, ref, watch, type HTMLAttributes } from 'vue';
 import CalendarCustom from '../custom/CalendarCustom.vue';
 import IconFromSvg from './IconFromSvg.vue';
 
@@ -35,6 +35,16 @@ onMounted(() => {
 		emits('update:modelValue', value.value ? value.value.toString() : undefined);
 	}
 });
+
+watch(
+	() => props.modelValue,
+	(newVal) => {
+		if (newVal) {
+			value.value = formatISOStringToDateValue(newVal as string);
+			emits('update:modelValue', value.value ? value.value.toString() : undefined);
+		}
+	},
+);
 </script>
 
 <template>
@@ -45,9 +55,7 @@ onMounted(() => {
 				:class="
 					cn(
 						' justify-start text-left font-normal w-full h-auto p-3 rounded-2xl',
-						!value
-							? 'text-gray-200 hover:text-gray-200'
-							: 'text-slate-600 hover:text-slate-600',
+						!value ? 'text-gray-200 hover:text-gray-200' : 'text-slate-600 hover:text-slate-600',
 						props.class,
 					)
 				">
@@ -56,9 +64,7 @@ onMounted(() => {
 					value ? formatDateValueToLocalDate(value) : 'dd/mm/yyyy'
 				}}</span>
 				<span>
-					<IconFromSvg
-						:icon="Down"
-						:class="[isOpen ? 'rotate-180' : 'rotate-0', 'duration-200']" />
+					<IconFromSvg :icon="Down" :class="[isOpen ? 'rotate-180' : 'rotate-0', 'duration-200']" />
 				</span>
 			</Button>
 		</PopoverTrigger>

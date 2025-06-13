@@ -21,7 +21,7 @@ const navigateForgotPassword = () => {
 	router.push('/auth/forgot-password');
 };
 
-const { mutateAsync, isPending } = useLogin(remember.value);
+const { mutate, isPending } = useLogin(remember.value);
 
 const formSchema = toTypedSchema(loginSchema);
 
@@ -29,8 +29,8 @@ const { handleSubmit } = useForm({
 	validationSchema: formSchema,
 });
 
-const onSubmit = handleSubmit(async (values) => {
-	await mutateAsync(values);
+const onSubmit = handleSubmit((values) => {
+	mutate(values);
 });
 </script>
 <template>

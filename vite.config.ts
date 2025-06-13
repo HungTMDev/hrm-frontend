@@ -24,7 +24,7 @@ export default defineConfig(({ mode }): UserConfig => {
 			port: +port,
 		},
 		preview: {
-			port: +port,
+			port: +port + 1,
 		},
 	};
 });

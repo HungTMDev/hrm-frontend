@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import Down from '@/assets/icons/Bold/Alt Arrow Down.svg';
-import UserCross from '@/assets/icons/Outline/User Cross Rounded.svg';
-import UserPlus from '@/assets/icons/Outline/User Plus Rounded.svg';
-import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
+import Down from '@/assets/icons/Bold/AltArrowDown.svg';
+import UserCross from '@/assets/icons/Outline/UserCrossRounded.svg';
+import UserPlus from '@/assets/icons/Outline/UserPlusRounded.svg';
+import UserGroup from '@/assets/icons/Outline/UsersGroupTwoRounded.svg';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Title from '@/components/common/Title.vue';
 
-import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
+import SquareAcademic from '@/assets/icons/Outline/SquareAcademicCap.svg';
 import DoughnutChart from '@/components/common/chart/DoughnutChart.vue';
 import GaugeChart from '@/components/common/chart/GaugeChart.vue';
 import StackedBarChart from '@/components/common/chart/StackedBarChart.vue';
@@ -365,10 +365,7 @@ const barChartOptions = ref({
 					<h3 class="flex-1 text-xl font-semibold">Resigned Employee</h3>
 				</div>
 				<div class="relative w-full">
-					<GaugeChart
-						:chart-data="gaugeChartData"
-						:chart-options="chartOptions"
-						:value="3.2" />
+					<GaugeChart :chart-data="gaugeChartData" :chart-options="chartOptions" :value="3.2" />
 
 					<span
 						class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[32px] font-semibold flex items-center gap-2 justify-center">
@@ -384,9 +381,7 @@ const barChartOptions = ref({
 					<h3 class="flex-1 text-xl font-semibold">New Employee - Resigned Employee</h3>
 				</div>
 				<div class="h-[300px]">
-					<StackedBarChart
-						:chart-data="stackChartData"
-						:chart-options="barChartOptions" />
+					<StackedBarChart :chart-data="stackChartData" :chart-options="barChartOptions" />
 				</div>
 			</div>
 		</div>

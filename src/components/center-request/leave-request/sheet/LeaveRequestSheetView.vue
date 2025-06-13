@@ -3,23 +3,23 @@ import StatusTag from '@/components/common/StatusTag.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { REQUEST_STATUS_STYLE } from '@/constants';
-import UserId from '@/assets/icons/Outline/User Id.svg';
-import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
-import CloseCircle from '@/assets/icons/Outline/Close Circle.svg';
-import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
-import UserRounded from '@/assets/icons/Outline/User Rounded.svg';
+import UserId from '@/assets/icons/Outline/UserId.svg';
+import CheckCircle from '@/assets/icons/Outline/CheckCircle.svg';
+import CloseCircle from '@/assets/icons/Outline/CloseCircle.svg';
+import UserGroup from '@/assets/icons/Outline/UsersGroupTwoRounded.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
+import UserRounded from '@/assets/icons/Outline/UserRounded.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
 import Buildings from '@/assets/icons/Outline/Buildings.svg';
-import Clipboard from '@/assets/icons/Outline/Clipboard List.svg';
-import SortByTime from '@/assets/icons/Outline/Sort By Time.svg';
-import StopWatch from '@/assets/icons/Outline/Stopwatch Play.svg';
+import Clipboard from '@/assets/icons/Outline/ClipboardList.svg';
+import SortByTime from '@/assets/icons/Outline/SortByTime.svg';
+import StopWatch from '@/assets/icons/Outline/StopwatchPlay.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
+import ClockCircle from '@/assets/icons/Outline/ClockCircle.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
 import InformationItem from '@/components/common/InformationItem.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import Button from '@/components/ui/button/Button.vue';
@@ -48,9 +48,7 @@ const handleEdit = () => {
 		<SheetHeader class="flex-row items-center gap-4">
 			<SheetTitle class="text-black font-semibold text-[28px]">Leave request</SheetTitle>
 			<SheetDescription>
-				<StatusTag
-					:status="data?.status || ''"
-					:class="REQUEST_STATUS_STYLE[data?.status || '']" />
+				<StatusTag :status="data?.status || ''" :class="REQUEST_STATUS_STYLE[data?.status || '']" />
 			</SheetDescription>
 		</SheetHeader>
 
@@ -71,11 +69,10 @@ const handleEdit = () => {
 				Leave reason
 			</div>
 			<p class="text-black mt-2">
-				I am writing to formally request a leave of absence for a duration of two days, as I
-				am currently experiencing some health issues that require my attention. I appreciate
-				your understanding and support during this time, and I assure you that I will do my
-				best to catch up on any missed work upon my return. Thank you for considering my
-				request.
+				I am writing to formally request a leave of absence for a duration of two days, as I am
+				currently experiencing some health issues that require my attention. I appreciate your
+				understanding and support during this time, and I assure you that I will do my best to catch
+				up on any missed work upon my return. Thank you for considering my request.
 			</p>
 		</div>
 
@@ -105,9 +102,7 @@ const handleEdit = () => {
 			@click="emits('recall')">
 			Recall
 		</Button>
-		<Button
-			v-if="data?.status === 'DRAFT'"
-			class="h-auto rounded-2xl p-3 px-8 hover:bg-blue-500"
+		<Button v-if="data?.status === 'DRAFT'" class="h-auto rounded-2xl p-3 px-8 hover:bg-blue-500"
 			>Send</Button
 		>
 	</div>

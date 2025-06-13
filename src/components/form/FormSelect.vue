@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 import { FormField, FormItem, FormLabel } from '@/components/ui/form';
 import type { ComboboxType, FormFieldCommon } from '@/types';
-import { onMounted, onUpdated, ref } from 'vue';
+import { onMounted, onUpdated, ref, watch } from 'vue';
 import CommonSelect from '../common/CommonSelect.vue';
 import FormErrorCustom from './FormErrorCustom.vue';
 
@@ -11,7 +11,7 @@ interface Prop extends Omit<FormFieldCommon, 'modelValue'> {
 	list: ComboboxType[];
 	multiple?: boolean;
 	isSearch?: boolean;
-	modelValue?: string | string[];
+	modelValue?: string | number | string[] | number[];
 	list_size?: 'sm' | 'md' | 'lg';
 }
 

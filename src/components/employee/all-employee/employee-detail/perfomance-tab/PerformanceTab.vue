@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import CalendarIcon from '@/assets/icons/Outline/Calendar.svg';
 import Chart from '@/assets/icons/Outline/Chart.svg';
-import ChatRound from '@/assets/icons/Outline/Chat Round Line.svg';
-import DocumentText from '@/assets/icons/Outline/Document Text.svg';
+import ChatRound from '@/assets/icons/Outline/ChatRoundLine.svg';
+import DocumentText from '@/assets/icons/Outline/DocumentText.svg';
 import File from '@/assets/icons/Outline/File.svg';
-import ListCheck from '@/assets/icons/Outline/List Check Minimalistic.svg';
-import Medal from '@/assets/icons/Outline/Medal Ribbon Star.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import ListCheck from '@/assets/icons/Outline/ListCheckMinimalistic.svg';
+import Medal from '@/assets/icons/Outline/MedalRibbonStar.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import Title from '@/components/common/Title.vue';
@@ -41,10 +41,7 @@ const handleEdit = () => {
 						label="Performance rating"
 						placeholder="Select performance rating"
 						:list="[]" />
-					<FormSelectCalendar
-						:required="true"
-						name="evaluation_date"
-						label="Evaluation date" />
+					<FormSelectCalendar :required="true" name="evaluation_date" label="Evaluation date" />
 					<FormInput
 						:icon="ListCheck"
 						:required="true"
@@ -52,11 +49,7 @@ const handleEdit = () => {
 						label="KPIs met"
 						class="w-full"
 						placeholder="Enter KPIs met" />
-					<FormUpload
-						:required="true"
-						name="feedback"
-						label="Feedback manager"
-						type="file" />
+					<FormUpload :required="true" name="feedback" label="Feedback manager" type="file" />
 					<FormInput
 						:icon="DocumentText"
 						:required="true"
@@ -76,10 +69,7 @@ const handleEdit = () => {
 
 			<div v-else class="grid grid-cols-2 gap-x-6 gap-y-4 text-slate-600 mt-4">
 				<InformationItem :icon="Chart" label="Performance rating" value="Excellent" />
-				<InformationItem
-					:icon="CalendarIcon"
-					label="Evaluation date"
-					value="24 April, 2025" />
+				<InformationItem :icon="CalendarIcon" label="Evaluation date" value="24 April, 2025" />
 				<InformationItem :icon="ListCheck" label="KPIs met" value="-" />
 				<div class="grid grid-cols-2 items-center">
 					<div class="flex gap-2 items-center">

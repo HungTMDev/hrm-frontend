@@ -1,52 +1,49 @@
+import File from '@/assets/icons/Outline/File.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 import ActionGroupCommon from '@/components/common/ActionGroupCommon.vue';
-import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
+import { createPathFromServerDomain, formatISOStringToLocalDateTime } from '@/lib/utils';
 import type { IActionGroupType, ICandidate } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import File from '@/assets/icons/Outline/File.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
-import { formatISOStringToLocalDateTime } from '@/lib/utils';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
 
 export const talentPoolColumns = (
 	handleOpenSheet: (payload?: ICandidate, view?: boolean) => void,
 	handleOpenAlert: (payload?: ICandidate) => void,
 ): ColumnDef<ICandidate>[] => [
-	{
-		id: 'select',
-		header: ({ table }) =>
-			h(
-				Checkbox,
-				{
-					modelValue:
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate'),
-					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
-					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white border-gray-300',
-				},
-				() =>
-					table.getIsSomePageRowsSelected()
-						? h(Minus, { size: 14 })
-						: h(Check, { size: 14 }),
-			),
-		cell: ({ row }) =>
-			h(
-				Checkbox,
-				{
-					onClick: (event: any) => event.stopPropagation(),
-					modelValue: row.getIsSelected(),
-					'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-					ariaLabel: 'Select row',
-					class: ' data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
-				},
-				() => h(Check, { size: 14 }),
-			),
-		enableSorting: false,
-		enableHiding: false,
-	},
+	// {
+	// 	id: 'select',
+	// 	header: ({ table }) =>
+	// 		h(
+	// 			Checkbox,
+	// 			{
+	// 				modelValue:
+	// 					table.getIsAllPageRowsSelected() ||
+	// 					(table.getIsSomePageRowsSelected() && 'indeterminate'),
+	// 				'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
+	// 				ariaLabel: 'Select all',
+	// 				class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white border-gray-300',
+	// 			},
+	// 			() =>
+	// 				table.getIsSomePageRowsSelected()
+	// 					? h(Minus, { size: 14 })
+	// 					: h(Check, { size: 14 }),
+	// 		),
+	// 	cell: ({ row }) =>
+	// 		h(
+	// 			Checkbox,
+	// 			{
+	// 				onClick: (event: any) => event.stopPropagation(),
+	// 				modelValue: row.getIsSelected(),
+	// 				'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+	// 				ariaLabel: 'Select row',
+	// 				class: ' data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+	// 			},
+	// 			() => h(Check, { size: 14 }),
+	// 		),
+	// 	enableSorting: false,
+	// 	enableHiding: false,
+	// },
 	{
 		accessorKey: 'name',
 		header: 'Name',
@@ -66,14 +63,15 @@ export const talentPoolColumns = (
 		accessorKey: 'cv',
 		header: () => h('div', { class: 'w-[100px]' }, 'CV'),
 		cell: ({ row }) => {
-			if (row.original.resume_url === 'REFER') return '';
+			if (!row.original) return '';
 			return h(
 				'a',
 				{
 					onClick: (event: any) => event.stopPropagation(),
-					href: row.original.resume_url,
+					href: createPathFromServerDomain(row.original.resume.path ?? ''),
 					target: '_blank',
-					class: 'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
+					class:
+						'text-blue-500 px-3 py-1 bg-blue-50 rounded-xl flex gap-2 items-center justify-center w-fit',
 				},
 				[h(IconFromSvg, { icon: File }), 'CV'],
 			);
@@ -92,12 +90,12 @@ export const talentPoolColumns = (
 	// },
 	{
 		accessorKey: 'created_by',
-		header: 'Create by',
-		cell: ({ row }) => row.original.created_by_user.name,
+		header: 'Created by',
+		cell: ({ row }) => row.original.created_by?.name,
 	},
 	{
 		accessorKey: 'updated_at',
-		header: 'Last update',
+		header: 'Last updated',
 		cell: ({ row }) => formatISOStringToLocalDateTime(row.original.updated_at).date,
 	},
 	{
@@ -105,10 +103,10 @@ export const talentPoolColumns = (
 		header: 'Action',
 		cell: ({ row }) => {
 			const actions: IActionGroupType[] = [
-				{
-					label: 'Edit',
-					icon: Pen2,
-				},
+				// {
+				// 	label: 'Edit',
+				// 	icon: Pen2,
+				// },
 				{
 					label: 'Delete',
 					icon: Trash,

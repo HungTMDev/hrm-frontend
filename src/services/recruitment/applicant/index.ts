@@ -1,3 +1,4 @@
+import type { CreateEmployeeFromApplicantPayload } from '@/components/recruitments/applicants/hired-tab/schema';
 import type { InterviewerFeedbackPayload } from '@/components/recruitments/applicants/interview-tab/schema';
 import type { AddApplicantPayload } from '@/components/recruitments/applicants/screening-tab/schema';
 import {
@@ -7,6 +8,7 @@ import {
 	NOTIFICATION_API,
 } from '@/constants/api/recruitment/applicant.api';
 import { JOB_API } from '@/constants/api/recruitment/job.api';
+import { USER_API } from '@/constants/api/user.api';
 import { createApiEndpoint } from '@/lib/utils';
 import axiosClient from '@/plugins';
 import type {
@@ -22,16 +24,14 @@ import type {
 } from '@/types';
 
 export const getApplicant = async (filter?: IFilterRequest<Partial<IApplicantFilter>>) => {
-	const { data, status } = await axiosClient.get<IApiResponseV1<IApplicant[]>>(
-		APPLICANT_API.BASE,
-		{
-			params: {
-				page: filter?.page,
-				limit: filter?.limit,
-				...filter?.filter,
-			},
+	const { data, status } = await axiosClient.get<IApiResponseV1<IApplicant[]>>(APPLICANT_API.BASE, {
+		params: {
+			page: filter?.page,
+			limit: filter?.limit,
+			order: 'ASC',
+			...filter?.filter,
 		},
-	);
+	});
 	if (status >= 400) {
 		throw new Error();
 	}
@@ -39,10 +39,7 @@ export const getApplicant = async (filter?: IFilterRequest<Partial<IApplicantFil
 };
 
 export const createApplicant = async (payload: AddApplicantPayload) => {
-	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(
-		APPLICANT_API.BASE,
-		payload,
-	);
+	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(APPLICANT_API.BASE, payload);
 	if (status >= 400) {
 		throw new Error();
 	}
@@ -79,11 +76,14 @@ export const getApplicantById = async (id: string) => {
 };
 
 export const sendEmail = async (email: string, content: string, subject: string) => {
-	const { data, status } = await axiosClient.post(NOTIFICATION_API.SEND_EMAIL, {
-		email,
-		content,
-		subject,
-	});
+	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(
+		NOTIFICATION_API.SEND_EMAIL,
+		{
+			email,
+			content,
+			subject,
+		},
+	);
 	if (status >= 400) {
 		throw new Error();
 	}
@@ -91,12 +91,9 @@ export const sendEmail = async (email: string, content: string, subject: string)
 };
 
 export const getCandidate = async (payload: { page: number; limit: number }) => {
-	const { data, status } = await axiosClient.get<IApiResponseV1<ICandidate[]>>(
-		CANDIDATE_API.BASE,
-		{
-			params: payload,
-		},
-	);
+	const { data, status } = await axiosClient.get<IApiResponseV1<ICandidate[]>>(CANDIDATE_API.BASE, {
+		params: payload,
+	});
 	if (status >= 400) {
 		throw new Error();
 	}
@@ -123,10 +120,7 @@ export const updateStage = async (id: string, payload: { to_stage: string; outco
 };
 
 export const createInterview = async (payload: InterviewPayload) => {
-	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(
-		INTERVIEW_API.BASE,
-		payload,
-	);
+	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(INTERVIEW_API.BASE, payload);
 	if (status >= 400) {
 		throw new Error();
 	}
@@ -150,6 +144,7 @@ export const getApplicantInterview = async (
 		params: {
 			page: filter?.page,
 			limit: filter?.limit,
+			order: 'ASC',
 			...filter?.filter,
 		},
 	});
@@ -240,4 +235,47 @@ export const getFeedback = async (interviewId: string) => {
 		throw new Error();
 	}
 	return data.data;
+};
+
+export const createEmployeeFromApplicant = async (
+	id: string,
+	payload: CreateEmployeeFromApplicantPayload,
+) => {
+	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(
+		createApiEndpoint(APPLICANT_API.CONVERT_TO_EMPLOYEE, id),
+		payload,
+	);
+	if (status >= 400) {
+		throw new Error();
+	}
+	return data.data;
+};
+
+export const rejectManyApplicant = async (ids: string[]) => {
+	const { data, status } = await axiosClient.post<IApiResponseV1<any>>(APPLICANT_API.REJECT_MANY, {
+		application_ids: ids,
+	});
+	if (status >= 400) {
+		throw new Error();
+	}
+	return data.data;
+};
+
+export const updateInterview = async (id: string, payload: InterviewPayload) => {
+	const { data, status } = await axiosClient.put<IApiResponseV1<any>>(
+		createApiEndpoint(INTERVIEW_API.BY_ID, id),
+		payload,
+	);
+	if (status >= 400) {
+		throw new Error();
+	}
+	return data.data;
+};
+
+export const undoApplicant = async (id: string) => {
+	const { data, status } = await axiosClient.patch(createApiEndpoint(APPLICANT_API.UNDO, id));
+	if (status >= 400) {
+		throw new Error();
+	}
+	return data;
 };

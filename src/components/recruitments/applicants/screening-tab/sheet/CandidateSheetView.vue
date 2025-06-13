@@ -1,72 +1,50 @@
 <script lang="ts" setup>
+import Calendar from '@/assets/icons/Outline/Calendar.svg';
+import ChatLine from '@/assets/icons/Outline/ChatLine.svg';
+import Dollar from '@/assets/icons/Outline/DollarMinimalistic.svg';
+import FileText from '@/assets/icons/Outline/FileText.svg';
+import File from '@/assets/icons/Outline/File.svg';
+import Iphone from '@/assets/icons/Outline/iPhone.svg';
+import LetterOpen from '@/assets/icons/Outline/LetterOpened.svg';
+import Letter from '@/assets/icons/Outline/Letter.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Ranking from '@/assets/icons/Outline/Ranking.svg';
+import SquareAcademic from '@/assets/icons/Outline/SquareAcademicCap.svg';
+import Trash from '@/assets/icons/Outline/TrashBinTrash.svg';
+import User from '@/assets/icons/Outline/UserHandUp.svg';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
+import InformationItem from '@/components/common/InformationItem.vue';
+import StatusTag from '@/components/common/StatusTag.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
+import Button from '@/components/ui/button/Button.vue';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import Separator from '@/components/ui/separator/Separator.vue';
 import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
-import Iphone from '@/assets/icons/Outline/iPhone.svg';
-import Letter from '@/assets/icons/Outline/Letter.svg';
-import LetterOpen from '@/assets/icons/Outline/Letter Opened.svg';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
-import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import User from '@/assets/icons/Outline/User Hand Up.svg';
-import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
-import Dollar from '@/assets/icons/Outline/Dollar Minimalistic.svg';
-import FileText from '@/assets/icons/Outline/File Text.svg';
-import File from '@/assets/icons/Outline/File.svg';
-import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
-import Button from '@/components/ui/button/Button.vue';
-import StatusTag from '@/components/common/StatusTag.vue';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import InformationItem from '@/components/common/InformationItem.vue';
-import Separator from '@/components/ui/separator/Separator.vue';
-import type { IApplicant, IApplicantFilter } from '@/types';
-import { useDeleteApplicant } from '@/composables/recruitment/applicant/useUpdateApplicant';
-import type { PaginationState } from '@tanstack/vue-table';
-import { computed } from 'vue';
+import {
+	createPathFromServerDomain,
+	formatISOStringToLocalDateTime,
+	formatStatus,
+} from '@/lib/utils';
+import type { IApplicant } from '@/types';
 
 const props = defineProps<{
 	data?: IApplicant;
-	pagination: PaginationState;
-	filter: Partial<IApplicantFilter>;
 }>();
 
 const emits = defineEmits<{
 	(e: 'edit'): void;
-	(e: 'openDialog'): void;
-	(e: 'sendEmail'): void;
-	(e: 'edit'): void;
-	(e: 'close'): void;
+	(e: 'delete'): void;
 }>();
-
-const pagination = computed(() => props.pagination);
-const filter = computed(() => props.filter);
-
-const { mutate: deleteApplicant } = useDeleteApplicant(pagination, filter);
 
 const handleEdit = () => {
 	emits('edit');
 };
 
-const handleOpenDialog = () => {
-	emits('openDialog');
-};
-
-const handleSendEmail = () => {
-	emits('sendEmail');
-};
-
 const handleDeleteApplicant = () => {
-	deleteApplicant(props.data?.id || '', {
-		onSuccess: () => {
-			emits('close');
-		},
-	});
+	emits('delete');
 };
 </script>
 <template>
@@ -79,7 +57,7 @@ const handleDeleteApplicant = () => {
 					<StatusTag class="bg-blue-50 text-blue-500 hover:bg-blue-100" status="Applied"
 				/></SheetTitle>
 				<SheetDescription class="text-base font-medium text-black">
-					{{ data?.position?.title }}
+					{{ data?.position?.name }}
 				</SheetDescription>
 				<div class="flex items-center gap-2 text-sm">
 					<IconFromSvg :icon="Iphone" /><span>{{ data?.candidate?.phone_number }}</span>
@@ -126,7 +104,10 @@ const handleDeleteApplicant = () => {
 				:icon="Calendar"
 				label="Date of birth"
 				:value="data?.candidate.date_of_birth" />
-			<InformationItem :icon="User" label="Gender" :value="data?.candidate.gender" />
+			<InformationItem
+				:icon="User"
+				label="Gender"
+				:value="formatStatus(data?.candidate.gender ?? '')" />
 			<InformationItem
 				:icon="SquareAcademic"
 				label="Education level"
@@ -148,12 +129,26 @@ const handleDeleteApplicant = () => {
 				</div>
 				<div class="flex flex-col gap-1">
 					<a
-						v-if="data?.resume_url !== 'REFER'"
-						:href="data?.resume_url"
+						v-if="data?.resume"
+						:href="
+							data?.resume.path ? createPathFromServerDomain(data?.resume.path) : data.resume.url
+						"
 						target="_blank"
 						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
-						><IconFromSvg :icon="File" class="!w-4 !h-4" />CV</a
-					>
+						><IconFromSvg :icon="File" class="!w-4 !h-4" />
+						<p class="max-w-20 truncate">{{ data?.resume?.original_filename ?? 'CV' }}</p>
+					</a>
+
+					<a
+						v-if="data?.attaches && data?.attaches.length > 0"
+						v-for="(item, index) in data?.attaches ?? []"
+						:key="index"
+						:href="createPathFromServerDomain(item.path)"
+						target="_blank"
+						class="flex gap-2 items-center bg-blue-50 text-blue-500 justify-center w-fit p-1.5 rounded-2xl text-xs"
+						><IconFromSvg :icon="File" class="!w-4 !h-4" />
+						<p class="max-w-20 truncate">{{ item.original_filename }}</p>
+					</a>
 					<!-- <a
 						href="#"
 						target="_blank"
@@ -185,16 +180,18 @@ const handleDeleteApplicant = () => {
 			</div>
 		</div>
 
-		<div class="mt-4">
+		<div v-if="data?.notes && data?.notes !== ''" class="mt-4">
 			<div class="flex items-center gap-2 text-sm">
-				<IconFromSvg :icon="ChatLine" /><span>Notes</span>
+				<IconFromSvg :icon="ChatLine" /><span>Note</span>
 			</div>
 			<div class="mt-4 p-4 border rounded-2xl">
 				<div class="flex gap-2 items-center">
 					<UserAvatar class="w-[44px] h-[44px]" />
 					<div>
-						<p class="text-black text-base font-medium">Le Thi Linh Ly</p>
-						<span class="text-xs">March 5, 2025</span>
+						<p class="text-black text-base font-medium">
+							{{ data?.created_by?.name }}
+						</p>
+						<span class="text-xs">{{ formatISOStringToLocalDateTime(data?.created_at).date }}</span>
 					</div>
 				</div>
 				<p class="text-sm mt-2 text-black">

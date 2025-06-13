@@ -16,8 +16,7 @@ const users = [
 	<div>
 		<div class="flex justify-between items-center">
 			<Title>Salary Review Reminder</Title>
-			<span
-				class="w-5 h-5 rounded-full text-sm bg-red-500 text-white grid place-items-center">
+			<span class="w-5 h-5 rounded-full text-sm bg-red-500 text-white grid place-items-center">
 				6
 			</span>
 		</div>

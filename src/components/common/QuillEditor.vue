@@ -21,11 +21,7 @@ onMounted(() => {
 		theme: 'snow',
 		placeholder: props.placeholder,
 		modules: {
-			toolbar: [
-				['bold', 'italic', 'underline'],
-				[{ list: 'ordered' }, { list: 'bullet' }],
-				['link', 'image'],
-			],
+			toolbar: [[{ list: 'ordered' }, { list: 'bullet' }]],
 		},
 	});
 
@@ -61,7 +57,6 @@ onMounted(() => {
 .ql-container {
 	border-radius: 0px 0px 16px 16px;
 	border: 1px solid #f0f0f0 !important;
-	border-top: none !important;
 	font-size: 14px;
 }
 

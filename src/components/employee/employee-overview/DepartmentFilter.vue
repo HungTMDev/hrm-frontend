@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
 import Buildings from '@/assets/icons/Outline/Buildings.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
@@ -64,9 +64,7 @@ const handleReset = () => {
 
 		<ComboboxList align="end" :side-offset="-42" class="rounded-2xl border-none w-80 p-4">
 			<div class="flex justify-between items-center">
-				<div class="flex items-center gap-2">
-					<IconFromSvg :icon="Buildings" /> Department
-				</div>
+				<div class="flex items-center gap-2"><IconFromSvg :icon="Buildings" /> Department</div>
 				<Button class="h-auto p-0" variant="ghost" @click="handleClose"
 					><IconFromSvg :icon="Close"
 				/></Button>
@@ -86,10 +84,7 @@ const handleReset = () => {
 			</ScrollArea>
 			<Separator class="my-4" />
 			<div class="flex justify-center gap-2 items-center">
-				<Button
-					class="rounded-2xl h-auto py-3.5 px-6"
-					variant="outline"
-					@click="handleReset"
+				<Button class="rounded-2xl h-auto py-3.5 px-6" variant="outline" @click="handleReset"
 					>Reset</Button
 				>
 				<Button

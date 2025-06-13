@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import AddCircle from '@/assets/icons/Outline/Add Circle.svg';
+import AddCircle from '@/assets/icons/Outline/AddCircle.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
+import ClockCircle from '@/assets/icons/Outline/ClockCircle.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
 import Iphone from '@/assets/icons/Outline/iPhone.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
-import SquareAcademic from '@/assets/icons/Outline/Square Academic Cap.svg';
-import User from '@/assets/icons/Outline/User Hand Up.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import SquareAcademic from '@/assets/icons/Outline/SquareAcademicCap.svg';
+import User from '@/assets/icons/Outline/UserHandUp.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
@@ -167,15 +167,11 @@ const handleCompleteInterview = () => {
 				<InformationItem
 					:icon="Calendar"
 					label="interview date"
-					:value="
-						formatISOStringToLocalDateTime(applicantInterview?.scheduled_time).date
-					" />
+					:value="formatISOStringToLocalDateTime(applicantInterview?.scheduled_time).date" />
 				<InformationItem
 					:icon="ClockCircle"
 					label="Interview time"
-					:value="
-						formatISOStringToLocalDateTime(applicantInterview?.scheduled_time).time
-					" />
+					:value="formatISOStringToLocalDateTime(applicantInterview?.scheduled_time).time" />
 				<div class="grid grid-cols-2 items-start">
 					<div class="flex gap-2 items-center py-1.5">
 						<IconFromSvg :icon="UserSpeak" />
@@ -259,9 +255,7 @@ const handleCompleteInterview = () => {
 				label="Date of birth"
 				:value="
 					applicantInterview?.candidate.date_of_birth
-						? formatISOStringToLocalDateTime(
-								applicantInterview?.candidate.date_of_birth,
-							).date
+						? formatISOStringToLocalDateTime(applicantInterview?.candidate.date_of_birth).date
 						: ''
 				" />
 			<InformationItem

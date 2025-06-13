@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
 import Title from '@/components/common/Title.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
@@ -43,17 +43,16 @@ const { handleSubmit } = useForm({
 	validationSchema: formSchema,
 });
 
-const { mutateAsync: createInterviewFeedback, isPending: isCreating } =
-	useCreateInterviewFeedback();
+const { mutate: createInterviewFeedback, isPending: isCreating } = useCreateInterviewFeedback();
 
-const onSubmit = handleSubmit(async (values) => {
+const onSubmit = handleSubmit((values) => {
 	const payload: InterviewerFeedbackPayload = {
 		...values,
 		strengths: (values.strengths as string[]).join('\n'),
 		weaknesses: (values.weaknesses as string[]).join('\n'),
 	};
 
-	await createInterviewFeedback(
+	createInterviewFeedback(
 		{
 			id: props.data?.id || '',
 			data: payload,

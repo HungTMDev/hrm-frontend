@@ -6,8 +6,8 @@ import type { IActionGroupType, EmployeePayroll } from '@/types';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { Check, Minus } from 'lucide-vue-next';
 import { h } from 'vue';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Minimalistic.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import Trash from '@/assets/icons/Outline/TrashBinMinimalistic.svg';
 
 export const employeePayrollColumn = (
 	handleOpenSheet: (payload?: EmployeePayroll, view?: boolean) => void,
@@ -24,12 +24,10 @@ export const employeePayrollColumn = (
 						(table.getIsSomePageRowsSelected() && 'indeterminate'),
 					'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
 					ariaLabel: 'Select all',
-					class: 'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
+					class:
+						'data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300 data-[state=indeterminate]:border-blue-500 data-[state=indeterminate]:bg-blue-500 data-[state=indeterminate]:text-white',
 				},
-				() =>
-					table.getIsSomePageRowsSelected()
-						? h(Minus, { size: 14 })
-						: h(Check, { size: 14 }),
+				() => (table.getIsSomePageRowsSelected() ? h(Minus, { size: 14 }) : h(Check, { size: 14 })),
 			),
 		cell: ({ row }) =>
 			h(
@@ -39,7 +37,8 @@ export const employeePayrollColumn = (
 					modelValue: row.getIsSelected(),
 					'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
 					ariaLabel: 'Select row',
-					class: ' data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
+					class:
+						' data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:border-blue-500 border-gray-300',
 				},
 				() => h(Check, { size: 14 }),
 			),

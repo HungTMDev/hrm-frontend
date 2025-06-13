@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import AddCircle from '@/assets/icons/Outline/Add Circle.svg';
+import AddCircle from '@/assets/icons/Outline/AddCircle.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
-import ClockCircle from '@/assets/icons/Outline/Clock Circle.svg';
+import ClockCircle from '@/assets/icons/Outline/ClockCircle.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
+import AlertPopup from '@/components/common/AlertPopup.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
@@ -11,7 +12,10 @@ import Button from '@/components/ui/button/Button.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { applicantKey } from '@/composables/recruitment/applicant/key';
-import { useGetInterviewByApplicantId } from '@/composables/recruitment/applicant/useApplicant';
+import {
+	useGetInterviewByApplicantId,
+	useGetListFeedback,
+} from '@/composables/recruitment/applicant/useApplicant';
 import {
 	useAddParticipant,
 	useRemoveParticipant,
@@ -19,39 +23,43 @@ import {
 import { INTERVIEW_STATUS_STYLE } from '@/constants';
 import { useCustomToast } from '@/lib/customToast';
 import { cn, formatISOStringToLocalDateTime, formatStatus } from '@/lib/utils';
+import type { IApplicant, IUser } from '@/types';
 import { useQueryClient } from '@tanstack/vue-query';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import AddInterviewerDialog from '../../interview-tab/AddInterviewerDialog.vue';
 import type { AddInterviewerPayload } from '../../interview-tab/schema';
-import AlertPopup from '@/components/common/AlertPopup.vue';
-import type { IApplicant, IUser } from '@/types';
+import CreateFeedbackForm from './CreateFeedbackForm.vue';
 import MeetingScheduleForm from './MeetingScheduleForm.vue';
+import UserAvatar from '@/components/common/UserAvatar.vue';
 
 const props = defineProps<{
 	data?: IApplicant;
 	stage?: string;
+	view?: boolean;
+}>();
+
+const emits = defineEmits<{
+	(e: 'closeSheet'): void;
 }>();
 
 const queryClient = useQueryClient();
 const { showToast } = useCustomToast();
 
+const id = computed(() => props.data?.id);
 const isOpenDialog = ref(false);
 const isOpenAlert = ref(false);
 const isView = ref(true);
+const isCreateFeedback = ref(false);
 const selectedInterviewId = ref<string>();
 const selectedParticipant = ref<IUser>();
-const id = computed(() => props.data?.id);
+const interviewId = ref<string>();
 
 const { data: interviews } = useGetInterviewByApplicantId(id);
 
 const listInterview = computed(() => interviews.value ?? []);
-const isShowMeetingSchedule = computed(() => {
-	return (
-		listInterview.value.some((item) => item.status === 'CANCELED') ||
-		listInterview.value.every((item) => item.status === 'COMPLETED') ||
-		props.stage === 'SCREENING'
-	);
-});
+const listFeedbackResponse = useGetListFeedback(listInterview);
+
+const listFeedback = computed(() => listFeedbackResponse.value.map((item) => item.data));
 
 const { mutate: removeParticipant } = useRemoveParticipant();
 const { mutate: addParticipant } = useAddParticipant();
@@ -117,17 +125,32 @@ const handleCloseAlert = (open: boolean) => {
 const handleNavigate = () => {
 	isView.value = !isView.value;
 };
+
+const handleCreateFeedback = (id: string) => {
+	interviewId.value = id;
+	isCreateFeedback.value = true;
+	isView.value = false;
+};
+
+const handleCancleCreateFeedback = () => {
+	isCreateFeedback.value = false;
+	isView.value = true;
+};
+
+onMounted(() => {
+	isView.value = props.view !== undefined ? props.view : true;
+});
 </script>
 <template>
-	<ScrollArea v-if="isView" class="h-[calc(100vh-340px)] pr-3">
+	<ScrollArea v-if="isView" class="h-[calc(100vh-400px)] pr-3">
 		<div class="flex justify-between items-center">
 			<h3 class="text-base text-black font-semibold">Interview</h3>
-			<Button
-				v-if="isShowMeetingSchedule"
-				variant="outline"
-				class="rounded-2xl"
-				@click="handleNavigate">
-				<IconFromSvg :icon="Calendar" />Meeting schedule
+			<Button variant="outline" class="rounded-2xl" @click="handleNavigate">
+				<IconFromSvg :icon="Calendar" />{{
+					listInterview.some((item) => item.status === 'SCHEDULED')
+						? 'Re-schedule'
+						: 'Meeting schedule'
+				}}
 			</Button>
 		</div>
 
@@ -145,9 +168,13 @@ const handleNavigate = () => {
 					</h4>
 					<StatusTag
 						:status="item?.status"
-						:class="cn(INTERVIEW_STATUS_STYLE[item?.status || ''])" />
+						:class="cn('w-fit', INTERVIEW_STATUS_STYLE[item?.status || ''])" />
 				</div>
-				<Button v-if="item.status === 'SCHEDULED'" variant="outline" class="rounded-2xl">
+				<Button
+					v-if="item.status === 'SCHEDULED'"
+					variant="outline"
+					class="rounded-2xl"
+					@click="handleCreateFeedback(item.id)">
 					Create feedback
 				</Button>
 			</div>
@@ -155,7 +182,7 @@ const handleNavigate = () => {
 			<div class="grid grid-cols-2 text-sm gap-4 mt-4">
 				<InformationItem
 					:icon="Calendar"
-					label="interview date"
+					label="Interview date"
 					:value="formatISOStringToLocalDateTime(item?.scheduled_time).date" />
 				<InformationItem
 					:icon="ClockCircle"
@@ -175,6 +202,7 @@ const handleNavigate = () => {
 								{{ i.name }}
 							</p>
 							<Button
+								v-if="item.status === 'SCHEDULED'"
 								variant="outline"
 								class="p-0 h-auto text-red-500 hover:text-red-600"
 								@click="handleRemoveInterviewer(item.id, i)">
@@ -182,6 +210,7 @@ const handleNavigate = () => {
 							</Button>
 						</div>
 						<Button
+							v-if="item.status === 'SCHEDULED'"
 							variant="outline"
 							class="h-auto py-1 rounded-xl mt-2 text-sm"
 							@click="handleOpenDialog(item.id)">
@@ -192,10 +221,69 @@ const handleNavigate = () => {
 				</div>
 			</div>
 
+			<div v-if="listFeedback[idx] && listFeedback[idx].length > 0" class="text-sm">
+				<h3 class="text-base text-black font-semibold">Feedback</h3>
+				<div class="mt-4 grid gap-4">
+					<div
+						v-for="(item, index) in listFeedback[idx]"
+						:key="index"
+						class="border rounded-2xl p-4">
+						<div class="flex justify-between items-center">
+							<div class="flex gap-2 items-center">
+								<UserAvatar class="w-[44px] h-[44px]" />
+								<div>
+									<h4 class="text-base font-medium text-black">
+										{{ item.interviewer.name }}
+									</h4>
+									<span class="text-xs">{{
+										formatISOStringToLocalDateTime(item.submitted_at).date
+									}}</span>
+								</div>
+							</div>
+							<div class="text-black">
+								<p><span class="text-slate-600">Score:</span> {{ item.score }}</p>
+								<p>
+									<span class="text-slate-600">Recommend:</span>
+									{{ formatStatus(item.recommendation) }}
+								</p>
+							</div>
+						</div>
+
+						<div class="mt-4">
+							<h3 class="text-sm text-black font-medium">Strengths</h3>
+							<ul class="text-black mt-2 list-disc list-inside ml-2">
+								<li v-for="(i, idx) in item.strengths.split('\n')" :key="idx">
+									{{ i }}
+								</li>
+							</ul>
+							<Separator class="my-4" />
+							<h3 class="text-sm text-black font-medium">Weaknesses</h3>
+							<ul class="text-black mt-2 list-disc list-inside ml-2">
+								<li v-for="(i, idx) in item.weaknesses.split('\n')" :key="idx">
+									{{ i }}
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<Separator v-if="idx < listInterview.length - 1" class="my-4" />
 		</div>
 	</ScrollArea>
-	<MeetingScheduleForm v-else :applicant="data" @back="handleNavigate" />
+
+	<CreateFeedbackForm
+		v-else-if="isCreateFeedback"
+		:interview-id="interviewId"
+		@cancel="handleCancleCreateFeedback" />
+
+	<MeetingScheduleForm
+		v-else
+		:applicant="data"
+		:list-interview="listInterview"
+		@close-sheet="emits('closeSheet')"
+		@back="handleNavigate" />
+
 	<AddInterviewerDialog
 		:open="isOpenDialog"
 		@update:open="handleCloseDialog"

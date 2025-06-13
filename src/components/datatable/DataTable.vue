@@ -39,9 +39,7 @@ const handleClickRow = (data: any) => {
 							:key="header.id"
 							:class="'p-2 border-b text-sm font-normal'">
 							<FlexRender
-								v-if="
-									!header.isPlaceholder && !header.column.columnDef.enableHiding
-								"
+								v-if="!header.isPlaceholder && !header.column.columnDef.enableHiding"
 								:render="header.column.columnDef.header"
 								:props="header.getContext()" />
 						</TableHead>
@@ -72,8 +70,7 @@ const handleClickRow = (data: any) => {
 									class="p-2"
 									:class="[
 										index === 0 && 'rounded-l-xl',
-										index === row.getVisibleCells().length - 1 &&
-											'rounded-r-xl',
+										index === row.getVisibleCells().length - 1 && 'rounded-r-xl',
 									]">
 									<FlexRender
 										v-if="!cell.column.columnDef.enableHiding"
@@ -83,10 +80,7 @@ const handleClickRow = (data: any) => {
 							</TableRow>
 							<!-- Kiểm tra và hiển thị hàng con nếu có -->
 							<template v-if="row.getIsExpanded() && row.subRows.length > 0">
-								<TableRow
-									v-for="subRow in row.subRows"
-									:key="subRow.id"
-									class="bg-muted/90">
+								<TableRow v-for="subRow in row.subRows" :key="subRow.id" class="bg-muted/90">
 									<!-- Ô trống cho cột mở rộng -->
 									<TableCell
 										v-for="(cell, index) in subRow.getVisibleCells()"
@@ -94,8 +88,7 @@ const handleClickRow = (data: any) => {
 										class="p-2"
 										:class="[
 											index === 0 && 'rounded-l-xl pl-10',
-											index === row.getVisibleCells().length - 1 &&
-												'rounded-r-xl',
+											index === row.getVisibleCells().length - 1 && 'rounded-r-xl',
 										]">
 										<FlexRender
 											v-if="!cell.column.columnDef.enableHiding"

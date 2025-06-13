@@ -6,8 +6,8 @@ import { getLocalTimeZone, today, type DateValue, CalendarDate } from '@internat
 import { ref, type Ref } from 'vue';
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
-import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
+import Right from '@/assets/icons/Outline/AltArrowRight.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { formatISOStringToLocalDateTime, parseDateTime } from '@/lib/utils';
@@ -143,19 +143,13 @@ const handleCloseDialog = (open: boolean) => {
 								class="flex h-full text-white rounded w-full flex-col justify-start items-center hover:cursor-pointer bg-blue-400 hover:bg-blue-400 border-white border">
 								<span class="w-full truncate">{{ event.title }}</span>
 								<div class="flex gap-1 flex-wrap justify-center">
-									<span>{{
-										formatISOStringToLocalDateTime(event.start).time
-									}}</span>
+									<span>{{ formatISOStringToLocalDateTime(event.start).time }}</span>
 									-
-									<span>{{
-										formatISOStringToLocalDateTime(event.end).time
-									}}</span>
+									<span>{{ formatISOStringToLocalDateTime(event.end).time }}</span>
 								</div>
 							</div>
 						</PopoverTrigger>
-						<PopoverContent v-if="view !== 'day'" class="w-80" side="right">
-							Hello
-						</PopoverContent>
+						<PopoverContent v-if="view !== 'day'" class="w-80" side="right"> Hello </PopoverContent>
 					</Popover>
 				</template>
 			</vue-cal>

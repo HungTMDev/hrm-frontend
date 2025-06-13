@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
-import ChatLine from '@/assets/icons/Outline/Chat Line.svg';
-import CheckList from '@/assets/icons/Outline/Checklist Minimalistic.svg';
-import Clipboard from '@/assets/icons/Outline/Clipboard List.svg';
-import CupStar from '@/assets/icons/Outline/Cup Star.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
+import ChatLine from '@/assets/icons/Outline/ChatLine.svg';
+import CheckList from '@/assets/icons/Outline/ChecklistMinimalistic.svg';
+import Clipboard from '@/assets/icons/Outline/ClipboardList.svg';
+import CupStar from '@/assets/icons/Outline/CupStar.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
 import User from '@/assets/icons/Outline/User.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
@@ -67,13 +67,13 @@ const handleRecall = () => {
 						:status="data?.status || ''" />
 				</div>
 			</div>
-			<div v-if="data?.cancelled_reason" class="grid grid-cols-3 gap-6 py-[3px] items-start">
+			<div v-if="data?.reject_reason" class="grid grid-cols-3 gap-6 py-[3px] items-start">
 				<div class="flex gap-2 items-center">
 					<IconFromSvg :icon="ChatLine" />
 					Reason for rejection
 				</div>
 				<div class="col-span-2 text-black">
-					{{ data.cancelled_reason }}
+					{{ data.reject_reason }}
 				</div>
 			</div>
 			<div class="grid grid-cols-3 gap-6">
@@ -143,9 +143,7 @@ const handleRecall = () => {
 			</div>
 		</div>
 		<div class="mt-4">
-			<h3 class="flex gap-2 items-center">
-				<IconFromSvg :icon="Clipboard" />Job description
-			</h3>
+			<h3 class="flex gap-2 items-center"><IconFromSvg :icon="Clipboard" />Job description</h3>
 			<p class="mt-2 text-sm text-black">
 				{{ data?.description }}
 			</p>

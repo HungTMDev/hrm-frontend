@@ -48,9 +48,7 @@ const handleConfirm = () => {
 				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<AlertDialogFooter class="w-full flex mt-4">
-				<AlertDialogCancel
-					@click="() => handleOpen(false)"
-					class="w-full rounded-2xl h-auto p-3">
+				<AlertDialogCancel @click="() => handleOpen(false)" class="w-full rounded-2xl h-auto p-3">
 					Cancel
 				</AlertDialogCancel>
 				<CallApiButton

@@ -2,6 +2,10 @@
 import UserAvatar from '@/components/common/UserAvatar.vue';
 import { Button } from '@/components/ui/button';
 
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
+import Logout2 from '@/assets/icons/Outline/Logout2.svg';
+import User from '@/assets/icons/Outline/User.svg';
+import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -11,12 +15,10 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, User } from 'lucide-vue-next';
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
-import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { useGetAccount, useLogout } from '@/composables/auth/useAuth';
-import { computed } from 'vue';
 import type { IUser } from '@/types';
+import { computed } from 'vue';
+import { formatStatus } from '@/lib/utils';
 
 const { data } = useGetAccount();
 const { mutate } = useLogout();
@@ -37,7 +39,9 @@ const handleLogout = async () => {
 				<UserAvatar class="w-12 h-12" />
 				<div>
 					<p class="text-start text-base font-medium">{{ account?.name }}</p>
-					<p class="text-start text-sm font-normal text-slate-600">HR Manager</p>
+					<p class="text-start text-sm font-normal text-slate-600">
+						{{ formatStatus(account?.roles?.[0] ?? '') }}
+					</p>
 				</div>
 				<IconFromSvg :icon="Down" />
 			</Button>
@@ -47,13 +51,13 @@ const handleLogout = async () => {
 			<DropdownMenuSeparator />
 			<DropdownMenuGroup>
 				<DropdownMenuItem class="rounded-xl py-3">
-					<User class="mr-2 h-4 w-4" />
+					<IconFromSvg :icon="User" />
 					<span>Profile</span>
 				</DropdownMenuItem>
 			</DropdownMenuGroup>
 			<DropdownMenuSeparator />
 			<DropdownMenuItem class="rounded-xl py-3" @click="handleLogout">
-				<LogOut class="mr-2 h-4 w-4" />
+				<IconFromSvg :icon="Logout2" />
 				<span>Log out</span>
 			</DropdownMenuItem>
 		</DropdownMenuContent>

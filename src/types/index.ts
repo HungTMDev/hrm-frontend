@@ -35,13 +35,14 @@ export interface RouteType {
 	path: string;
 	name: string;
 	icon?: any;
+	hidden?: boolean;
 	activeIcon?: any;
 	children?: RouteType[];
 }
 
 export interface ComboboxType {
 	label: string;
-	value: string;
+	value: string | number;
 }
 
 export interface StepType {
@@ -56,7 +57,7 @@ export interface FormFieldCommon {
 	class?: HTMLAttributes['class'];
 	icon?: any;
 	required?: boolean;
-	modelValue?: string | number;
+	modelValue?: string | number | string[] | number[];
 	defaultValue?: string | number;
 }
 
@@ -95,6 +96,7 @@ export interface IDepartment extends IBaseResponse {
 	branch_id: string;
 	branch_detail_address: string;
 	leader_id: string;
+	code: string;
 }
 
 export interface IBranch extends IBaseResponse {
@@ -106,6 +108,7 @@ export interface IBranch extends IBaseResponse {
 	postal_code: string;
 	country: string;
 	phone_number: string;
+	code: string;
 	is_active: boolean;
 }
 
@@ -125,10 +128,13 @@ export interface IUser extends IBaseResponse {
 }
 
 export interface IPosition extends IBaseResponse {
-	title: string;
+	name: string;
 	description: string;
 	level: string;
 	common_skills: string[];
+	code: string;
+	branch_id: string;
+	department_id: string;
 }
 
 export interface IFilterRequest<T = any> {
@@ -142,4 +148,14 @@ export interface IUserFilter {
 	order?: 'ASC' | 'DESC';
 	only_deleted?: boolean;
 	role?: string[];
+}
+
+export interface IUploadFileResponse {
+	original_filename: string;
+	resource_type: string;
+	format: string;
+	bytes: number;
+	filename: string;
+	path: string;
+	url: string;
 }

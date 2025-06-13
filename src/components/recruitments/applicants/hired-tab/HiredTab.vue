@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
-import Building from '@/assets/icons/Outline/Buildings.svg';
-import Case from '@/assets/icons/Outline/Case.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Magnifer from '@/assets/icons/Outline/Magnifer.svg';
 import DisplayColumn from '@/components/common/DisplayColumn.vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';
@@ -10,15 +7,11 @@ import InputWithIcon from '@/components/common/InputWithIcon.vue';
 import DataTable from '@/components/datatable/DataTable.vue';
 import DataTablePagination from '@/components/datatable/DataTablePagination.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
-import { useBranch } from '@/composables/branch/useBranch';
-import { useDepartment } from '@/composables/department/useDepartment';
 import { useApplicant } from '@/composables/recruitment/applicant/useApplicant';
-import {
-	DEFAULT_PAGINATION,
-	listEmploymentType,
-	listJobStatus,
-	RECRUITMENT_STAGE,
-} from '@/constants';
+import { useCreateEmployeeFromApplicant } from '@/composables/recruitment/applicant/useUpdateApplicant';
+import { useListJob } from '@/composables/recruitment/job/useJob';
+import { DEFAULT_PAGINATION, RECRUITMENT_STAGE } from '@/constants';
+import { useCustomToast } from '@/lib/customToast';
 import { valueUpdater } from '@/lib/utils';
 import type { FilterAccordion, FilterData, IApplicant, IApplicantFilter, IMeta } from '@/types';
 import {
@@ -28,21 +21,31 @@ import {
 	type VisibilityState,
 } from '@tanstack/vue-table';
 import { computed, ref } from 'vue';
+import ApplicantSheet from '../ApplicantSheet.vue';
 import { hiredColumn } from './column';
+import HiredDialog from './HiredDialog.vue';
+import type { CreateEmployeeFromApplicantPayload } from './schema';
+import { useQueryClient } from '@tanstack/vue-query';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
 
-const { data: branches } = useBranch();
-const { data: departments } = useDepartment();
+const queryClient = useQueryClient();
+const { data: jobs } = useListJob();
+const { showToast } = useCustomToast();
 
 let timeout: any;
 const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 const keywords = ref<string>();
 const filter = ref<Record<string, string[]>>();
+const isOpenSheet = ref(false);
+const isOpenDialog = ref(false);
+const dataSent = ref<IApplicant>();
+const filterData = ref<FilterData[]>([]);
 
 const pageIndex = ref(DEFAULT_PAGINATION.DEFAULT_PAGE - 1);
 const pageSize = ref(DEFAULT_PAGINATION.DEFAULT_LIMIT);
 const filterPayload = computed<Partial<IApplicantFilter>>(() => ({
-	stage: [RECRUITMENT_STAGE.HIRED, RECRUITMENT_STAGE.OFFER],
+	stage: [RECRUITMENT_STAGE.HIRED],
 	keywords: keywords.value,
 	...filter.value,
 }));
@@ -53,6 +56,7 @@ const pagination = computed<PaginationState>(() => ({
 }));
 
 const { data, isLoading } = useApplicant(pagination, filterPayload);
+const { mutate: createUser, isPending: isCreating } = useCreateEmployeeFromApplicant();
 
 const applicants = computed<IApplicant[]>(() => data.value?.data || []);
 const meta = computed<IMeta | undefined>(() => data.value?.meta);
@@ -60,31 +64,10 @@ const pageCount = computed(() => meta.value?.total_pages);
 
 const accordionItems = computed<FilterAccordion[]>(() => [
 	{
-		value: 'status',
-		title: 'Status',
-		items: listJobStatus,
-		icon: ChartSqare,
-		type: 'list',
-	},
-	{
-		value: 'branch',
-		title: 'Branch',
-		items: branches.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
+		value: 'job_id',
+		title: 'Job',
+		items: jobs.value?.map((item) => ({ label: item.title, value: item.id })) || [],
 		icon: Building3,
-		type: 'list',
-	},
-	{
-		value: 'department',
-		title: 'Department',
-		items: departments.value?.map((item: any) => ({ label: item.name, value: item.id })) || [],
-		icon: Building,
-		type: 'list',
-	},
-	{
-		value: 'employment_type',
-		title: 'Employment type',
-		items: listEmploymentType,
-		icon: Case,
 		type: 'list',
 	},
 ]);
@@ -99,12 +82,14 @@ const setPagination = ({ pageIndex, pageSize }: PaginationState): PaginationStat
 	return { pageIndex, pageSize };
 };
 
-const handleOpenAlert = () => {};
+const handleOpenSheet = (payload: IApplicant) => {
+	dataSent.value = payload;
+	isOpenSheet.value = true;
+};
 
-const handleOpenSheet = (payload?: IApplicant, view?: boolean) => {
-	if (payload instanceof PointerEvent) {
-	} else {
-	}
+const handleOpenDialog = (payload: IApplicant) => {
+	dataSent.value = payload;
+	isOpenDialog.value = true;
 };
 
 const table = useVueTable({
@@ -117,7 +102,7 @@ const table = useVueTable({
 	get rowCount() {
 		return meta.value?.total_records ?? 0;
 	},
-	columns: hiredColumn(),
+	columns: hiredColumn(handleOpenSheet, handleOpenDialog),
 	state: {
 		get rowSelection() {
 			return rowSelection.value;
@@ -150,11 +135,46 @@ const handleSearch = (payload: string | number) => {
 };
 
 const handleFilter = (payload: FilterData[]) => {
-	const newFilter: Record<string, string[]> = {};
+	const newFilter: Record<string, (string | number)[]> = {};
 	payload.forEach((item) => {
-		newFilter[item.field] = item.filters.map((i) => i.value);
+		newFilter[item.field] = item.filters.map((i) => i.value as string);
 	});
-	filter.value = newFilter;
+	pageIndex.value = 0;
+
+	filterData.value = payload;
+	filter.value = newFilter as Record<string, string[]>;
+};
+
+const handleCreateUser = (payload: CreateEmployeeFromApplicantPayload) => {
+	createUser(
+		{
+			id: dataSent.value?.id ?? '',
+			data: payload,
+		},
+		{
+			onSuccess: () => {
+				showToast({
+					message: 'User created successfully',
+					type: 'success',
+				});
+
+				queryClient.invalidateQueries({ queryKey: [applicantKey.base] });
+				dataSent.value = undefined;
+				isOpenDialog.value = false;
+				isOpenSheet.value = false;
+			},
+		},
+	);
+};
+
+const handleCloseSheet = (open: boolean) => {
+	dataSent.value = undefined;
+	isOpenSheet.value = open;
+};
+
+const handleCloseDialog = (open: boolean) => {
+	dataSent.value = undefined;
+	isOpenDialog.value = open;
 };
 </script>
 <template>
@@ -163,15 +183,28 @@ const handleFilter = (payload: FilterData[]) => {
 			<InputWithIcon
 				:icon="Magnifer"
 				class="py-2 flex-1 rounded-full"
-				placeholder="Search candidate"
+				placeholder="Search..."
 				@update:model-value="handleSearch" />
 			<DisplayColumn :list="table.getAllColumns().filter((column) => column.getCanHide())" />
 			<FilterPopover :list="accordionItems" @update:value="handleFilter" />
 		</div>
 		<div class="flex flex-col gap-3">
-			<DataTable :table="table" :is-loading="isLoading" />
+			<DataTable
+				:table="table"
+				:is-loading="isLoading"
+				@row:click="(payload) => handleOpenSheet(payload)" />
 			<Separator />
 			<DataTablePagination :table="table" :meta="meta" />
 		</div>
 	</div>
+	<ApplicantSheet
+		:open="isOpenSheet"
+		:applicant-id="dataSent?.id"
+		@update:open="handleCloseSheet" />
+	<HiredDialog
+		:open="isOpenDialog"
+		:is-loading="isCreating"
+		:data="dataSent"
+		@submit="handleCreateUser"
+		@update:open="handleCloseDialog" />
 </template>

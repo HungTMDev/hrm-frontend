@@ -112,11 +112,7 @@ const formatter = useDateFormatter('en');
 						<SelectValue placeholder="Select year" />
 					</SelectTrigger>
 					<SelectContent class="max-h-[200px] rounded-2xl">
-						<SelectItem
-							class="rounded-xl"
-							v-for="year in years"
-							:key="year"
-							:value="year">
+						<SelectItem class="rounded-xl" v-for="year in years" :key="year" :value="year">
 							{{ year }}
 						</SelectItem>
 					</SelectContent>

@@ -1,22 +1,20 @@
 <script lang="ts" setup>
-import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Right from '@/assets/icons/Outline/AltArrowRight.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Calendar from '@/assets/icons/Outline/Calendar.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
-import CheckList from '@/assets/icons/Outline/Checklist Minimalistic.svg';
-import Clipboard from '@/assets/icons/Outline/Clipboard List.svg';
-import CupStar from '@/assets/icons/Outline/Cup Star.svg';
-import MagicStick3 from '@/assets/icons/Outline/Magic Stick 3.svg';
-import Pen2 from '@/assets/icons/Outline/Pen 2.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
+import CheckList from '@/assets/icons/Outline/ChecklistMinimalistic.svg';
+import Clipboard from '@/assets/icons/Outline/ClipboardList.svg';
+import CupStar from '@/assets/icons/Outline/CupStar.svg';
+import Pen2 from '@/assets/icons/Outline/Pen2.svg';
 import Ranking from '@/assets/icons/Outline/Ranking.svg';
-import SqureAcademic from '@/assets/icons/Outline/Square Academic Cap 2.svg';
-import Trash from '@/assets/icons/Outline/Trash Bin Trash.svg';
-import UserCircle from '@/assets/icons/Outline/User Circle.svg';
-import UserHand from '@/assets/icons/Outline/User Hands.svg';
-import UserGroup from '@/assets/icons/Outline/Users Group Two Rounded.svg';
+import SqureAcademic from '@/assets/icons/Outline/SquareAcademicCap2.svg';
+import UserCircle from '@/assets/icons/Outline/UserCircle.svg';
+import UserHand from '@/assets/icons/Outline/UserHands.svg';
+import UserGroup from '@/assets/icons/Outline/UsersGroupTwoRounded.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import InformationItem from '@/components/common/InformationItem.vue';
 import StatusTag from '@/components/common/StatusTag.vue';
@@ -27,7 +25,7 @@ import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
 import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { useGetApplicantsByJobId } from '@/composables/recruitment/applicant/useApplicant';
 import { JOB_STATUS_STYLE } from '@/constants';
-import { formatISOStringToLocalDateTime, parseGender } from '@/lib/utils';
+import { formatISOStringToLocalDateTime, formatStatus, parseGender } from '@/lib/utils';
 import type { IApplicant, IJob } from '@/types';
 import { computed } from 'vue';
 
@@ -38,7 +36,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: 'openAlert', payload: any): void;
 	(e: 'edit'): void;
-	(e: 'viewCandidate', payload: any): void;
+	(e: 'viewCandidate', payload: IApplicant): void;
 }>();
 
 const jobId = computed(() => props.data?.id);
@@ -69,26 +67,18 @@ const handleViewCandidate = (payload: IApplicant) => {
 					<span>Status</span>
 				</div>
 				<div class="my-[2px]">
-					<StatusTag
-						:status="data?.status || ''"
-						:class="JOB_STATUS_STYLE[data?.status || '']" />
+					<StatusTag :status="data?.status || ''" :class="JOB_STATUS_STYLE[data?.status || '']" />
 				</div>
 			</div>
 
 			<InformationItem :icon="Building3" label="Branch" :value="data?.branch.name || ''" />
-			<InformationItem
-				:icon="Building"
-				label="Department"
-				:value="data?.department.name || ''" />
-			<InformationItem
-				:icon="UserCircle"
-				label="Position"
-				:value="data?.position.title || ''" />
-			<InformationItem :icon="Chart2" label="Level" :value="data?.level as string" />
+			<InformationItem :icon="Building" label="Department" :value="data?.department.name || ''" />
+			<InformationItem :icon="UserCircle" label="Position" :value="data?.position.name || ''" />
+			<InformationItem :icon="Chart2" label="Level" :value="formatStatus(data?.level as string)" />
 			<InformationItem
 				:icon="Case"
 				label="Employment type"
-				:value="(data?.employment_type as string) || ''" />
+				:value="formatStatus((data?.employment_type as string) || '')" />
 			<InformationItem
 				:icon="CheckList"
 				label="Quantity"
@@ -108,10 +98,7 @@ const handleViewCandidate = (payload: IApplicant) => {
 			<InformationItem
 				:icon="UserHand"
 				label="Gender"
-				:value="
-					parseGender(data?.gender) === '' ? 'Not required' : parseGender(data?.gender)
-				" />
-			<InformationItem :icon="MagicStick3" label="Appearance" value="Not required" />
+				:value="parseGender(data?.gender) === '' ? 'Not required' : parseGender(data?.gender)" />
 		</div>
 
 		<div class="mt-8">

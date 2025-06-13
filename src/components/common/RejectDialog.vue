@@ -55,9 +55,7 @@ const handleOpen = (open: boolean) => {
 	<AlertDialog :open="open" @update:open="handleOpen">
 		<AlertDialogContent class="w-[400px]">
 			<AlertDialogHeader class="sm:text-center gap-0">
-				<AlertDialogTitle>{{
-					title ?? 'Are your sure you want to reject?'
-				}}</AlertDialogTitle>
+				<AlertDialogTitle>{{ title ?? 'Are your sure you want to reject?' }}</AlertDialogTitle>
 				<AlertDialogDescription>
 					<span v-if="description">"{{ description }}"</span>
 				</AlertDialogDescription>
@@ -82,9 +80,7 @@ const handleOpen = (open: boolean) => {
 				</FormField>
 			</form>
 			<AlertDialogFooter class="sm:justify-center sm:gap-4">
-				<AlertDialogCancel class="rounded-2xl w-full py-3.5 h-auto"
-					>Cancel</AlertDialogCancel
-				>
+				<AlertDialogCancel class="rounded-2xl w-full py-3.5 h-auto">Cancel</AlertDialogCancel>
 				<CallApiButton
 					class="rounded-2xl w-full py-3 h-auto"
 					variant="destructive"

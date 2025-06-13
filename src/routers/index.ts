@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/stores/auth.store';
 import { createRouter, createWebHistory } from 'vue-router';
 import { webRoutes } from './web.route';
+import { useAppStore } from '@/stores/app.store';
 
 const routes = [
 	...webRoutes,
@@ -27,9 +28,11 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
 	const authStore = useAuthStore();
+	const appStore = useAppStore();
 
 	const isLoggedIn = authStore.isLoggedIn;
 	const isAuthRoute = to.matched.some((record) => record.meta.requiresAuth);
+	const isHR = to.matched.some((record) => record.meta.requiresHR);
 	const isAuthForgotPassword = to.matched.some((record) => record.meta.requiresForgotPassword);
 
 	if (isAuthForgotPassword && !authStore.isForgotPassword) {
@@ -45,6 +48,11 @@ router.beforeEach(async (to, from, next) => {
 
 	if (isLoggedIn && !isAuthRoute) {
 		next('/');
+		return;
+	}
+
+	if (isHR && !appStore.isHR) {
+		next('/not-found');
 		return;
 	}
 

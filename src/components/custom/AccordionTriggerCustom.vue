@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
 import { cn } from '@/lib/utils';
 import { AccordionHeader, AccordionTrigger, type AccordionTriggerProps } from 'reka-ui';
 import { computed, type HTMLAttributes } from 'vue';

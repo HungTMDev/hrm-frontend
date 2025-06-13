@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
 import Lock from '@/assets/icons/Outline/Lock.svg';
 import Description from '@/components/common/Description.vue';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
@@ -51,9 +51,7 @@ const navigateEnterOTP = () => {
 	</div>
 	<form class="flex flex-col items-center gap-4 mt-4" @submit="onSubmit">
 		<Title class="font-semibold">Reset your password</Title>
-		<Description>
-			Your new password must be different from previously used passwords
-		</Description>
+		<Description> Your new password must be different from previously used passwords </Description>
 
 		<div class="w-full">
 			<FormInput

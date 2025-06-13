@@ -11,10 +11,10 @@ import {
 	PaginationPrev,
 } from '@/components/ui/pagination';
 import type { Table } from '@tanstack/vue-table';
-import DoubleLeft from '@/assets/icons/Outline/Double Alt Arrow Left.svg';
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
-import DoubleRight from '@/assets/icons/Outline/Double Alt Arrow Right.svg';
-import Right from '@/assets/icons/Outline/Alt Arrow Right.svg';
+import DoubleLeft from '@/assets/icons/Outline/DoubleAltArrowLeft.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
+import DoubleRight from '@/assets/icons/Outline/DoubleAltArrowRight.svg';
+import Right from '@/assets/icons/Outline/AltArrowRight.svg';
 import IconFromSvg from '../common/IconFromSvg.vue';
 import { getItemRange } from '@/lib/utils';
 import { computed } from 'vue';

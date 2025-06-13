@@ -3,14 +3,21 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { axiosConfig } from '@/plugins/axiosConfig.ts';
 import { AUTH_API } from '@/constants/api/auth.api';
+import type { IUser } from '@/types';
 
 export const useAuthStore = defineStore('auth-store', () => {
 	//defineState
-	const isLoading = ref(false);
 	const access_token = ref<string>(
 		sessionStorage.getItem(axiosConfig.key.accessToken) ||
 			localStorage.getItem(axiosConfig.key.accessToken) ||
 			'',
+	);
+	const account = ref<IUser>(
+		JSON.parse(
+			sessionStorage.getItem(axiosConfig.key.account) ||
+				localStorage.getItem(axiosConfig.key.account) ||
+				'{}',
+		),
 	);
 	const refresh_token = ref<string>(
 		sessionStorage.getItem(axiosConfig.key.refreshToken) ||
@@ -22,6 +29,12 @@ export const useAuthStore = defineStore('auth-store', () => {
 	//defineGetters
 	const isLoggedIn = computed(() => access_token.value !== '' && refresh_token.value !== '');
 	const isForgotPassword = computed(() => forgot_password_token.value !== undefined);
+	const isHR = computed(
+		() =>
+			account.value?.roles?.some(
+				(role) => role === 'ADMIN' || role === 'HR_LEADER' || role === 'HR' || role === 'CEO',
+			) ?? false,
+	);
 
 	const clearLocalStorage = () => {
 		localStorage.removeItem(axiosConfig.key.accessToken);
@@ -93,7 +106,6 @@ export const useAuthStore = defineStore('auth-store', () => {
 	};
 
 	return {
-		isLoading,
 		isLoggedIn,
 		access_token,
 		refresh_token,
@@ -105,5 +117,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 		forgotPassword,
 		verifyCode,
 		resetPassword,
+		account,
+		isHR,
 	};
 });

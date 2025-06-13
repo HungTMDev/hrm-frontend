@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Link from '@/assets/icons/Outline/Link.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormInput from '@/components/form/FormInput.vue';
@@ -26,6 +26,7 @@ import type { InterviewPayload } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { interviewSchema, type InterviewFormData } from './schema';
+import { useCustomToast } from '@/lib/customToast';
 
 const props = defineProps<{
 	open: boolean;
@@ -37,10 +38,11 @@ const emits = defineEmits<{
 }>();
 
 const { data: users } = useListUser();
+const { showToast } = useCustomToast();
 
 const formSchema = toTypedSchema(interviewSchema);
 
-const { handleSubmit, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue, values } = useForm({
 	validationSchema: formSchema,
 	initialValues: {
 		interviewer: [''],
@@ -56,10 +58,7 @@ const onSubmit = handleSubmit((values: InterviewFormData) => {
 			interview_name: values.interview_name,
 			interview_type: values.interview_type,
 			participant_ids: values.interviewer,
-			scheduled_time: createISOStringFromDayAndTime(
-				values.interview_date,
-				values.interview_time,
-			),
+			scheduled_time: createISOStringFromDayAndTime(values.interview_date, values.interview_time),
 			application_id: props.id || '',
 			duration_minutes: values.duration_minutes,
 			location: values.location,
@@ -73,6 +72,10 @@ const onSubmit = handleSubmit((values: InterviewFormData) => {
 					{ id: props.id || '', data: { to_stage: 'INTERVIEW_1', outcome: 'PASSED' } },
 					{
 						onSuccess: () => {
+							showToast({
+								message: 'Success!',
+								type: 'success',
+							});
 							emits('update:open', false);
 						},
 					},
@@ -122,10 +125,7 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 								:required="true" />
 						</div>
 						<div class="w-2/5">
-							<FormTime
-								name="interview_time"
-								label="Interview time"
-								:required="true" />
+							<FormTime name="interview_time" label="Interview time" :required="true" />
 						</div>
 					</div>
 
@@ -137,11 +137,20 @@ const setValue = (payload: { fieldName: any; data: any }) => {
 						placeholder="Enter duration minutes"
 						class="w-full" />
 					<FormInput
+						v-if="values.interview_type === 'ONLINE'"
 						name="meeting_link"
 						label="Meeting link"
 						:icon="Link"
 						:required="true"
 						placeholder="Enter meeting link"
+						class="w-full" />
+					<FormInput
+						v-else
+						name="location"
+						label="Location"
+						:icon="Link"
+						:required="true"
+						placeholder="Enter location"
 						class="w-full" />
 					<FormSelectArray
 						name="interviewer"

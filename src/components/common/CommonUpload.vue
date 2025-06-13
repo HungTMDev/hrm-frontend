@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import CheckCircle from '@/assets/icons/Bold/Check Circle.svg';
+import CheckCircle from '@/assets/icons/Bold/CheckCircle.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
-import DangerCircle from '@/assets/icons/Outline/Danger Circle.svg';
+import DangerCircle from '@/assets/icons/Outline/DangerCircle.svg';
 import Restart from '@/assets/icons/Outline/Restart.svg';
-import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
+import Upload from '@/assets/icons/Outline/UploadMinimalistic.svg';
 import { useCustomToast } from '@/lib/customToast';
 import { generateRandomID } from '@/lib/utils';
 import { computed, ref, watch } from 'vue';
@@ -12,12 +12,15 @@ import ProgressCircle from '../common/ProgressCircle.vue';
 import UserAvatar from '../common/UserAvatar.vue';
 import Button from '../ui/button/Button.vue';
 import Label from '../ui/label/Label.vue';
+import type { IUploadFileResponse } from '@/types';
 
 interface Prop {
 	modelValue?: File;
 	previewUrl?: string;
 	type: 'file' | 'photo';
 	allowedTypes?: string[];
+	dataResponse?: IUploadFileResponse;
+	fileName?: string;
 }
 const props = defineProps<Prop>();
 
@@ -97,6 +100,7 @@ const processFile = (file: any) => {
 
 const handleRemoveFile = () => {
 	selectedFile.value = undefined;
+	emits('update:modelValue', undefined);
 	uploadProgress.value = 0;
 
 	if (fileInputRef.value) {
@@ -155,12 +159,10 @@ watch(
 			class="flex gap-2 items-center px-4 py-2 rounded-2xl border">
 			<IconFromSvg :icon="CheckCircle" class="text-green-500" />
 			<UserAvatar v-if="type === 'photo'" :url="previewUrl" class="w-10 h-10 rounded-xl" />
-			<p class="text-sm text-black flex-1 truncate">{{ selectedFile?.name }}</p>
-			<Button
-				type="button"
-				variant="ghost"
-				class="p-0 hover:bg-white"
-				@click="handleRemoveFile"
+			<p class="text-sm text-black flex-1 truncate">
+				{{ props.fileName ?? props.dataResponse?.original_filename ?? selectedFile?.name }}
+			</p>
+			<Button type="button" variant="ghost" class="p-0 hover:bg-white" @click="handleRemoveFile"
 				><IconFromSvg :icon="Close"
 			/></Button>
 		</div>

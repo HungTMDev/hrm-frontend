@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/vue-query';
+import { useQueries, useQuery } from '@tanstack/vue-query';
 import { applicantKey } from './key';
 import { computed, type Ref } from 'vue';
 import type { PaginationState } from '@tanstack/vue-table';
@@ -164,5 +164,22 @@ export const useGetInterviewFeedback = (id: Ref<string>) => {
 		retry: false,
 		staleTime: DATA_TIME.LESS_CHANGE,
 		gcTime: DATA_TIME.DELETE,
+	});
+};
+
+export const useGetListFeedback = (listInterview: Ref<IApplicantInterview[]>) => {
+	const queries = computed(() =>
+		listInterview.value.map((item) => {
+			return {
+				queryKey: [applicantKey.feedback, item.id],
+				queryFn: () => getFeedback(item.id),
+				staleTime: DATA_TIME.LESS_CHANGE,
+				gcTime: DATA_TIME.DELETE,
+			};
+		}),
+	);
+
+	return useQueries({
+		queries: queries,
 	});
 };

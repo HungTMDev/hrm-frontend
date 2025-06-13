@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import CheckCircle from '@/assets/icons/Bold/Check Circle.svg';
+import CheckCircle from '@/assets/icons/Bold/CheckCircle.svg';
 import Close from '@/assets/icons/Outline/Close.svg';
-import DangerCircle from '@/assets/icons/Outline/Danger Circle.svg';
+import DangerCircle from '@/assets/icons/Outline/DangerCircle.svg';
 import Restart from '@/assets/icons/Outline/Restart.svg';
-import Upload from '@/assets/icons/Outline/Upload Minimalistic.svg';
+import Upload from '@/assets/icons/Outline/UploadMinimalistic.svg';
 import { useCustomToast } from '@/lib/customToast';
 import type { FormFieldCommon } from '@/types';
 import { computed, ref } from 'vue';
@@ -143,11 +143,7 @@ const handleReset = () => {
 			<IconFromSvg :icon="CheckCircle" class="text-green-500" />
 			<UserAvatar v-if="type === 'photo'" :url="previewUrl" class="w-10 h-10 rounded-xl" />
 			<p class="text-sm text-black flex-1 truncate">{{ selectedFile?.name }}</p>
-			<Button
-				type="button"
-				variant="ghost"
-				class="p-0 hover:bg-white"
-				@click="handleRemoveFile"
+			<Button type="button" variant="ghost" class="p-0 hover:bg-white" @click="handleRemoveFile"
 				><IconFromSvg :icon="Close"
 			/></Button>
 		</div>
@@ -185,11 +181,6 @@ const handleReset = () => {
 			</div>
 		</Label>
 
-		<input
-			ref="fileInputRef"
-			:id="name"
-			type="file"
-			class="hidden"
-			@change="handleFileUpload" />
+		<input ref="fileInputRef" :id="name" type="file" class="hidden" @change="handleFileUpload" />
 	</div>
 </template>

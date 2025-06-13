@@ -4,7 +4,7 @@ import { useVModel } from '@vueuse/core';
 import { cn } from '@/lib/utils';
 import IconFromSvg from './IconFromSvg.vue';
 import Eye from '@/assets/icons/Outline/Eye.svg';
-import EyeClosed from '@/assets/icons/Outline/Eye Closed.svg';
+import EyeClosed from '@/assets/icons/Outline/EyeClosed.svg';
 
 const props = defineProps<{
 	defaultValue?: string | number;
@@ -13,6 +13,9 @@ const props = defineProps<{
 	placeholder?: string;
 	icon?: any;
 	type?: string;
+	min?: number;
+	max?: number;
+	step?: number;
 }>();
 
 const emits = defineEmits<{
@@ -33,13 +36,14 @@ const handleShowPassword = () => {
 
 <template>
 	<div
-		:class="
-			cn('flex gap-2 border border-input p-3 rounded-2xl w-fit items-center ', props.class)
-		">
+		:class="cn('flex gap-2 border border-input p-3 rounded-2xl w-fit items-center ', props.class)">
 		<span v-if="icon" class="text-gray-200"><IconFromSvg :icon="icon" /></span>
 		<input
 			:type="showPassword ? 'text' : type"
 			v-model="modelValue"
+			:min="min"
+			:max="max"
+			:step="step"
 			:placeholder="placeholder"
 			class="focus:outline-none placeholder:text-sm placeholder:text-gray-200 w-full text-sm bg-[--backgorund] text-black"
 			autocomplete="off" />

@@ -1,20 +1,14 @@
 <script lang="ts" setup>
-import Building3 from '@/assets/icons/Outline/Buildings 3.svg';
+import Building3 from '@/assets/icons/Outline/Buildings3.svg';
 import Building from '@/assets/icons/Outline/Buildings.svg';
 import Case from '@/assets/icons/Outline/Case.svg';
-import Chart2 from '@/assets/icons/Outline/Chart 2.svg';
-import ChartSqare from '@/assets/icons/Outline/Chart Square.svg';
+import Chart2 from '@/assets/icons/Outline/Chart2.svg';
+import ChartSqare from '@/assets/icons/Outline/ChartSquare.svg';
 import ContentWrapper from '@/components/common/ContentWrapper.vue';
 import FilterPopover from '@/components/common/FilterPopover.vue';
 import Title from '@/components/common/Title.vue';
-import DataTable from '@/components/datatable/DataTable.vue';
-import { recruitmentRequestColumn } from '@/components/recruitments/recruitment-request/recruitment-request.column';
-import RecruitmentSheet from '@/components/recruitments/recruitment-request/RecruitmentRequestSheet.vue';
 import Button from '@/components/ui/button/Button.vue';
-import { ROWS_PER_PAGE } from '@/constants';
 import router from '@/routers';
-import type { IRecruitmentRequest } from '@/types';
-import { getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { ref } from 'vue';
 
 const isOpenSheet = ref(false);
@@ -164,5 +158,5 @@ const accordionItems = [
 		</div>
 		<!-- <DataTable :table="table" @row:click="handleOpenSheet" /> -->
 	</ContentWrapper>
-	<RecruitmentSheet :open="isOpenSheet" @update:open="handleCloseSheet" />
+	<!-- <RecruitmentSheet :open="isOpenSheet" @update:open="handleCloseSheet" /> -->
 </template>

@@ -15,11 +15,7 @@ import type { ExtendedDataPoint } from 'node_modules/vue-chartjs/dist/typedChart
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 defineProps<{
-	chartData: ChartData<
-		'bar',
-		(number | [number, number] | null)[] | ExtendedDataPoint[],
-		unknown
-	>;
+	chartData: ChartData<'bar', (number | [number, number] | null)[] | ExtendedDataPoint[], unknown>;
 	chartOptions: any;
 }>();
 </script>

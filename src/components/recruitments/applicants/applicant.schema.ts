@@ -25,7 +25,7 @@ export const interviewSchema = z.object({
 	interview_type: z.string(),
 	interview_name: z.string().min(1, 'This field is required'),
 	interviewer: z.array(z.string().min(1, 'This field is required')),
-	duration_minutes: z.number().optional(),
+	duration_minutes: z.number(),
 	location: z.string().optional(),
 	meeting_link: z.string().optional(),
 });

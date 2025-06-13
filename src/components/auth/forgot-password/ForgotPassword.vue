@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Left from '@/assets/icons/Outline/Alt Arrow Left.svg';
+import Left from '@/assets/icons/Outline/AltArrowLeft.svg';
 import Letter from '@/assets/icons/Outline/Letter.svg';
 import CallApiButton from '@/components/common/CallApiButton.vue';
 import Description from '@/components/common/Description.vue';
@@ -57,9 +57,7 @@ const navigateEnterOTP = () => {
 				:required="true"
 				placeholder="Enter your email address" />
 		</form>
-		<CallApiButton
-			form="form"
-			class="w-full rounded-xl bg-blue-500 hover:bg-blue-600 h-auto p-3">
+		<CallApiButton form="form" class="w-full rounded-xl bg-blue-500 hover:bg-blue-600 h-auto p-3">
 			Send OTP
 		</CallApiButton>
 	</div>

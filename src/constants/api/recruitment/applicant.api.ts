@@ -4,6 +4,9 @@ export enum APPLICANT_API {
 	UPDATE_STATUS = '/applications/%s/status',
 	UPDATE_STAGE = '/applications/%s/stage',
 	APPLICANT_INTERVIEW = '/applications/%s/interviews',
+	REJECT_MANY = '/applications/reject/send-email',
+	CONVERT_TO_EMPLOYEE = '/applications/%s/convert-to-employee',
+	UNDO = '/applications/%s/undo-rejection',
 }
 
 export enum CANDIDATE_API {

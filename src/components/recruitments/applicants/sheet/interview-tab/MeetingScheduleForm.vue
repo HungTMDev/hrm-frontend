@@ -1,44 +1,60 @@
 <script lang="ts" setup>
+import ChatDots from '@/assets/icons/Outline/ChatDots.svg';
 import Link from '@/assets/icons/Outline/Link.svg';
-import MapPoint from '@/assets/icons/Outline/Map Point.svg';
-import UserSpeak from '@/assets/icons/Outline/User Speak.svg';
+import MapPoint from '@/assets/icons/Outline/MapPoint.svg';
+import PenNew from '@/assets/icons/Outline/PenNewRound.svg';
+import SortByTime from '@/assets/icons/Outline/SortByTime.svg';
+import UserSpeak from '@/assets/icons/Outline/UserSpeak.svg';
+import CallApiButton from '@/components/common/CallApiButton.vue';
+import FormArray from '@/components/form/FormArray.vue';
 import FormCalendar from '@/components/form/FormCalendar.vue';
 import FormInput from '@/components/form/FormInput.vue';
 import FormSelect from '@/components/form/FormSelect.vue';
-import FormSelectArray from '@/components/form/FormSelectArray.vue';
 import FormTime from '@/components/form/FormTime.vue';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useGetAccount } from '@/composables/auth/useAuth';
+import { applicantKey } from '@/composables/recruitment/applicant/key';
+import {
+	useCreateInterview,
+	useSendEmail,
+	useUpdateInterview,
+	useUpdateStage,
+} from '@/composables/recruitment/applicant/useUpdateApplicant';
 import { useListUser } from '@/composables/user/useUser';
 import { listInterviewType } from '@/constants';
 import {
 	OFFLINE_INTERVIEW_INVITATION_EMAIL,
 	ONLINE_INTERVIEW_INVITATION_EMAIL,
 } from '@/constants/model';
+import { useCustomToast } from '@/lib/customToast';
 import {
 	createISOStringFromDayAndTime,
 	createNameByGender,
 	formatISOStringToLocalDateTime,
 } from '@/lib/utils';
-import type { IApplicant } from '@/types';
+import type { IApplicant, IApplicantInterview, InterviewPayload } from '@/types';
+import { useQueryClient } from '@tanstack/vue-query';
 import { toTypedSchema } from '@vee-validate/zod';
 import Handlebars from 'handlebars';
 import { useForm } from 'vee-validate';
 import { computed, ref, watch, type Ref } from 'vue';
 import { meetingScheduleSchema, type MeetingSchedulePayload } from './schema';
-import Textarea from '@/components/ui/textarea/Textarea.vue';
 
 const props = defineProps<{
 	applicant?: IApplicant;
+	listInterview?: IApplicantInterview[];
 }>();
 
 const emits = defineEmits<{
 	(e: 'back'): void;
+	(e: 'closeSheet'): void;
 }>();
 
 const formSchema = toTypedSchema(meetingScheduleSchema);
 
+const { showToast } = useCustomToast();
+const queryClient = useQueryClient();
 const { data: users } = useListUser();
 const { data: account } = useGetAccount();
 
@@ -46,8 +62,27 @@ const data = ref<MeetingSchedulePayload>();
 const nextStep = ref(false);
 const renderedHtml = ref('');
 
+const toStage = computed(() => {
+	if (
+		(props.applicant?.current_stage === 'INTERVIEW_2' &&
+			props.listInterview
+				?.filter((item) => item.stage === 'INTERVIEW_2')
+				?.every((item) => item.status === 'CANCELED')) ||
+		(props.applicant?.current_stage === 'INTERVIEW_1' &&
+			props.listInterview
+				?.filter((item) => item.stage === 'INTERVIEW_1')
+				?.some((item) => item.status === 'COMPLETED'))
+	) {
+		return 'INTERVIEW_2';
+	}
+
+	return 'INTERVIEW_1';
+});
 const hrSelected = computed(() => {
-	return users.value?.find((item) => item.id === data.value?.coordinator);
+	return users.value?.find((item) => item.id === data.value?.coordinator) || account.value;
+});
+const oldInterview = computed(() => {
+	return props.listInterview?.find((item) => item.status === 'SCHEDULED');
 });
 const interviewDateTime = computed(() => {
 	const str = createISOStringFromDayAndTime(
@@ -85,32 +120,121 @@ const dataFill: Ref<
 	),
 	hr_email: hrSelected.value?.email,
 	phone_number: hrSelected.value?.phone_number || '',
+	location:
+		data.value?.location?.trim() || 'Tầng 4 - Tòa Hanvico, 217- 219 Lê Duẩn, Thanh Khê, Đà Nẵng',
 }));
+const initParticipants = computed(() => {
+	return oldInterview.value?.participants.map((item) => item.id) ?? [''];
+});
 
-const { handleSubmit, setFieldValue } = useForm({
+const { handleSubmit, values, resetForm } = useForm({
 	validationSchema: formSchema,
 	initialValues: {
-		interviewer: [''],
+		participant_ids: initParticipants.value,
 	},
 });
+
+const { mutate: sendEmail } = useSendEmail();
+const { mutate: updateStage } = useUpdateStage();
+const { mutate: createInterview, isPending } = useCreateInterview();
+const { mutate: updateInterview, isPending: updating } = useUpdateInterview();
 
 const onSubmit = handleSubmit((values) => {
 	data.value = values;
 	nextStep.value = true;
 });
 
-const setValue = (payload: { fieldName: any; data: any }) => {
-	setFieldValue(payload.fieldName, payload.data);
-};
-
 const handleBack = () => {
 	if (nextStep.value) {
-		setFieldValue('interviewer', data.value?.interviewer);
+		resetForm();
 		nextStep.value = false;
 		return;
 	}
 	data.value = undefined;
 	emits('back');
+};
+
+const handleSend = () => {
+	const payload: InterviewPayload = {
+		...data.value,
+		scheduled_time: createISOStringFromDayAndTime(
+			data.value?.interview_date || '',
+			data.value?.interview_time || '',
+		),
+		interview_type: data.value?.interview_type || '',
+		interview_name: data.value?.interview_name || '',
+		application_id: props.applicant?.id || '',
+		stage: toStage.value,
+	};
+
+	if (oldInterview.value) {
+		updateInterview(
+			{
+				id: oldInterview.value.id,
+				data: payload,
+			},
+			{
+				onSuccess: () => {
+					emits('back');
+					queryClient.invalidateQueries({
+						queryKey: [applicantKey.interview],
+					});
+
+					showToast({
+						message: 'Re-schedule success!',
+						type: 'success',
+					});
+
+					sendEmail(
+						{
+							email: props.applicant?.candidate.email || '',
+							content: renderedHtml.value.replace(/"/g, "'"),
+							subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
+						},
+						{
+							onSuccess: () => {
+								showToast({
+									message: 'Sent email success!',
+									type: 'success',
+								});
+							},
+						},
+					);
+				},
+			},
+		);
+		return;
+	}
+
+	createInterview(payload, {
+		onSuccess: () => {
+			emits('closeSheet');
+
+			updateStage({
+				id: props.applicant?.id || '',
+				data: { to_stage: toStage.value, outcome: 'PASSED' },
+			});
+			queryClient.invalidateQueries({
+				queryKey: [applicantKey.interview],
+			});
+
+			sendEmail(
+				{
+					email: props.applicant?.candidate.email || '',
+					content: renderedHtml.value.replace(/"/g, "'"),
+					subject: '[THƯ MỜI PHỎNG VẤN - LUTECH.LTD]',
+				},
+				{
+					onSuccess: () => {
+						showToast({
+							message: 'Sent email success!',
+							type: 'success',
+						});
+					},
+				},
+			);
+		},
+	});
 };
 
 watch(dataFill, () => {
@@ -132,15 +256,17 @@ watch(dataFill, () => {
 				<FormInput
 					name="interview_name"
 					label="Interview name"
-					:model-value="data?.interview_name"
+					:model-value="data?.interview_name ?? oldInterview?.interview_name"
 					:required="true"
+					:icon="PenNew"
 					placeholder="Enter interview name"
 					class="w-full" />
 
 				<FormSelect
 					name="interview_type"
 					label="Interview type"
-					:model-value="data?.interview_type"
+					:icon="ChatDots"
+					:model-value="data?.interview_type ?? oldInterview?.interview_type"
 					:required="true"
 					:list="listInterviewType" />
 
@@ -149,7 +275,7 @@ watch(dataFill, () => {
 						<FormCalendar
 							name="interview_date"
 							label="Interview date"
-							:model-value="data?.interview_date"
+							:model-value="data?.interview_date ?? oldInterview?.scheduled_time"
 							class="w-full"
 							:required="true" />
 					</div>
@@ -157,7 +283,7 @@ watch(dataFill, () => {
 						<FormTime
 							name="interview_time"
 							label="Interview time"
-							:model-value="data?.interview_time"
+							:model-value="data?.interview_time ?? oldInterview?.scheduled_time"
 							:required="true" />
 					</div>
 				</div>
@@ -181,7 +307,9 @@ watch(dataFill, () => {
 				<FormInput
 					name="duration_minutes"
 					type="number"
-					:model-value="data?.duration_minutes"
+					:model-value="data?.duration_minutes ?? oldInterview?.duration_minutes"
+					:required="true"
+					:icon="SortByTime"
 					label="Duration minutes"
 					placeholder="Enter duration minutes"
 					class="w-full" />
@@ -191,44 +319,68 @@ watch(dataFill, () => {
 					label="Coordinator"
 					:model-value="data?.coordinator ?? account?.id"
 					:icon="UserSpeak"
-					:required="true"
 					:list="users?.map((user) => ({ label: user.name, value: user.id })) || []" />
+
 				<FormInput
+					v-if="values.interview_type !== 'ONLINE'"
 					name="location"
 					label="Location"
-					:model-value="data?.location"
+					:required="true"
+					:model-value="data?.location ?? oldInterview?.location ?? undefined"
 					:icon="MapPoint"
 					placeholder="Enter location"
 					class="w-full" />
 
 				<FormInput
+					v-else
 					name="meeting_link"
 					label="Meeting link"
-					:model-value="data?.meeting_link"
+					:model-value="data?.meeting_link ?? oldInterview?.meeting_link ?? undefined"
 					:icon="Link"
+					:required="true"
 					placeholder="Enter meeting link"
 					class="w-full" />
 
 				<div>
-					<FormSelectArray
-						name="interviewer"
+					<FormArray
+						name="participant_ids"
 						label="Interviewer"
-						class="w-full"
-						:model-value="data?.interviewer"
-						:icon="UserSpeak"
+						label-size="xs"
 						:required="true"
-						:list="users?.map((user) => ({ label: user.name, value: user.id })) || []"
-						@update:select="setValue" />
+						:init-value="''">
+						<template #default="{ baseName, index }">
+							<FormSelect
+								:name="baseName"
+								:model-value="
+									data?.participant_ids?.[index] ?? oldInterview?.participants?.[index]?.id
+								"
+								:icon="UserSpeak"
+								label=""
+								:list="users?.map((user) => ({ label: user.name, value: user.id })) || []"
+								:required="true" />
+						</template>
+					</FormArray>
 				</div>
 			</div>
 		</form>
 	</ScrollArea>
-	<div class="flex justify-end gap-2">
+	<div class="flex justify-end gap-2 mb-4">
 		<Button variant="outline" class="rounded-2xl h-auto py-3 px-6" @click="handleBack">
 			Back
 		</Button>
-		<Button form="form" class="rounded-2xl h-auto py-3 px-8 bg-blue-500 hover:bg-blue-600">
+		<Button
+			v-if="!nextStep"
+			form="form"
+			class="rounded-2xl h-auto py-3 px-8 bg-blue-500 hover:bg-blue-600">
 			Next
 		</Button>
+		<CallApiButton
+			v-else
+			form="form"
+			:is-loading="isPending || updating"
+			class="rounded-2xl h-auto py-3 px-8 bg-blue-500 hover:bg-blue-600"
+			@click="handleSend">
+			Send
+		</CallApiButton>
 	</div>
 </template>

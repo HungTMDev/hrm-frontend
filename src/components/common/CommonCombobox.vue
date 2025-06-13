@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Down from '@/assets/icons/Outline/Alt Arrow Down.svg';
+import Down from '@/assets/icons/Outline/AltArrowDown.svg';
 import { Button } from '@/components/ui/button';
 import {
 	Combobox,
@@ -57,13 +57,12 @@ const handleSelect = (payload: any) => {
 		if (data.length === 0) {
 			emits('update:modelValue', undefined);
 		} else {
-			console.log(data);
-			emits('update:modelValue', data);
+			emits('update:modelValue', data as string[]);
 		}
 		return;
 	}
 
-	emits('update:modelValue', (payload as ComboboxType).value);
+	emits('update:modelValue', (payload as ComboboxType).value as string);
 };
 
 const setValue = (newVal: string | string[] | undefined, newList: ComboboxType[]) => {
@@ -123,16 +122,10 @@ watch(
 						"
 						:display-value="(val) => val?.label ?? ''"
 						:placeholder="`Select ${label?.toLocaleLowerCase() ?? ''}`" />
-					<ComboboxTrigger
-						class="absolute end-0 inset-y-0 flex items-center justify-center px-3">
+					<ComboboxTrigger class="absolute end-0 inset-y-0 flex items-center justify-center px-3">
 						<IconFromSvg
 							:icon="Down"
-							:class="
-								cn(
-									'transition-all duration-200',
-									isOpen ? 'rotate-180' : 'rotate-0',
-								)
-							" />
+							:class="cn('transition-all duration-200', isOpen ? 'rotate-180' : 'rotate-0')" />
 					</ComboboxTrigger>
 				</div>
 			</ComboboxAnchor>
@@ -151,13 +144,10 @@ watch(
 					"
 					:display-value="(val) => val?.label ?? ''"
 					:placeholder="`Select ${label?.toLocaleLowerCase() ?? ''}`" />
-				<ComboboxTrigger
-					class="absolute end-0 inset-y-0 flex items-center justify-center px-3">
+				<ComboboxTrigger class="absolute end-0 inset-y-0 flex items-center justify-center px-3">
 					<IconFromSvg
 						:icon="Down"
-						:class="
-							cn('transition-all duration-200', isOpen ? 'rotate-180' : 'rotate-0')
-						" />
+						:class="cn('transition-all duration-200', isOpen ? 'rotate-180' : 'rotate-0')" />
 				</ComboboxTrigger>
 			</div>
 		</ComboboxAnchor>
@@ -169,9 +159,7 @@ watch(
 						cn(
 							'justify-between h-auto p-3 rounded-2xl w-full relative focus:border-blue-200',
 							icon && 'pl-10',
-							value
-								? 'text-slate-600 hover:text-slate-600'
-								: 'text-gray-200 hover:text-gray-200',
+							value ? 'text-slate-600 hover:text-slate-600' : 'text-gray-200 hover:text-gray-200',
 							props.class,
 						)
 					">
@@ -180,15 +168,12 @@ watch(
 					</span>
 					<span v-if="multiple" class="truncate">{{ placeholder }}</span>
 					<span v-else>{{
-						(value as ComboboxType)?.label ??
-						`Select ${label?.toLocaleLowerCase() ?? ''}`
+						(value as ComboboxType)?.label ?? `Select ${label?.toLocaleLowerCase() ?? ''}`
 					}}</span>
 
 					<IconFromSvg
 						:icon="Down"
-						:class="
-							cn('transition-all duration-200', isOpen ? 'rotate-180' : 'rotate-0')
-						" />
+						:class="cn('transition-all duration-200', isOpen ? 'rotate-180' : 'rotate-0')" />
 				</Button>
 			</ComboboxTrigger>
 		</ComboboxAnchor>
@@ -211,7 +196,7 @@ watch(
 					v-for="item in list"
 					:key="item.value"
 					:value="item"
-					class="hover:bg-muted rounded-xl">
+					class="hover:bg-muted rounded-xl p-2">
 					<p class="truncate">{{ item.label }}</p>
 
 					<ComboboxItemIndicator>

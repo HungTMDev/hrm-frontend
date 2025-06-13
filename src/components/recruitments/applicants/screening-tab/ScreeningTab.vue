@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Checklist from '@/assets/icons/Outline/Checklist Minimalistic.svg';
-import ChecklistBold from '@/assets/icons/Bold/Checklist Minimalistic.svg';
-import CheckCircle from '@/assets/icons/Outline/Check Circle.svg';
-import CheckCircleBold from '@/assets/icons/Bold/Check Circle.svg';
+import Checklist from '@/assets/icons/Outline/ChecklistMinimalistic.svg';
+import ChecklistBold from '@/assets/icons/Bold/ChecklistMinimalistic.svg';
+import CheckCircle from '@/assets/icons/Outline/CheckCircle.svg';
+import CheckCircleBold from '@/assets/icons/Bold/CheckCircle.svg';
 import IconFromSvg from '@/components/common/IconFromSvg.vue';
 import { computed, onMounted, ref } from 'vue';
 import AppliedTab from './applied-tab/AppliedTab.vue';
